@@ -493,5 +493,34 @@ System.out.println("UPDATE "+item.getName()+" :"+item.hasBeenRefunded());
             }//end catch
     }
 
+    String[] getInsurances() {
+        ArrayList<String> loadedItems = new ArrayList<String>();
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from insurances");
+
+            while (rs.next()) {
+                // System.out.println(rs.getString(2));
+                    loadedItems.add(rs.getString(2));
+
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        String[] insurances = new String[loadedItems.size()];
+        int i=0;
+        for(String ins : loadedItems){
+            insurances[i]=ins;
+                    i++;
+        }
+        return insurances;
+    }
+
 
 }//end Database

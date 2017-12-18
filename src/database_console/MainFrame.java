@@ -799,7 +799,8 @@ public class MainFrame extends javax.swing.JFrame {
                 JTextField field3 = new JTextField();
 
                 field2.setText(previousDate);
-                String[] possibilities = {"AARP", "Aetna", "Amerigroup", "Anthem", "Caremark", "Cash", "Catalyst", "Champva", "Chips", "Cigna", "Envision", "Express Scripts","Healthgram", "Highmark BCBS", "Hospice", "Humana", "Medco","Medco Medicare","Megellan", "Optum RX", "Prime", "Savings Voucher", "Silverscript", "WV Medicaid", "VA Medicaid"};
+                String[] possibilities =  myDB.getInsurances();
+                //String[] possibilities = {"AARP", "Aetna", "Amerigroup", "Anthem", "Caremark", "Cash", "Catalyst", "Champva", "Chips", "Cigna", "Envision", "Express Scripts","Healthgram", "Highmark BCBS", "Hospice", "Humana", "Medco","Medco Medicare","Megellan", "Optum RX", "Prime", "Savings Voucher", "Silverscript", "WV Medicaid", "VA Medicaid"};
                 JList list = new JList(possibilities); //data has type Object[]
                 list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 list.setLayoutOrientation(JList.VERTICAL_WRAP);
