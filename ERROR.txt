@@ -1,0 +1,30 @@
+\\Pos-server\\\pos\\RX\\
+HERE!
+HERE2!
+EMPLOYEE TRANSACTIONS:
+Booth, Sam 12
+
+Total Cash: 6.0
+Total Coins: 0.0
+Total Credit: 0.0
+Total Checks: 0.0
+
+Total Tax Charged: 0.0
+
+AR PAYMENT INFO
+Total in AR Payments: 0.0
+Total in DME Payments: 0.0
+
+AR ACCOUNTS AND PAYMENTS
+
+DME ACCOUNTS AND PAYMENTS
+Charges
+
+PAID OUTS:
+
+Total RX Copays: $6.0
+Total Paper Sales: $0.0
+Total OTC Taxed: $0.0
+Total OTC Non Taxed: $0.0
+Total DME Taxed: $0.0
+Total DME Non Taxed: $0.0
