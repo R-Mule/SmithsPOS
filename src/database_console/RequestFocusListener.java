@@ -1,30 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package database_console;
 
 import javax.swing.*;
 import javax.swing.event.*;
 
-/**
- *  Convenience class to request focus on a component.
- *
- *  When the component is added to a realized Window then component will
- *  request focus immediately, since the ancestorAdded event is fired
- *  immediately.
- *
- *  When the component is added to a non realized Window, then the focus
- *  request will be made once the window is realized, since the
- *  ancestorAdded event will not be fired until then.
- *
- *  Using the default constructor will cause the listener to be removed
- *  from the component once the AncestorEvent is generated. A second constructor
- *  allows you to specify a boolean value of false to prevent the
- *  AncestorListener from being removed when the event is generated. This will
- *  allow you to reuse the listener each time the event is generated.
- */
 public class RequestFocusListener implements AncestorListener
 {
 	private boolean removeListener;
