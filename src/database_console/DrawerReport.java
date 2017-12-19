@@ -162,7 +162,7 @@ public class DrawerReport implements Serializable {
         double changeDue = totalPaid - curCart.getTotalPrice();
         //UPDATE AMOUNT RECEIVED BY TENDER TYPE
         for (int i = 0; i < paymentType.length; i++) {
-            if (paymentType[i].contains("Cash")) {
+            if (paymentType[i].contains("CASH")) {
                 totalCashAmt += paymentAmt[i];
                 totalCashAmt += totalCoinsAmt;
                 String cash = Double.toString(totalCashAmt);
@@ -178,13 +178,13 @@ public class DrawerReport implements Serializable {
                     totalCoinsAmt *= -1;
                 }
 
-            } else if (paymentType[i].contains("Credit")) {
+            } else if (paymentType[i].contains("CREDIT")) {
                 totalCreditAmt += paymentAmt[i];
                 totalCreditAmt = round(totalCreditAmt);
-            } else if (paymentType[i].contains("Check")) {
+            } else if (paymentType[i].contains("CHECK")) {
                 totalChecksAmt += paymentAmt[i];
                 totalChecksAmt = round(totalChecksAmt);
-            } else if (paymentType[i].contains("Charged")) {
+            } else if (paymentType[i].contains("CHARGED")) {
                 totalChargesRXAmt += paymentAmt[i];
                 totalChargesRXAmt = round(totalChargesRXAmt);
             }
@@ -208,7 +208,7 @@ public class DrawerReport implements Serializable {
         }
 
         boolean charged = false;//This is used to add items to charge account arraylist
-        if (paymentType[0].contains("Charged")) {
+        if (paymentType[0].contains("CHARGED")) {
             charged = true;
         }
         System.out.println("HERE!");
