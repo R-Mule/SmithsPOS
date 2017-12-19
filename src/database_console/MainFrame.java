@@ -161,6 +161,7 @@ public class MainFrame extends javax.swing.JFrame {
         subTotalHeader.setFont(new Font(subTotalHeader.getName(), Font.BOLD, 12));
         subTotalHeader.setVisible(true);
 
+        
         this.add(employeeCheckoutHeader);
         employeeCheckoutHeader.setVisible(true);
         this.add(discountHeader);
@@ -434,6 +435,34 @@ public class MainFrame extends javax.swing.JFrame {
         activateDisplayButton.setSize(150, 40);
         activateDisplayButton.setBackground(new Color(50, 255, 255));
 
+        //This creates the addRemoveInsuranceButton
+        addRemoveInsuranceButton.setLocation(650, 890);
+        addRemoveInsuranceButton.setSize(150, 40);
+        addRemoveInsuranceButton.setBackground(new Color(255, 0, 255));
+        
+        addRemoveInsuranceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                JFrame textInputFrame = new JFrame("");
+
+                JTextField field1 = new JTextField();
+                JTextField field2 = new JTextField();
+                field1.addAncestorListener(new RequestFocusListener());
+                Object[] message = {
+                    "Insurance to Add:", field1, "Insurance to Remove", field2};
+                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Insurance Menu", JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.OK_OPTION) {
+                    if(!field1.getText().isEmpty()){
+                        myDB.addInsurance(field1.getText());
+                    }
+                    if(!field2.getText().isEmpty()){
+                        myDB.removeInsurance(field2.getText());
+                    }
+                        
+                }
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }
+        });
+        
         activateDisplayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 display = new PoleDisplay(reader);
@@ -731,6 +760,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 addRxAccountButton.setVisible(false);
                                 addDmeAccountButton.setVisible(false);
                                 activateDisplayButton.setVisible(false);
+                                addRemoveInsuranceButton.setVisible(false);
                                 cancelRefundButton.setVisible(true);
                                 updateCartScreen();
                             }
@@ -1647,6 +1677,8 @@ public class MainFrame extends javax.swing.JFrame {
             }//end actionPerformed
         });//end cancelRefundAction
 
+        this.add(addRemoveInsuranceButton);
+        addRemoveInsuranceButton.setVisible(false);
         activateDisplayButton.setVisible(true);
         this.add(activateDisplayButton);
         addDmeAccountButton.setVisible(false);
@@ -1806,6 +1838,7 @@ public class MainFrame extends javax.swing.JFrame {
             addRxAccountButton.setVisible(true);
             addDmeAccountButton.setVisible(true);
             masterRefundButton.setVisible(true);
+            addRemoveInsuranceButton.setVisible(true);
         } else if (empList.getSelectedItem().toString().contentEquals("Smith, Haley") || empList.getSelectedItem().toString().contentEquals("Booth, Sam") || empList.getSelectedItem().toString().contentEquals("Broussard, Kayla")) {
             updatePriceButton.setVisible(true);
             addNewItemButton.setVisible(true);
@@ -1813,6 +1846,7 @@ public class MainFrame extends javax.swing.JFrame {
             generateReportButton.setVisible(false);
             addDmeAccountButton.setVisible(false);
             masterRefundButton.setVisible(true);
+            addRemoveInsuranceButton.setVisible(true);
         } else {
             updatePriceButton.setVisible(false);
             generateReportButton.setVisible(false);
@@ -1820,6 +1854,7 @@ public class MainFrame extends javax.swing.JFrame {
             addRxAccountButton.setVisible(false);
             addDmeAccountButton.setVisible(false);
             masterRefundButton.setVisible(false);
+            addRemoveInsuranceButton.setVisible(false);
         }
     }
 
@@ -2147,6 +2182,8 @@ public class MainFrame extends javax.swing.JFrame {
     JButton rxButton = new JButton("RX");
     String receiptLookup = "Lookup\nReceipt";
     JButton lookupReceiptByRXButton = new JButton("<html>" + receiptLookup.replaceAll("\\n", "<br>") + "</html>");
+    String addRemoveInsuranceName = "Add/Remove\nRX Insurance";
+    JButton addRemoveInsuranceButton = new JButton("<html>" + addRemoveInsuranceName.replaceAll("\\n", "<br>") + "</html>");
     String previousInsurance = "AARP";
     String previousDate = "";
     JButton otcButton = new JButton("OTC");

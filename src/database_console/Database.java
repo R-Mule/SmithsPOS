@@ -534,7 +534,7 @@ public class Database {
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from insurances");
+            ResultSet rs = stmt.executeQuery("select * from insurances order by insurance ASC;");
 
             while (rs.next()) {
                 // System.out.println(rs.getString(2));
@@ -554,6 +554,32 @@ public class Database {
             i++;
         }
         return insurances;
+    }
+
+    void addInsurance(String text) {
+                try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("INSERT INTO `insurances` (`pid`,`insurance`) VALUES (NULL, '" + text+ "');");
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }//end catch
+    }
+
+    void removeInsurance(String text) {
+                        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("DELETE FROM `insurances` where insurance = '"+text+ "';");
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }//end catch
     }
 
 }//end Database

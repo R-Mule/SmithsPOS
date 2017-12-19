@@ -119,7 +119,7 @@ public class DrawerReport implements Serializable {
     }
     
     public void refundUpdate(RefundCart curCart, String clerkName, String[] paymentType, double paymentAmt[]) {
-        if (paymentType[0].contains("Card")) {
+        if (paymentType[0].contains("CARD")) {
             totalCreditAmt -= curCart.getTotalPrice();
             totalRefundedCredit+=curCart.getTotalPrice();
         } else {//Cash\

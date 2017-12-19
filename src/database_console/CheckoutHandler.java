@@ -63,27 +63,27 @@ public class CheckoutHandler {
         int cntr = 0;
         if (cashAmt > 0) {
             paymentAmt[cntr] = cashAmt;
-            paymentType[cntr] = "Cash: ";
+            paymentType[cntr] = "CASH: ";
             cntr++;
         }
         if (credit1Amt > 0) {
             paymentAmt[cntr] = credit1Amt;
-            paymentType[cntr] = "Credit 1: ";
+            paymentType[cntr] = "CREDIT 1: ";
             cntr++;
         }
         if (credit2Amt > 0) {
             paymentAmt[cntr] = credit2Amt;
-            paymentType[cntr] = "Credit 2: ";
+            paymentType[cntr] = "CREDIT 2: ";
             cntr++;
         }
         if (check1Amt > 0) {
             paymentAmt[cntr] = check1Amt;
-            paymentType[cntr] = "Check " + check1Num + ": ";
+            paymentType[cntr] = "CHECK " + check1Num + ": ";
             cntr++;
         }
         if (check2Amt > 0) {
             paymentAmt[cntr] = check2Amt;
-            paymentType[cntr] = "Check " + check2Num + ": ";
+            paymentType[cntr] = "CHECK " + check2Num + ": ";
             cntr++;
         }
 
@@ -108,7 +108,7 @@ public class CheckoutHandler {
         String[] paymentType = new String[1];
 
         paymentAmt[0] = amtPaid;
-        paymentType[0] = "Cash: ";
+        paymentType[0] = "CASH: ";
         //STORE CART BEFORE SIGNOUT CHECK
 
         if (curCart.getTotalNumRX() > 0) {
@@ -153,7 +153,7 @@ public class CheckoutHandler {
         String[] paymentType = new String[1];
 
         paymentAmt[0] = amtPaid;
-        paymentType[0] = "Check#" + checkNum + ": ";
+        paymentType[0] = "CHECK#" + checkNum + ": ";
         if (curCart.getTotalNumRX() > 0) {
             rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
         }
@@ -171,7 +171,7 @@ public class CheckoutHandler {
         String receiptNum = dateFormat.format(date) + registerID;
 
         paymentAmt[0] = amtPaid;
-        paymentType[0] = String.format("Credit: ");// + cardType + "%04d", cardNumber);
+        paymentType[0] = String.format("CREDIT: ");// + cardType + "%04d", cardNumber);
 
         if (curCart.getTotalNumRX() > 0) {
             rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
@@ -190,7 +190,7 @@ public class CheckoutHandler {
         String receiptNum = dateFormat.format(date) + registerID;
         paymentAmt[0] = curCart.getTotalPrice();
         int spaceLoc = accountName.indexOf(" ");
-        paymentType[0] = "Charged To " + accountName.substring(0, spaceLoc) + ": ";
+        paymentType[0] = "CHARGED TO " + accountName.substring(0, spaceLoc) + ": ";
 
         if (curCart.getTotalNumRX() > 0) {
             rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
@@ -274,7 +274,7 @@ public class CheckoutHandler {
                 itemDiscounted = true;
                 String percentAmt = Double.toString(item.getDiscountPercentage() * 100);
                 percentAmt = percentAmt.substring(0, percentAmt.indexOf('.'));
-                String discount = "               Discount: " + percentAmt + "%";
+                String discount = "               DISCOUNT: " + percentAmt + "%";
                 double discount2 = round(item.getDiscountAmount());
                 receipt += String.format("%-39s-$%7.2f\n", discount, discount2);
             }
@@ -293,14 +293,14 @@ public class CheckoutHandler {
         double changeDue = 0;
         double totalPaid = 0;
         for (int i = 0; i < paymentType.length; i++) {
-            if (paymentType[i].contains("Credit")) {
+            if (paymentType[i].contains("CREDIT")) {
                 requires2Receipts = true;
             }
             receipt += String.format("%36s$%8.2f\n", paymentType[i], paymentAmt[i]);
             totalPaid += paymentAmt[i];
         }
         changeDue = totalPaid - total;
-        receipt += String.format("%37s%8.2f\n\n", "Change Due: $", changeDue);
+        receipt += String.format("%37s%8.2f\n\n", "CHANGE DUE: $", changeDue);
         if (rxCntr > 0) {
             receipt += "Total RX(s): " + rxCntr + "\n\n";
         }
@@ -313,10 +313,10 @@ public class CheckoutHandler {
         byte[] kickDrawer = new byte[]{27, 112, 48, 55, 121};
         boolean isCashSale = false;
         for (int i = 0; i < paymentType.length; i++) {
-            if (paymentType[i].contentEquals("Cash: ")) {
+            if (paymentType[i].contentEquals("CASH: ")) {
                 isCashSale = true;
             }
-            if (paymentType[i].contains("Credit")) {
+            if (paymentType[i].contains("CREDIT")) {
                 isCreditSale = true;
             }
         }
@@ -351,7 +351,7 @@ public class CheckoutHandler {
         double[] paymentAmt = new double[1];
         String[] paymentType = new String[1];
         paymentAmt[0] = refundCart.getTotalPrice();
-        paymentType[0] = "Cash Refund: ";
+        paymentType[0] = "CASH REFUND: ";
 
         printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself);
         ArrayList<RefundItem> items2Add = new ArrayList<>();
@@ -428,7 +428,7 @@ public class CheckoutHandler {
         double[] paymentAmt = new double[1];
         String[] paymentType = new String[1];
         paymentAmt[0] = refundCart.getTotalPrice();
-        paymentType[0] = "Card Refund: ";
+        paymentType[0] = "CARD REFUND: ";
 
         myDB.updateReceipt(refundCart, refundCart.receiptNum);
         
@@ -548,7 +548,7 @@ public class CheckoutHandler {
                 itemDiscounted = true;
                 String percentAmt = Double.toString(item.getDiscountPercentage() * 100);
                 percentAmt = percentAmt.substring(0, percentAmt.indexOf('.'));
-                String discount = "               Discount: " + percentAmt + "%";
+                String discount = "               DISCOUNT: " + percentAmt + "%";
                 double discount2 = round(item.getDiscountAmount());
                 receipt += String.format("%-39s-$%7.2f\n", discount, discount2);
             }
