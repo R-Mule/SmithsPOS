@@ -35,6 +35,7 @@ public class RefundItem extends Item{
     public String getReceiptNum(){
         return receiptNum;
     }
+    @Override
     public boolean hasBeenRefunded(){
         return hasBeenRefunded;
     }
@@ -51,9 +52,51 @@ public class RefundItem extends Item{
     public void setRefundAllActive(boolean refundAllActive){
         this.refundAllActive=refundAllActive;
     }
+    @Override
     public boolean hasTaxBeenRefunded(){
         return hasTaxBeenRefunded;
     }
+    @Override
+     public double getTotal() {
+        double totalOnItem = 0;
+        double itemP;
+        itemP = itemPrice * quantityBeingRefunded - itemPrice * quantityBeingRefunded * percentageDisc;
+        if (isTaxable) {
+            totalOnItem = round(itemP + itemP * taxRate);
+        } else {
+            totalOnItem = round(itemP);
+        }
+        return totalOnItem;
+        //return round(itemPrice);
+    }//end getTotal()
+
+    @Override
+    double getPriceOfItemsBeforeTax() {
+        double total = round(itemPrice * quantityBeingRefunded-itemPrice * quantityBeingRefunded * percentageDisc);
+        return total;
+    }//end priceOfItemsBeforeTax
+
+    double getPriceOfItemsBeforeTaxWithMaxQtyRefund() {
+        double total = round(itemPrice * quantity-itemPrice * quantity * percentageDisc);
+        return total;
+    }//end priceOfItemsBeforeTax
+
+       
+    @Override
+    double getTaxTotal() {
+        double itemP = itemPrice * quantityBeingRefunded - itemPrice * quantityBeingRefunded * percentageDisc;
+        if (isTaxable) {
+            double taxTotal = round(itemP * taxRate);
+            return taxTotal;
+            
+        } else {
+            return 0.00;
+        }
+    }//end getTaxTotal
     
-    
+    @Override
+     public Double getDiscountAmount() {
+        double discountAmt = round(quantityBeingRefunded * itemPrice * percentageDisc);
+        return discountAmt;
+    }
 }//end RefundItem

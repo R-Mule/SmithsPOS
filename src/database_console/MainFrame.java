@@ -1725,6 +1725,7 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setVisible(true);
 
         if (refundCart.isEmpty()) {
+            discountHeader.setText("Discount: ");
             subTotal.setText(String.format("Subtotal: $%.2f", curCart.getSubTotal()));
             subTotal.setLocation(750, 800);
             subTotal.setSize(350, 50);
@@ -1748,6 +1749,7 @@ public class MainFrame extends javax.swing.JFrame {
             changeDue.setFont(new Font(subTotal.getName(), Font.BOLD, 30));
             totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
         } else {
+            discountHeader.setText("Qty to Refund: ");
             subTotal.setText(String.format("Subtotal: $%.2f", refundCart.getSubTotal()));
             subTotal.setLocation(750, 800);
             subTotal.setSize(350, 50);

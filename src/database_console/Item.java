@@ -221,7 +221,7 @@ public class Item {
         return discountAmt;
     }
 
-    private double round(double num) {//rounds to 2 decimal places.
+    protected double round(double num) {//rounds to 2 decimal places.
         num = Math.round(num * 100.0) / 100.0;
         return num;
     }//end round

@@ -352,8 +352,9 @@ public class CheckoutHandler {
         String[] paymentType = new String[1];
         paymentAmt[0] = refundCart.getTotalPrice();
         paymentType[0] = "Cash Refund: ";
-
-        for (RefundItem item : refundCart.getRefundItems()) {
+        
+        //DO WE NEED THIS??Because now we make new items...
+        /*for (RefundItem item : refundCart.getRefundItems()) {
             if (item.refundAllActive()) {
                 item.hasBeenRefunded = true;
                 item.hasTaxBeenRefunded = true;
@@ -362,39 +363,49 @@ public class CheckoutHandler {
                 item.hasTaxBeenRefunded = true;
             }
 
-        }
+        }*/
 
         printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself);
         ArrayList<RefundItem> items2Add = new ArrayList<>();
+        ArrayList<RefundItem> items2Del = new ArrayList<>();
        // ArrayList<RefundItem> items2Remove = new ArrayList<>();
         for (RefundItem item : refundCart.getRefundItems()) {
             if (item.refundAllActive()) {
                 if (refundCart.containsItemByID(item.getID().substring(0, 6) + "F")) {
                     refundCart.increaseQtyByID(item.getID() + "F", item.quantityBeingRefunded);
                     item.quantity -= item.quantityBeingRefunded;
+                    if(item.quantity==0){
+                        items2Del.add(item);
+                    }
                 } else {
                     //NEW ITEM TO ADD! F IT UP PAPA BEAR!
                     RefundItem itemTemp = item;
                     itemTemp.setID(item.getID().substring(0, 6) + "F");//FINISHED!
                     itemTemp.quantity=item.quantityBeingRefunded;
-                    items2Add.add(item);
+                    itemTemp.hasBeenRefunded=true;
+                    itemTemp.hasTaxBeenRefunded=true;
+                    items2Add.add(itemTemp);
                 }
             } else if (item.refundTaxOnly() && !item.refundAllActive()) {
                  if (refundCart.containsItemByID(item.getID().substring(0, 6) + "T")) {
                     refundCart.increaseQtyByID(item.getID() + "T", item.quantityBeingRefunded);
                     item.quantity -= item.quantityBeingRefunded;
+                    if(item.quantity==0){
+                        items2Del.add(item);
+                    }
                 } else {
                     //NEW ITEM TO ADD! F IT UP PAPA BEAR!
                     RefundItem itemTemp = item;
                     itemTemp.setID(item.getID().substring(0, 6) + "T");//TAX REFUNDED!
                     itemTemp.quantity=item.quantityBeingRefunded;
-                    items2Add.add(item);
+                    itemTemp.hasTaxBeenRefunded=true;
+                    items2Add.add(itemTemp);
 
                 }
             }
         }
-      
-        myDB.storeReceiptByList(items2Add, registerID);
+        myDB.removeReceiptByList(items2Del,refundCart.receiptNum);
+        myDB.storeReceiptByList(items2Add, refundCart.receiptNum);
         myDB.updateReceipt(refundCart, refundCart.receiptNum);
         myself.voidCarts();
         myself.refundOver();

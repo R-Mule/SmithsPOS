@@ -148,9 +148,9 @@ public class RefundCart extends Cart {
         for (RefundItem temp : refundItems) {
             if(!temp.isPreCharged()&&!temp.hasBeenRefunded()&&temp.getCategory()!=853&&temp.getCategory()!=854&&temp.refundAllActive()){
             if (temp.isTaxable()&&!temp.hasTaxBeenRefunded){
-                taxableAmt += temp.getPrice() * temp.getQuantity()-temp.getDiscountAmount();
+                taxableAmt += temp.getPrice() * temp.quantityBeingRefunded-temp.getDiscountAmount();
             } else {
-                nonTaxableAmt += temp.getPrice() * temp.getQuantity()-temp.getDiscountAmount();
+                nonTaxableAmt += temp.getPrice() * temp.quantityBeingRefunded-temp.getDiscountAmount();
             }//end else
             
             }else if(temp.refundTaxOnly()){

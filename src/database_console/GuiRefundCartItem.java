@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -27,7 +28,7 @@ public class GuiRefundCartItem extends GuiCartItem {
     JButton partialRefundFalseButton;
     JButton increaseRefundQtyButton;
     JButton decreaseRefundQtyButton;
-
+    JLabel qtyToBeRefunded;
     RefundItem item;
     RefundCart refundCart;
 
@@ -38,9 +39,12 @@ public class GuiRefundCartItem extends GuiCartItem {
         this.addQuantityButton.setVisible(false);
         this.subQuantityButton.setVisible(false);
         this.discountButton.setVisible(false);
+        prechargedFalseButton.setVisible(false);
+        prechargedTrueButton.setVisible(false);
         this.item = item;
         this.refundCart = curCart;
         discountLabel.setVisible(false);
+        percentOffItemLabel.setVisible(false);
         alreadyRefundedLabel = new JLabel("ALREADY REFUNDED");
         nonRefundableLabel = new JLabel("NON REFUNDABLE");
         refundInactiveButton = new JButton("Click to Refund");
@@ -48,6 +52,10 @@ public class GuiRefundCartItem extends GuiCartItem {
         taxRefundedFalseButton = new JButton("NO");
         taxRefundedTrueButton = new JButton("YES");
         taxAlreadyRefundedOnItemLabel = new JLabel("PR");
+        increaseRefundQtyButton = new JButton("");
+        decreaseRefundQtyButton = new JButton("");
+        qtyToBeRefunded = new JLabel("0", SwingConstants.RIGHT);
+        priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTaxWithMaxQtyRefund()));
 
         if (item.hasBeenRefunded()) {
 
@@ -69,23 +77,36 @@ public class GuiRefundCartItem extends GuiCartItem {
             nonRefundableLabel.setVisible(true);
         } else {//its refundable!
             frameGUI.add(increaseRefundQtyButton);
-            increaseRefundQtyButton.setLocation(100, -7 + baseY);
+            increaseRefundQtyButton.setLocation(750, -7 + baseY);
             increaseRefundQtyButton.setSize(15, 15);
             increaseRefundQtyButton.setFont(new Font(increaseRefundQtyButton.getName(), Font.BOLD, 10));
-            increaseRefundQtyButton.setBackground(new Color(255, 0, 0));
+            increaseRefundQtyButton.setBackground(new Color(0, 255, 0));
             increaseRefundQtyButton.setVisible(true);
             increaseRefundQtyButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     if (item.quantityBeingRefunded != item.quantity) {
                         item.quantityBeingRefunded++;
+                        qtyToBeRefunded.setText(Integer.toString(item.quantityBeingRefunded));
                         refundCart.updateTotal();
                         mainFrame.updateCartScreen();
+                        taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
+                        if (item.isRX) {
+                            item.setPrice(Double.parseDouble(pricePerItemLabel.getText()));
+                        }
+                        totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
+
                     }
                 }
             });
 
+            frameGUI.add(qtyToBeRefunded);
+            qtyToBeRefunded.setLocation(630, -7 + baseY);
+            qtyToBeRefunded.setSize(100, 15);
+            qtyToBeRefunded.setFont(new Font(qtyToBeRefunded.getName(), Font.BOLD, 12));
+            qtyToBeRefunded.setVisible(true);
+
             frameGUI.add(decreaseRefundQtyButton);
-            decreaseRefundQtyButton.setLocation(85, -7 + baseY);
+            decreaseRefundQtyButton.setLocation(735, -7 + baseY);
             decreaseRefundQtyButton.setSize(15, 15);
             decreaseRefundQtyButton.setFont(new Font(decreaseRefundQtyButton.getName(), Font.BOLD, 10));
             decreaseRefundQtyButton.setBackground(new Color(255, 0, 0));
@@ -95,16 +116,26 @@ public class GuiRefundCartItem extends GuiCartItem {
                     if (item.quantityBeingRefunded != 0) {
                         item.quantityBeingRefunded--;
                         if (item.quantityBeingRefunded == 0) {
-                            if (item.refundTaxOnly) {
+                            if (item.refundAllActive) {
+                                refundActiveButton.setVisible(false);
+                                refundInactiveButton.setVisible(true);
+                                taxRefundedTrueButton.setVisible(false);
+                                taxRefundedFalseButton.setVisible(true);
+                                item.setRefundAllActive(false);
+                                if (item.isRX) {
+                                    item.setPrice(Double.parseDouble(priceOfItemsLabel.getText()));
+                                    totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
+                                }
+                            } else if (item.refundTaxOnly) {
                                 item.setRefundTaxOnly(false);
                                 taxRefundedTrueButton.setVisible(false);
                                 taxRefundedFalseButton.setVisible(true);
-                            }else if(item.refundAllActive){
-                                item.setRefundAllActive(false);
-                                refundActiveButton.setVisible(false);
-                                refundInactiveButton.setVisible(true);
                             }
+
                         }//end if we are back to zero and need to reset stuff.
+                        qtyToBeRefunded.setText(Integer.toString(item.quantityBeingRefunded));
+                        taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
+                        totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
                         refundCart.updateTotal();
                         mainFrame.updateCartScreen();
                     }//end if a subtraction can occur
@@ -247,6 +278,7 @@ public class GuiRefundCartItem extends GuiCartItem {
             } else {
                 refundInactiveButton.setVisible(false);
                 refundActiveButton.setVisible(true);
+                totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
                 item.setRefundAllActive(true);
             }
             refundCart.updateTotal();
@@ -301,6 +333,7 @@ public class GuiRefundCartItem extends GuiCartItem {
 
         increaseRefundQtyButton.setVisible(false);
         decreaseRefundQtyButton.setVisible(false);
+        qtyToBeRefunded.setVisible(false);
     }
 
     private boolean validateDouble(String copay) {

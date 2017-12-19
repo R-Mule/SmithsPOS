@@ -32,7 +32,7 @@ public class GuiCartItem {
     JLabel priceOfItemsLabel;
     JLabel discountLabel;
     JLabel taxTotalLabel;
-    JLabel percentOffItemLabel;//NOT IMPLEMENTED YET,  NEEDS TO BE ADDED
+    JLabel percentOffItemLabel;
     JLabel totalItemPriceLabel;
 
     JPanel frame;

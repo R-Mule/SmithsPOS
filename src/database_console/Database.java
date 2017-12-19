@@ -25,16 +25,16 @@ public class Database {
         password = reader.getPassword();
     }//end databaseCtor
 
-     void updateItemPrice(String mutID,double price) {//0 return means not found, otherwise returns mutID from database.
+    void updateItemPrice(String mutID, double price) {//0 return means not found, otherwise returns mutID from database.
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
-                    host, userName, password); 
+                    host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from inventory where mutID = " + mutID);
             while (rs.next()) {
                 Statement stmt2 = con.createStatement();
-                stmt2.executeUpdate("UPDATE `inventory` set price=" + price +" where mutID = '" + mutID + "';");
+                stmt2.executeUpdate("UPDATE `inventory` set price=" + price + " where mutID = '" + mutID + "';");
                 System.out.println("FOUND!");
             }//end while
 
@@ -43,15 +43,14 @@ public class Database {
             System.out.println(e);
         }
     }//end checkDatabaseForItem
-     
-     
+
     void checkDatabaseForItemByUPC(Item myItem) {//0 return means not found, otherwise returns mutID from database.
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
-                    host, userName, password); 
+                    host, userName, password);
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from inventory where upc = '" + myItem.itemUPC+"'");
+            ResultSet rs = stmt.executeQuery("select * from inventory where upc = '" + myItem.itemUPC + "'");
             while (rs.next()) {
 //System.out.println(rs.getInt(1)+"  "+rs.getInt(2)+"  "+rs.getString(3)+"  "+rs.getString(4)+"  "+rs.getDouble(5));  
 ///if(rs.getString(3).contentEquals(myItem.itemUPC)){ THIS DOES NOT WORK!
@@ -74,11 +73,11 @@ public class Database {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
-                    host, userName, password); 
+                    host, userName, password);
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from inventory where mutID = '" + myItem.mutID+"'");
+            ResultSet rs = stmt.executeQuery("select * from inventory where mutID = '" + myItem.mutID + "'");
             while (rs.next()) {
-                
+
                 myItem.itemUPC = rs.getString(3);
                 if (myItem.itemUPC.length() < 11) {//LEADING ZEROS!
                     String leadingZeros = "";
@@ -105,7 +104,7 @@ public class Database {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
-                    host, userName, password);  
+                    host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from tickets where custId = '" + id + "'");
 
@@ -268,13 +267,14 @@ public class Database {
         }
         return accountsActual;
     }
- public String[] getDMEList(String accntName, String lastName, String firstName, String dob) {
+
+    public String[] getDMEList(String accntName, String lastName, String firstName, String dob) {
         boolean oneBefore = false;
         String[] accounts = new String[2000];
         String statement = "select * from dmeaccounts where ";
         accntName = accntName.toUpperCase();
         lastName = lastName.toUpperCase();
-        firstName=firstName.toUpperCase();
+        firstName = firstName.toUpperCase();
         if (!accntName.isEmpty()) {
             statement += "pan = '" + accntName + "'";
             oneBefore = true;
@@ -307,12 +307,12 @@ public class Database {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
-                    host, userName, password); 
+                    host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(statement);
 
             while (rs.next()) {
-                 System.out.println(rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4)+" "+rs.getString(5).substring(0, 2)+"-"+rs.getString(5).substring(2, 4)+"-"+rs.getString(5).substring(4, 6));
+                System.out.println(rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6));
                 accounts[i] = rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6);
                 i++;
             }//end while
@@ -330,6 +330,7 @@ public class Database {
         }
         return accountsActual;
     }
+
     public String[] getEmployeesFromDatabase() {
         String[] employees = new String[20];
         int cntr = 0;
@@ -360,35 +361,51 @@ public class Database {
         return emp;
     }//end getTicketFromDatabase
 
-    public void storeReceipt(Cart curCart,String receiptNum) {
+    public void storeReceipt(Cart curCart, String receiptNum) {
         for (Item item : curCart.getItems()) {
             try {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
                 Statement stmt = con.createStatement();
-                stmt.executeUpdate("INSERT INTO `receipts`(`pid`,`receiptNum`,`mutID`,`upc`,`itemName`,`amtPaidBeforeTax`,`wasTaxed`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`,`hasBeenRefunded`,`hasTaxBeenRefunded`) VALUES (NULL,'"+receiptNum+"','"+item.getID()+"','"+item.getUPC()+"','"+item.getName()+"',"+item.getPrice()+","+item.isTaxable()+" ,"+ item.getCategory()+","+item.getRxNumber()+",'"+item.getInsurance()+"','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() +","+item.hasBeenRefunded()+","+item.hasTaxBeenRefunded()+")");
+                stmt.executeUpdate("INSERT INTO `receipts`(`pid`,`receiptNum`,`mutID`,`upc`,`itemName`,`amtPaidBeforeTax`,`wasTaxed`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`,`hasBeenRefunded`,`hasTaxBeenRefunded`) VALUES (NULL,'" + receiptNum + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.isTaxable() + " ," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + "," + item.hasBeenRefunded() + "," + item.hasTaxBeenRefunded() + ")");
 
             } catch (Exception e) {
                 System.out.println(e);
             }//end catch
         }
     }
-public void storeReceiptByList(ArrayList<RefundItem> items,String receiptNum) {
+
+    public void storeReceiptByList(ArrayList<RefundItem> items, String receiptNum) {
         for (Item item : items) {
             try {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
                 Statement stmt = con.createStatement();
-                stmt.executeUpdate("INSERT INTO `receipts`(`pid`,`receiptNum`,`mutID`,`upc`,`itemName`,`amtPaidBeforeTax`,`wasTaxed`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`,`hasBeenRefunded`,`hasTaxBeenRefunded`) VALUES (NULL,'"+receiptNum+"','"+item.getID()+"','"+item.getUPC()+"','"+item.getName()+"',"+item.getPrice()+","+item.isTaxable()+" ,"+ item.getCategory()+","+item.getRxNumber()+",'"+item.getInsurance()+"','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() +","+item.hasBeenRefunded()+","+item.hasTaxBeenRefunded()+")");
+                stmt.executeUpdate("INSERT INTO `receipts`(`pid`,`receiptNum`,`mutID`,`upc`,`itemName`,`amtPaidBeforeTax`,`wasTaxed`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`,`hasBeenRefunded`,`hasTaxBeenRefunded`) VALUES (NULL,'" + receiptNum + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.isTaxable() + " ," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + "," + item.hasBeenRefunded() + "," + item.hasTaxBeenRefunded() + ")");
 
             } catch (Exception e) {
                 System.out.println(e);
             }//end catch
         }
     }
- 
+
+    void removeReceiptByList(ArrayList<RefundItem> items2Del, String receiptNum) {
+        for (Item item : items2Del) {
+            try {
+                Class.forName(driverPath);
+                Connection con = DriverManager.getConnection(
+                        host, userName, password);
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("DELETE from receipts where receiptNum = '"+receiptNum+"' AND mutID = '"+item.getID()+"';");
+
+            } catch (Exception e) {
+                System.out.println(e);
+            }//end catch
+        }
+    }
+
     public ArrayList<RefundItem> loadReceipt(String receiptNum) {
         ArrayList<RefundItem> loadedItems = new ArrayList<RefundItem>();
         try {
@@ -402,9 +419,9 @@ public void storeReceiptByList(ArrayList<RefundItem> items,String receiptNum) {
                 // System.out.println(rs.getString(2));
                 if (rs.getString(2).contentEquals(receiptNum)) {
                     //System.out.println("HERE!,LOADING!!");
-                    RefundItem temp = new RefundItem(this, receiptNum, rs.getString(3),rs.getString(4),rs.getString(5), rs.getDouble(6), rs.getBoolean(7), rs.getInt(8),rs.getInt(9), rs.getString(10), rs.getString(11), rs.getInt(12), rs.getBoolean(13), rs.getDouble(14), rs.getBoolean(15),rs.getBoolean(16),rs.getBoolean(17));
-                   System.out.println("LOAD "+temp.getName()+" :"+temp.hasBeenRefunded());
-                   System.out.println("LOAD "+temp.getName()+" :"+temp.hasTaxBeenRefunded());
+                    RefundItem temp = new RefundItem(this, receiptNum, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getBoolean(7), rs.getInt(8), rs.getInt(9), rs.getString(10), rs.getString(11), rs.getInt(12), rs.getBoolean(13), rs.getDouble(14), rs.getBoolean(15), rs.getBoolean(16), rs.getBoolean(17));
+                    System.out.println("LOAD " + temp.getName() + " :" + temp.hasBeenRefunded());
+                    System.out.println("LOAD " + temp.getName() + " :" + temp.hasTaxBeenRefunded());
                     loadedItems.add(temp);
                 }//end if
             }//end while
@@ -413,12 +430,12 @@ public void storeReceiptByList(ArrayList<RefundItem> items,String receiptNum) {
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
         return loadedItems;
     }
 
     public String[] lookupReceiptByRX(int rxNumber) {//this returns array of receipt#'s
-ArrayList<String> loadedItems = new ArrayList<String>();
+        ArrayList<String> loadedItems = new ArrayList<String>();
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -428,7 +445,7 @@ ArrayList<String> loadedItems = new ArrayList<String>();
 
             while (rs.next()) {
                 // System.out.println(rs.getString(2));
-                if (rs.getInt(9)==rxNumber) {
+                if (rs.getInt(9) == rxNumber) {
                     loadedItems.add(rs.getString(2));
                     //loadedItems.add(new RefundItem(this, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getDouble(7), rs.getBoolean(8), rs.getInt(9), rs.getInt(10), rs.getString(11), rs.getString(12), rs.getInt(13), rs.getBoolean(14), rs.getDouble(15), rs.getBoolean(16),rs.getBoolean(17),rs.getBoolean(18)));
                 }//end if
@@ -439,28 +456,29 @@ ArrayList<String> loadedItems = new ArrayList<String>();
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
         String[] rxs = new String[loadedItems.size()];
-        int i=0;
-        for(String rx : loadedItems){
-            rxs[i]=rx;
-                    i++;
+        int i = 0;
+        for (String rx : loadedItems) {
+            rxs[i] = rx;
+            i++;
         }
         return rxs;
     }
-    public void updateReceipt(RefundCart curCart,String receiptNum) {
-        for (RefundItem item : curCart.getRefundItems()){
+
+    public void updateReceipt(RefundCart curCart, String receiptNum) {
+        for (RefundItem item : curCart.getRefundItems()) {
             try {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
-                if(item.quantity==0){
-                    
-                }else{
-                Statement stmt = con.createStatement();
-System.out.println("UPDATE "+item.getName()+" :"+item.hasBeenRefunded());
-                   System.out.println("UPDATE "+item.getName()+" :"+item.hasTaxBeenRefunded());
-                stmt.executeUpdate("UPDATE `receipts` set quantity = "+item.getQuantity()+", hasBeenRefunded="+item.hasBeenRefunded()+", hasTaxBeenRefunded="+item.hasTaxBeenRefunded()+" where receiptNum='"+item.receiptNum+"' AND upc = '"+item.getUPC()+"' AND mutID = '"+item.getID()+"'  ;");
+                if (item.quantity == 0) {
+
+                } else {
+                    Statement stmt = con.createStatement();
+                    System.out.println("UPDATE " + item.getName() + " :" + item.hasBeenRefunded());
+                    System.out.println("UPDATE " + item.getName() + " :" + item.hasTaxBeenRefunded());
+                    stmt.executeUpdate("UPDATE `receipts` set quantity = " + item.getQuantity() + ", hasBeenRefunded=" + item.hasBeenRefunded() + ", hasTaxBeenRefunded=" + item.hasTaxBeenRefunded() + " where receiptNum='" + item.receiptNum + "' AND upc = '" + item.getUPC() + "' AND mutID = '" + item.getID() + "'  ;");
                 }
             } catch (Exception e) {
                 System.out.println(e);
@@ -470,43 +488,43 @@ System.out.println("UPDATE "+item.getName()+" :"+item.hasBeenRefunded());
 
     void addItem(String mutID, String upc, String name, double price, double cost, boolean taxed, int category) {
         try {
-                Class.forName(driverPath);
-                Connection con = DriverManager.getConnection(
-                        host, userName, password);
-                Statement stmt = con.createStatement();
-                stmt.executeUpdate("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '" + mutID + "','" + upc + "','" + name + "'," + price + "," + cost + ","+taxed+"," + category + ");");
-                
-            } catch (Exception e) {
-                System.out.println(e);
-            }//end catch
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '" + mutID + "','" + upc + "','" + name + "'," + price + "," + cost + "," + taxed + "," + category + ");");
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }//end catch
     }
 
     void addChargeAccount(String accountName, String lastName, String firstName, String dob) {
-        
-         try {
-                Class.forName(driverPath);
-                Connection con = DriverManager.getConnection(
-                        host, userName, password);
-                Statement stmt = con.createStatement();
-                stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`) VALUES (NULL, '" + accountName + "','" + lastName+ "','" + firstName + "','" + dob + "');");
-                
-            } catch (Exception e) {
-                System.out.println(e);
-            }//end catch
+
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`) VALUES (NULL, '" + accountName + "','" + lastName + "','" + firstName + "','" + dob + "');");
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }//end catch
     }
 
     void addDMEAccount(String accountName, String lastName, String firstName, String dob) {
-                
-         try {
-                Class.forName(driverPath);
-                Connection con = DriverManager.getConnection(
-                        host, userName, password);
-                Statement stmt = con.createStatement();
-                stmt.executeUpdate("INSERT INTO `dmeaccounts` (`pid`,`pan`,`firstname`,`lastname`,`dob`) VALUES (NULL, '" + accountName + "','" + firstName+ "','" + lastName + "','" + dob + "');");
-                
-            } catch (Exception e) {
-                System.out.println(e);
-            }//end catch
+
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("INSERT INTO `dmeaccounts` (`pid`,`pan`,`firstname`,`lastname`,`dob`) VALUES (NULL, '" + accountName + "','" + firstName + "','" + lastName + "','" + dob + "');");
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }//end catch
     }
 
     String[] getInsurances() {
@@ -520,7 +538,7 @@ System.out.println("UPDATE "+item.getName()+" :"+item.hasBeenRefunded());
 
             while (rs.next()) {
                 // System.out.println(rs.getString(2));
-                    loadedItems.add(rs.getString(2));
+                loadedItems.add(rs.getString(2));
 
             }//end while
 
@@ -528,15 +546,14 @@ System.out.println("UPDATE "+item.getName()+" :"+item.hasBeenRefunded());
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
         String[] insurances = new String[loadedItems.size()];
-        int i=0;
-        for(String ins : loadedItems){
-            insurances[i]=ins;
-                    i++;
+        int i = 0;
+        for (String ins : loadedItems) {
+            insurances[i] = ins;
+            i++;
         }
         return insurances;
     }
-
 
 }//end Database
