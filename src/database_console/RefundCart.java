@@ -218,10 +218,12 @@ public class RefundCart extends Cart {
         return false;
     }
     
-    public void increaseQtyByID(String upc, int qty2Add){
+    public void increaseQtyByID(String id, int qty2Add){
         for(RefundItem item: refundItems){
-            if(item.getUPC().contentEquals(upc)){
+            if(item.getID().contentEquals(id)){
+                System.out.println("INCREASING: "+item.getID()+"with "+item.quantity+" BY "+qty2Add);
                 item.quantity+=qty2Add;
+                
             }
         }
     }

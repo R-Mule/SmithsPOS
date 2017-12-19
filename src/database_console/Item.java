@@ -36,6 +36,9 @@ public class Item {
         setup();
     }
 
+    Item(Database myDB){
+        this.myDB=myDB;
+    }
 //THIS CONSTRUCTOR IS TO BE USED ONLY BY RX's
     Item(Database myDB, int rxNumber, String fillDate, String insurance, double copay, boolean isPreCharged) {
         this.myDB = myDB;

@@ -20,6 +20,22 @@ public class RefundItem extends Item{
         this.receiptNum=receiptNum;
     }//end ctor
     
+    RefundItem(Database myDB,RefundItem item){
+        super(myDB);
+                   
+        this.rxNumber = item.rxNumber;
+        this.fillDate = item.fillDate;
+        this.insurance = item.insurance;
+        this.itemPrice = item.itemPrice;
+        isTaxable = item.isTaxable;
+        this.itemCost = item.itemCost;
+        this.itemName = item.itemName;
+        isRX = item.isRX;
+        this.category = item.category;
+        this.itemUPC = item.itemUPC;
+        this.isPreCharged = item.isPreCharged;
+        
+    }
     public boolean isRefundAllActive(){
         return refundAllActive;
     }
