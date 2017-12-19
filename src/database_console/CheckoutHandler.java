@@ -127,9 +127,9 @@ public class CheckoutHandler {
 
     public void rxSignout(Cart curCart, MainFrame mainFrame, String receiptNum, String clerkName, double[] paymentAmt, String[] paymentType, ArrayList<GuiCartItem> guiItems) {
         int reply = JOptionPane.showConfirmDialog(null, "Does patient have questions about medications?", "Medication Questions", JOptionPane.YES_NO_OPTION);
-        boolean questions=false;
+        boolean questions = false;
         if (reply == JOptionPane.YES_OPTION) {
-            questions=true;
+            questions = true;
         }
 
         //We need sig, and to save RX File.
@@ -205,7 +205,7 @@ public class CheckoutHandler {
 
         PrinterService printerService = new PrinterService();
         boolean itemDiscounted = false;
-        boolean isCreditSale=false;
+        boolean isCreditSale = false;
         boolean requires2Receipts = false;
         int rxCntr = 0;
         //System.out.println(printerService.getPrinters());
@@ -320,7 +320,7 @@ public class CheckoutHandler {
                 isCreditSale = true;
             }
         }
-        if (changeDue > 0 || (isCashSale && curCart.getTotalPrice() != 0)||isCreditSale) {
+        if (changeDue > 0 || (isCashSale && curCart.getTotalPrice() != 0) || isCreditSale) {
             printerService.printBytes(printerName, kickDrawer);
         }
 
@@ -346,23 +346,56 @@ public class CheckoutHandler {
         num = Math.round(num * 100.0) / 100.0;
         return num;
     }//end round
-    
-    
+
     void beginRefundCashCheckout(RefundCart refundCart, String clerkName, ArrayList<GuiRefundCartItem> guiRefundItems, MainFrame myself) {
         double[] paymentAmt = new double[1];
         String[] paymentType = new String[1];
         paymentAmt[0] = refundCart.getTotalPrice();
         paymentType[0] = "Cash Refund: ";
+
         for (RefundItem item : refundCart.getRefundItems()) {
             if (item.refundAllActive()) {
                 item.hasBeenRefunded = true;
                 item.hasTaxBeenRefunded = true;
+
             } else if (item.refundTaxOnly() && !item.refundAllActive()) {
                 item.hasTaxBeenRefunded = true;
             }
+
         }
-        myDB.updateReceipt(refundCart, refundCart.receiptNum);
+
         printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself);
+        ArrayList<RefundItem> items2Add = new ArrayList<>();
+       // ArrayList<RefundItem> items2Remove = new ArrayList<>();
+        for (RefundItem item : refundCart.getRefundItems()) {
+            if (item.refundAllActive()) {
+                if (refundCart.containsItemByID(item.getID().substring(0, 6) + "F")) {
+                    refundCart.increaseQtyByID(item.getID() + "F", item.quantityBeingRefunded);
+                    item.quantity -= item.quantityBeingRefunded;
+                } else {
+                    //NEW ITEM TO ADD! F IT UP PAPA BEAR!
+                    RefundItem itemTemp = item;
+                    itemTemp.setID(item.getID().substring(0, 6) + "F");//FINISHED!
+                    itemTemp.quantity=item.quantityBeingRefunded;
+                    items2Add.add(item);
+                }
+            } else if (item.refundTaxOnly() && !item.refundAllActive()) {
+                 if (refundCart.containsItemByID(item.getID().substring(0, 6) + "T")) {
+                    refundCart.increaseQtyByID(item.getID() + "T", item.quantityBeingRefunded);
+                    item.quantity -= item.quantityBeingRefunded;
+                } else {
+                    //NEW ITEM TO ADD! F IT UP PAPA BEAR!
+                    RefundItem itemTemp = item;
+                    itemTemp.setID(item.getID().substring(0, 6) + "T");//TAX REFUNDED!
+                    itemTemp.quantity=item.quantityBeingRefunded;
+                    items2Add.add(item);
+
+                }
+            }
+        }
+      
+        myDB.storeReceiptByList(items2Add, registerID);
+        myDB.updateReceipt(refundCart, refundCart.receiptNum);
         myself.voidCarts();
         myself.refundOver();
 
@@ -410,8 +443,8 @@ public class CheckoutHandler {
         for (RefundItem item : items) {
             if (item.refundAllActive || item.refundTaxOnly) {
                 String itemName = "";
-                String quantity = Integer.toString(item.getQuantity()) + "@" + String.format("%.2f", round(item.getPrice()));
-                Double price = round(item.getPrice() * item.getQuantity());
+                String quantity = Integer.toString(item.quantityBeingRefunded) + "@" + String.format("%.2f", round(item.getPrice()));
+                Double price = round(item.getPrice() * item.quantityBeingRefunded);
                 if (item.refundAllActive) {
                     if (item.getName().length() > 27) {
                         itemName = item.getName().substring(0, 27);
@@ -516,8 +549,9 @@ public class CheckoutHandler {
             e.printStackTrace();
         }
     }
-    public void beginMasterRefund(double amount){
-         DrawerReport dr = null;
+
+    public void beginMasterRefund(double amount) {
+        DrawerReport dr = null;
 
         try {
 
@@ -530,7 +564,7 @@ public class CheckoutHandler {
                 ois.close();
                 dr.masterRefund(amount);
             } else {
-                    dr = new DrawerReport(amount);
+                dr = new DrawerReport(amount);
             }
 
             // write object to file
@@ -554,6 +588,7 @@ public class CheckoutHandler {
             System.out.println("JERsE");
         }
     }
+
     public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund) {
         DrawerReport dr = null;
 

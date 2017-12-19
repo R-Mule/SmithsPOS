@@ -47,7 +47,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         //this.setUndecorated(true);
         jPanel1 = new JPanel(new FlowLayout());
         jPanel1.setBounds(100, 100, 1120, 1200);
@@ -255,7 +255,7 @@ public class MainFrame extends javax.swing.JFrame {
                         //Object[] message2 = {
                         //    "Select Ticket To Load:", choices, choices[0]};
                         if (choices != null && choices.length > 0) {
-                            
+
                             id = (String) JOptionPane.showInputDialog(null, "Couldn't find that ticket? Check these?...",
                                     "Choose Ticket", JOptionPane.QUESTION_MESSAGE, null, // Use
                                     // default
@@ -433,19 +433,19 @@ public class MainFrame extends javax.swing.JFrame {
         activateDisplayButton.setLocation(500, 890);
         activateDisplayButton.setSize(150, 40);
         activateDisplayButton.setBackground(new Color(50, 255, 255));
-         
-                
+
         activateDisplayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 display = new PoleDisplay(reader);
                 curCart.setDisplay(display);
                 refundCart.setDisplay(display);
                 curCart.updateTotal();
-               updateCartScreen();
-               displayActive=true; 
-               activateDisplayButton.setVisible(false);
-            }});
-        
+                updateCartScreen();
+                displayActive = true;
+                activateDisplayButton.setVisible(false);
+            }
+        });
+
         addRxAccountButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -623,19 +623,20 @@ public class MainFrame extends javax.swing.JFrame {
                 JTextField field1 = new JTextField();
                 field1.addAncestorListener(new RequestFocusListener());
                 Object[] message = {
-                     "Refund Amount: $", field1};
+                    "Refund Amount: $", field1};
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Refund Amount Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
                     if (validateDouble(field1.getText())) {
-                                
-                         checkout.beginMasterRefund(Double.parseDouble(field1.getText()));
-                         JFrame message1 = new JFrame("");
-                         JOptionPane.showMessageDialog(message1, "Success! Please give them: $"+field1.getText());
+
+                        checkout.beginMasterRefund(Double.parseDouble(field1.getText()));
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Success! Please give them: $" + field1.getText());
                     }
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-            }});
-        
+            }
+        });
+
         updatePriceButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -799,7 +800,7 @@ public class MainFrame extends javax.swing.JFrame {
                 JTextField field3 = new JTextField();
 
                 field2.setText(previousDate);
-                String[] possibilities =  myDB.getInsurances();
+                String[] possibilities = myDB.getInsurances();
                 //String[] possibilities = {"AARP", "Aetna", "Amerigroup", "Anthem", "Caremark", "Cash", "Catalyst", "Champva", "Chips", "Cigna", "Envision", "Express Scripts","Healthgram", "Highmark BCBS", "Hospice", "Humana", "Medco","Medco Medicare","Megellan", "Optum RX", "Prime", "Savings Voucher", "Silverscript", "WV Medicaid", "VA Medicaid"};
                 JList list = new JList(possibilities); //data has type Object[]
                 list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -1187,14 +1188,23 @@ public class MainFrame extends javax.swing.JFrame {
                     }//end if
                 } else if (!refundCart.isEmpty()) {
                     boolean isItemToRefund = false;
+                    boolean isCartConditionsMet=true;
                     for (RefundItem item : refundCart.getRefundItems()) {
                         if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
                             isItemToRefund = true;
                         }
+                        if (item.quantityBeingRefunded > 0 && !item.isRefundAllActive() && !item.isRefundTaxOnlyActive()) {
+                            //Houston we have a problem.
+                            isCartConditionsMet=false;
+                        }
+
                     }
-                    if (isItemToRefund) {
+                    if (isItemToRefund&&isCartConditionsMet) {
                         checkout.beginRefundCashCheckout(refundCart, (String) empList.getSelectedItem(), guiRefundItems, myself);
 
+                    }else if(isCartConditionsMet){
+                        JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "An item in the cart is set to have quantity refunded, but no type of refund is selected.. Please set Quantity to refund to zero for that item or add a refund case.");
                     }
 
                 }
@@ -1763,8 +1773,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         if (displayChangeDue) {
             changeDue.setVisible(true);
-            if(displayActive){
-            display.printLines("****THANK YOU!****",String.format("Change: $%.2f", Double.parseDouble(changeDue.getText().substring(changeDue.getText().indexOf('$')+1))) );
+            if (displayActive) {
+                display.printLines("****THANK YOU!****", String.format("Change: $%.2f", Double.parseDouble(changeDue.getText().substring(changeDue.getText().indexOf('$') + 1))));
             }
         } else {
             changeDue.setVisible(false);
@@ -1787,14 +1797,14 @@ public class MainFrame extends javax.swing.JFrame {
     }//end updateCartScreen
 
     public void checkForAdminButtonVisible() {
-        if (empList.getSelectedItem().toString().contentEquals("Smith, Andrew") || empList.getSelectedItem().toString().contentEquals("Fuller, Hollie")|| empList.getSelectedItem().toString().contentEquals("Sutphin, Debbie")) {
+        if (empList.getSelectedItem().toString().contentEquals("Smith, Andrew") || empList.getSelectedItem().toString().contentEquals("Fuller, Hollie") || empList.getSelectedItem().toString().contentEquals("Sutphin, Debbie")) {
             updatePriceButton.setVisible(true);
             generateReportButton.setVisible(true);
             addNewItemButton.setVisible(true);
             addRxAccountButton.setVisible(true);
             addDmeAccountButton.setVisible(true);
             masterRefundButton.setVisible(true);
-        } else if (empList.getSelectedItem().toString().contentEquals("Smith, Haley") ||empList.getSelectedItem().toString().contentEquals("Booth, Sam") || empList.getSelectedItem().toString().contentEquals("Broussard, Kayla")) {
+        } else if (empList.getSelectedItem().toString().contentEquals("Smith, Haley") || empList.getSelectedItem().toString().contentEquals("Booth, Sam") || empList.getSelectedItem().toString().contentEquals("Broussard, Kayla")) {
             updatePriceButton.setVisible(true);
             addNewItemButton.setVisible(true);
             addRxAccountButton.setVisible(true);
@@ -1814,8 +1824,8 @@ public class MainFrame extends javax.swing.JFrame {
     public void setData(Database myDB) {
         this.setTitle("Smith's Super-Aid POS");
         //ImageIcon image = new ImageIcon("C:\\Users\\A.Smith\\Downloads\\Logo7.png");
-       // this.setIconImage(image.getImage());
-        
+        // this.setIconImage(image.getImage());
+
         this.myDB = myDB;
         checkout = new CheckoutHandler(myDB);
         curCart = new Cart();//new cart because program just launched!
@@ -1853,7 +1863,7 @@ public class MainFrame extends javax.swing.JFrame {
                     for (GuiCartItem item : guiItems) {
                         item.employeeSaleTriggered();
                     }
-                }else{
+                } else {
                     voidCarts();
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
@@ -1911,8 +1921,8 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_formKeyTyped
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if(displayActive){
-                display.close();
+        if (displayActive) {
+            display.close();
         }
     }//GEN-LAST:event_formWindowClosing
 
@@ -2040,8 +2050,8 @@ public class MainFrame extends javax.swing.JFrame {
         reprintReceiptButton.setVisible(true);
         dmePaymentButton.setVisible(true);
         paperButton.setVisible(true);
-        if(!displayActive){
-        activateDisplayButton.setVisible(true);
+        if (!displayActive) {
+            activateDisplayButton.setVisible(true);
         }
         cancelRefundButton.setVisible(false);
         checkForAdminButtonVisible();
@@ -2127,7 +2137,7 @@ public class MainFrame extends javax.swing.JFrame {
     JButton createTicket = new JButton("<html>" + createTicketText.replaceAll("\\n", "<br>") + "</html>");
     String loadTicketText = "Open\nTicket";
     JButton loadTicket = new JButton("<html>" + loadTicketText.replaceAll("\\n", "<br>") + "</html>");
-    String chargeButtonText="Charge to\nAccount";
+    String chargeButtonText = "Charge to\nAccount";
     JButton chargeButton = new JButton("<html>" + chargeButtonText.replaceAll("\\n", "<br>") + "</html>");
     JButton refundButton = new JButton("Refund");
     JButton masterRefundButton = new JButton("Master Refund");
@@ -2154,7 +2164,7 @@ public class MainFrame extends javax.swing.JFrame {
     JButton cancelRefundButton = new JButton("<html>" + cancelRefund.replaceAll("\\n", "<br>") + "</html>");
     JButton massDiscountButton = new JButton("");
     ConfigFileReader reader = new ConfigFileReader();
-    
+
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
@@ -2172,7 +2182,7 @@ public class MainFrame extends javax.swing.JFrame {
     MainFrame myself = this;
     PoleDisplay display;
     RefundCart refundCart = new RefundCart();
-    boolean displayActive=false;
+    boolean displayActive = false;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 

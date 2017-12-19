@@ -208,6 +208,25 @@ public class RefundCart extends Cart {
         }
         updateTotal();
     }
+    
+    public boolean containsItemByID(String id){
+        for(RefundItem item :refundItems){
+            if(item.getID().contentEquals(id)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public void increaseQtyByID(String upc, int qty2Add){
+        for(RefundItem item: refundItems){
+            if(item.getUPC().contentEquals(upc)){
+                item.quantity+=qty2Add;
+            }
+        }
+    }
+    
+    
    @Override
     public double getDiscountTotal(){
         double total=0;

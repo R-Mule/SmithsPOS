@@ -374,7 +374,20 @@ public class Database {
             }//end catch
         }
     }
+public void storeReceiptByList(ArrayList<RefundItem> items,String receiptNum) {
+        for (Item item : items) {
+            try {
+                Class.forName(driverPath);
+                Connection con = DriverManager.getConnection(
+                        host, userName, password);
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("INSERT INTO `receipts`(`pid`,`receiptNum`,`mutID`,`upc`,`itemName`,`amtPaidBeforeTax`,`wasTaxed`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`,`hasBeenRefunded`,`hasTaxBeenRefunded`) VALUES (NULL,'"+receiptNum+"','"+item.getID()+"','"+item.getUPC()+"','"+item.getName()+"',"+item.getPrice()+","+item.isTaxable()+" ,"+ item.getCategory()+","+item.getRxNumber()+",'"+item.getInsurance()+"','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() +","+item.hasBeenRefunded()+","+item.hasTaxBeenRefunded()+")");
 
+            } catch (Exception e) {
+                System.out.println(e);
+            }//end catch
+        }
+    }
  
     public ArrayList<RefundItem> loadReceipt(String receiptNum) {
         ArrayList<RefundItem> loadedItems = new ArrayList<RefundItem>();
@@ -441,11 +454,14 @@ ArrayList<String> loadedItems = new ArrayList<String>();
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
+                if(item.quantity==0){
+                    
+                }else{
                 Statement stmt = con.createStatement();
 System.out.println("UPDATE "+item.getName()+" :"+item.hasBeenRefunded());
                    System.out.println("UPDATE "+item.getName()+" :"+item.hasTaxBeenRefunded());
-                stmt.executeUpdate("UPDATE `receipts` set hasBeenRefunded="+item.hasBeenRefunded()+", hasTaxBeenRefunded="+item.hasTaxBeenRefunded()+" where receiptNum='"+item.receiptNum+"' AND upc = '"+item.getUPC()+"' AND mutID = '"+item.getID()+"'  ;");
-
+                stmt.executeUpdate("UPDATE `receipts` set quantity = "+item.getQuantity()+", hasBeenRefunded="+item.hasBeenRefunded()+", hasTaxBeenRefunded="+item.hasTaxBeenRefunded()+" where receiptNum='"+item.receiptNum+"' AND upc = '"+item.getUPC()+"' AND mutID = '"+item.getID()+"'  ;");
+                }
             } catch (Exception e) {
                 System.out.println(e);
             }//end catch
