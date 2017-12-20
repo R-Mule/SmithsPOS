@@ -116,12 +116,12 @@ public class Cart {
     public void addItem(Item itemToAdd) {
         boolean tooAdd = true;
         System.out.println(itemToAdd.getID());
-        if (itemToAdd.isRX()) {
+        if (itemToAdd.isRX()){
             for (Item item : items) {
                 if (item.getRxNumber() == itemToAdd.getRxNumber() && item.getInsurance().contentEquals(itemToAdd.getInsurance())) {
                     int i = item.getQuantity();
                     item.setQuantity(i + 1);
-                    // System.out.println("HERE1");
+                     System.out.println("HERE1");
                     tooAdd = false;
                 }
             }
@@ -254,7 +254,7 @@ public class Cart {
 
     public boolean containsRX(int rxNumber, String insurance) {
         for (Item item : items) {
-            if (item.getRxNumber() == rxNumber && item.getInsurance() == insurance) {
+            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance)) {
                 return true;
             }//end if we found rxNumber already!
         }//end for

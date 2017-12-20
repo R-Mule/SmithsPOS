@@ -161,7 +161,6 @@ public class MainFrame extends javax.swing.JFrame {
         subTotalHeader.setFont(new Font(subTotalHeader.getName(), Font.BOLD, 12));
         subTotalHeader.setVisible(true);
 
-        
         this.add(employeeCheckoutHeader);
         employeeCheckoutHeader.setVisible(true);
         this.add(discountHeader);
@@ -439,7 +438,7 @@ public class MainFrame extends javax.swing.JFrame {
         addRemoveInsuranceButton.setLocation(650, 890);
         addRemoveInsuranceButton.setSize(150, 40);
         addRemoveInsuranceButton.setBackground(new Color(255, 0, 255));
-        
+
         addRemoveInsuranceButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -451,18 +450,18 @@ public class MainFrame extends javax.swing.JFrame {
                     "Insurance to Add:", field1, "Insurance to Remove", field2};
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Insurance Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
-                    if(!field1.getText().isEmpty()){
+                    if (!field1.getText().isEmpty()) {
                         myDB.addInsurance(field1.getText());
                     }
-                    if(!field2.getText().isEmpty()){
+                    if (!field2.getText().isEmpty()) {
                         myDB.removeInsurance(field2.getText());
                     }
-                        
+
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-        
+
         activateDisplayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 display = new PoleDisplay(reader);
@@ -883,12 +882,15 @@ public class MainFrame extends javax.swing.JFrame {
                                 } else {//else everything checks out! WE HAVE ALL GOOD DATA!!!
                                     double copay = Double.parseDouble(temp);
                                     Item tempItem = new Item(myDB, rxNumber, fillDate, insurance, copay, false);
-                                    curCart.addItem(tempItem);
-                                    guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
-                                    totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
-                                    displayChangeDue = false;
-                                    previousInsurance = insurance;
-                                    previousDate = fillDate;
+                                    if (!curCart.containsRX(tempItem.rxNumber, insurance)) {
+                                        curCart.addItem(tempItem);
+                                        guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                                        totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
+                                        displayChangeDue = false;
+                                        previousInsurance = insurance;
+                                        previousDate = fillDate;
+                                    }
+                                    
                                 }
                             }//end else valid fillDate
                         }//end else valid RXNumber
@@ -1218,23 +1220,23 @@ public class MainFrame extends javax.swing.JFrame {
                     }//end if
                 } else if (!refundCart.isEmpty()) {
                     boolean isItemToRefund = false;
-                    boolean isCartConditionsMet=true;
+                    boolean isCartConditionsMet = true;
                     for (RefundItem item : refundCart.getRefundItems()) {
                         if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
                             isItemToRefund = true;
                         }
                         if (item.quantityBeingRefunded > 0 && !item.isRefundAllActive() && !item.isRefundTaxOnlyActive()) {
                             //Houston we have a problem.
-                            isCartConditionsMet=false;
+                            isCartConditionsMet = false;
                         }
 
                     }
-                    if (isItemToRefund&&isCartConditionsMet) {
+                    if (isItemToRefund && isCartConditionsMet) {
                         checkout.beginRefundCashCheckout(refundCart, (String) empList.getSelectedItem(), guiRefundItems, myself);
 
-                    }else if(isCartConditionsMet){
+                    } else if (isCartConditionsMet) {
                         JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "An item in the cart is set to have quantity refunded, but no type of refund is selected.. Please set Quantity to refund to zero for that item or add a refund case.");
+                        JOptionPane.showMessageDialog(message1, "An item in the cart is set to have quantity refunded, but no type of refund is selected.. Please set Quantity to refund to zero for that item or add a refund case.");
                     }
 
                 }
