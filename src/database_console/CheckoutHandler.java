@@ -354,74 +354,7 @@ public class CheckoutHandler {
         paymentType[0] = "CASH REFUND: ";
 
         printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself);
-        ArrayList<RefundItem> items2Add = new ArrayList<>();
-        ArrayList<RefundItem> items2Del = new ArrayList<>();
-        for (RefundItem item : refundCart.getRefundItems()) {
-            if (item.refundAllActive()) {
-                if (refundCart.containsItemByID(item.getID().substring(0, item.getID().length() - 1) + "F")) {
-                    refundCart.increaseQtyByID(item.getID().substring(0, item.getID().length() - 1) + "F", item.quantityBeingRefunded);
-                    item.quantity -= item.quantityBeingRefunded;
-                    if (item.quantity == 0) {
-                        items2Del.add(item);
-                    }
-                } else {
-                    //NEW ITEM TO ADD! F IT UP PAPA BEAR!
-                    RefundItem itemTemp = new RefundItem(myDB,item);
-                    itemTemp.setID(item.getID().substring(0, item.getID().length() - 1) + "F");//FINISHED!
-                    itemTemp.quantity = item.quantityBeingRefunded;
-                    item.quantity -= item.quantityBeingRefunded;
-                    itemTemp.hasBeenRefunded = true;
-                    itemTemp.hasTaxBeenRefunded = true;
-                    itemTemp.refundAllActive = false;
-                    itemTemp.refundTaxOnly = false;
-                    itemTemp.quantityBeingRefunded=0;
-                    items2Add.add(itemTemp);
-                    if (item.quantity == 0) {
-                        items2Del.add(item);
-                    }
-                }
-            } else if (item.refundTaxOnly() && !item.refundAllActive()) {
-                if (refundCart.containsItemByID(item.getID().substring(0, item.getID().length() - 1) + "T")) {
-                    refundCart.increaseQtyByID(item.getID().substring(0, item.getID().length() - 1) + "T", item.quantityBeingRefunded);
-                    
-                    item.quantity -= item.quantityBeingRefunded;
-                    if (item.quantity == 0) {
-                        items2Del.add(item);
-                    }
-                } else {
-                    //NEW ITEM TO ADD! F IT UP PAPA BEAR!
-                    RefundItem itemTemp = new RefundItem(myDB,item);
-                    itemTemp.mutID =item.getID().substring(0, item.getID().length()- 1) + "T";//TAX REFUNDED!
-                    itemTemp.quantity = item.quantityBeingRefunded;
-                    item.quantity -= item.quantityBeingRefunded;
-                    itemTemp.hasTaxBeenRefunded = true;
-                    itemTemp.refundTaxOnly = false;
-                    itemTemp.quantityBeingRefunded=0;
-                    System.out.println(item.quantity + " NOW" + itemTemp.quantity+"AND "+item.quantityBeingRefunded);
-                    items2Add.add(itemTemp);
-                    if (item.quantity == 0) {
-                        items2Del.add(item);
-                    }
-                }
-            }
-        }
-        if (!items2Del.isEmpty()) {
-            System.out.println("Beginning Removal...");
-            myDB.removeReceiptByList(items2Del, refundCart.receiptNum);
-            for (RefundItem item : items2Del) {
-                System.out.println("Removing: " + item.getName());
-                refundCart.removeItem(item);
-            }
-        }
-        if (!items2Add.isEmpty()) {
-            System.out.println("Beginning Store New Items...");
-            myDB.storeReceiptByList(items2Add, refundCart.receiptNum);
-        }
-        System.out.println("Updating Existing Items...");
-        myDB.updateReceipt(refundCart, refundCart.receiptNum);
-        myself.voidCarts();
-        myself.refundOver();
-
+        handleRefundItems(refundCart, clerkName, guiRefundItems, myself);
     }
 
     void beginRefundCardCheckout(RefundCart refundCart, String clerkName, ArrayList<GuiRefundCartItem> guiRefundItems, MainFrame myself) {
@@ -431,53 +364,84 @@ public class CheckoutHandler {
         paymentType[0] = "CARD REFUND: ";
 
         myDB.updateReceipt(refundCart, refundCart.receiptNum);
-        
+
         printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself);
-           ArrayList<RefundItem> items2Add = new ArrayList<>();
+        handleRefundItems(refundCart, clerkName, guiRefundItems, myself);
+
+    }
+
+    public void handleRefundItems(RefundCart refundCart, String clerkName, ArrayList<GuiRefundCartItem> guiRefundItems, MainFrame myself) {
+        ArrayList<RefundItem> items2Add = new ArrayList<>();
         ArrayList<RefundItem> items2Del = new ArrayList<>();
         for (RefundItem item : refundCart.getRefundItems()) {
             if (item.refundAllActive()) {
-                if (refundCart.containsItemByID(item.getID().substring(0, item.getID().length() - 1) + "F")) {
-                    refundCart.increaseQtyByID(item.getID().substring(0, item.getID().length() - 1) + "F", item.quantityBeingRefunded);
+                if (refundCart.containsItemByID(item.getID() + "F") || refundCart.containsItemByID(item.getID() + "TF")) {
+                    if (item.getID().length() > 6) {
+                        refundCart.increaseQtyByID(item.getID() + "F", item.quantityBeingRefunded);
+                    } else {
+                        refundCart.increaseQtyByID(item.getID() + "TF", item.quantityBeingRefunded);
+                    }
                     item.quantity -= item.quantityBeingRefunded;
                     if (item.quantity == 0) {
                         items2Del.add(item);
                     }
                 } else {
-                    //NEW ITEM TO ADD! F IT UP PAPA BEAR!
-                    RefundItem itemTemp = new RefundItem(myDB,item);
-                    itemTemp.setID(item.getID().substring(0, item.getID().length() - 1) + "F");//FINISHED!
-                    itemTemp.quantity = item.quantityBeingRefunded;
+                    boolean hasBeenAddedAlready = false;
+                    for (RefundItem item2 : items2Add) {
+                        if (item2.getID().contentEquals(item.getID() + "F") || item2.getID().contentEquals(item.getID() + "TF")) {
+                            hasBeenAddedAlready = true;
+                            item2.quantity += item.quantityBeingRefunded;
+                        }
+                    }
+                    if (!hasBeenAddedAlready) {
+                        RefundItem itemTemp = new RefundItem(myDB, item);
+                        if (item.getID().length() > 6) {
+                            itemTemp.setID(item.getID() + "F");//FINISHED!
+                        } else {
+                            itemTemp.setID(item.getID() + "TF");//FINISHED!
+                        }
+                        itemTemp.quantity = item.quantityBeingRefunded;
+                        itemTemp.hasBeenRefunded = true;
+                        itemTemp.hasTaxBeenRefunded = true;
+                        itemTemp.refundAllActive = false;
+                        itemTemp.refundTaxOnly = false;
+                        itemTemp.quantityBeingRefunded = 0;
+                        items2Add.add(itemTemp);
+
+                    }
                     item.quantity -= item.quantityBeingRefunded;
-                    itemTemp.hasBeenRefunded = true;
-                    itemTemp.hasTaxBeenRefunded = true;
-                    itemTemp.refundAllActive = false;
-                    itemTemp.refundTaxOnly = false;
-                    itemTemp.quantityBeingRefunded=0;
-                    items2Add.add(itemTemp);
                     if (item.quantity == 0) {
                         items2Del.add(item);
                     }
                 }
             } else if (item.refundTaxOnly() && !item.refundAllActive()) {
-                if (refundCart.containsItemByID(item.getID().substring(0, item.getID().length() - 1) + "T")) {
-                    refundCart.increaseQtyByID(item.getID().substring(0, item.getID().length() - 1) + "T", item.quantityBeingRefunded);
-                    
+                if (refundCart.containsItemByID(item.getID() + "T")) {
+                        refundCart.increaseQtyByID(item.getID() + "T", item.quantityBeingRefunded);
+
                     item.quantity -= item.quantityBeingRefunded;
                     if (item.quantity == 0) {
                         items2Del.add(item);
                     }
                 } else {
-                    //NEW ITEM TO ADD! F IT UP PAPA BEAR!
-                    RefundItem itemTemp = new RefundItem(myDB,item);
-                    itemTemp.mutID =item.getID().substring(0, item.getID().length()- 1) + "T";//TAX REFUNDED!
-                    itemTemp.quantity = item.quantityBeingRefunded;
+                    boolean hasBeenAddedAlready = false;
+                    for (RefundItem item2 : items2Add) {
+                        if (item2.getID().contentEquals(item.getID() + "T")) {
+                            hasBeenAddedAlready = true;
+                            item2.quantity += item.quantityBeingRefunded;
+                        }
+                    }
+                    if (!hasBeenAddedAlready) {
+                        RefundItem itemTemp = new RefundItem(myDB, item);
+                        itemTemp.mutID = item.getID() + "T";//TAX REFUNDED!
+                        itemTemp.quantity = item.quantityBeingRefunded;
+
+                        itemTemp.hasTaxBeenRefunded = true;
+                        itemTemp.refundTaxOnly = false;
+                        itemTemp.quantityBeingRefunded = 0;
+                        System.out.println(item.quantity + " NOW" + itemTemp.quantity + "AND " + item.quantityBeingRefunded);
+                        items2Add.add(itemTemp);
+                    }
                     item.quantity -= item.quantityBeingRefunded;
-                    itemTemp.hasTaxBeenRefunded = true;
-                    itemTemp.refundTaxOnly = false;
-                    itemTemp.quantityBeingRefunded=0;
-                    System.out.println(item.quantity + " NOW" + itemTemp.quantity+"AND "+item.quantityBeingRefunded);
-                    items2Add.add(itemTemp);
                     if (item.quantity == 0) {
                         items2Del.add(item);
                     }
@@ -500,7 +464,6 @@ public class CheckoutHandler {
         myDB.updateReceipt(refundCart, refundCart.receiptNum);
         myself.voidCarts();
         myself.refundOver();
-
     }
 
     public void printRefundReceipt(RefundCart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself) {
@@ -548,7 +511,7 @@ public class CheckoutHandler {
                 itemDiscounted = true;
                 String percentAmt = Double.toString(item.getDiscountPercentage() * 100);
                 percentAmt = percentAmt.substring(0, percentAmt.indexOf('.'));
-                String discount = "               DISCOUNT: " + percentAmt + "%";
+                String discount = "               Discount: " + percentAmt + "%";
                 double discount2 = round(item.getDiscountAmount());
                 receipt += String.format("%-39s-$%7.2f\n", discount, discount2);
             }
