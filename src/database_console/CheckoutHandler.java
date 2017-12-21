@@ -207,6 +207,7 @@ public class CheckoutHandler {
         boolean itemDiscounted = false;
         boolean isCreditSale = false;
         boolean requires2Receipts = false;
+        double prechargedTotal=0;
         int rxCntr = 0;
         //System.out.println(printerService.getPrinters());
         String receipt = "";
@@ -225,6 +226,9 @@ public class CheckoutHandler {
         //print some stuff
         ArrayList<Item> items = curCart.getItems();
         for (Item item : items) {
+            if(item.isRX()&&item.isPreCharged()){
+                prechargedTotal+=item.getPriceOfItemBeforeTax();
+            }
             if (item.getCategory() == 853 || item.getCategory() == 854) {
                 requires2Receipts = true;
             }
@@ -242,6 +246,7 @@ public class CheckoutHandler {
                 if (!isPreCharged) {
                     receipt += String.format("RX %-36s $%7.2f\n", itemName, price);
                 } else {
+                   // itemName = itemName+"$"+item.getPriceOfItemBeforeTax(); This puts the price before precharged, not using it right now
                     receipt += String.format("RX %-36s $%7s\n", itemName, "PRECHG");
                 }
             } else if (item.getCategory() == 853) {//item is an RA NO QUANTITY
@@ -300,11 +305,14 @@ public class CheckoutHandler {
             totalPaid += paymentAmt[i];
         }
         changeDue = totalPaid - total;
-        receipt += String.format("%37s%8.2f\n\n", "CHANGE DUE: $", changeDue);
-        if (rxCntr > 0) {
-            receipt += "Total RX(s): " + rxCntr + "\n\n";
+        receipt += String.format("%37s%8.2f\n", "CHANGE DUE: $", changeDue);
+        if(prechargedTotal>0){
+            receipt+=String.format("%37s%8.2f\n", "TOTAL PRECHARGED: $", prechargedTotal);
         }
-        receipt += "              STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
+        if (rxCntr > 0) {
+            receipt += "\nTotal RX(s): " + rxCntr + "\n";
+        }
+        receipt += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
         receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n\n\n\n\n\n";
         printerService.printString(printerName, receipt);
 

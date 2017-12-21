@@ -236,9 +236,11 @@ public class DrawerReport implements Serializable {
                 totalDMEPayments = round(totalDMEPayments + item.getTotal());
             } else if (item.getCategory() == 855) {//NEWSPAPER
                 totalPaperSales += item.getPriceOfItemsBeforeTax();
-            } else if (item.isRX) {//RX
+            } else if (item.isRX&&!item.isPreCharged()){//RX
                 System.out.println("HERE2!");
                 totalRXCoppay += item.getPriceOfItemsBeforeTax();
+            }else if(item.isRX()&&item.isPreCharged()){
+                //DO NOTHING!
             }else if(item.getCategory()==856){
                 totalAmericanGreetings+=item.getPriceOfItemsBeforeTax();
             }else if (item.getCategory() == 621 || item.getCategory() == 622 || item.getCategory() == 623 || item.getCategory() == 624 || item.getCategory() == 628 || item.getCategory() == 631 || item.getCategory() == 632 || item.getCategory() == 633 || item.getCategory() == 634 || item.getCategory() == 635 || item.getCategory() == 636 || item.getCategory() == 637 || item.getCategory() == 639 || item.getCategory() == 640 || item.getCategory() == 641 || item.getCategory() == 642 || item.getCategory() == 643) {//DME
