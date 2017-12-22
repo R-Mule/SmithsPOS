@@ -380,7 +380,6 @@ public class DrawerReport implements Serializable {
             bw.write("Charges: \n");
 
             int index = 0;
-            int index2=0;
             for (String s : accountNameCharged) {
                 bw.write("Account Name: " + s + "\n");
                 bw.write("Total Charged: " + amountChargedToAccount.get(index) + "\n");

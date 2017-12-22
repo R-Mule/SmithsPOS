@@ -25,6 +25,26 @@ public class Database {
         password = reader.getPassword();
     }//end databaseCtor
 
+    public String getEmployeeNameByCode(int code){
+        
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from employees where passcode = " + code);
+            while (rs.next()) {
+                //Statement stmt2 = con.createStatement();
+                //stmt2.executeUpdate("UPDATE `inventory` set price=" + price + " where mutID = '" + mutID + "';");
+                return rs.getString(2);
+            }//end while
+            
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
     void updateItemPrice(String mutID, double price) {//0 return means not found, otherwise returns mutID from database.
         try {
             Class.forName(driverPath);

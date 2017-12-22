@@ -162,7 +162,7 @@ public class CapSignature extends JDialog {//implements Runnable {
                                     DateFormat dateFormat = new SimpleDateFormat("MMddyy");
                                     Date date = new Date();
                                     String pickupDate = dateFormat.format(date);
-                                    String clerk = mf.empList.getSelectedItem().toString();
+                                    String clerk = mf.employeeSelectionHeader.getText().substring(14);
                                     String line = "";
                                     if (fillDate == null || pickupDate == null || clerk == null || insurance == null) {
                                         line = "NULL ERROR, REPORT TO DREW";
