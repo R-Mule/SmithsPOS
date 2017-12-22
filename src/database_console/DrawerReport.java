@@ -258,21 +258,22 @@ public class DrawerReport implements Serializable {
             }
 
             if (charged) {
-                if (accountNameCharged != null && accountNameCharged != null && accountNameCharged.contains(paymentType[0].substring(11))) {
+                if (accountNameCharged != null && accountNameCharged != null && accountNameCharged.contains(paymentType[0].substring(11))&&!item.isPreCharged) {
                     int index = accountNameCharged.indexOf(paymentType[0].substring(11));
-                    double amount = round(amountChargedToAccount.get(index) + item.getPriceOfItemsBeforeTax());
+                    double amount = round(amountChargedToAccount.get(index) + item.getTotal());
                     amountChargedToAccount.set(index, amount);
                     ArrayList items = itemsChargedToAccount.get(index);
-                    items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getPriceOfItemsBeforeTax()));
-                    itemsChargedToAccount.add(items);
+                    items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getTotal()));
+                    System.out.println(index+"SIZE OF "+itemsChargedToAccount.size());
 
-                } else {
+                } else if(!item.isPreCharged){
                     accountNameCharged.add(paymentType[0].substring(11));
-                    amountChargedToAccount.add(round((item.getPriceOfItemsBeforeTax())));
+                    amountChargedToAccount.add(round((item.getTotal())));
                     ArrayList<String> items = new ArrayList<String>();
-                    items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getPriceOfItemsBeforeTax()));
+                    items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getTotal()));
 
                     itemsChargedToAccount.add(items);
+                    System.out.println("SIZE OF "+itemsChargedToAccount.size());
                 }//end else not added yet
             }//end if Charged
         }//end for all items
@@ -379,6 +380,7 @@ public class DrawerReport implements Serializable {
             bw.write("Charges: \n");
 
             int index = 0;
+            int index2=0;
             for (String s : accountNameCharged) {
                 bw.write("Account Name: " + s + "\n");
                 bw.write("Total Charged: " + amountChargedToAccount.get(index) + "\n");
@@ -398,7 +400,7 @@ public class DrawerReport implements Serializable {
             }
 
         } catch (IOException e) {
-
+            
             e.printStackTrace();
 
         } finally {
