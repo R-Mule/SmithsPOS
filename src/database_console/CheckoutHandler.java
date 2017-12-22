@@ -37,7 +37,7 @@ public class CheckoutHandler {
 
     }
 
-    public void beginSplitTenderCheckout(Cart curCart, double cashAmt, double credit1Amt, double credit2Amt, double check1Amt, double check2Amt, int check1Num, int check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame) {
+    public void beginSplitTenderCheckout(Cart curCart, double cashAmt, double credit1Amt, double credit2Amt, double check1Amt, double check2Amt, int check1Num, int check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame,String employeeCheckoutName) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
         String receiptNum = dateFormat.format(date) + registerID;
@@ -92,7 +92,7 @@ public class CheckoutHandler {
         }
 
         //RX's are saved!
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName);
         myDB.storeReceipt(curCart, receiptNum);
 
         mainFrame.voidCarts();
@@ -100,7 +100,7 @@ public class CheckoutHandler {
 
     }
 
-    public void beginCashCheckout(Cart curCart, double amtPaid, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame) {
+    public void beginCashCheckout(Cart curCart, double amtPaid, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame,String employeeCheckoutName) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
         String receiptNum = dateFormat.format(date) + registerID;
@@ -116,7 +116,7 @@ public class CheckoutHandler {
         }
 
         //RX's are saved!
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame,employeeCheckoutName);
         myDB.storeReceipt(curCart, receiptNum);
 
         mainFrame.voidCarts();
@@ -145,7 +145,7 @@ public class CheckoutHandler {
         }
     }
 
-    public void beginCheckCheckout(Cart curCart, double amtPaid, String clerkName, int checkNum, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems) {
+    public void beginCheckCheckout(Cart curCart, double amtPaid, String clerkName, int checkNum, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems,String employeeCheckoutName) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
         String receiptNum = dateFormat.format(date) + registerID;
@@ -159,11 +159,11 @@ public class CheckoutHandler {
         }
 
         myDB.storeReceipt(curCart, receiptNum);
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame,employeeCheckoutName);
         mainFrame.voidCarts();
     }
 
-    public void beginCreditCheckout(Cart curCart, double amtPaid, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems) {
+    public void beginCreditCheckout(Cart curCart, double amtPaid, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems,String employeeCheckoutName) {
         double[] paymentAmt = new double[1];
         String[] paymentType = new String[1];
         Date date = new Date();
@@ -177,11 +177,11 @@ public class CheckoutHandler {
             rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
         }
         myDB.storeReceipt(curCart, receiptNum);
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame,employeeCheckoutName);
         mainFrame.voidCarts();
     }
 
-    public void beginChargeCheckout(Cart curCart, String accountName, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems) {
+    public void beginChargeCheckout(Cart curCart, String accountName, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems,String employeeCheckoutName) {
         double[] paymentAmt = new double[1];
         String[] paymentType = new String[1];
         Date date = new Date();
@@ -196,12 +196,12 @@ public class CheckoutHandler {
             rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
         }
         myDB.storeReceipt(curCart, receiptNum);
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame,employeeCheckoutName);
         mainFrame.voidCarts();
 
     }
 
-    public void printReceipt(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself) {
+    public void printReceipt(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself,String employeeCheckoutName) {
 
         PrinterService printerService = new PrinterService();
         boolean itemDiscounted = false;
@@ -340,7 +340,7 @@ public class CheckoutHandler {
 
         myself.previousReceipt = receipt;
 
-        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, false);
+        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, false, employeeCheckoutName);
 
     }
 
@@ -551,7 +551,7 @@ public class CheckoutHandler {
         printerService.printBytes(printerName, cutP);
         myself.previousReceipt = receipt;
 
-        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true);
+        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true,"NO");
     }
 
     public void reprintReceipt(String receipt) {
@@ -641,7 +641,7 @@ public class CheckoutHandler {
         }
     }
 
-    public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund) {
+    public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund,String employeeCheckoutName) {
         DrawerReport dr = null;
 
         try {
@@ -654,13 +654,13 @@ public class CheckoutHandler {
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
                 if (!isRefund) {
-                    dr.update(curCart, clerkName, paymentType, paymentAmt);
+                    dr.update(curCart, clerkName, paymentType, paymentAmt,employeeCheckoutName);
                 } else {
                     dr.refundUpdate((RefundCart) curCart, clerkName, paymentType, paymentAmt);
                 }
             } else {
                 if (!isRefund) {
-                    dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt);
+                    dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt,employeeCheckoutName);
                 } else {
                     dr = new DrawerReport((RefundCart) curCart, clerkName, paymentType, paymentAmt, isRefund);
                 }

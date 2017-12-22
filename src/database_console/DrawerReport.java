@@ -29,11 +29,20 @@ public class DrawerReport implements Serializable {
     private double totalCashAmt = 0;//UPDATED
     private double totalChecksAmt = 0;//UPDATED
     private double totalCreditAmt = 0;//UPDATED
+    
 
     //Total Refunded Today
     private double totalRefundedCash = 0;//UPDATED
     private double totalRefundedCredit = 0;//UPDATED
 
+    //lunch counter
+    private double lunchTotalAmt=0;
+    private double lunchTotalCash=0;
+    private double lunchTotalCredit=0;
+    private double lunchTotalCheck=0;
+    private ArrayList<String>employeesWhoPaidForLunch = new ArrayList<>();
+    private ArrayList<Double>amtEmployeePaidForLunch = new ArrayList<>();
+    
     //Total American Greetings Cards Sold
     private double totalAmericanGreetings=0;
     
@@ -67,9 +76,9 @@ public class DrawerReport implements Serializable {
     private double totalRXCoppay = 0;//UPDATED
     private double totalPaperSales = 0;//UPDATED
 
-    DrawerReport(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt) {
+    DrawerReport(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt,String employeeCheckoutName) {
         //FIRST TIME REPORT IS MADE. DEFAULT VALUE TIME!
-        update(curCart, clerkName, paymentType, paymentAmt);
+        update(curCart, clerkName, paymentType, paymentAmt,employeeCheckoutName);
     }//end DrawerReportCtor
 
     DrawerReport(RefundCart curCart, String clerkName, String[] paymentType, double[] paymentAmt, boolean isRefund) {
@@ -144,7 +153,7 @@ public class DrawerReport implements Serializable {
         totalTaxCharged -= curCart.getTax();
     }
 
-    public void update(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt) {
+    public void update(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt,String employeeCheckoutName) {
 
         //UPDATE CLERK TRANSACTION COUNT!
         if (employeeNames != null && !employeeNames.isEmpty() && employeeNames.contains(clerkName)) {
@@ -249,8 +258,10 @@ public class DrawerReport implements Serializable {
                 } else {
                     dmeWithoutTax += item.getPriceOfItemsBeforeTax();
                 }
-            } else {//MUST BE AN OTC CATEGORY!
-                if (item.isTaxable()) {
+            } else if(item.itemName.toUpperCase().contentEquals("LUNCH")) {//MUST BE AN OTC CATEGORY!
+                    
+            }else{
+                     if (item.isTaxable()) {
                     otcTaxedTotal += item.getPriceOfItemsBeforeTax();
                 } else {
                     otcNonTaxedTotal += item.getPriceOfItemsBeforeTax();

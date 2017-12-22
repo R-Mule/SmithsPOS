@@ -1238,7 +1238,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     double change = amtReceived - curCart.getTotalPrice();
                                     change = round(change);
                                     changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                    checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field5.getText()), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself);
+                                    checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field5.getText()), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself,(String)empList2.getSelectedItem());
                                     displayChangeDue = true;
                                     updateCartScreen();
                                 }//end else
@@ -1305,7 +1305,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     change = round(change);
                                     changeDue.setText("Change Due: $" + String.format("%.2f", change));
                                     displayChangeDue = true;
-                                    checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself);
+                                    checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself,(String)empList2.getSelectedItem());
                                     updateCartScreen();
 
                                 }//end else
@@ -1395,7 +1395,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 } else {
                                     double change = amtReceived - curCart.getTotalPrice();
                                     change = round(change);
-                                    checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), Integer.parseInt(field2.getText()), myself, guiItems);
+                                    checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), Integer.parseInt(field2.getText()), myself, guiItems,(String)empList2.getSelectedItem());
                                     changeDue.setText("Change Due: $" + String.format("%.2f", change));
                                     //FIELD1 CONTAINS CHECK AMT
                                     //FIELD2 CONTAINS CHECK #
@@ -1455,7 +1455,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 } else {
                                     double change = amtReceived - curCart.getTotalPrice();
                                     change = round(change);
-                                    checkout.beginCreditCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), myself, guiItems);
+                                    checkout.beginCreditCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), myself, guiItems,(String)empList2.getSelectedItem());
                                     changeDue.setText("Change Due: $" + String.format("%.2f", change));
                                     displayChangeDue = true;
                                     updateCartScreen();
@@ -1774,7 +1774,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             choices, // Array of choices
                                             choices[0]); // Initial choice
                                     if (accountName != null) {
-                                        checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems);
+                                        checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems,(String)empList2.getSelectedItem());
                                         changeDue.setText("Change Due: $0.00");
                                         displayChangeDue = true;
                                         updateCartScreen();
