@@ -208,6 +208,7 @@ public class CheckoutHandler {
         boolean isCreditSale = false;
         boolean requires2Receipts = false;
         double prechargedTotal=0;
+        
         int rxCntr = 0;
         //System.out.println(printerService.getPrinters());
         String receipt = "";
@@ -339,7 +340,7 @@ public class CheckoutHandler {
         }
 
         myself.previousReceipt = receipt;
-
+        myDB.storeReceiptString(receiptNum, receipt);
         storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, false, employeeCheckoutName);
 
     }

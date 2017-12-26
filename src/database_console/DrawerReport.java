@@ -412,7 +412,7 @@ public class DrawerReport implements Serializable {
             System.out.print("Lunch Total Collected: $"+lunchTotalAmt+"\n");
             System.out.print("Lunch Check Total Collected: $"+lunchTotalCheck+"\n");
             System.out.print("Lunch Cash Total Collected: $"+lunchTotalCash+"\n");
-            System.out.print("Lunch Credit Total Collected: $"+lunchTotalCredit+"\n");
+            System.out.print("Lunch Credit Total Collected: $"+lunchTotalCredit+"\n\n");
             
                 index = 0;
                 for (String s : employeesWhoPaidForItems) {
@@ -563,7 +563,7 @@ public class DrawerReport implements Serializable {
             bw.write("Lunch Total Collected: $"+lunchTotalAmt+"\n");
             bw.write("Lunch Check Total Collected: $"+lunchTotalCheck+"\n");
             bw.write("Lunch Cash Total Collected: $"+lunchTotalCash+"\n");
-            bw.write("Lunch Credit Total Collected: $"+lunchTotalCredit+"\n");
+            bw.write("Lunch Credit Total Collected: $"+lunchTotalCredit+"\n\n");
             
                 index = 0;
                 for (String s : employeesWhoPaidForItems) {

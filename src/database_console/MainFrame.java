@@ -440,7 +440,12 @@ public class MainFrame extends javax.swing.JFrame {
         addDmeAccountButton.setLocation(500, 930);
         addDmeAccountButton.setSize(150, 40);
         addDmeAccountButton.setBackground(new Color(255, 200, 200));
-
+        
+        //This creates the masterReprintReceiptButton
+        masterReprintReceiptButton.setLocation(650,930);
+        masterReprintReceiptButton.setSize(150, 40);
+        masterReprintReceiptButton.setBackground(new Color(255, 100, 100));
+        
         //This creates the activateDisplayButton 
         activateDisplayButton.setLocation(500, 890);
         activateDisplayButton.setSize(150, 40);
@@ -465,6 +470,34 @@ public class MainFrame extends javax.swing.JFrame {
         clerkLoginButton.setVisible(true);
         this.add(clerkLogoutButton);
         this.add(clerkLoginButton);
+        this.add(masterReprintReceiptButton);
+        masterReprintReceiptButton.setVisible(false);
+        
+        masterReprintReceiptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                JFrame textInputFrame = new JFrame("");
+
+                JTextField field1 = new JTextField();
+                field1.addAncestorListener(new RequestFocusListener());
+                Object[] message = {
+                    "Receipt #:", field1};
+                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Master Reprint Receipt Menu", JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.OK_OPTION) {
+                    if (!field1.getText().isEmpty()) {
+                        String receipt = myDB.getReceiptString(field1.getText());
+                        if(receipt!=null&&!receipt.isEmpty()){
+                        checkout.reprintReceipt(receipt);
+                        }else{
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Could not find receipt.");
+                        }
+                    }
+
+                }
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }
+        });
+        
         clerkLoginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -824,6 +857,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     addDmeAccountButton.setVisible(false);
                                     activateDisplayButton.setVisible(false);
                                     addRemoveInsuranceButton.setVisible(false);
+                                    masterReprintReceiptButton.setVisible(false);
                                     cancelRefundButton.setVisible(true);
                                     updateCartScreen();
                                 }
@@ -1977,6 +2011,7 @@ public class MainFrame extends javax.swing.JFrame {
             addDmeAccountButton.setVisible(true);
             masterRefundButton.setVisible(true);
             addRemoveInsuranceButton.setVisible(true);
+            masterReprintReceiptButton.setVisible(true);
         } else if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Haley") || employeeSelectionHeader.getText().substring(14).contentEquals("Booth, Sam") || employeeSelectionHeader.getText().substring(14).contentEquals("Broussard, Kayla")) {
             updatePriceButton.setVisible(true);
             addNewItemButton.setVisible(true);
@@ -1985,6 +2020,7 @@ public class MainFrame extends javax.swing.JFrame {
             addDmeAccountButton.setVisible(false);
             masterRefundButton.setVisible(true);
             addRemoveInsuranceButton.setVisible(true);
+            masterReprintReceiptButton.setVisible(true);
         } else {
             updatePriceButton.setVisible(false);
             generateReportButton.setVisible(false);
@@ -1993,6 +2029,7 @@ public class MainFrame extends javax.swing.JFrame {
             addDmeAccountButton.setVisible(false);
             masterRefundButton.setVisible(false);
             addRemoveInsuranceButton.setVisible(false);
+            masterReprintReceiptButton.setVisible(false);
         }
     }
 
@@ -2350,7 +2387,7 @@ public class MainFrame extends javax.swing.JFrame {
     JButton cancelRefundButton = new JButton("<html>" + cancelRefund.replaceAll("\\n", "<br>") + "</html>");
     JButton massDiscountButton = new JButton("");
     ConfigFileReader reader = new ConfigFileReader();
-
+    JButton masterReprintReceiptButton = new JButton("Master Rpt Receipt");
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";

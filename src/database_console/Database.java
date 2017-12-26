@@ -25,6 +25,36 @@ public class Database {
         password = reader.getPassword();
     }//end databaseCtor
 
+    public String getReceiptString(String receiptNum){
+                try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from receiptsFull where receiptNum = '" + receiptNum+"';");
+            while (rs.next()) {
+                return rs.getString(3);
+            }//end while
+            
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+    public void storeReceiptString(String receiptNum, String receipt){
+            try {
+                Class.forName(driverPath);
+                Connection con = DriverManager.getConnection(
+                        host, userName, password);
+                Statement stmt = con.createStatement();
+                receipt = receipt.replaceAll("'", " ");
+                stmt.executeUpdate("INSERT INTO `receiptsFull`(`pid`,`receiptNum`,`receipt`) VALUES (NULL,'" + receiptNum + "','" + receipt + "')");
+
+            } catch (Exception e) {
+                System.out.println(e);
+            }//end catch
+    }
     public String getEmployeeNameByCode(int code){
         
         try {
