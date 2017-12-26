@@ -1054,7 +1054,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     tempID = dateFormat.format(date);
                                     System.out.println(tempID);
                                     String upc = 'T' + tempID;
-                                    Item tempItem = new Item(myDB, tempID, upc, field1.getText(), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
+                                    Item tempItem = new Item(myDB, tempID, upc, field1.getText().replaceAll("'"," "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
                                     curCart.addItem(tempItem);
                                     guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                     displayChangeDue = false;
