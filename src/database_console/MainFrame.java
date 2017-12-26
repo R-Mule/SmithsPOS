@@ -542,7 +542,7 @@ public class MainFrame extends javax.swing.JFrame {
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Insurance Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
                     if (!field1.getText().isEmpty()) {
-                        myDB.addInsurance(field1.getText());
+                        myDB.addInsurance(field1.getText().replaceAll("'", " "));
                     }
                     if (!field2.getText().isEmpty()) {
                         myDB.removeInsurance(field2.getText());
