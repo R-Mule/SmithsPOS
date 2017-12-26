@@ -126,6 +126,14 @@ public class MainFrame extends javax.swing.JFrame {
         employeeCheckoutHeader.setSize(250, 50);
         employeeCheckoutHeader.setFont(new Font(employeeCheckoutHeader.getName(), Font.BOLD, 12));
         employeeCheckoutHeader.setVisible(true);
+        
+        //versionHeader
+        versionHeader.setLocation(1800, 950);
+        versionHeader.setSize(250, 50);
+        versionHeader.setFont(new Font(versionHeader.getName(), Font.BOLD, 12));
+        versionHeader.setVisible(true);
+        this.add(versionHeader);
+        
         //"Item Name: "
         itemNameHeader.setLocation(0, 50);
         itemNameHeader.setSize(250, 50);
@@ -2392,6 +2400,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.0", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
