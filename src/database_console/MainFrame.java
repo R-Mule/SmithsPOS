@@ -1751,7 +1751,7 @@ public class MainFrame extends javax.swing.JFrame {
 
                                     int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Paid Out Menu", JOptionPane.OK_CANCEL_OPTION);
                                     if (option2 == JOptionPane.OK_OPTION) {
-                                        checkout.beginPaidOut(field1.getText(), Double.parseDouble(field2.getText()));
+                                        checkout.beginPaidOut(field1.getText().replaceAll("'", " "), Double.parseDouble(field2.getText()));
                                         JFrame message1 = new JFrame("");
                                         JOptionPane.showMessageDialog(message1, "Success!");
                                     }
