@@ -140,7 +140,7 @@ public class Item {
     public double getTotal() {
         double totalOnItem = 0;
         double itemP;
-        itemP = itemPrice * quantity - itemPrice * quantity * percentageDisc;
+        itemP = round(itemPrice * quantity) - round(itemPrice * quantity * percentageDisc);
         if (isTaxable) {
             totalOnItem = round(itemP + itemP * taxRate);
         } else {
@@ -151,17 +151,17 @@ public class Item {
     }//end getTotal()
 
     double getPriceOfItemsBeforeTax() {
-        double total = round(itemPrice * quantity-itemPrice * quantity * percentageDisc);
+        double total = round(round(itemPrice * quantity)-round(itemPrice * quantity * percentageDisc));
         return total;
     }//end priceOfItemsBeforeTax
 
        double getPriceOfItemBeforeTax() {
-        double total = round(itemPrice -itemPrice  * percentageDisc);
+        double total = round(itemPrice -round(itemPrice  * percentageDisc));
         return total;
     }//end priceOfItemsBeforeTax
        
     double getTaxTotal() {
-        double itemP = itemPrice * quantity - itemPrice * quantity * percentageDisc;
+        double itemP = round(itemPrice * quantity) - round(itemPrice * quantity * percentageDisc);
         if (isTaxable) {
             double taxTotal = round(itemP * taxRate);
             return taxTotal;
