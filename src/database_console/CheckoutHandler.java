@@ -313,9 +313,17 @@ public class CheckoutHandler {
         if (rxCntr > 0) {
             receipt += "\nTotal RX(s): " + rxCntr + "\n";
         }
+        if(!employeeCheckoutName.contentEquals("NO")){
+            receipt+="\nPurchasing Employee: "+employeeCheckoutName+"\n";
+            
+        }
+        
         receipt += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
         receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n\n\n\n\n\n";
+        
+        
         printerService.printString(printerName, receipt);
+        
 
         // cut that paper!
         byte[] cutP = new byte[]{0x1d, 'V', 1};
@@ -603,7 +611,7 @@ public class CheckoutHandler {
         }
     }
 
-    public void beginMasterRefund(double amount) {
+    public void beginMasterRefund(double amount,String description) {
         DrawerReport dr = null;
 
         try {
@@ -615,9 +623,9 @@ public class CheckoutHandler {
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
-                dr.masterRefund(amount);
+                dr.masterRefund(amount,description);
             } else {
-                dr = new DrawerReport(amount);
+                dr = new DrawerReport(amount,description);
             }
 
             // write object to file

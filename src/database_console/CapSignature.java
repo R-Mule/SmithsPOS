@@ -188,7 +188,6 @@ public class CapSignature extends JDialog {//implements Runnable {
 
                         } catch (IOException ioe) {
                             printError(ioe);
-                            //System.err.println(ioe.getMessage());
                         }
 
                         document.close();
@@ -223,11 +222,9 @@ public class CapSignature extends JDialog {//implements Runnable {
             addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent we) {
                     sigObj.setTabletState(0);
-                    //System.exit(0);
                 }
 
                 public void windowClosed(WindowEvent we) {
-                    //System.exit(0);
                 }
             });
 

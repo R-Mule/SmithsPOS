@@ -42,13 +42,9 @@ import javax.swing.SwingConstants;
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form JFrame
-     */
     public MainFrame() {
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //this.setUndecorated(true);
         jPanel1 = new JPanel(new FlowLayout());
         jPanel1.setBounds(100, 100, 1120, 1200);
         jPanel1.setBackground(new Color(255, 255, 255));
@@ -74,41 +70,46 @@ public class MainFrame extends javax.swing.JFrame {
         textField.setBounds(100, 800, 200, 20);
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                String myText = textField.getText();
-                try {
-                    if (myText.length() > 11) {
-                        myText = myText.substring(0, 11);
-                    }
+                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                    String myText = textField.getText();
+                    try {
+                        if (myText.length() > 11) {
+                            myText = myText.substring(0, 11);
+                        }
 
-                    Item myItem = new Item(myDB, myText);
+                        Item myItem = new Item(myDB, myText);
 
-                    if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
-                        curCart.addItem(myItem);
-                        boolean exisits = false;
-                        int index = 0;
-                        int loc = 0;
-                        for (GuiCartItem item : guiItems) {
+                        if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
+                            curCart.addItem(myItem);
+                            boolean exisits = false;
+                            int index = 0;
+                            int loc = 0;
+                            for (GuiCartItem item : guiItems) {
 
-                            if (item.getUPC().contentEquals(myItem.getUPC())) {
-                                exisits = true;
-                                loc = index;
+                                if (item.getUPC().contentEquals(myItem.getUPC())) {
+                                    exisits = true;
+                                    loc = index;
+                                }
+                                index++;
                             }
-                            index++;
-                        }
-                        if (exisits) {
-                            guiItems.get(loc).updateQuantityLabelAmount();
-                        } else {
-                            guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
-                        }
+                            if (exisits) {
+                                guiItems.get(loc).updateQuantityLabelAmount();
+                            } else {
+                                guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                            }
 
-                        displayChangeDue = false;
-                        updateCartScreen();
-                    }//end if
+                            displayChangeDue = false;
+                            updateCartScreen();
+                        }//end if
+                        textField.setText("");
+                    } catch (StringIndexOutOfBoundsException e) {
+                        textField.setText("");
+                    }//end catch
+                } else {
                     textField.setText("");
-                } catch (StringIndexOutOfBoundsException e) {
-                    textField.setText("");
-                }//end catch
-
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Select an employee first!");
+                }
             }//end actionPerformed
         });
         this.add(textField);
@@ -116,7 +117,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         //HEADERS FOR ITEMS
         //TotalNumRXinCart
-        // JLabel totalNumRXinCart = new JLabel("# of Rx's in Cart: 0", SwingConstants.RIGHT);
         totalNumRXinCart.setLocation(250, 780);
         totalNumRXinCart.setSize(250, 50);
         totalNumRXinCart.setFont(new Font(employeeCheckoutHeader.getName(), Font.BOLD, 12));
@@ -126,14 +126,14 @@ public class MainFrame extends javax.swing.JFrame {
         employeeCheckoutHeader.setSize(250, 50);
         employeeCheckoutHeader.setFont(new Font(employeeCheckoutHeader.getName(), Font.BOLD, 12));
         employeeCheckoutHeader.setVisible(true);
-        
+
         //versionHeader
         versionHeader.setLocation(1800, 950);
         versionHeader.setSize(250, 50);
         versionHeader.setFont(new Font(versionHeader.getName(), Font.BOLD, 12));
         versionHeader.setVisible(true);
         this.add(versionHeader);
-        
+
         //"Item Name: "
         itemNameHeader.setLocation(0, 50);
         itemNameHeader.setSize(250, 50);
@@ -267,8 +267,6 @@ public class MainFrame extends javax.swing.JFrame {
                         } else {//Load All Tickets into selectable GUI
                             //Sorry no such ticket found
                             String[] choices = myDB.getAllTicketsNames();
-                            //Object[] message2 = {
-                            //    "Select Ticket To Load:", choices, choices[0]};
                             if (choices != null && choices.length > 0) {
 
                                 id = (String) JOptionPane.showInputDialog(null, "Couldn't find that ticket? Check these?...",
@@ -448,12 +446,12 @@ public class MainFrame extends javax.swing.JFrame {
         addDmeAccountButton.setLocation(500, 930);
         addDmeAccountButton.setSize(150, 40);
         addDmeAccountButton.setBackground(new Color(255, 200, 200));
-        
+
         //This creates the masterReprintReceiptButton
-        masterReprintReceiptButton.setLocation(650,930);
+        masterReprintReceiptButton.setLocation(650, 930);
         masterReprintReceiptButton.setSize(150, 40);
         masterReprintReceiptButton.setBackground(new Color(255, 100, 100));
-        
+
         //This creates the activateDisplayButton 
         activateDisplayButton.setLocation(500, 890);
         activateDisplayButton.setSize(150, 40);
@@ -480,7 +478,7 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(clerkLoginButton);
         this.add(masterReprintReceiptButton);
         masterReprintReceiptButton.setVisible(false);
-        
+
         masterReprintReceiptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -493,9 +491,9 @@ public class MainFrame extends javax.swing.JFrame {
                 if (option == JOptionPane.OK_OPTION) {
                     if (!field1.getText().isEmpty()) {
                         String receipt = myDB.getReceiptString(field1.getText());
-                        if(receipt!=null&&!receipt.isEmpty()){
-                        checkout.reprintReceipt(receipt);
-                        }else{
+                        if (receipt != null && !receipt.isEmpty()) {
+                            checkout.reprintReceipt(receipt);
+                        } else {
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Could not find receipt.");
                         }
@@ -505,7 +503,7 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-        
+
         clerkLoginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -518,10 +516,10 @@ public class MainFrame extends javax.swing.JFrame {
                 if (option == JOptionPane.OK_OPTION) {
                     if (!field1.getText().isEmpty() && validateInteger(field1.getText())) {
                         String clerkName = myDB.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
-                        if(clerkName!=null){
-                        employeeSelectionHeader.setText("Active Clerk: " + clerkName);
-                        checkForAdminButtonVisible();
-                        clerkLogoutButton.setVisible(true);
+                        if (clerkName != null) {
+                            employeeSelectionHeader.setText("Active Clerk: " + clerkName);
+                            checkForAdminButtonVisible();
+                            clerkLogoutButton.setVisible(true);
                         }
                     }
 
@@ -746,18 +744,21 @@ public class MainFrame extends javax.swing.JFrame {
         masterRefundButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
-
+                JTextField field2 = new JTextField();
                 JTextField field1 = new JTextField();
-                field1.addAncestorListener(new RequestFocusListener());
-                Object[] message = {
+                field2.addAncestorListener(new RequestFocusListener());
+                Object[] message = {"Description: ", field2,
                     "Refund Amount: $", field1};
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Refund Amount Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
-                    if (validateDouble(field1.getText())) {
+                    if (validateDouble(field1.getText()) && field2.getText() != null && !field2.getText().isEmpty()) {
 
-                        checkout.beginMasterRefund(Double.parseDouble(field1.getText()));
+                        checkout.beginMasterRefund(Double.parseDouble(field1.getText()), field2.getText());
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Success! Please give them: $" + field1.getText());
+                    } else {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Refund failed. Enter a description and a number please.");
                     }
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
@@ -969,7 +970,6 @@ public class MainFrame extends javax.swing.JFrame {
                     field3.setSelectionEnd(4);
                     field1.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "RX Information", JOptionPane.OK_CANCEL_OPTION);
-                    //field1.requestFocusInWindow();
 
                     if (option == JOptionPane.OK_OPTION) {
                         int rxNumber;
@@ -1062,7 +1062,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     tempID = dateFormat.format(date);
                                     System.out.println(tempID);
                                     String upc = 'T' + tempID;
-                                    Item tempItem = new Item(myDB, tempID, upc, field1.getText().replaceAll("'"," "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
+                                    Item tempItem = new Item(myDB, tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
                                     curCart.addItem(tempItem);
                                     guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                     displayChangeDue = false;
@@ -1095,198 +1095,203 @@ public class MainFrame extends javax.swing.JFrame {
         splitTenderButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!curCart.isEmpty()) {
-                        JLabel splitTenderTotal = new JLabel("Total: $", SwingConstants.RIGHT);
-                        JLabel splitTenderRemaining = new JLabel("Remaining: $", SwingConstants.RIGHT);
-                        JFrame textInputFrame = new JFrame("");
-                        JTextField field1 = new JTextField();
-                        JTextField field2 = new JTextField();
-                        JTextField field3 = new JTextField();
-                        JTextField field4 = new JTextField();
-                        JTextField field5 = new JTextField();
-                        JTextField field6 = new JTextField();
-                        JTextField field7 = new JTextField();
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
+                        if (!curCart.isEmpty()) {
+                            JLabel splitTenderTotal = new JLabel("Total: $", SwingConstants.RIGHT);
+                            JLabel splitTenderRemaining = new JLabel("Remaining: $", SwingConstants.RIGHT);
+                            JFrame textInputFrame = new JFrame("");
+                            JTextField field1 = new JTextField();
+                            JTextField field2 = new JTextField();
+                            JTextField field3 = new JTextField();
+                            JTextField field4 = new JTextField();
+                            JTextField field5 = new JTextField();
+                            JTextField field6 = new JTextField();
+                            JTextField field7 = new JTextField();
 
-                        field1.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusGained(java.awt.event.FocusEvent evt) {
-                                field1.setSelectionStart(0);
-                                field1.setSelectionEnd(12);
-                            }//end focusGained
+                            field1.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusGained(java.awt.event.FocusEvent evt) {
+                                    field1.setSelectionStart(0);
+                                    field1.setSelectionEnd(12);
+                                }//end focusGained
 
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                //this will be called on tab i.e when the field looses focus
-                                if (validateDouble(field1.getText())) {
-                                    double remaining = curCart.getTotalPrice() - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText()) - Double.parseDouble(field7.getText());
-                                    splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                } else {
-                                    field1.setText("0.00");
-                                }//end else
-                            }//end focusLost
-                        });//end field1Listener
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    //this will be called on tab i.e when the field looses focus
+                                    if (validateDouble(field1.getText())) {
+                                        double remaining = curCart.getTotalPrice() - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText()) - Double.parseDouble(field7.getText());
+                                        splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
+                                    } else {
+                                        field1.setText("0.00");
+                                    }//end else
+                                }//end focusLost
+                            });//end field1Listener
 
-                        field2.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusGained(java.awt.event.FocusEvent evt) {
-                                field2.setSelectionStart(0);
-                                field2.setSelectionEnd(12);
-                            }//end focusGained
+                            field2.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusGained(java.awt.event.FocusEvent evt) {
+                                    field2.setSelectionStart(0);
+                                    field2.setSelectionEnd(12);
+                                }//end focusGained
 
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                //this will be called on tab i.e when the field looses focus
-                                if (validateDouble(field2.getText())) {
-                                    double remaining = curCart.getTotalPrice() - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText()) - Double.parseDouble(field7.getText());
-                                    splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                } else {
-                                    field2.setText("0.00");
-                                }//end else
-                            }//end focusLost
-                        });//end field2Listener
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    //this will be called on tab i.e when the field looses focus
+                                    if (validateDouble(field2.getText())) {
+                                        double remaining = curCart.getTotalPrice() - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText()) - Double.parseDouble(field7.getText());
+                                        splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
+                                    } else {
+                                        field2.setText("0.00");
+                                    }//end else
+                                }//end focusLost
+                            });//end field2Listener
 
-                        field3.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusGained(java.awt.event.FocusEvent evt) {
-                                field3.setSelectionStart(0);
-                                field3.setSelectionEnd(12);
-                            }//end focusGained
+                            field3.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusGained(java.awt.event.FocusEvent evt) {
+                                    field3.setSelectionStart(0);
+                                    field3.setSelectionEnd(12);
+                                }//end focusGained
 
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                //this will be called on tab i.e when the field looses focus
-                                if (validateInteger(field3.getText())) {
-                                    //do nothing? its a valid check number
-                                } else {
-                                    field3.setText("0");
-                                }//end else
-                            }//end focusLost
-                        });//end field3Listener
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    //this will be called on tab i.e when the field looses focus
+                                    if (validateInteger(field3.getText())) {
+                                        //do nothing? its a valid check number
+                                    } else {
+                                        field3.setText("0");
+                                    }//end else
+                                }//end focusLost
+                            });//end field3Listener
 
-                        field4.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusGained(java.awt.event.FocusEvent evt) {
-                                field4.setSelectionStart(0);
-                                field4.setSelectionEnd(12);
-                            }//end focusGained
+                            field4.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusGained(java.awt.event.FocusEvent evt) {
+                                    field4.setSelectionStart(0);
+                                    field4.setSelectionEnd(12);
+                                }//end focusGained
 
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                //this will be called on tab i.e when the field looses focus
-                                if (validateDouble(field4.getText())) {
-                                    double remaining = curCart.getTotalPrice() - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText()) - Double.parseDouble(field7.getText());
-                                    splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                } else {
-                                    field4.setText("0.00");
-                                }//end else
-                            }//end focusLost
-                        });//end field4Listener
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    //this will be called on tab i.e when the field looses focus
+                                    if (validateDouble(field4.getText())) {
+                                        double remaining = curCart.getTotalPrice() - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText()) - Double.parseDouble(field7.getText());
+                                        splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
+                                    } else {
+                                        field4.setText("0.00");
+                                    }//end else
+                                }//end focusLost
+                            });//end field4Listener
 
-                        field5.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusGained(java.awt.event.FocusEvent evt) {
-                                field5.setSelectionStart(0);
-                                field5.setSelectionEnd(12);
-                            }//end focusGained
+                            field5.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusGained(java.awt.event.FocusEvent evt) {
+                                    field5.setSelectionStart(0);
+                                    field5.setSelectionEnd(12);
+                                }//end focusGained
 
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                //this will be called on tab i.e when the field looses focus
-                                if (validateInteger(field5.getText())) {
-                                    //do nothing? its a valid check number
-                                } else {
-                                    field5.setText("0");
-                                }//end else
-                            }//end focusLost
-                        });//end field5Listener
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    //this will be called on tab i.e when the field looses focus
+                                    if (validateInteger(field5.getText())) {
+                                        //do nothing? its a valid check number
+                                    } else {
+                                        field5.setText("0");
+                                    }//end else
+                                }//end focusLost
+                            });//end field5Listener
 
-                        field6.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusGained(java.awt.event.FocusEvent evt) {
-                                field6.setSelectionStart(0);
-                                field6.setSelectionEnd(12);
-                            }//end focusGained
+                            field6.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusGained(java.awt.event.FocusEvent evt) {
+                                    field6.setSelectionStart(0);
+                                    field6.setSelectionEnd(12);
+                                }//end focusGained
 
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                //this will be called on tab i.e when the field looses focus
-                                if (validateDouble(field6.getText())) {
-                                    double remaining = curCart.getTotalPrice() - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText()) - Double.parseDouble(field7.getText());
-                                    splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                } else {
-                                    field6.setText("0.00");
-                                }//end else
-                            }//end focusLost
-                        });//end field6Listener
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    //this will be called on tab i.e when the field looses focus
+                                    if (validateDouble(field6.getText())) {
+                                        double remaining = curCart.getTotalPrice() - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText()) - Double.parseDouble(field7.getText());
+                                        splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
+                                    } else {
+                                        field6.setText("0.00");
+                                    }//end else
+                                }//end focusLost
+                            });//end field6Listener
 
-                        field7.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusGained(java.awt.event.FocusEvent evt) {
-                                field7.setSelectionStart(0);
-                                field7.setSelectionEnd(12);
-                            }//end focusGained
+                            field7.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusGained(java.awt.event.FocusEvent evt) {
+                                    field7.setSelectionStart(0);
+                                    field7.setSelectionEnd(12);
+                                }//end focusGained
 
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                //this will be called on tab i.e when the field looses focus
-                                if (validateDouble(field7.getText())) {
-                                    double remaining = curCart.getTotalPrice() - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText()) - Double.parseDouble(field7.getText());
-                                    splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                } else {
-                                    field7.setText("0.00");
-                                }//end else
-                            }//end focusLost
-                        });//end field7Listener
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    //this will be called on tab i.e when the field looses focus
+                                    if (validateDouble(field7.getText())) {
+                                        double remaining = curCart.getTotalPrice() - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText()) - Double.parseDouble(field7.getText());
+                                        splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
+                                    } else {
+                                        field7.setText("0.00");
+                                    }//end else
+                                }//end focusLost
+                            });//end field7Listener
 
-                        splitTenderTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
-                        splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", curCart.getTotalPrice()));
-                        field2.setText(previousDate);
-                        Object[] message = {
-                            "Cash:", field1,
-                            "Check 1:", field2,
-                            "Check 1#:", field3,
-                            "Check 2:", field4,
-                            "Check 2#:", field5,
-                            "Credit 1:", field6,
-                            "Credit 2:", field7,
-                            splitTenderRemaining, splitTenderTotal};
-                        field1.setText("0.00");
-                        field2.setText("0.00");
-                        field3.setText("0");
-                        field4.setText("0.00");
-                        field5.setText("0");
-                        field6.setText("0.00");
-                        field7.setText("0.00");
-                        field1.setSelectionStart(0);
-                        field1.setSelectionEnd(4);
-                        field2.setSelectionStart(0);
-                        field2.setSelectionEnd(4);
-                        field3.setSelectionStart(0);
-                        field3.setSelectionEnd(4);
-                        field4.setSelectionStart(0);
-                        field4.setSelectionEnd(4);
-                        field5.setSelectionStart(0);
-                        field5.setSelectionEnd(4);
-                        field6.setSelectionStart(0);
-                        field6.setSelectionEnd(4);
-                        field7.setSelectionStart(0);
-                        field7.setSelectionEnd(4);
+                            splitTenderTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
+                            splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", curCart.getTotalPrice()));
+                            field2.setText(previousDate);
+                            Object[] message = {
+                                "Cash:", field1,
+                                "Check 1:", field2,
+                                "Check 1#:", field3,
+                                "Check 2:", field4,
+                                "Check 2#:", field5,
+                                "Credit 1:", field6,
+                                "Credit 2:", field7,
+                                splitTenderRemaining, splitTenderTotal};
+                            field1.setText("0.00");
+                            field2.setText("0.00");
+                            field3.setText("0");
+                            field4.setText("0.00");
+                            field5.setText("0");
+                            field6.setText("0.00");
+                            field7.setText("0.00");
+                            field1.setSelectionStart(0);
+                            field1.setSelectionEnd(4);
+                            field2.setSelectionStart(0);
+                            field2.setSelectionEnd(4);
+                            field3.setSelectionStart(0);
+                            field3.setSelectionEnd(4);
+                            field4.setSelectionStart(0);
+                            field4.setSelectionEnd(4);
+                            field5.setSelectionStart(0);
+                            field5.setSelectionEnd(4);
+                            field6.setSelectionStart(0);
+                            field6.setSelectionEnd(4);
+                            field7.setSelectionStart(0);
+                            field7.setSelectionEnd(4);
 
-                        field1.addAncestorListener(new RequestFocusListener());
-                        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Split Tender Menu", JOptionPane.OK_CANCEL_OPTION);
-                        if (option == JOptionPane.OK_OPTION) {
-                            if (!validateDouble(field4.getText()) || !validateDouble(field2.getText()) || !validateDouble(field1.getText()) || !validateDouble(field6.getText()) || !validateDouble(field6.getText()) || !validateInteger(field3.getText()) || !validateInteger(field5.getText())) {
-                                JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Improper text in fields.");
-                            } else {
-                                double remaining = Double.parseDouble(field7.getText()) + Double.parseDouble(field6.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field1.getText());
-                                remaining = round(remaining);
-                                // System.out.println(remaining);
-                                // System.out.println(curCart.getTotalPrice());
-                                if (remaining < curCart.getTotalPrice()) {
-                                    //must have some name
+                            field1.addAncestorListener(new RequestFocusListener());
+                            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Split Tender Menu", JOptionPane.OK_CANCEL_OPTION);
+                            if (option == JOptionPane.OK_OPTION) {
+                                if (!validateDouble(field4.getText()) || !validateDouble(field2.getText()) || !validateDouble(field1.getText()) || !validateDouble(field6.getText()) || !validateDouble(field6.getText()) || !validateInteger(field3.getText()) || !validateInteger(field5.getText())) {
                                     JFrame message1 = new JFrame("");
-                                    JOptionPane.showMessageDialog(message1, "Totals do not match.");
+                                    JOptionPane.showMessageDialog(message1, "Improper text in fields.");
                                 } else {
-                                    //JFrame message1 = new JFrame("");
-                                    double amtReceived = Double.parseDouble(field1.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field6.getText()) + Double.parseDouble(field7.getText());
-                                    amtReceived = round(amtReceived);
-                                    double change = amtReceived - curCart.getTotalPrice();
-                                    change = round(change);
-                                    changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                    checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field5.getText()), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself,(String)empList2.getSelectedItem());
-                                    displayChangeDue = true;
-                                    updateCartScreen();
+                                    double remaining = Double.parseDouble(field7.getText()) + Double.parseDouble(field6.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field1.getText());
+                                    remaining = round(remaining);
+                                    // System.out.println(remaining);
+                                    // System.out.println(curCart.getTotalPrice());
+                                    if (remaining < curCart.getTotalPrice()) {
+                                        //must have some name
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Totals do not match.");
+                                    } else {
+                                        //JFrame message1 = new JFrame("");
+                                        double amtReceived = Double.parseDouble(field1.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field6.getText()) + Double.parseDouble(field7.getText());
+                                        amtReceived = round(amtReceived);
+                                        double change = amtReceived - curCart.getTotalPrice();
+                                        change = round(change);
+                                        changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                        checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field5.getText()), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
+                                        displayChangeDue = true;
+                                        updateCartScreen();
+                                    }//end else
                                 }//end else
-                            }//end else
-                        }//end if
-                    }//end if isNotEmpty
+                            }//end if
+                        }//end if isNotEmpty
+                    } else {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
+                    }
                 } else {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -1306,74 +1311,76 @@ public class MainFrame extends javax.swing.JFrame {
         cashButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!curCart.isEmpty()) {
-                        JFrame textInputFrame = new JFrame("");
-                        JLabel cashTotal = new JLabel("Total: $", SwingConstants.RIGHT);
-                        JTextField field1 = new JTextField();
-                        field1.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                field1.setSelectionStart(0);
-                                field1.setSelectionEnd(12);
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
+                        if (!curCart.isEmpty()) {
+                            JFrame textInputFrame = new JFrame("");
+                            JLabel cashTotal = new JLabel("Total: $", SwingConstants.RIGHT);
+                            JTextField field1 = new JTextField();
+                            field1.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    field1.setSelectionStart(0);
+                                    field1.setSelectionEnd(12);
+                                    if (!validateDouble(field1.getText())) {
+                                        field1.setText(String.format("%.2f", curCart.getTotalPrice()));
+                                    }//end if
+                                }//end focusGained
+                            });
+                            cashTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
+                            Object[] message = {
+                                "Cash Amount:", field1, cashTotal};
+                            field1.setText(String.format("%.2f", curCart.getTotalPrice()));
+                            field1.setSelectionStart(0);
+                            field1.setSelectionEnd(8);
+
+                            field1.addAncestorListener(new RequestFocusListener());
+                            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Cash Amount", JOptionPane.OK_CANCEL_OPTION);
+                            if (option == JOptionPane.OK_OPTION) {
                                 if (!validateDouble(field1.getText())) {
-                                    field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                                }//end if
-                            }//end focusGained
-                        });
-                        cashTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
-                        Object[] message = {
-                            "Cash Amount:", field1, cashTotal};
-                        field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                        field1.setSelectionStart(0);
-                        field1.setSelectionEnd(8);
-
-                        field1.addAncestorListener(new RequestFocusListener());
-                        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Cash Amount", JOptionPane.OK_CANCEL_OPTION);
-                        if (option == JOptionPane.OK_OPTION) {
-                            if (!validateDouble(field1.getText())) {
-                                JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Improper cash value.");
-                            } else {
-                                double amtReceived = Double.parseDouble(field1.getText());
-                                amtReceived = round(amtReceived);
-
-                                // System.out.println(remaining);
-                                // System.out.println(curCart.getTotalPrice());
-                                if (amtReceived < curCart.getTotalPrice()) {
                                     JFrame message1 = new JFrame("");
-                                    JOptionPane.showMessageDialog(message1, "Not enough cash.");
+                                    JOptionPane.showMessageDialog(message1, "Improper cash value.");
                                 } else {
+                                    double amtReceived = Double.parseDouble(field1.getText());
+                                    amtReceived = round(amtReceived);
+                                    if (amtReceived < curCart.getTotalPrice()) {
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Not enough cash.");
+                                    } else {
 
-                                    double change = amtReceived - curCart.getTotalPrice();
-                                    change = round(change);
-                                    changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                    displayChangeDue = true;
-                                    checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself,(String)empList2.getSelectedItem());
-                                    updateCartScreen();
+                                        double change = amtReceived - curCart.getTotalPrice();
+                                        change = round(change);
+                                        changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                        displayChangeDue = true;
+                                        checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
+                                        updateCartScreen();
 
+                                    }//end else
                                 }//end else
-                            }//end else
-                        }//end if
-                    } else if (!refundCart.isEmpty()) {
-                        boolean isItemToRefund = false;
-                        boolean isCartConditionsMet = true;
-                        for (RefundItem item : refundCart.getRefundItems()) {
-                            if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
-                                isItemToRefund = true;
+                            }//end if
+                        } else if (!refundCart.isEmpty()) {
+                            boolean isItemToRefund = false;
+                            boolean isCartConditionsMet = true;
+                            for (RefundItem item : refundCart.getRefundItems()) {
+                                if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
+                                    isItemToRefund = true;
+                                }
+                                if (item.quantityBeingRefunded > 0 && !item.isRefundAllActive() && !item.isRefundTaxOnlyActive()) {
+                                    //Houston we have a problem.
+                                    isCartConditionsMet = false;
+                                }
+
                             }
-                            if (item.quantityBeingRefunded > 0 && !item.isRefundAllActive() && !item.isRefundTaxOnlyActive()) {
-                                //Houston we have a problem.
-                                isCartConditionsMet = false;
+                            if (isItemToRefund && isCartConditionsMet) {
+                                checkout.beginRefundCashCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
+
+                            } else if (isCartConditionsMet) {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "An item in the cart is set to have quantity refunded, but no type of refund is selected.. Please set Quantity to refund to zero for that item or add a refund case.");
                             }
 
                         }
-                        if (isItemToRefund && isCartConditionsMet) {
-                            checkout.beginRefundCashCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
-
-                        } else if (isCartConditionsMet) {
-                            JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, "An item in the cart is set to have quantity refunded, but no type of refund is selected.. Please set Quantity to refund to zero for that item or add a refund case.");
-                        }
-
+                    } else {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
                     }
                 } else {
                     JFrame message1 = new JFrame("");
@@ -1389,65 +1396,69 @@ public class MainFrame extends javax.swing.JFrame {
         checkButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!curCart.isEmpty()) {
-                        JFrame textInputFrame = new JFrame("");
-                        JLabel checkTotal = new JLabel("Total: $", SwingConstants.RIGHT);
-                        JTextField field1 = new JTextField();
-                        JTextField field2 = new JTextField();
-                        field1.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                field1.setSelectionStart(0);
-                                field1.setSelectionEnd(12);
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
+                        if (!curCart.isEmpty()) {
+                            JFrame textInputFrame = new JFrame("");
+                            JLabel checkTotal = new JLabel("Total: $", SwingConstants.RIGHT);
+                            JTextField field1 = new JTextField();
+                            JTextField field2 = new JTextField();
+                            field1.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    field1.setSelectionStart(0);
+                                    field1.setSelectionEnd(12);
+                                    if (!validateDouble(field1.getText())) {
+                                        field1.setText(String.format("%.2f", curCart.getTotalPrice()));
+                                    }//end if
+                                }//end focusGained
+                            });
+                            field2.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    field2.setSelectionStart(0);
+                                    field2.setSelectionEnd(12);
+                                    if (!validateInteger(field2.getText())) {
+                                        field2.setText(String.format("0"));
+                                    }//end if
+                                }//end focusGained
+                            });
+                            checkTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
+                            Object[] message = {
+                                "Check Amount:", field1, "Check #", field2, checkTotal};
+                            field1.setText(String.format("%.2f", curCart.getTotalPrice()));
+                            field1.setSelectionStart(0);
+                            field1.setSelectionEnd(8);
+                            field2.setText("0");
+                            field2.setSelectionStart(0);
+                            field2.setSelectionEnd(2);
+
+                            field1.addAncestorListener(new RequestFocusListener());
+                            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Check Value", JOptionPane.OK_CANCEL_OPTION);
+                            if (option == JOptionPane.OK_OPTION) {
                                 if (!validateDouble(field1.getText())) {
-                                    field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                                }//end if
-                            }//end focusGained
-                        });
-                        field2.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                field2.setSelectionStart(0);
-                                field2.setSelectionEnd(12);
-                                if (!validateInteger(field2.getText())) {
-                                    field2.setText(String.format("0"));
-                                }//end if
-                            }//end focusGained
-                        });
-                        checkTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
-                        Object[] message = {
-                            "Check Amount:", field1, "Check #", field2, checkTotal};
-                        field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                        field1.setSelectionStart(0);
-                        field1.setSelectionEnd(8);
-                        field2.setText("0");
-                        field2.setSelectionStart(0);
-                        field2.setSelectionEnd(2);
-
-                        field1.addAncestorListener(new RequestFocusListener());
-                        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Check Value", JOptionPane.OK_CANCEL_OPTION);
-                        if (option == JOptionPane.OK_OPTION) {
-                            if (!validateDouble(field1.getText())) {
-                                JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Improper check value.");
-                            } else {
-                                double amtReceived = Double.parseDouble(field1.getText());
-                                amtReceived = round(amtReceived);
-                                if (amtReceived < curCart.getTotalPrice()) {
                                     JFrame message1 = new JFrame("");
-                                    JOptionPane.showMessageDialog(message1, "Check value to small.");
+                                    JOptionPane.showMessageDialog(message1, "Improper check value.");
                                 } else {
-                                    double change = amtReceived - curCart.getTotalPrice();
-                                    change = round(change);
-                                    checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), Integer.parseInt(field2.getText()), myself, guiItems,(String)empList2.getSelectedItem());
-                                    changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                    //FIELD1 CONTAINS CHECK AMT
-                                    //FIELD2 CONTAINS CHECK #
-                                    displayChangeDue = true;
-                                    updateCartScreen();
+                                    double amtReceived = Double.parseDouble(field1.getText());
+                                    amtReceived = round(amtReceived);
+                                    if (amtReceived < curCart.getTotalPrice()) {
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Check value to small.");
+                                    } else {
+                                        double change = amtReceived - curCart.getTotalPrice();
+                                        change = round(change);
+                                        checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), Integer.parseInt(field2.getText()), myself, guiItems, (String) empList2.getSelectedItem());
+                                        changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                        //FIELD1 CONTAINS CHECK AMT
+                                        //FIELD2 CONTAINS CHECK #
+                                        displayChangeDue = true;
+                                        updateCartScreen();
+                                    }//end else
                                 }//end else
-                            }//end else
-                        }//end if  
-                    }//end if isNotEmpty
-
+                            }//end if  
+                        }//end if isNotEmpty
+                    } else {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
+                    }
                 } else {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -1459,64 +1470,66 @@ public class MainFrame extends javax.swing.JFrame {
         creditButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!curCart.isEmpty()) {
-                        JFrame textInputFrame = new JFrame("");
-                        JLabel creditTotal = new JLabel("Total: $", SwingConstants.RIGHT);
-                        JTextField field1 = new JTextField();
-                        field1.addFocusListener(new java.awt.event.FocusAdapter() {
-                            public void focusLost(java.awt.event.FocusEvent evt) {
-                                field1.setSelectionStart(0);
-                                field1.setSelectionEnd(12);
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
+                        if (!curCart.isEmpty()) {
+                            JFrame textInputFrame = new JFrame("");
+                            JLabel creditTotal = new JLabel("Total: $", SwingConstants.RIGHT);
+                            JTextField field1 = new JTextField();
+                            field1.addFocusListener(new java.awt.event.FocusAdapter() {
+                                public void focusLost(java.awt.event.FocusEvent evt) {
+                                    field1.setSelectionStart(0);
+                                    field1.setSelectionEnd(12);
+                                    if (!validateDouble(field1.getText())) {
+                                        field1.setText(String.format("%.2f", curCart.getTotalPrice()));
+                                    }//end if
+                                }//end focusGained
+                            });
+                            creditTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
+                            Object[] message = {
+                                "Credit Amount:", field1, creditTotal};
+                            field1.setText(String.format("%.2f", curCart.getTotalPrice()));
+                            field1.setSelectionStart(0);
+                            field1.setSelectionEnd(8);
+
+                            field1.addAncestorListener(new RequestFocusListener());
+                            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Credit Amount", JOptionPane.OK_CANCEL_OPTION);
+                            if (option == JOptionPane.OK_OPTION) {
                                 if (!validateDouble(field1.getText())) {
-                                    field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                                }//end if
-                            }//end focusGained
-                        });
-                        creditTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
-                        Object[] message = {
-                            "Credit Amount:", field1, creditTotal};
-                        field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                        field1.setSelectionStart(0);
-                        field1.setSelectionEnd(8);
-
-                        field1.addAncestorListener(new RequestFocusListener());
-                        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Credit Amount", JOptionPane.OK_CANCEL_OPTION);
-                        if (option == JOptionPane.OK_OPTION) {
-                            if (!validateDouble(field1.getText())) {
-                                JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Improper credit value.");
-                            } else {
-                                double amtReceived = Double.parseDouble(field1.getText());
-                                amtReceived = round(amtReceived);
-
-                                // System.out.println(remaining);
-                                // System.out.println(curCart.getTotalPrice());
-                                if (amtReceived < curCart.getTotalPrice()) {
                                     JFrame message1 = new JFrame("");
-                                    JOptionPane.showMessageDialog(message1, "Not enough credit.");
+                                    JOptionPane.showMessageDialog(message1, "Improper credit value.");
                                 } else {
-                                    double change = amtReceived - curCart.getTotalPrice();
-                                    change = round(change);
-                                    checkout.beginCreditCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), myself, guiItems,(String)empList2.getSelectedItem());
-                                    changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                    displayChangeDue = true;
-                                    updateCartScreen();
+                                    double amtReceived = Double.parseDouble(field1.getText());
+                                    amtReceived = round(amtReceived);
+                                    if (amtReceived < curCart.getTotalPrice()) {
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Not enough credit.");
+                                    } else {
+                                        double change = amtReceived - curCart.getTotalPrice();
+                                        change = round(change);
+                                        checkout.beginCreditCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
+                                        changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                        displayChangeDue = true;
+                                        updateCartScreen();
+                                    }//end else
                                 }//end else
-                            }//end else
-                        }//end if
-                    } else if (!refundCart.isEmpty()) {
-                        boolean isItemToRefund = false;
-                        for (RefundItem item : refundCart.getRefundItems()) {
-                            if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
-                                isItemToRefund = true;
+                            }//end if
+                        } else if (!refundCart.isEmpty()) {
+                            boolean isItemToRefund = false;
+                            for (RefundItem item : refundCart.getRefundItems()) {
+                                if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
+                                    isItemToRefund = true;
+                                }
                             }
-                        }
-                        if (isItemToRefund) {
-                            checkout.beginRefundCardCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
+                            if (isItemToRefund) {
+                                checkout.beginRefundCardCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
 
-                        }
+                            }
 
-                    }//end cartIsNotEmpty
+                        }//end cartIsNotEmpty
+                    } else {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
+                    }
                 } else {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -1539,6 +1552,7 @@ public class MainFrame extends javax.swing.JFrame {
         arPaymentButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
+
                     JFrame textInputFrame = new JFrame("");
                     JFrame textInputFrame2 = new JFrame("");
                     JTextField field1 = new JTextField();
@@ -1785,56 +1799,60 @@ public class MainFrame extends javax.swing.JFrame {
         chargeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!curCart.isEmpty() && !curCart.containsChargedItem()) {
-                        JFrame textInputFrame = new JFrame("");
-                        JTextField field1 = new JTextField();
-                        JTextField field2 = new JTextField();
-                        JTextField field3 = new JTextField();
-                        JTextField field4 = new JTextField();
-                        Object[] message = {
-                            "Account Name:", field1,
-                            "Last Name:", field2,
-                            "First Name:", field3,
-                            "DOB:", field4};
-                        field1.setText("");
-                        field2.setText("");
-                        field3.setText("");
-                        field4.setText("");
-                        String accountName = "";
-                        field1.addAncestorListener(new RequestFocusListener());
-                        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
-                        if (option == JOptionPane.OK_OPTION) {
-                            if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty()) {
-                                //do nothing, they clicked OK with everything blank
-                            } else {
-                                String[] choices = myDB.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
-                                if (choices != null) {
-                                    accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                                            "Choose AR Account", JOptionPane.QUESTION_MESSAGE, null, // Use
-                                            // default
-                                            // icon
-                                            choices, // Array of choices
-                                            choices[0]); // Initial choice
-                                    if (accountName != null) {
-                                        checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems,(String)empList2.getSelectedItem());
-                                        changeDue.setText("Change Due: $0.00");
-                                        displayChangeDue = true;
-                                        updateCartScreen();
-                                    }//end if accountname not null
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
+                        if (!curCart.isEmpty() && !curCart.containsChargedItem()) {
+                            JFrame textInputFrame = new JFrame("");
+                            JTextField field1 = new JTextField();
+                            JTextField field2 = new JTextField();
+                            JTextField field3 = new JTextField();
+                            JTextField field4 = new JTextField();
+                            Object[] message = {
+                                "Account Name:", field1,
+                                "Last Name:", field2,
+                                "First Name:", field3,
+                                "DOB:", field4};
+                            field1.setText("");
+                            field2.setText("");
+                            field3.setText("");
+                            field4.setText("");
+                            String accountName = "";
+                            field1.addAncestorListener(new RequestFocusListener());
+                            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
+                            if (option == JOptionPane.OK_OPTION) {
+                                if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty()) {
+                                    //do nothing, they clicked OK with everything blank
                                 } else {
-                                    JFrame message1 = new JFrame("");
-                                    JOptionPane.showMessageDialog(message1, "No such account found.");
+                                    String[] choices = myDB.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
+                                    if (choices != null) {
+                                        accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
+                                                "Choose AR Account", JOptionPane.QUESTION_MESSAGE, null, // Use
+                                                // default
+                                                // icon
+                                                choices, // Array of choices
+                                                choices[0]); // Initial choice
+                                        if (accountName != null) {
+                                            checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
+                                            changeDue.setText("Change Due: $0.00");
+                                            displayChangeDue = true;
+                                            updateCartScreen();
+                                        }//end if accountname not null
+                                    } else {
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "No such account found.");
+                                    }//end else
+
                                 }//end else
-
-                            }//end else
-                        }//end if OK_OPTION
-                    } else {
-                        if (curCart.containsChargedItem()) {
-                            JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, "Please remove account payments before charging.");
+                            }//end if OK_OPTION
+                        } else {
+                            if (curCart.containsChargedItem()) {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Please remove account payments before charging.");
+                            }
                         }
+                    } else {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
                     }
-
                 } else {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -2043,31 +2061,12 @@ public class MainFrame extends javax.swing.JFrame {
 
     public void setData(Database myDB) {
         this.setTitle("Smith's Super-Aid POS");
-        //ImageIcon image = new ImageIcon("C:\\Users\\A.Smith\\Downloads\\Logo7.png");
-        // this.setIconImage(image.getImage());
-        //employeeSelectionHeader.setText("Active Clerk: " + myDB.getEmployeeNameByCode(20));
         this.myDB = myDB;
         checkout = new CheckoutHandler(myDB);
         curCart = new Cart();//new cart because program just launched!
         String[] employeeStrings = myDB.getEmployeesFromDatabase();
-        //System.out.println(employeeStrings[0]);
-
-        // empList = new JComboBox(employeeStrings);
         employeeSelectionHeader.setBounds(120, 825, 400, 30);
         employeeSelectionHeader.setVisible(true);
-        // empList.setSelectedIndex(0);
-        // empList.setVisible(true);
-        // empList.setBounds(100, 850, 200, 30);
-
-        /*
-        empList.addActionListener(new java.awt.event.ActionListener() {  //END TEST
-            public void actionPerformed(ActionEvent event) {
-                checkForAdminButtonVisible();
-                //THIS WILL BE CALLED WHEN A NEW EMPLOYEE IS SELECTED TO RUN REGISTER
-                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-            }//end actionPerformed
-        });//end empListActionListener
-         */
         this.add(employeeSelectionHeader);
         String[] empStrings2 = new String[employeeStrings.length + 1];
         empStrings2[0] = "NO";
@@ -2096,11 +2095,6 @@ public class MainFrame extends javax.swing.JFrame {
         updateCartScreen();
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -2109,14 +2103,6 @@ public class MainFrame extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
-            }
-        });
-        addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                formKeyPressed(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                formKeyTyped(evt);
             }
         });
 
@@ -2133,14 +2119,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-
-    }//GEN-LAST:event_formKeyPressed
-
-    private void formKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyTyped
-        System.out.println(evt.getKeyCode());
-    }//GEN-LAST:event_formKeyTyped
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (displayActive) {
@@ -2400,7 +2378,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.0", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.0.02", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

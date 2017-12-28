@@ -140,9 +140,9 @@ public class Item {
     public double getTotal() {
         double totalOnItem = 0;
         double itemP;
-        itemP = round(itemPrice * quantity) - round(itemPrice * quantity * percentageDisc);
+        itemP = round(itemPrice * quantity) - round(round(itemPrice * quantity) * percentageDisc);
         if (isTaxable) {
-            totalOnItem = round(itemP + itemP * taxRate);
+            totalOnItem = round(itemP + round(itemP * taxRate));
         } else {
             totalOnItem = round(itemP);
         }
@@ -151,7 +151,7 @@ public class Item {
     }//end getTotal()
 
     double getPriceOfItemsBeforeTax() {
-        double total = round(round(itemPrice * quantity)-round(itemPrice * quantity * percentageDisc));
+        double total = round(round(itemPrice * quantity)-round(round(itemPrice * quantity) * percentageDisc));
         return total;
     }//end priceOfItemsBeforeTax
 
@@ -161,7 +161,7 @@ public class Item {
     }//end priceOfItemsBeforeTax
        
     double getTaxTotal() {
-        double itemP = round(itemPrice * quantity) - round(itemPrice * quantity * percentageDisc);
+        double itemP = round(itemPrice * quantity) - round(round(itemPrice * quantity) * percentageDisc);
         if (isTaxable) {
             double taxTotal = round(itemP * taxRate);
             return taxTotal;
@@ -220,7 +220,7 @@ public class Item {
     }
 
     public Double getDiscountAmount() {
-        double discountAmt = round(quantity * itemPrice * percentageDisc);
+        double discountAmt = round(round(quantity * itemPrice) * percentageDisc);
         return discountAmt;
     }
 

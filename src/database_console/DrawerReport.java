@@ -33,6 +33,7 @@ public class DrawerReport implements Serializable {
     //Total Refunded Today
     private double totalRefundedCash = 0;//UPDATED
     private double totalRefundedCredit = 0;//UPDATED
+    private ArrayList<String> masterRefundDescriptionAndAmt = new ArrayList<>();
 
     //lunch counter
     private double lunchTotalAmt = 0;
@@ -90,7 +91,8 @@ public class DrawerReport implements Serializable {
         paidOut(description, amount);
     }
 
-    DrawerReport(double amount) {//master Refund
+    DrawerReport(double amount,String description) {//master Refund
+        masterRefundDescriptionAndAmt.add(description + "@" + amount);
         totalRefundedCash = amount;
         totalCashAmt -= amount;
 
@@ -108,7 +110,8 @@ public class DrawerReport implements Serializable {
         }
     }
 
-    public void masterRefund(double amount) {
+    public void masterRefund(double amount, String description) {
+        masterRefundDescriptionAndAmt.add(description + "@" + amount);
         totalRefundedCash += amount;
         totalCashAmt += totalCoinsAmt;
         totalCashAmt -= amount;
@@ -125,6 +128,7 @@ public class DrawerReport implements Serializable {
         if (isNegative) {
             totalCoinsAmt *= -1;
         }
+
     }
 
     public void refundUpdate(RefundCart curCart, String clerkName, String[] paymentType, double paymentAmt[]) {
@@ -293,14 +297,14 @@ public class DrawerReport implements Serializable {
                 if (!employeesWhoPaidForItems.contains(employeeCheckoutName)) {
                     employeesWhoPaidForItems.add(employeeCheckoutName);
                     ArrayList<String> tempItem = new ArrayList<>();
-                    tempItem.add(item.getQuantity()+"x "+item.getName()+" "+item.getTotal());
+                    tempItem.add(item.getQuantity() + "x " + item.getName() + " " + item.getTotal());
                     itemsEmployeesBought.add(tempItem);
                     amtEmployeePaidForAllItems.add(item.getTotal());
                 } else {
                     int indexOfEmp = employeesWhoPaidForItems.indexOf(employeeCheckoutName);
-                    itemsEmployeesBought.get(indexOfEmp).add(item.getQuantity()+"x "+item.getName()+" "+item.getTotal());
+                    itemsEmployeesBought.get(indexOfEmp).add(item.getQuantity() + "x " + item.getName() + " " + item.getTotal());
                     Double temp = item.getTotal() + amtEmployeePaidForAllItems.get(indexOfEmp);
-                    amtEmployeePaidForAllItems.set(indexOfEmp, temp);                 
+                    amtEmployeePaidForAllItems.set(indexOfEmp, temp);
                 }
                 if (item.getName().toUpperCase().contentEquals("LUNCH")) {
                     lunchTotalAmt += item.getTotal();
@@ -408,23 +412,29 @@ public class DrawerReport implements Serializable {
         System.out.println("Total DME Non Taxed: $" + dmeWithoutTax);
         System.out.println("Total Charged to RX Accounts: $" + totalChargesRXAmt);
 
-                    System.out.print("\n EMPLOYEE TRANSACTION DATA:\n");
-            System.out.print("Lunch Total Collected: $"+lunchTotalAmt+"\n");
-            System.out.print("Lunch Check Total Collected: $"+lunchTotalCheck+"\n");
-            System.out.print("Lunch Cash Total Collected: $"+lunchTotalCash+"\n");
-            System.out.print("Lunch Credit Total Collected: $"+lunchTotalCredit+"\n\n");
-            
-                index = 0;
-                for (String s : employeesWhoPaidForItems) {
-                    System.out.print("Employee Name: " + s + "\n");
-                    System.out.print("Total Paid: " + amtEmployeePaidForAllItems.get(index) + "\n");
-                    ArrayList<String> temp = itemsEmployeesBought.get(index);
-                    for (String item : temp) {
-                        System.out.print(item+ "\n");
-                    }
-                    System.out.print("\n");
-                    index++;
-                }
+        System.out.print("\n EMPLOYEE TRANSACTION DATA:\n");
+        System.out.print("Lunch Total Collected: $" + lunchTotalAmt + "\n");
+        System.out.print("Lunch Check Total Collected: $" + lunchTotalCheck + "\n");
+        System.out.print("Lunch Cash Total Collected: $" + lunchTotalCash + "\n");
+        System.out.print("Lunch Credit Total Collected: $" + lunchTotalCredit + "\n\n");
+
+        if (!masterRefundDescriptionAndAmt.isEmpty()) {
+            System.out.print("\nMaster Refunds: \n");
+            for (String s : masterRefundDescriptionAndAmt) {
+                System.out.print(s + "\n");
+            }
+        }
+        index = 0;
+        for (String s : employeesWhoPaidForItems) {
+            System.out.print("Employee Name: " + s + "\n");
+            System.out.print("Total Paid: " + amtEmployeePaidForAllItems.get(index) + "\n");
+            ArrayList<String> temp = itemsEmployeesBought.get(index);
+            for (String item : temp) {
+                System.out.print(item + "\n");
+            }
+            System.out.print("\n");
+            index++;
+        }
     }
 
     public void generateReport(String date) {
@@ -545,6 +555,14 @@ public class DrawerReport implements Serializable {
             bw.write(totalRXCoppay + "\n");
             bw.write(totalPaperSales + "\n");
             bw.write(totalAmericanGreetings + "\n");
+
+            if (!masterRefundDescriptionAndAmt.isEmpty()) {
+                bw.write("\nMaster Refunds: \n");
+                for (String s : masterRefundDescriptionAndAmt) {
+                    bw.write(s + "\n");
+                }
+            }
+
             bw.write("\nEMPLOYEE TRANSACTIONS:\n");
             int index = 0;
             for (String name : employeeNames) {
@@ -558,27 +576,25 @@ public class DrawerReport implements Serializable {
                 bw.write(s + "  " + amountsPO.get(index) + "\n");
                 index++;
             }
-            
-            bw.write("\n EMPLOYEE TRANSACTION DATA:\n");
-            bw.write("Lunch Total Collected: $"+lunchTotalAmt+"\n");
-            bw.write("Lunch Check Total Collected: $"+lunchTotalCheck+"\n");
-            bw.write("Lunch Cash Total Collected: $"+lunchTotalCash+"\n");
-            bw.write("Lunch Credit Total Collected: $"+lunchTotalCredit+"\n\n");
-            
-                index = 0;
-                for (String s : employeesWhoPaidForItems) {
-                    bw.write("Employee Name: " + s + "\n");
-                    bw.write("Total Paid: " + amtEmployeePaidForAllItems.get(index) + "\n");
-                    ArrayList<String> temp = itemsEmployeesBought.get(index);
-                    for (String item : temp) {
-                        bw.write(item+ "\n");
-                    }
-                    bw.write("\n");
-                    index++;
-                }
 
-    
-    
+            bw.write("\n EMPLOYEE TRANSACTION DATA:\n");
+            bw.write("Lunch Total Collected: $" + lunchTotalAmt + "\n");
+            bw.write("Lunch Check Total Collected: $" + lunchTotalCheck + "\n");
+            bw.write("Lunch Cash Total Collected: $" + lunchTotalCash + "\n");
+            bw.write("Lunch Credit Total Collected: $" + lunchTotalCredit + "\n\n");
+
+            index = 0;
+            for (String s : employeesWhoPaidForItems) {
+                bw.write("Employee Name: " + s + "\n");
+                bw.write("Total Paid: " + amtEmployeePaidForAllItems.get(index) + "\n");
+                ArrayList<String> temp = itemsEmployeesBought.get(index);
+                for (String item : temp) {
+                    bw.write(item + "\n");
+                }
+                bw.write("\n");
+                index++;
+            }
+
         } catch (IOException e) {
 
             e.printStackTrace();

@@ -76,7 +76,7 @@ public class RefundItem extends Item{
      public double getTotal() {
         double totalOnItem = 0;
         double itemP;
-        itemP = round(itemPrice * quantityBeingRefunded) - round(itemPrice * quantityBeingRefunded * percentageDisc);
+        itemP = round(itemPrice * quantityBeingRefunded) - round(round(itemPrice * quantityBeingRefunded) * percentageDisc);
         if (isTaxable) {
             totalOnItem = round(itemP + itemP * taxRate);
         } else {
@@ -88,19 +88,19 @@ public class RefundItem extends Item{
 
     @Override
     double getPriceOfItemsBeforeTax() {
-        double total = round(itemPrice * quantityBeingRefunded)-round(itemPrice * quantityBeingRefunded * percentageDisc);
+        double total = round(itemPrice * quantityBeingRefunded)-round(round(itemPrice * quantityBeingRefunded) * percentageDisc);
         return total;
     }//end priceOfItemsBeforeTax
 
     double getPriceOfItemsBeforeTaxWithMaxQtyRefund() {
-        double total = round(itemPrice * quantity)-round(itemPrice * quantity * percentageDisc);
+        double total = round(itemPrice * quantity)-round(round(itemPrice * quantity) * percentageDisc);
         return total;
     }//end priceOfItemsBeforeTax
 
        
     @Override
     double getTaxTotal() {
-        double itemP = round(itemPrice * quantityBeingRefunded) - round(itemPrice * quantityBeingRefunded * percentageDisc);
+        double itemP = round(itemPrice * quantityBeingRefunded) - round(round(itemPrice * quantityBeingRefunded) * percentageDisc);
         if (isTaxable) {
             double taxTotal = round(itemP * taxRate);
             return taxTotal;
@@ -112,7 +112,7 @@ public class RefundItem extends Item{
     
     @Override
      public Double getDiscountAmount() {
-        double discountAmt = round(quantityBeingRefunded * itemPrice * percentageDisc);
+        double discountAmt = round(round(quantityBeingRefunded * itemPrice) * percentageDisc);
         return discountAmt;
     }
 }//end RefundItem
