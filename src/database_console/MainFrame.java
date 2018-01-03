@@ -49,9 +49,7 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setBounds(100, 100, 1120, 1200);
         jPanel1.setBackground(new Color(255, 255, 255));
         jPanel1.setAutoscrolls(true);
-        this.add(quote);
-        quote.setVisible(true);
-        quote.setBounds(10, 10, 1900, 50);
+
         JScrollPane helpSP = new JScrollPane(jPanel1,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -76,7 +74,7 @@ public class MainFrame extends javax.swing.JFrame {
                         if (myText.length() > 11) {
                             myText = myText.substring(0, 11);
                         }
-
+                        
                         Item myItem = new Item(myDB, myText);
 
                         if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
@@ -169,6 +167,7 @@ public class MainFrame extends javax.swing.JFrame {
         subTotalHeader.setFont(new Font(subTotalHeader.getName(), Font.BOLD, 12));
         subTotalHeader.setVisible(true);
 
+        
         this.add(employeeCheckoutHeader);
         employeeCheckoutHeader.setVisible(true);
         this.add(discountHeader);
@@ -200,6 +199,23 @@ public class MainFrame extends javax.swing.JFrame {
         lookupReceiptByRXButton.setSize(100, 100);
         lookupReceiptByRXButton.setBackground(new Color(255, 200, 100));
 
+                //this creates the quoteButton
+        quoteButton.setLocation(10, 10);
+        quoteButton.setSize(100, 15);
+        quoteButton.setBackground(new Color(10, 255, 10));
+        quoteButton.setVisible(true);
+        this.add(quoteButton);
+        
+        quoteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                String temp = myDB.getQuote();
+                while(!temp.contentEquals("")&&temp.contentEquals(quote.getText())){
+                    temp = myDB.getQuote();
+                }
+                quote.setText(temp);
+                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }});
+        
         createTicket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -2063,6 +2079,10 @@ public class MainFrame extends javax.swing.JFrame {
         this.setTitle("Smith's Super-Aid POS");
         this.myDB = myDB;
         checkout = new CheckoutHandler(myDB);
+        quote.setText(myDB.getQuote());
+        this.add(quote);
+        quote.setVisible(true);
+        quote.setBounds(10, 10, 1900, 50);
         curCart = new Cart();//new cart because program just launched!
         String[] employeeStrings = myDB.getEmployeesFromDatabase();
         employeeSelectionHeader.setBounds(120, 825, 400, 30);
@@ -2320,7 +2340,7 @@ public class MainFrame extends javax.swing.JFrame {
     JLabel subTotal = new JLabel("Subtotal: ", SwingConstants.RIGHT);
     JLabel changeDue = new JLabel("Change Due: ", SwingConstants.RIGHT);
     boolean displayChangeDue = false;
-    JLabel quote = new JLabel("\"Pass on what you have learned, strength, mastery, but weakness, folly, failure also. Failure most of all. The greatest teacher, failure is.\" Jedi Master Yoda", SwingConstants.LEFT);
+    JLabel quote = new JLabel("", SwingConstants.LEFT);
     // JComboBox empList;//this has the select employee at its current selection
     JComboBox empList2;
     JLabel itemPriceHeader = new JLabel("Price Per Item: ", SwingConstants.RIGHT);
@@ -2369,6 +2389,7 @@ public class MainFrame extends javax.swing.JFrame {
     JButton clerkLogoutButton = new JButton("Clerk Logout");
     JButton addDmeAccountButton = new JButton("Add DME Account");
     JButton activateDisplayButton = new JButton("Activate Display");
+    JButton quoteButton = new JButton("New Quote");
     String cancelRefund = "Cancel\nRefund";
     JButton cancelRefundButton = new JButton("<html>" + cancelRefund.replaceAll("\\n", "<br>") + "</html>");
     JButton massDiscountButton = new JButton("");
@@ -2378,7 +2399,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.0.02", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.0.03", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

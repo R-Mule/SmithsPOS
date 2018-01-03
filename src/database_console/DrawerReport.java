@@ -106,7 +106,7 @@ public class DrawerReport implements Serializable {
         totalCoinsAmt = round(totalCoinsAmt);
         totalCashAmt = round(totalCashAmt);
         if (isNegative) {
-            totalCoinsAmt *= -1;
+            totalCoinsAmt =round(totalCoinsAmt *-1);
         }
     }
 
@@ -126,7 +126,7 @@ public class DrawerReport implements Serializable {
         totalCoinsAmt = round(totalCoinsAmt);
         totalCashAmt = round(totalCashAmt);
         if (isNegative) {
-            totalCoinsAmt *= -1;
+            totalCoinsAmt= round(totalCoinsAmt *-1);
         }
 
     }
@@ -150,7 +150,7 @@ public class DrawerReport implements Serializable {
             totalCoinsAmt = round(totalCoinsAmt);
             totalCashAmt = round(totalCashAmt);
             if (isNegative) {
-                totalCoinsAmt *= -1;
+                totalCoinsAmt =round(totalCoinsAmt *-1);
             }
         }
 
@@ -188,7 +188,7 @@ public class DrawerReport implements Serializable {
                 totalCoinsAmt = round(totalCoinsAmt);
                 totalCashAmt = round(totalCashAmt);
                 if (isNegative) {
-                    totalCoinsAmt *= -1;
+                    totalCoinsAmt =round(totalCoinsAmt * -1);
                 }
 
             } else if (paymentType[i].contains("CREDIT")) {
@@ -216,7 +216,7 @@ public class DrawerReport implements Serializable {
             totalCoinsAmt = round(totalCoinsAmt);
             totalCashAmt = round(totalCashAmt);
             if (isNegative) {
-                totalCoinsAmt *= -1;
+                totalCoinsAmt =round(totalCoinsAmt * -1);
             }
         }
 
@@ -262,9 +262,9 @@ public class DrawerReport implements Serializable {
                 } else {
                     dmeWithoutTax += item.getPriceOfItemsBeforeTax();
                 }
-            } else if (item.itemName.toUpperCase().contentEquals("LUNCH")) {//MUST BE AN OTC CATEGORY!
+            } else if (item.itemName.toUpperCase().contentEquals("LUNCH")) {
 
-            } else {
+            } else {//MUST BE AN OTC CATEGORY!
                 if (item.isTaxable()) {
                     otcTaxedTotal += item.getPriceOfItemsBeforeTax();
                 } else {
@@ -337,7 +337,7 @@ public class DrawerReport implements Serializable {
         totalCoinsAmt = round(totalCoinsAmt);
         totalCashAmt = round(totalCashAmt);
         if (isNegative) {
-            totalCoinsAmt *= -1;
+            totalCoinsAmt = round(totalCoinsAmt * -1);
         }
     }
 

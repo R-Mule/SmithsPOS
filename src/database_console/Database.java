@@ -24,7 +24,27 @@ public class Database {
         userName = reader.getUserName();
         password = reader.getPassword();
     }//end databaseCtor
-
+    
+    public String getQuote(){
+                try {
+                   ArrayList<String> quotes = new ArrayList<>();
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from quotes;");
+            while (rs.next()) {
+                quotes.add(rs.getString(2));
+            }//end while
+            int index = (int)(Math.random() * (quotes.size()-1 - 0) + 0);
+            con.close();
+            return quotes.get(index);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+    
     public String getReceiptString(String receiptNum){
                 try {
             Class.forName(driverPath);
@@ -33,10 +53,10 @@ public class Database {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from receiptsFull where receiptNum = '" + receiptNum+"';");
             while (rs.next()) {
-                return rs.getString(3);
-            }//end while
-            
-            con.close();
+                String temp = rs.getString(3);
+                con.close();
+                return temp;
+            }//end while       
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -66,7 +86,9 @@ public class Database {
             while (rs.next()) {
                 //Statement stmt2 = con.createStatement();
                 //stmt2.executeUpdate("UPDATE `inventory` set price=" + price + " where mutID = '" + mutID + "';");
-                return rs.getString(2);
+                String temp  = rs.getString(2);
+                con.close();
+                return temp;
             }//end while
             
             con.close();
@@ -161,7 +183,7 @@ public class Database {
             while (rs.next()) {
                 // System.out.println(rs.getString(2));
                 if (rs.getString(2).contentEquals(id)) {
-                    //System.out.println("HERE!");
+                    con.close();
                     return true;
                 }
 //}//end if

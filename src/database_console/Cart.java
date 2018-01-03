@@ -184,15 +184,15 @@ public class Cart {
             for (Item temp : items) {
                 if (!temp.isPreCharged()) {
                     if (temp.isTaxable()) {
-                        taxableAmt += temp.getPrice() * temp.getQuantity() - temp.getDiscountAmount();
+                        taxableAmt += round(round(temp.getPrice() * temp.getQuantity()) - temp.getDiscountAmount());
                     } else {
-                        nonTaxableAmt += temp.getPrice() * temp.getQuantity() - temp.getDiscountAmount();
+                        nonTaxableAmt += round(round(temp.getPrice() * temp.getQuantity()) - temp.getDiscountAmount());
                     }//end else
                 }
             }//end for
             taxableAmt = round(taxableAmt);
             nonTaxableAmt = round(nonTaxableAmt);
-            amtOfTaxCharged = taxableAmt * taxRate;
+            amtOfTaxCharged = round(taxableAmt * taxRate);
             amtOfTaxCharged = round(amtOfTaxCharged);
             totalPriceBeforeTax = taxableAmt + nonTaxableAmt;
             totalPriceBeforeTax = round(totalPriceBeforeTax);
