@@ -37,7 +37,7 @@ public class CheckoutHandler {
 
     }
 
-    public void beginSplitTenderCheckout(Cart curCart, double cashAmt, double credit1Amt, double credit2Amt, double check1Amt, double check2Amt, int check1Num, int check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame,String employeeCheckoutName) {
+    public void beginSplitTenderCheckout(Cart curCart, double cashAmt, double credit1Amt, double credit2Amt, double check1Amt, double check2Amt, int check1Num, int check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame, String employeeCheckoutName) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
         String receiptNum = dateFormat.format(date) + registerID;
@@ -88,7 +88,8 @@ public class CheckoutHandler {
         }
 
         if (curCart.getTotalNumRX() > 0) {
-            rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            mainFrame.receiptNum = receiptNum;
         }
 
         //RX's are saved!
@@ -100,7 +101,7 @@ public class CheckoutHandler {
 
     }
 
-    public void beginCashCheckout(Cart curCart, double amtPaid, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame,String employeeCheckoutName) {
+    public void beginCashCheckout(Cart curCart, double amtPaid, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame, String employeeCheckoutName) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
         String receiptNum = dateFormat.format(date) + registerID;
@@ -112,11 +113,12 @@ public class CheckoutHandler {
         //STORE CART BEFORE SIGNOUT CHECK
 
         if (curCart.getTotalNumRX() > 0) {
-            rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            mainFrame.receiptNum = receiptNum;
         }
 
         //RX's are saved!
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame,employeeCheckoutName);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName);
         myDB.storeReceipt(curCart, receiptNum);
 
         mainFrame.voidCarts();
@@ -125,6 +127,7 @@ public class CheckoutHandler {
 
     }
 
+    /* DEPRECIATED UPDATE 1.0.05
     public void rxSignout(Cart curCart, MainFrame mainFrame, String receiptNum, String clerkName, double[] paymentAmt, String[] paymentType, ArrayList<GuiCartItem> guiItems) {
         int reply = JOptionPane.showConfirmDialog(null, "Does patient have questions about medications?", "Medication Questions", JOptionPane.YES_NO_OPTION);
         boolean questions = false;
@@ -144,8 +147,8 @@ public class CheckoutHandler {
             frame.setVisible(true);
         }
     }
-
-    public void beginCheckCheckout(Cart curCart, double amtPaid, String clerkName, int checkNum, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems,String employeeCheckoutName) {
+     */
+    public void beginCheckCheckout(Cart curCart, double amtPaid, String clerkName, int checkNum, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems, String employeeCheckoutName) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
         String receiptNum = dateFormat.format(date) + registerID;
@@ -155,15 +158,16 @@ public class CheckoutHandler {
         paymentAmt[0] = amtPaid;
         paymentType[0] = "CHECK#" + checkNum + ": ";
         if (curCart.getTotalNumRX() > 0) {
-            rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            mainFrame.receiptNum = receiptNum;
         }
 
         myDB.storeReceipt(curCart, receiptNum);
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame,employeeCheckoutName);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName);
         mainFrame.voidCarts();
     }
 
-    public void beginCreditCheckout(Cart curCart, double amtPaid, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems,String employeeCheckoutName) {
+    public void beginCreditCheckout(Cart curCart, double amtPaid, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems, String employeeCheckoutName) {
         double[] paymentAmt = new double[1];
         String[] paymentType = new String[1];
         Date date = new Date();
@@ -174,14 +178,15 @@ public class CheckoutHandler {
         paymentType[0] = String.format("CREDIT: ");// + cardType + "%04d", cardNumber);
 
         if (curCart.getTotalNumRX() > 0) {
-            rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            mainFrame.receiptNum = receiptNum;
         }
         myDB.storeReceipt(curCart, receiptNum);
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame,employeeCheckoutName);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName);
         mainFrame.voidCarts();
     }
 
-    public void beginChargeCheckout(Cart curCart, String accountName, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems,String employeeCheckoutName) {
+    public void beginChargeCheckout(Cart curCart, String accountName, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems, String employeeCheckoutName) {
         double[] paymentAmt = new double[1];
         String[] paymentType = new String[1];
         Date date = new Date();
@@ -193,22 +198,23 @@ public class CheckoutHandler {
         paymentType[0] = "CHARGED TO " + accountName.substring(0, spaceLoc) + ": ";
 
         if (curCart.getTotalNumRX() > 0) {
-            rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            mainFrame.receiptNum = receiptNum;
         }
         myDB.storeReceipt(curCart, receiptNum);
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame,employeeCheckoutName);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName);
         mainFrame.voidCarts();
 
     }
 
-    public void printReceipt(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself,String employeeCheckoutName) {
+    public void printReceipt(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself, String employeeCheckoutName) {
 
         PrinterService printerService = new PrinterService();
         boolean itemDiscounted = false;
         boolean isCreditSale = false;
         boolean requires2Receipts = false;
-        double prechargedTotal=0;
-        
+        double prechargedTotal = 0;
+
         int rxCntr = 0;
         //System.out.println(printerService.getPrinters());
         String receipt = "";
@@ -227,8 +233,8 @@ public class CheckoutHandler {
         //print some stuff
         ArrayList<Item> items = curCart.getItems();
         for (Item item : items) {
-            if(item.isRX()&&item.isPreCharged()){
-                prechargedTotal+=item.getPriceOfItemBeforeTax();
+            if (item.isRX() && item.isPreCharged()) {
+                prechargedTotal += item.getPriceOfItemBeforeTax();
             }
             if (item.getCategory() == 853 || item.getCategory() == 854) {
                 requires2Receipts = true;
@@ -247,7 +253,7 @@ public class CheckoutHandler {
                 if (!isPreCharged) {
                     receipt += String.format("RX %-36s $%7.2f\n", itemName, price);
                 } else {
-                   // itemName = itemName+"$"+item.getPriceOfItemBeforeTax(); This puts the price before precharged, not using it right now
+                    // itemName = itemName+"$"+item.getPriceOfItemBeforeTax(); This puts the price before precharged, not using it right now
                     receipt += String.format("RX %-36s $%7s\n", itemName, "PRECHG");
                 }
             } else if (item.getCategory() == 853) {//item is an RA NO QUANTITY
@@ -307,23 +313,21 @@ public class CheckoutHandler {
         }
         changeDue = totalPaid - total;
         receipt += String.format("%37s%8.2f\n", "CHANGE DUE: $", changeDue);
-        if(prechargedTotal>0){
-            receipt+=String.format("%37s%8.2f\n", "TOTAL PRECHARGED: $", prechargedTotal);
+        if (prechargedTotal > 0) {
+            receipt += String.format("%37s%8.2f\n", "TOTAL PRECHARGED: $", prechargedTotal);
         }
         if (rxCntr > 0) {
             receipt += "\nTotal RX(s): " + rxCntr + "\n";
         }
-        if(!employeeCheckoutName.contentEquals("NO")){
-            receipt+="\nPurchasing Employee: "+employeeCheckoutName+"\n";
-            
+        if (!employeeCheckoutName.contentEquals("NO")) {
+            receipt += "\nPurchasing Employee: " + employeeCheckoutName + "\n";
+
         }
-        
+
         receipt += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
         receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n\n\n\n\n\n";
-        
-        
+
         printerService.printString(printerName, receipt);
-        
 
         // cut that paper!
         byte[] cutP = new byte[]{0x1d, 'V', 1};
@@ -433,7 +437,7 @@ public class CheckoutHandler {
                 }
             } else if (item.refundTaxOnly() && !item.refundAllActive()) {
                 if (refundCart.containsItemByID(item.getID() + "T")) {
-                        refundCart.increaseQtyByID(item.getID() + "T", item.quantityBeingRefunded);
+                    refundCart.increaseQtyByID(item.getID() + "T", item.quantityBeingRefunded);
 
                     item.quantity -= item.quantityBeingRefunded;
                     if (item.quantity == 0) {
@@ -560,7 +564,7 @@ public class CheckoutHandler {
         printerService.printBytes(printerName, cutP);
         myself.previousReceipt = receipt;
 
-        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true,"NO");
+        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true, "NO");
     }
 
     public void reprintReceipt(String receipt) {
@@ -611,7 +615,7 @@ public class CheckoutHandler {
         }
     }
 
-    public void beginMasterRefund(double amount,String description) {
+    public void beginMasterRefund(double amount, String description) {
         DrawerReport dr = null;
 
         try {
@@ -623,9 +627,9 @@ public class CheckoutHandler {
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
-                dr.masterRefund(amount,description);
+                dr.masterRefund(amount, description);
             } else {
-                dr = new DrawerReport(amount,description);
+                dr = new DrawerReport(amount, description);
             }
 
             // write object to file
@@ -650,7 +654,7 @@ public class CheckoutHandler {
         }
     }
 
-    public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund,String employeeCheckoutName) {
+    public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund, String employeeCheckoutName) {
         DrawerReport dr = null;
 
         try {
@@ -663,13 +667,13 @@ public class CheckoutHandler {
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
                 if (!isRefund) {
-                    dr.update(curCart, clerkName, paymentType, paymentAmt,employeeCheckoutName);
+                    dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName);
                 } else {
                     dr.refundUpdate((RefundCart) curCart, clerkName, paymentType, paymentAmt);
                 }
             } else {
                 if (!isRefund) {
-                    dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt,employeeCheckoutName);
+                    dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName);
                 } else {
                     dr = new DrawerReport((RefundCart) curCart, clerkName, paymentType, paymentAmt, isRefund);
                 }

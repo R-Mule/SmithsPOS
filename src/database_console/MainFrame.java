@@ -1321,6 +1321,7 @@ public class MainFrame extends javax.swing.JFrame {
         voidButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 voidCarts();
+                
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
         });//end voidButtonAction
@@ -2280,6 +2281,12 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void voidCarts() {
+
+        if(!receiptNum.isEmpty()){
+            updateCartScreen();
+            rxSignout();
+            receiptNum="";
+        }
         curCart.voidCart();
         refundCart.voidCart();
         previousInsurance = "AARP";
@@ -2299,6 +2306,26 @@ public class MainFrame extends javax.swing.JFrame {
         updateCartScreen();
     }
 
+        public void rxSignout() {
+        int reply = JOptionPane.showConfirmDialog(null, "Does patient have questions about medications?", "Medication Questions", JOptionPane.YES_NO_OPTION);
+        boolean questions = false;
+        if (reply == JOptionPane.YES_OPTION) {
+            questions = true;
+        }
+
+        //We need sig, and to save RX File.
+        CapSignature frame = new CapSignature(this, curCart, checkout.reader.getRemoteDrivePath(), receiptNum);
+
+        frame.begin(questions);
+        frame.setVisible(true);
+
+        while (!frame.hasBeenSaved) {
+            frame = new CapSignature(this, curCart, checkout.reader.getRemoteDrivePath(), receiptNum);
+            frame.begin(questions);
+            frame.setVisible(true);
+        }
+    }
+        
     /**
      * @param args the command line arguments
      */
@@ -2400,7 +2427,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.0.04", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.0.05", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -2416,6 +2443,7 @@ public class MainFrame extends javax.swing.JFrame {
     PoleDisplay display;
     RefundCart refundCart = new RefundCart();
     boolean displayActive = false;
+    String receiptNum="";
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
