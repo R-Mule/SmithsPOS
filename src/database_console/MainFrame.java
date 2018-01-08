@@ -990,15 +990,16 @@ public class MainFrame extends javax.swing.JFrame {
                     if (option == JOptionPane.OK_OPTION) {
                         int rxNumber;
                         String fillDate;
+                        fillDate = field2.getText();
                         try {
                             String insurance = (String) list.getSelectedValue();
                             rxNumber = Integer.parseInt(field1.getText());
                             int length = (int) (Math.log10(rxNumber) + 1);
-                            if (!validateRX(length, rxNumber, insurance)) {//invalid RXNumber
+                            if (!validateRX(length, rxNumber, insurance,fillDate)) {//invalid RXNumber
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Invalid RX Number");
                             } else {
-                                fillDate = field2.getText();
+                                
                                 if (!validateDate(fillDate)) {
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "Invalid Fill Date");
@@ -1010,7 +1011,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     } else {//else everything checks out! WE HAVE ALL GOOD DATA!!!
                                         double copay = Double.parseDouble(temp);
                                         Item tempItem = new Item(myDB, rxNumber, fillDate, insurance, copay, false);
-                                        if (!curCart.containsRX(tempItem.rxNumber, insurance)) {
+                                        if (!curCart.containsRX(tempItem.rxNumber, insurance,fillDate)) {
                                             curCart.addItem(tempItem);
                                             guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                             totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
@@ -2146,8 +2147,8 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
-    private boolean validateRX(int length, int rxNumber, String insurance) {
-        if (length == 7 && !curCart.containsRX(rxNumber, insurance)) {
+    private boolean validateRX(int length, int rxNumber, String insurance,String fillDate) {
+        if (length == 7 && !curCart.containsRX(rxNumber, insurance,fillDate)) {
             return true;
         }
         return false;
@@ -2399,7 +2400,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.0.03", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.0.04", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

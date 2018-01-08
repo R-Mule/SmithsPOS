@@ -237,15 +237,6 @@ public class RefundCart extends Cart {
         }
         return total;
     }
-   @Override
-    public boolean containsRX(int rxNumber, String insurance) {
-        for (RefundItem item : refundItems) {
-            if (item.getRxNumber() == rxNumber && item.getInsurance() == insurance) {
-                return true;
-            }//end if we found rxNumber already!
-        }//end for
-        return false;
-    }//end contains RX
 
    @Override
     void setMassDiscount(double discPer) {

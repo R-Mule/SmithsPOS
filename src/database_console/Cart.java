@@ -36,7 +36,7 @@ public class Cart {
                 boolean found = false;
                 for (Item cartItem : items) {
                     if (cartItem.isRX()) {
-                        if (cartItem.getID().contentEquals(item.getID()) && cartItem.getInsurance().contentEquals(item.getInsurance())) {
+                        if (cartItem.getID().contentEquals(item.getID()) && cartItem.getInsurance().contentEquals(item.getInsurance()) && cartItem.getFillDate().contentEquals(item.getFillDate())) {
                             found = true;
                         }//end if
                     } else {
@@ -118,7 +118,7 @@ public class Cart {
         System.out.println(itemToAdd.getID());
         if (itemToAdd.isRX()){
             for (Item item : items) {
-                if (item.getRxNumber() == itemToAdd.getRxNumber() && item.getInsurance().contentEquals(itemToAdd.getInsurance())) {
+                if (item.getRxNumber() == itemToAdd.getRxNumber() && item.getInsurance().contentEquals(itemToAdd.getInsurance())&&item.getFillDate().contentEquals(itemToAdd.getFillDate())) {
                     int i = item.getQuantity();
                     item.setQuantity(i + 1);
                      System.out.println("HERE1");
@@ -252,9 +252,9 @@ public class Cart {
         return total;
     }
 
-    public boolean containsRX(int rxNumber, String insurance) {
+    public boolean containsRX(int rxNumber, String insurance,String fillDate) {
         for (Item item : items) {
-            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance)) {
+            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance)&& item.getFillDate().contentEquals(fillDate)) {
                 return true;
             }//end if we found rxNumber already!
         }//end for
