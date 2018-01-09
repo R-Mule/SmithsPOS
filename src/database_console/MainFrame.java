@@ -2313,7 +2313,7 @@ public class MainFrame extends javax.swing.JFrame {
             questions = true;
         }
 
-        //We need sig, and to save RX File.
+        //We need sig, and to save RX File.TEST
         CapSignature frame = new CapSignature(this, curCart, checkout.reader.getRemoteDrivePath(), receiptNum);
 
         frame.begin(questions);
