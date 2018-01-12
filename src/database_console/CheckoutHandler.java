@@ -11,7 +11,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -212,6 +211,7 @@ public class CheckoutHandler {
         PrinterService printerService = new PrinterService();
         boolean itemDiscounted = false;
         boolean isCreditSale = false;
+        boolean containsAccntPayment=false;
         boolean requires2Receipts = false;
         double prechargedTotal = 0;
 
@@ -233,6 +233,7 @@ public class CheckoutHandler {
         //print some stuff
         ArrayList<Item> items = curCart.getItems();
         for (Item item : items) {
+            
             if (item.isRX() && item.isPreCharged()) {
                 prechargedTotal += item.getPriceOfItemBeforeTax();
             }
@@ -341,14 +342,21 @@ public class CheckoutHandler {
                 isCreditSale = true;
             }
         }
+        boolean drawerHasBeenKicked=false;
         if (changeDue > 0 || (isCashSale && curCart.getTotalPrice() != 0) || isCreditSale) {
             printerService.printBytes(printerName, kickDrawer);
+            drawerHasBeenKicked=true;
         }
 
         printerService.printBytes(printerName, cutP);
         if (requires2Receipts) {
             printerService.printString(printerName, receipt);
             printerService.printBytes(printerName, cutP);
+            if(!drawerHasBeenKicked){
+                printerService.printBytes(printerName, kickDrawer);
+                drawerHasBeenKicked=true;
+            }
+            
         }
 
         myself.previousReceipt = receipt;

@@ -2061,7 +2061,7 @@ public class MainFrame extends javax.swing.JFrame {
             addNewItemButton.setVisible(true);
             addRxAccountButton.setVisible(true);
             generateReportButton.setVisible(false);
-            addDmeAccountButton.setVisible(false);
+            addDmeAccountButton.setVisible(true);
             masterRefundButton.setVisible(true);
             addRemoveInsuranceButton.setVisible(true);
             masterReprintReceiptButton.setVisible(true);
@@ -2427,7 +2427,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.0.05", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.0.06", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

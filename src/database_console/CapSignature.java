@@ -4,14 +4,17 @@ package database_console;
  *
  * @author A.Smith
  */
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
 import com.topaz.sigplus.*;
 import java.io.*;
 import java.awt.image.BufferedImage;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
