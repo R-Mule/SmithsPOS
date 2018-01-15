@@ -49,7 +49,6 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setBounds(100, 100, 1120, 1200);
         jPanel1.setBackground(new Color(255, 255, 255));
         jPanel1.setAutoscrolls(true);
-
         JScrollPane helpSP = new JScrollPane(jPanel1,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -74,7 +73,7 @@ public class MainFrame extends javax.swing.JFrame {
                         if (myText.length() > 11) {
                             myText = myText.substring(0, 11);
                         }
-                        
+
                         Item myItem = new Item(myDB, myText);
 
                         if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
@@ -167,7 +166,6 @@ public class MainFrame extends javax.swing.JFrame {
         subTotalHeader.setFont(new Font(subTotalHeader.getName(), Font.BOLD, 12));
         subTotalHeader.setVisible(true);
 
-        
         this.add(employeeCheckoutHeader);
         employeeCheckoutHeader.setVisible(true);
         this.add(discountHeader);
@@ -199,23 +197,24 @@ public class MainFrame extends javax.swing.JFrame {
         lookupReceiptByRXButton.setSize(100, 100);
         lookupReceiptByRXButton.setBackground(new Color(255, 200, 100));
 
-                //this creates the quoteButton
+        //this creates the quoteButton
         quoteButton.setLocation(10, 10);
         quoteButton.setSize(100, 15);
         quoteButton.setBackground(new Color(10, 255, 10));
         quoteButton.setVisible(true);
         this.add(quoteButton);
-        
+
         quoteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 String temp = myDB.getQuote();
-                while(!temp.contentEquals("")&&temp.contentEquals(quote.getText())){
+                while (!temp.contentEquals("") && temp.contentEquals(quote.getText())) {
                     temp = myDB.getQuote();
                 }
                 quote.setText(temp);
-                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-            }});
-        
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }
+        });
+
         createTicket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -995,11 +994,11 @@ public class MainFrame extends javax.swing.JFrame {
                             String insurance = (String) list.getSelectedValue();
                             rxNumber = Integer.parseInt(field1.getText());
                             int length = (int) (Math.log10(rxNumber) + 1);
-                            if (!validateRX(length, rxNumber, insurance,fillDate)) {//invalid RXNumber
+                            if (!validateRX(length, rxNumber, insurance, fillDate)) {//invalid RXNumber
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Invalid RX Number");
                             } else {
-                                
+
                                 if (!validateDate(fillDate)) {
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "Invalid Fill Date");
@@ -1011,7 +1010,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     } else {//else everything checks out! WE HAVE ALL GOOD DATA!!!
                                         double copay = Double.parseDouble(temp);
                                         Item tempItem = new Item(myDB, rxNumber, fillDate, insurance, copay, false);
-                                        if (!curCart.containsRX(tempItem.rxNumber, insurance,fillDate)) {
+                                        if (!curCart.containsRX(tempItem.rxNumber, insurance, fillDate)) {
                                             curCart.addItem(tempItem);
                                             guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                             totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
@@ -1321,7 +1320,7 @@ public class MainFrame extends javax.swing.JFrame {
         voidButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 voidCarts();
-                
+
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
         });//end voidButtonAction
@@ -1490,47 +1489,12 @@ public class MainFrame extends javax.swing.JFrame {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
                         if (!curCart.isEmpty()) {
-                            JFrame textInputFrame = new JFrame("");
-                            JLabel creditTotal = new JLabel("Total: $", SwingConstants.RIGHT);
-                            JTextField field1 = new JTextField();
-                            field1.addFocusListener(new java.awt.event.FocusAdapter() {
-                                public void focusLost(java.awt.event.FocusEvent evt) {
-                                    field1.setSelectionStart(0);
-                                    field1.setSelectionEnd(12);
-                                    if (!validateDouble(field1.getText())) {
-                                        field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                                    }//end if
-                                }//end focusGained
-                            });
-                            creditTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
-                            Object[] message = {
-                                "Credit Amount:", field1, creditTotal};
-                            field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                            field1.setSelectionStart(0);
-                            field1.setSelectionEnd(8);
-
-                            field1.addAncestorListener(new RequestFocusListener());
-                            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Credit Amount", JOptionPane.OK_CANCEL_OPTION);
-                            if (option == JOptionPane.OK_OPTION) {
-                                if (!validateDouble(field1.getText())) {
-                                    JFrame message1 = new JFrame("");
-                                    JOptionPane.showMessageDialog(message1, "Improper credit value.");
-                                } else {
-                                    double amtReceived = Double.parseDouble(field1.getText());
-                                    amtReceived = round(amtReceived);
-                                    if (amtReceived < curCart.getTotalPrice()) {
-                                        JFrame message1 = new JFrame("");
-                                        JOptionPane.showMessageDialog(message1, "Not enough credit.");
-                                    } else {
-                                        double change = amtReceived - curCart.getTotalPrice();
-                                        change = round(change);
-                                        checkout.beginCreditCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
-                                        changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                        displayChangeDue = true;
-                                        updateCartScreen();
-                                    }//end else
-                                }//end else
-                            }//end if
+                            boolean goodCheckout = checkout.beginCreditCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
+                            if (goodCheckout) {
+                                changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
+                                displayChangeDue = true;
+                            }
+                            updateCartScreen();
                         } else if (!refundCart.isEmpty()) {
                             boolean isItemToRefund = false;
                             for (RefundItem item : refundCart.getRefundItems()) {
@@ -2148,8 +2112,8 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
-    private boolean validateRX(int length, int rxNumber, String insurance,String fillDate) {
-        if (length == 7 && !curCart.containsRX(rxNumber, insurance,fillDate)) {
+    private boolean validateRX(int length, int rxNumber, String insurance, String fillDate) {
+        if (length == 7 && !curCart.containsRX(rxNumber, insurance, fillDate)) {
             return true;
         }
         return false;
@@ -2282,10 +2246,10 @@ public class MainFrame extends javax.swing.JFrame {
 
     public void voidCarts() {
 
-        if(!receiptNum.isEmpty()){
+        if (!receiptNum.isEmpty()) {
             updateCartScreen();
             rxSignout();
-            receiptNum="";
+            receiptNum = "";
         }
         curCart.voidCart();
         refundCart.voidCart();
@@ -2306,7 +2270,7 @@ public class MainFrame extends javax.swing.JFrame {
         updateCartScreen();
     }
 
-        public void rxSignout() {
+    public void rxSignout() {
         int reply = JOptionPane.showConfirmDialog(null, "Does patient have questions about medications?", "Medication Questions", JOptionPane.YES_NO_OPTION);
         boolean questions = false;
         if (reply == JOptionPane.YES_OPTION) {
@@ -2325,7 +2289,7 @@ public class MainFrame extends javax.swing.JFrame {
             frame.setVisible(true);
         }
     }
-        
+
     /**
      * @param args the command line arguments
      */
@@ -2443,7 +2407,7 @@ public class MainFrame extends javax.swing.JFrame {
     PoleDisplay display;
     RefundCart refundCart = new RefundCart();
     boolean displayActive = false;
-    String receiptNum="";
+    String receiptNum = "";
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 

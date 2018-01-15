@@ -1,5 +1,7 @@
 package database_console;
 
+import java.awt.Color;
+import java.awt.FlowLayout;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,6 +13,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -92,7 +99,7 @@ public class CheckoutHandler {
         }
 
         //RX's are saved!
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
         myDB.storeReceipt(curCart, receiptNum);
 
         mainFrame.voidCarts();
@@ -117,7 +124,7 @@ public class CheckoutHandler {
         }
 
         //RX's are saved!
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
         myDB.storeReceipt(curCart, receiptNum);
 
         mainFrame.voidCarts();
@@ -162,27 +169,49 @@ public class CheckoutHandler {
         }
 
         myDB.storeReceipt(curCart, receiptNum);
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
         mainFrame.voidCarts();
     }
 
-    public void beginCreditCheckout(Cart curCart, double amtPaid, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems, String employeeCheckoutName) {
-        double[] paymentAmt = new double[1];
-        String[] paymentType = new String[1];
-        Date date = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
-        String receiptNum = dateFormat.format(date) + registerID;
+    public boolean beginCreditCheckout(Cart curCart, double amtPaid, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems, String employeeCheckoutName) {
+            mainFrame.setEnabled(false);
+            ArrayList<String> creditInfo = new ArrayList<>();
+            
+            boolean receivedDataBack;
+            CardDataRequester cdr = new CardDataRequester();          
+            cdr.postRequest(reader.getCardReaderURL(), Double.toString(amtPaid));
+            mainFrame.setEnabled(true);
+   
+            //ccwf.setVisible(false);
+            if (cdr.transTerminated()) {
+                return false;
+            }
+            
+            double[] paymentAmt = new double[1];
+            String[] paymentType = new String[1];
+            Date date = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
+            String receiptNum = dateFormat.format(date) + registerID;
+            
+            paymentAmt[0] = amtPaid;
+            paymentType[0] = String.format("CREDIT: ");// + cardType + "%04d", cardNumber);
+            
+            if (curCart.getTotalNumRX() > 0) {
+                //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+                mainFrame.receiptNum = receiptNum;
+            }
+            myDB.storeReceipt(curCart, receiptNum);
+            creditInfo.add("8788290392911");//Merchant ID
+            creditInfo.add(cdr.approvalCode);
+            creditInfo.add(cdr.last4ofCard);
+            creditInfo.add(cdr.transID);
+            creditInfo.add(cdr.authCardType);
+            
+            
+            printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, creditInfo);
+            mainFrame.voidCarts();
+            return true;
 
-        paymentAmt[0] = amtPaid;
-        paymentType[0] = String.format("CREDIT: ");// + cardType + "%04d", cardNumber);
-
-        if (curCart.getTotalNumRX() > 0) {
-            //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
-            mainFrame.receiptNum = receiptNum;
-        }
-        myDB.storeReceipt(curCart, receiptNum);
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName);
-        mainFrame.voidCarts();
     }
 
     public void beginChargeCheckout(Cart curCart, String accountName, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems, String employeeCheckoutName) {
@@ -201,20 +230,28 @@ public class CheckoutHandler {
             mainFrame.receiptNum = receiptNum;
         }
         myDB.storeReceipt(curCart, receiptNum);
-        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName);
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
         mainFrame.voidCarts();
 
     }
 
-    public void printReceipt(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself, String employeeCheckoutName) {
+    public void printReceipt(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself, String employeeCheckoutName, ArrayList<String> creditInfo) {
 
         PrinterService printerService = new PrinterService();
         boolean itemDiscounted = false;
         boolean isCreditSale = false;
-        boolean containsAccntPayment=false;
         boolean requires2Receipts = false;
         double prechargedTotal = 0;
 
+         boolean isCashSale = false;
+        for (int i = 0; i < paymentType.length; i++) {
+            if (paymentType[i].contentEquals("CASH: ")) {
+                isCashSale = true;
+            }
+            if (paymentType[i].contains("CREDIT")) {
+                isCreditSale = true;
+            }
+        }
         int rxCntr = 0;
         //System.out.println(printerService.getPrinters());
         String receipt = "";
@@ -233,7 +270,7 @@ public class CheckoutHandler {
         //print some stuff
         ArrayList<Item> items = curCart.getItems();
         for (Item item : items) {
-            
+
             if (item.isRX() && item.isPreCharged()) {
                 prechargedTotal += item.getPriceOfItemBeforeTax();
             }
@@ -333,30 +370,21 @@ public class CheckoutHandler {
         // cut that paper!
         byte[] cutP = new byte[]{0x1d, 'V', 1};
         byte[] kickDrawer = new byte[]{27, 112, 48, 55, 121};
-        boolean isCashSale = false;
-        for (int i = 0; i < paymentType.length; i++) {
-            if (paymentType[i].contentEquals("CASH: ")) {
-                isCashSale = true;
-            }
-            if (paymentType[i].contains("CREDIT")) {
-                isCreditSale = true;
-            }
-        }
-        boolean drawerHasBeenKicked=false;
+        boolean drawerHasBeenKicked = false;
         if (changeDue > 0 || (isCashSale && curCart.getTotalPrice() != 0) || isCreditSale) {
             printerService.printBytes(printerName, kickDrawer);
-            drawerHasBeenKicked=true;
+            drawerHasBeenKicked = true;
         }
 
         printerService.printBytes(printerName, cutP);
         if (requires2Receipts) {
             printerService.printString(printerName, receipt);
             printerService.printBytes(printerName, cutP);
-            if(!drawerHasBeenKicked){
+            if (!drawerHasBeenKicked) {
                 printerService.printBytes(printerName, kickDrawer);
-                drawerHasBeenKicked=true;
+                drawerHasBeenKicked = true;
             }
-            
+
         }
 
         myself.previousReceipt = receipt;
