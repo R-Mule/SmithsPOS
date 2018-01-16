@@ -48,10 +48,9 @@ public class CheckoutHandler {
         }
         if (credit1Amt > 0) {
             mainFrame.setEnabled(false);
-            
+
             cdr.postRequest(reader.getCardReaderURL(), Double.toString(credit1Amt));
             mainFrame.setEnabled(true);
-            
 
             if (cdr.transTerminated()) {
                 return cdr.responseText;
@@ -59,9 +58,12 @@ public class CheckoutHandler {
             creditInfo.add("8788290392911");//Merchant ID
             creditInfo.add(cdr.approvalCode);
             creditInfo.add(cdr.transID);
-            
+            creditInfo.add(cdr.AID);
+            creditInfo.add(cdr.TVR);
+            creditInfo.add(cdr.TSI);
+
             amtCntr++;
-            
+
         }
         if (check1Amt > 0) {
             amtCntr++;
@@ -183,6 +185,9 @@ public class CheckoutHandler {
         creditInfo.add("8788290392911");//Merchant ID
         creditInfo.add(cdr.approvalCode);
         creditInfo.add(cdr.transID);
+        creditInfo.add(cdr.AID);
+        creditInfo.add(cdr.TVR);
+        creditInfo.add(cdr.TSI);
 
         printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, creditInfo);
         mainFrame.voidCarts();
@@ -346,11 +351,20 @@ public class CheckoutHandler {
             receipt += "Approval Code: " + creditInfo.get(1) + "\n";
             storeCopy += "Transaction ID: " + creditInfo.get(2) + "\n";
             receipt += "Transaction ID: " + creditInfo.get(2) + "\n";
-            System.out.println(creditInfo.get(2));
+            if(!creditInfo.get(3).contentEquals("")){
+            storeCopy += "AID: " + creditInfo.get(3) + "\n";
+            receipt += "AID: " + creditInfo.get(3) + "\n";
+            storeCopy += "TVR: " + creditInfo.get(4) + "\n";
+            receipt += "TVR: " + creditInfo.get(4) + "\n";
+            storeCopy += "TSI: " + creditInfo.get(5) + "\n";
+            receipt += "TSI: " + creditInfo.get(5) + "\n";
+            }
+            storeCopy+="\n       I AGREE TO PAY ABOVE TOTAL AMOUNT IN\n      ACCORDANCE WITH CARD ISSUER'S AGREEMENT\n";
+            receipt+="\n       I AGREE TO PAY ABOVE TOTAL AMOUNT IN\n      ACCORDANCE WITH CARD ISSUER'S AGREEMENT\n";
         }
         storeCopy += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
         receipt += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
-        storeCopy += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                STORE COPY\n\n\n\n\n\n\n";
+        storeCopy += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                    STORE COPY\n\n\n\n\n\n\n";
         receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                 CUSTOMER COPY\n\n\n\n\n\n\n";
 
         if (isCreditSale) {

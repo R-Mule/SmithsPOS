@@ -27,9 +27,12 @@ public class CardDataRequester {
     String approvalCode;
     String last4ofCard;
     String cardType;
-    String responseText;
+    String responseText="DECLINED";
     String authAmtReq;
-    
+    String cardEntryMethod;
+    String AID="";
+    String TVR="";
+    String TSI="";
     boolean transTerminate=false;
 
     CardDataRequester() {
@@ -114,10 +117,16 @@ public class CardDataRequester {
                         last4ofCard = doc.getElementsByTagName("AUTH_MASKED_ACCOUNT_NBR").item(0).getTextContent();
                         last4ofCard = last4ofCard.substring(last4ofCard.lastIndexOf('X'));
                         
-
+                        cardEntryMethod=doc.getElementsByTagName("CARD_ENT_METH").item(0).getTextContent();
+                        if(cardEntryMethod.contentEquals("G")){
+                            AID=cardEntryMethod=doc.getElementsByTagName("SI_EMV_AID").item(0).getTextContent();
+                            TVR=cardEntryMethod=doc.getElementsByTagName("SI_EMV_TVR").item(0).getTextContent();
+                            TSI=cardEntryMethod=doc.getElementsByTagName("SI_EMV_TSI").item(0).getTextContent();
+                        }
                         System.out.println(responseText);
 
                     } else {
+                        transTerminate=true;
                         System.out.println("MUST BE AN ERROR!!");
                     }
                 } else {
@@ -135,6 +144,10 @@ public class CardDataRequester {
             }
         } catch (ParserConfigurationException e1) {
             // handle ParserConfigurationException
+        } catch (NullPointerException ex) {
+            transTerminate=true;
+            responseText="FAILED TO FIND AUTH RETRY";
+            System.out.println("TRANS DECLINED??");
         }
     }
 

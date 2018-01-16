@@ -1451,11 +1451,9 @@ public class MainFrame extends javax.swing.JFrame {
                                     } else {
                                         double change = amtReceived - curCart.getTotalPrice();
                                         change = round(change);
-                                        checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), Integer.parseInt(field2.getText()), myself, guiItems, (String) empList2.getSelectedItem());
                                         changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                        //FIELD1 CONTAINS CHECK AMT
-                                        //FIELD2 CONTAINS CHECK #
                                         displayChangeDue = true;
+                                        checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), Integer.parseInt(field2.getText()), myself, guiItems, (String) empList2.getSelectedItem());
                                         updateCartScreen();
                                     }//end else
                                 }//end else
@@ -1478,11 +1476,13 @@ public class MainFrame extends javax.swing.JFrame {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
                         if (!curCart.isEmpty()) {
+                            changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
+                            displayChangeDue = true;
                             String goodCheckout = checkout.beginCreditCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
                             if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
-                                changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
                                 displayChangeDue = true;
                             } else {
+                                displayChangeDue=false;
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
                             }
@@ -1805,9 +1805,9 @@ public class MainFrame extends javax.swing.JFrame {
                                                 choices, // Array of choices
                                                 choices[0]); // Initial choice
                                         if (accountName != null) {
-                                            checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
                                             changeDue.setText("Change Due: $0.00");
                                             displayChangeDue = true;
+                                            checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
                                             updateCartScreen();
                                         }//end if accountname not null
                                     } else {
