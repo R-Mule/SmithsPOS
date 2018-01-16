@@ -21,7 +21,6 @@ public class CardDataRequester {
 
     boolean hasReceivedData = false;
     String merchantID;
-    String authCardType;
     String transID;
     String authAmt;
     String responseCode;
@@ -84,36 +83,37 @@ public class CardDataRequester {
                 //String message = doc.getDocumentElement().getTextContent();
                 merchantID = "8788290392911";
                 responseCode = doc.getElementsByTagName("AUTH_RESP").item(0).getTextContent();
-                if (responseCode.contentEquals("00")) {
+                if(!responseCode.contentEquals("S0")){
+                cardType = doc.getElementsByTagName("AUTH_CARD_TYPE").item(0).getTextContent();
+                        switch (cardType) {
+                            case "R":
+                                cardType = "DISCOVER";
+                                break;
+                            case "S":
+                                cardType = "AMERICAN EXPRESS";
+                                break;
+                            case "M":
+                                cardType = "MASTERCARD";
+                                break;
+                            case "V":
+                                cardType = "VISA";
+                                break;
+                            default:
+                                cardType = "SPECIAL";
+                                break;
+                        }
+                approvalCodeHandler ach = new approvalCodeHandler(cardType, responseCode);
+                responseText = ach.getResponseText();
+                if (ach.isApproved()) {//this checks to make sure the trans is approved before we parse stuff that doesn't exisit.
                     authAmt = doc.getElementsByTagName("AUTH_AMOUNT").item(0).getTextContent();
                     authAmtReq = doc.getElementsByTagName("AUTH_AMOUNT_REQUESTED").item(0).getTextContent();
-                    if (authAmt.contentEquals(authAmtReq)) {
-                        authCardType = doc.getElementsByTagName("AUTH_CARD_TYPE").item(0).getTextContent();
+                    if (Double.parseDouble(authAmt)==Double.parseDouble(authAmtReq)) {
                         transID = doc.getElementsByTagName("AUTH_GUID").item(0).getTextContent();
 
                         approvalCode = doc.getElementsByTagName("AUTH_CODE").item(0).getTextContent();
                         last4ofCard = doc.getElementsByTagName("AUTH_MASKED_ACCOUNT_NBR").item(0).getTextContent();
-                        cardType = doc.getElementsByTagName("AUTH_CARD_TYPE").item(0).getTextContent();
-                        switch (cardType) {
-                            case "R":
-                                cardType = "Discover";
-                                break;
-                            case "S":
-                                cardType = "American Express";
-                                break;
-                            case "M":
-                                cardType = "MasterCard";
-                                break;
-                            case "V":
-                                cardType = "Visa";
-                                break;
-                            default:
-                                cardType = "Unknown";
-                                break;
-                        }
-                        last4ofCard = last4ofCard.substring(11);
-                        approvalCodeHandler ach = new approvalCodeHandler(cardType, responseCode);
-                        responseText = ach.getResponseText();
+                        last4ofCard = last4ofCard.substring(last4ofCard.lastIndexOf('X'));
+                        
 
                         System.out.println(responseText);
 
@@ -121,6 +121,10 @@ public class CardDataRequester {
                         System.out.println("MUST BE AN ERROR!!");
                     }
                 } else {
+                    transTerminate=true;
+                    System.out.println("TRANS DECLINED??");
+                }
+                }else{
                     transTerminate=true;
                     System.out.println("TRANS DECLINED??");
                 }

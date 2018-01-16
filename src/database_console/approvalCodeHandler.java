@@ -8,20 +8,20 @@ public class approvalCodeHandler {
 
     private String responseText;
     private String code;
-
+    private boolean approved=false;
     approvalCodeHandler(String cardType, String code) {
         this.code = code;
         switch (cardType) {
-            case "Discover":
+            case "DISCOVER":
                 discover();
                 break;
-            case "American Express":
+            case "AMERICAN EXPRESS":
                 americanExpress();
                 break;
-            case "MasterCard":
+            case "MASTERCARD":
                 masterCard();
                 break;
-            case "Visa":
+            case "VISA":
                 visa();
                 break;
             default:
@@ -29,11 +29,17 @@ public class approvalCodeHandler {
         }
     }
 
+    public boolean isApproved(){
+        return approved;
+    }
+    
     private void discover() {
+        approved=false;
         System.out.println(code);
         switch (code) {
             case "00":
                 responseText = "APPROVED";
+                approved=true;
                 break;
             case "01":
                 responseText = "NEEDS TO CALL";
@@ -55,6 +61,7 @@ public class approvalCodeHandler {
                 break;
             case "10":
                 responseText = "APPROVED";
+                approved=true;
                 break;
             case "12":
                 responseText = "INVALID TRANS";
@@ -162,10 +169,12 @@ public class approvalCodeHandler {
     }
 
     private void masterCard() {
+        approved=false;
         System.out.println(code);
         switch (code) {
             case "00":
                 responseText = "APPROVED";
+                approved=true;
                 break;
             case "01":
                 responseText = "NEEDS TO CALL";
@@ -308,18 +317,201 @@ public class approvalCodeHandler {
     }
 
     private void americanExpress() {
-
-    }
-
-    private void visa() {
-
-    }
-
-    private void unknown() {
+        approved=false;
         System.out.println(code);
         switch (code) {
             case "00":
                 responseText = "APPROVED";
+                approved=true;
+                break;
+            case "01":
+                responseText = "APPROVED WITH ID";
+                approved=true;
+                break;
+            case "05":
+                responseText = "DECLINED";
+                break;
+            case "54":
+                responseText = "EXPIRED CARD";
+                break;
+            case "03":
+                responseText = "TERM ID ERROR";
+                break;
+            case "13":
+                responseText = "AMOUNT ERROR";
+                break;
+            case "78":
+                responseText = "NO ACCOUNT";
+                break;
+            case "57":
+                responseText = "SERV NOT ALLOWED";
+                break;
+            case "N7":
+                responseText = "CID MISMATCH";
+                break;
+            case "04":
+                responseText = "HOLD-CALL";
+                break;
+            default:
+                responseText = "DECLINED, UNKNOWN ERROR";
+        }
+    }
+
+    private void visa() {
+        approved=false;
+        System.out.println(code);
+        switch (code) {
+            case "00":
+                responseText = "APPROVED";
+                approved=true;
+                break;
+            case "01":
+                responseText = "NEEDS TO CALL";
+                break;
+            case "02":
+                responseText = "NEEDS TO CALL";
+                break;
+            case "03":
+                responseText = "TERM ID ERROR";
+                break;
+            case "04":
+                responseText = "HOLD-CALL";
+                break;
+            case "05":
+                responseText = "DECLINED";
+                break;
+            case "06":
+                responseText = "ERROR";
+                break;
+            case "07":
+                responseText = "HOLD-CALL";
+                break;
+            case "12":
+                responseText = "INVALID TRANS";
+                break;
+            case "13":
+                responseText = "AMOUNT ERROR";
+                break;
+            case "14":
+                responseText = "CARD NO. ERROR";
+                break;
+            case "15":
+                responseText = "NO SUCH ISSUER";
+                break;
+            case "19":
+                responseText = "RE ENTER";
+                break;
+            case "21":
+                responseText = "NO ACTION TAKEN";
+                break;
+            case "28":
+                responseText = "NO REPLY";
+                break;
+            case "41":
+                responseText = "HOLD-CALL";
+                break;
+            case "43":
+                responseText = "HOLD-CALL";
+                break;
+            case "51":
+                responseText = "DECLINED";
+                break;
+            case "52":
+                responseText = "NO CHECK ACCOUNT";
+                break;
+            case "53":
+                responseText = "NO SAVE ACCOUNT";
+                break;
+            case "54":
+                responseText = "EXPIRED CARD";
+                break;
+            case "55":
+                responseText = "WRONG PIN";
+                break;
+            case "57":
+                responseText = "SERVICE NOT ALLOWED";
+                break;
+            case "58":
+                responseText = "SERVICE NOT ALLOWED";
+                break;
+            case "61":
+                responseText = "DECLINED";
+                break;
+            case "62":
+                responseText = "DECLINED";
+                break;
+            case "63":
+                responseText = "SEC VIOLATION";
+                break;
+            case "65":
+                responseText = "DECLINE";
+                break;
+            case "75":
+                responseText = "PIN EXCEEDED";
+                break;
+            case "76":
+                responseText = "NO ACTION TAKEN";
+                break;
+            case "77":
+                responseText = "NO ACTION TAKEN";
+                break;
+            case "80":
+                responseText = "DATE ERROR";
+                break;
+            case "81":
+                responseText = "ENCRYPTION ERROR";
+                break;
+            case "82":
+                responseText = "CVV ERROR";
+                break;
+            case "83":
+                responseText = "CANT VERIFY PIN";
+                break;
+            case "91":
+                responseText = "NO REPLY";
+                break;
+            case "92":
+                responseText = "INVALID ROUTING";
+                break;
+            case "93":
+                responseText = "DECLINE";
+                break;
+            case "94":
+                responseText = "NEEDS TO CALL";
+                break;
+            case "96":
+                responseText = "SYSTEM ERROR";
+                break;
+            case "EB":
+                responseText = "CHECK DIGIT ERROR";
+                break;
+            case "ER":
+                responseText = "ERROR";
+                break;
+            case "N3":
+                responseText = "CASHBACK NOT AVAIL";
+                break;
+            case "N4":
+                responseText = "DECLINE";
+                break;
+            case "N7":
+                responseText = "CVV2 MISMATCH";
+                break;
+            case "TO":
+                responseText = "TIMEOUT";
+                break;
+            default:
+                responseText = "DECLINED, UNKNOWN ERROR";
+        }
+    }
+
+    private void unknown() {
+        System.out.println(code);
+        approved=false;
+        switch (code) {
+            case "00":
+                responseText = "APPROVED";
+                approved=true;
                 break;
             case "01":
                 responseText = "NEEDS TO CALL";
@@ -347,6 +539,7 @@ public class approvalCodeHandler {
                 break;
             case "10":
                 responseText = "APPROVAL FOR PARTIAL AMOUNT";
+                approved=true;
                 break;
             case "12":
                 responseText = "INVALID TRANS";
