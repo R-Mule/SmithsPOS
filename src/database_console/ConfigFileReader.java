@@ -22,6 +22,7 @@ public class ConfigFileReader {
     private String remoteDrivePath;
     private String registerReportPath;
     private String displayComPort;
+    private String cardReaderURL;
 
     public ConfigFileReader() {
         try {
@@ -55,6 +56,9 @@ public class ConfigFileReader {
                 }else if (line.contains("Display Com Port:")) {
                     displayComPort = line.substring(18).trim();
                    // System.out.println(displayComPort);
+                }else if(line.contains("Card Terminal Address:")){
+                    cardReaderURL = line.substring(22).trim();
+                    
                 }
 
             }//end while
@@ -66,6 +70,9 @@ public class ConfigFileReader {
         }
     }
 
+    public String getCardReaderURL(){
+        return cardReaderURL;
+    }
     public String getDisplayComPort(){
         return displayComPort;
     }
