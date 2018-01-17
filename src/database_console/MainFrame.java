@@ -2388,8 +2388,8 @@ public class MainFrame extends javax.swing.JFrame {
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version 1.1.0", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
-    protected String previousReceipt = "EMPTY";
-    String st = "Split\nTender";
+    protected String previousReceipt = "EMPTY"; 
+    String st = "Split\nTender" ;
     JButton splitTenderButton = new JButton("<html>" + st.replaceAll("\\n", "<br>") + "</html>");
     JButton arPaymentButton = new JButton("<html>" + ar.replaceAll("\\n", "<br>") + "</html>");
     String receipt = "Reprint\nReceipt";
