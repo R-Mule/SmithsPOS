@@ -132,7 +132,7 @@ public class CapSignature extends JDialog {//implements Runnable {
                         Document document = new Document();
                         if (!new File(remoteDrivePath).exists()) {
                             remoteDrivePath = emergencyDrivePath;
-                            System.out.println("EMERGENCY RX SAVE");
+                            System.out.println("EMERGENCY RX SAVE: couldnt find: "+remoteDrivePath);
                         }
                         try {
                             System.out.println(remoteDrivePath);

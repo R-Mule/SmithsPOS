@@ -882,6 +882,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     activateDisplayButton.setVisible(false);
                                     addRemoveInsuranceButton.setVisible(false);
                                     masterReprintReceiptButton.setVisible(false);
+                                    creditButton.setVisible(false);
                                     cancelRefundButton.setVisible(true);
                                     updateCartScreen();
                                 }
@@ -1487,6 +1488,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
                             }
                             updateCartScreen();
+                            
                         } else if (!refundCart.isEmpty()) {
                             boolean isItemToRefund = false;
                             for (RefundItem item : refundCart.getRefundItems()) {
@@ -2229,6 +2231,7 @@ public class MainFrame extends javax.swing.JFrame {
         reprintReceiptButton.setVisible(true);
         dmePaymentButton.setVisible(true);
         paperButton.setVisible(true);
+        creditButton.setVisible(true);
         if (!displayActive) {
             activateDisplayButton.setVisible(true);
         }
@@ -2383,7 +2386,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.0.06", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.0", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
