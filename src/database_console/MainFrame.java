@@ -402,6 +402,7 @@ public class MainFrame extends javax.swing.JFrame {
         creditButton.setLocation(1500, 700);
         creditButton.setSize(100, 100);
         creditButton.setBackground(new Color(255, 90, 170));
+        //This creates the debitButton 
         debitButton.setLocation(1600, 700);
         debitButton.setSize(100, 100);
         debitButton.setBackground(new Color(150,150,150));
