@@ -888,7 +888,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     activateDisplayButton.setVisible(false);
                                     addRemoveInsuranceButton.setVisible(false);
                                     masterReprintReceiptButton.setVisible(false);
-                                    creditButton.setVisible(false);
+                                    creditButton.setVisible(false) ;
                                     upsButton.setVisible(false);
                                     cancelRefundButton.setVisible(true);
                                     updateCartScreen();
