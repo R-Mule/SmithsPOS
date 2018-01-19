@@ -1113,7 +1113,7 @@ public class MainFrame extends javax.swing.JFrame {
                         "Amount:", field3};
                     field3.setText("");
                     field3.addAncestorListener(new RequestFocusListener());
-                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "OTC Item Information", JOptionPane.OK_CANCEL_OPTION);
+                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "UPS Package Information", JOptionPane.OK_CANCEL_OPTION);
                     if (option == JOptionPane.OK_OPTION) {
                         if (!validateDouble(field3.getText())) {//check price
                             JFrame message1 = new JFrame("");
@@ -1125,47 +1125,7 @@ public class MainFrame extends javax.swing.JFrame {
                             String tempID;
                             tempID = dateFormat.format(date);
                             System.out.println(tempID);
-                            String upc = 'T' + tempID;
-                            Item tempItem = new Item(myDB, tempID, upc, "UPS Package", Double.parseDouble(field3.getText()), Double.parseDouble(field3.getText()), false, 860, 0, "", "", 1, false, 0, false);
-                            curCart.addItem(tempItem);
-                            guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
-                            displayChangeDue = false;
-                        }//end else
-
-                    }//end else
-
-                    updateCartScreen();
-
-                } else {//No employee Selected!
-                    JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Select an employee first!");
-                }
-                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-            }//end actionPerformed
-        });//end upsButtonAction
-
-        upsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    JFrame textInputFrame = new JFrame("");
-                    JTextField field3 = new JTextField();
-                    Object[] message = {
-                        "Amount:", field3};
-                    field3.setText("");
-                    field3.addAncestorListener(new RequestFocusListener());
-                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "OTC Item Information", JOptionPane.OK_CANCEL_OPTION);
-                    if (option == JOptionPane.OK_OPTION) {
-                        if (!validateDouble(field3.getText())) {//check price
-                            JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, "Amount is invalid.");
-                        } else {//price is good
-                            // randomItemCntr++;
-                            DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
-                            Date date = new Date();
-                            String tempID;
-                            tempID = dateFormat.format(date);
-                            System.out.println(tempID);
-                            String upc = 'T' + tempID;
+                            String upc = 'U' + tempID;
                             Item tempItem = new Item(myDB, tempID, upc, "UPS Package", Double.parseDouble(field3.getText()), Double.parseDouble(field3.getText()), false, 860, 0, "", "", 1, false, 0, false);
                             curCart.addItem(tempItem);
                             guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
