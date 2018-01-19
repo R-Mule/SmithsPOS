@@ -2476,7 +2476,7 @@ public class MainFrame extends javax.swing.JFrame {
     JButton masterReprintReceiptButton = new JButton("Master Rpt Receipt");
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
-    String dme = "DME\nAccount\nPayment";
+    String dme = "DME\nAccount\nPayment" ;
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version 1.1.01", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
