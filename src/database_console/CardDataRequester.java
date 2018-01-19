@@ -39,13 +39,12 @@ public class CardDataRequester {
 
     }
 
-    public void postRequest(String deviceURL, String amount) {
+    public void postRequest(String deviceURL, String amount,String tran_type) {
         System.out.println("AMOUNT BEING REQUESTED: "+amount);
         try {
             URL url = new URL(deviceURL);
             Double d = Double.parseDouble(amount);
             amount = String.format("%.2f", d);
-            String tran_type = "CCR1";
             URLConnection con = url.openConnection();
             // specify that we will send output and accept input
             con.setDoInput(true);
@@ -103,6 +102,9 @@ public class CardDataRequester {
                                 break;
                             case "V":
                                 cardType = "VISA";
+                                break;
+                             case "O":
+                                cardType = "";//This is ALL Debit Cards
                                 break;
                             default:
                                 cardType = "SPECIAL";
