@@ -76,6 +76,7 @@ public class DrawerReport implements Serializable {
     private double dmeWithoutTax = 0;//UPDATED
     private double totalRXCoppay = 0;//UPDATED
     private double totalPaperSales = 0;//UPDATED
+    private double totalUPSSales = 0;//UPDATED
 
     DrawerReport(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName) {
         //FIRST TIME REPORT IS MADE. DEFAULT VALUE TIME!
@@ -91,7 +92,7 @@ public class DrawerReport implements Serializable {
         paidOut(description, amount);
     }
 
-    DrawerReport(double amount,String description) {//master Refund
+    DrawerReport(double amount, String description) {//master Refund
         masterRefundDescriptionAndAmt.add(description + "@" + amount);
         totalRefundedCash = amount;
         totalCashAmt -= amount;
@@ -106,7 +107,7 @@ public class DrawerReport implements Serializable {
         totalCoinsAmt = round(totalCoinsAmt);
         totalCashAmt = round(totalCashAmt);
         if (isNegative) {
-            totalCoinsAmt =round(totalCoinsAmt *-1);
+            totalCoinsAmt = round(totalCoinsAmt * -1);
         }
     }
 
@@ -126,7 +127,7 @@ public class DrawerReport implements Serializable {
         totalCoinsAmt = round(totalCoinsAmt);
         totalCashAmt = round(totalCashAmt);
         if (isNegative) {
-            totalCoinsAmt= round(totalCoinsAmt *-1);
+            totalCoinsAmt = round(totalCoinsAmt * -1);
         }
 
     }
@@ -150,7 +151,7 @@ public class DrawerReport implements Serializable {
             totalCoinsAmt = round(totalCoinsAmt);
             totalCashAmt = round(totalCashAmt);
             if (isNegative) {
-                totalCoinsAmt =round(totalCoinsAmt *-1);
+                totalCoinsAmt = round(totalCoinsAmt * -1);
             }
         }
 
@@ -188,7 +189,7 @@ public class DrawerReport implements Serializable {
                 totalCoinsAmt = round(totalCoinsAmt);
                 totalCashAmt = round(totalCashAmt);
                 if (isNegative) {
-                    totalCoinsAmt =round(totalCoinsAmt * -1);
+                    totalCoinsAmt = round(totalCoinsAmt * -1);
                 }
 
             } else if (paymentType[i].contains("CREDIT")) {
@@ -216,7 +217,7 @@ public class DrawerReport implements Serializable {
             totalCoinsAmt = round(totalCoinsAmt);
             totalCashAmt = round(totalCashAmt);
             if (isNegative) {
-                totalCoinsAmt =round(totalCoinsAmt * -1);
+                totalCoinsAmt = round(totalCoinsAmt * -1);
             }
         }
 
@@ -224,7 +225,6 @@ public class DrawerReport implements Serializable {
         if (paymentType[0].contains("CHARGED")) {
             charged = true;
         }
-        System.out.println("HERE!");
         for (Item item : curCart.getItems()) {
             totalTaxCharged = round(totalTaxCharged + item.getTaxTotal());
             if (item.getCategory() == 853) {//ACCOUNT PAYEMENT!
@@ -256,6 +256,9 @@ public class DrawerReport implements Serializable {
                 //DO NOTHING!
             } else if (item.getCategory() == 856) {
                 totalAmericanGreetings += item.getPriceOfItemsBeforeTax();
+            } else if (item.getCategory() == 860) {
+                totalUPSSales += item.getPriceOfItemsBeforeTax();
+
             } else if (item.getCategory() == 621 || item.getCategory() == 622 || item.getCategory() == 623 || item.getCategory() == 624 || item.getCategory() == 628 || item.getCategory() == 631 || item.getCategory() == 632 || item.getCategory() == 633 || item.getCategory() == 634 || item.getCategory() == 635 || item.getCategory() == 636 || item.getCategory() == 637 || item.getCategory() == 639 || item.getCategory() == 640 || item.getCategory() == 641 || item.getCategory() == 642 || item.getCategory() == 643) {//DME
                 if (item.isTaxable()) {
                     dmeWithTax += item.getPriceOfItemsBeforeTax();
@@ -416,8 +419,8 @@ public class DrawerReport implements Serializable {
         System.out.print("Lunch Total Collected: $" + lunchTotalAmt + "\n");
         System.out.print("Lunch Check Total Collected: $" + lunchTotalCheck + "\n");
         System.out.print("Lunch Cash Total Collected: $" + lunchTotalCash + "\n");
-        System.out.print("Lunch Credit Total Collected: $" + lunchTotalCredit + "\n\n");
-
+        System.out.print("Lunch Credit Total Collected: $" + lunchTotalCredit + "\n");
+        System.out.print("Total UPS Collected: "+totalUPSSales+"\n\n");
         if (!masterRefundDescriptionAndAmt.isEmpty()) {
             System.out.print("\nMaster Refunds: \n");
             for (String s : masterRefundDescriptionAndAmt) {
@@ -555,6 +558,7 @@ public class DrawerReport implements Serializable {
             bw.write(totalRXCoppay + "\n");
             bw.write(totalPaperSales + "\n");
             bw.write(totalAmericanGreetings + "\n");
+            bw.write(totalUPSSales+"\n");
 
             if (!masterRefundDescriptionAndAmt.isEmpty()) {
                 bw.write("\nMaster Refunds: \n");

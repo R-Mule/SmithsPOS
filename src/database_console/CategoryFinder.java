@@ -446,14 +446,17 @@ public class CategoryFinder implements Serializable {
             case 856:
                 category = "AMERICAN GREETINGS";
                 break;
-                            case 857:
+            case 857:
                 category = "POP";
                 break;
-                            case 858:
+            case 858:
                 category = "CANDY";
                 break;
-                            case 859:
+            case 859:
                 category = "FRITOS";
+                break;
+            case 860:
+                category = "UPS";
                 break;
             default:
                 category = "UNKNOWN";

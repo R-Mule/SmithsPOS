@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -372,6 +373,7 @@ public class MainFrame extends javax.swing.JFrame {
         otcButton.setLocation(1400, 100);
         otcButton.setSize(100, 100);
         otcButton.setBackground(new Color(238, 130, 238));
+
         //This creates the OTC Item Button
         paperButton.setLocation(1500, 100);
         paperButton.setSize(100, 100);
@@ -380,6 +382,10 @@ public class MainFrame extends javax.swing.JFrame {
         dmePaymentButton.setLocation(1700, 100);
         dmePaymentButton.setSize(100, 100);
         dmePaymentButton.setBackground(new Color(255, 143, 137));
+        //This creates the UPS Payment Button
+        upsButton.setLocation(1800, 100);
+        upsButton.setSize(100, 100);
+        //upsButton.setBackground(new Color(100, 65, 23));
         //This creates the Void Item Button
         voidButton.setLocation(1300, 200);
         voidButton.setSize(100, 100);
@@ -1097,6 +1103,46 @@ public class MainFrame extends javax.swing.JFrame {
             }//end actionPerformed
         };//end otcButtonAction
 
+        upsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                    JFrame textInputFrame = new JFrame("");
+                    JTextField field3 = new JTextField();
+                    Object[] message = {
+                        "Amount:", field3};
+                    field3.setText("");
+                    field3.addAncestorListener(new RequestFocusListener());
+                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "OTC Item Information", JOptionPane.OK_CANCEL_OPTION);
+                    if (option == JOptionPane.OK_OPTION) {
+                        if (!validateDouble(field3.getText())) {//check price
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Amount is invalid.");
+                        } else {//price is good
+                            // randomItemCntr++;
+                            DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
+                            Date date = new Date();
+                            String tempID;
+                            tempID = dateFormat.format(date);
+                            System.out.println(tempID);
+                            String upc = 'T' + tempID;
+                            Item tempItem = new Item(myDB, tempID, upc, "UPS Package", Double.parseDouble(field3.getText()), Double.parseDouble(field3.getText()), false, 860, 0, "", "", 1, false, 0, false);
+                            curCart.addItem(tempItem);
+                            guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                            displayChangeDue = false;
+                        }//end else
+
+                    }//end else
+
+                    updateCartScreen();
+
+                } else {//No employee Selected!
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Select an employee first!");
+                }
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }//end actionPerformed
+        });//end upsButtonAction
+
         noSaleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -1483,12 +1529,12 @@ public class MainFrame extends javax.swing.JFrame {
                             if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
                                 displayChangeDue = true;
                             } else {
-                                displayChangeDue=false;
+                                displayChangeDue = false;
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
                             }
                             updateCartScreen();
-                            
+
                         } else if (!refundCart.isEmpty()) {
                             boolean isItemToRefund = false;
                             for (RefundItem item : refundCart.getRefundItems()) {
@@ -1901,6 +1947,8 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(refundButton);
         noSaleButton.setVisible(true);
         this.add(noSaleButton);
+        upsButton.setVisible(true);
+        this.add(upsButton);
 
         // //KEYBINDINGS
         rxButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "Page Up");
@@ -2362,6 +2410,8 @@ public class MainFrame extends javax.swing.JFrame {
     String previousInsurance = "AARP";
     String previousDate = "";
     JButton otcButton = new JButton("OTC");
+    ImageIcon upsimg = new ImageIcon("C:/POS/SOFTWARE/ups.png");
+    JButton upsButton = new JButton(upsimg);
     JButton paperButton = new JButton("Paper");
     JButton voidButton = new JButton("Void");
     JButton cashButton = new JButton("Cash");
@@ -2388,8 +2438,8 @@ public class MainFrame extends javax.swing.JFrame {
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version 1.1.0", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
-    protected String previousReceipt = "EMPTY"; 
-    String st = "Split\nTender" ;
+    protected String previousReceipt = "EMPTY";
+    String st = "Split\nTender";
     JButton splitTenderButton = new JButton("<html>" + st.replaceAll("\\n", "<br>") + "</html>");
     JButton arPaymentButton = new JButton("<html>" + ar.replaceAll("\\n", "<br>") + "</html>");
     String receipt = "Reprint\nReceipt";

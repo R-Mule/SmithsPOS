@@ -256,7 +256,7 @@ public class CheckoutHandler {
             if (item.isRX() && item.isPreCharged()) {
                 prechargedTotal += item.getPriceOfItemBeforeTax();
             }
-            if (item.getCategory() == 853 || item.getCategory() == 854) {
+            if (item.getCategory() == 853 || item.getCategory() == 854|| item.getCategory() == 860) {
                 requires2Receipts = true;
             }
             String itemName = "";

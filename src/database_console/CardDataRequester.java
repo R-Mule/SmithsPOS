@@ -40,8 +40,11 @@ public class CardDataRequester {
     }
 
     public void postRequest(String deviceURL, String amount) {
+        System.out.println("AMOUNT BEING REQUESTED: "+amount);
         try {
             URL url = new URL(deviceURL);
+            Double d = Double.parseDouble(amount);
+            amount = String.format("%.2f", d);
             String tran_type = "CCR1";
             URLConnection con = url.openConnection();
             // specify that we will send output and accept input

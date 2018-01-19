@@ -115,7 +115,7 @@ public class GuiCartItem {
 
         //ADD BUTTON
         addQuantityButton = new JButton("ADD");
-        if (item.isRX() || item.getCategory() == 853 || item.getCategory()==854) {
+        if (item.isRX() || item.getCategory() == 853 || item.getCategory()==854|| item.getCategory()==860) {
             addQuantityButton.setVisible(false);
         } else {
             addQuantityButton.setVisible(true);
@@ -154,7 +154,7 @@ public class GuiCartItem {
         //NOT TAXABLE BUTTON
         notTaxableButton = new JButton("");
 
-        if (item.isRX() || item.getCategory() == 853||item.getCategory()==854) {//this HIDES tax buttons for RX because it is ALWAYS false
+        if (item.isRX() || item.getCategory() == 853||item.getCategory()==854|| item.getCategory()==860) {//this HIDES tax buttons for RX because it is ALWAYS false
             notTaxableButton.setVisible(false);
             notTaxableButton.setVisible(false);
         } else {//this determines wether to show or hide them
@@ -210,7 +210,7 @@ public class GuiCartItem {
             prechargedTrueButton.setVisible(false);
         }
 
-        if (item.isRX() || item.getCategory() == 853||item.getCategory()==854) {//this HIDES discount buttons for RX &&RA because it is ALWAYS false
+        if (item.isRX() || item.getCategory() == 853||item.getCategory()==854|| item.getCategory()==860) {//this HIDES discount buttons for RX &&RA because it is ALWAYS false
             discountButton.setVisible(false);
             discountButton.setVisible(false);
         } else {

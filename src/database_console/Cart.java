@@ -263,7 +263,7 @@ public class Cart {
 
     void setMassDiscount(double discPer) {
         for (Item item : items) {
-            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
+            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854&& item.getCategory()!=860) {
                 item.setDiscountPercentage(discPer);
             }
         }
