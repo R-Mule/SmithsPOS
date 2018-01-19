@@ -36,7 +36,7 @@ public class CheckoutHandler {
 
     }
 
-    public String beginSplitTenderCheckout(Cart curCart, double cashAmt, double credit1Amt, double check1Amt, double check2Amt, int check1Num, int check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame, String employeeCheckoutName) {
+    public String beginSplitTenderCheckout(Cart curCart, double cashAmt,double debitAmount, double credit1Amt, double check1Amt, double check2Amt, int check1Num, int check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame, String employeeCheckoutName) {
         Date date = new Date();
         ArrayList<String> creditInfo = new ArrayList<>();
         CardDataRequester cdr = new CardDataRequester();
@@ -49,7 +49,7 @@ public class CheckoutHandler {
         if (credit1Amt > 0) {
             mainFrame.setEnabled(false);
 
-            cdr.postRequest(reader.getCardReaderURL(), Double.toString(credit1Amt));
+            cdr.postRequest(reader.getCardReaderURL(), Double.toString(credit1Amt), "CCR1");
             mainFrame.setEnabled(true);
 
             if (cdr.transTerminated()) {
@@ -61,10 +61,30 @@ public class CheckoutHandler {
             creditInfo.add(cdr.AID);
             creditInfo.add(cdr.TVR);
             creditInfo.add(cdr.TSI);
+            creditInfo.add("CREDIT");
+            amtCntr++;
 
+        }else if(debitAmount>0){
+            mainFrame.setEnabled(false);
+
+            cdr.postRequest(reader.getCardReaderURL(), Double.toString(debitAmount), "DB00");
+            mainFrame.setEnabled(true);
+
+            if (cdr.transTerminated()) {
+                return cdr.responseText;
+            }
+            creditInfo.add("8788290392911");//Merchant ID
+            creditInfo.add(cdr.approvalCode);
+            creditInfo.add(cdr.transID);
+            creditInfo.add(cdr.AID);
+            creditInfo.add(cdr.TVR);
+            creditInfo.add(cdr.TSI);
+            creditInfo.add("DEBIT");
             amtCntr++;
 
         }
+        
+        
         if (check1Amt > 0) {
             amtCntr++;
         }
@@ -83,6 +103,11 @@ public class CheckoutHandler {
         if (credit1Amt > 0) {
             paymentAmt[cntr] = credit1Amt;
             paymentType[cntr] = String.format(cdr.cardType + " CREDIT:" + cdr.last4ofCard + ": ");
+            cntr++;
+        }
+                if (debitAmount > 0) {
+            paymentAmt[cntr] = debitAmount;
+            paymentType[cntr] = String.format(cdr.cardType + " DEBIT:" + cdr.last4ofCard + ": ");
             cntr++;
         }
         if (check1Amt > 0) {
@@ -161,7 +186,7 @@ public class CheckoutHandler {
         ArrayList<String> creditInfo = new ArrayList<>();
 
         CardDataRequester cdr = new CardDataRequester();
-        cdr.postRequest(reader.getCardReaderURL(), Double.toString(amtPaid));
+        cdr.postRequest(reader.getCardReaderURL(), Double.toString(amtPaid), "CCR1");
         mainFrame.setEnabled(true);
 
         if (cdr.transTerminated()) {
@@ -188,6 +213,47 @@ public class CheckoutHandler {
         creditInfo.add(cdr.AID);
         creditInfo.add(cdr.TVR);
         creditInfo.add(cdr.TSI);
+        creditInfo.add("CREDIT");
+
+        printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, creditInfo);
+        mainFrame.voidCarts();
+        return "SMITHSAPPROVEDCODE";
+
+    }
+
+    public String beginDebitCheckout(Cart curCart, double amtPaid, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems, String employeeCheckoutName) {
+        mainFrame.setEnabled(false);
+        ArrayList<String> creditInfo = new ArrayList<>();
+
+        CardDataRequester cdr = new CardDataRequester();
+        cdr.postRequest(reader.getCardReaderURL(), Double.toString(amtPaid), "DB00");
+        mainFrame.setEnabled(true);
+
+        if (cdr.transTerminated()) {
+            return cdr.responseText;
+        }
+
+        double[] paymentAmt = new double[1];
+        String[] paymentType = new String[1];
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
+        String receiptNum = dateFormat.format(date) + registerID;
+
+        paymentAmt[0] = amtPaid;
+        paymentType[0] = String.format(cdr.cardType + " DEBIT:" + cdr.last4ofCard + ": ");// + cardType + "%04d", cardNumber);
+
+        if (curCart.getTotalNumRX() > 0) {
+            //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
+            mainFrame.receiptNum = receiptNum;
+        }
+        myDB.storeReceipt(curCart, receiptNum);
+        creditInfo.add("8788290392911");//Merchant ID
+        creditInfo.add(cdr.approvalCode);
+        creditInfo.add(cdr.transID);
+        creditInfo.add(cdr.AID);
+        creditInfo.add(cdr.TVR);
+        creditInfo.add(cdr.TSI);
+        creditInfo.add("DEBIT");
 
         printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, creditInfo);
         mainFrame.voidCarts();
@@ -221,6 +287,7 @@ public class CheckoutHandler {
         PrinterService printerService = new PrinterService();
         boolean itemDiscounted = false;
         boolean isCreditSale = false;
+        boolean isDebitSale = false;
         boolean requires2Receipts = false;
         double prechargedTotal = 0;
 
@@ -231,6 +298,10 @@ public class CheckoutHandler {
             }
             if (paymentType[i].contains("CREDIT")) {
                 isCreditSale = true;
+                requires2Receipts = true;
+            }
+            if (paymentType[i].contains("DEBIT")) {
+                isDebitSale = true;
                 requires2Receipts = true;
             }
         }
@@ -256,7 +327,7 @@ public class CheckoutHandler {
             if (item.isRX() && item.isPreCharged()) {
                 prechargedTotal += item.getPriceOfItemBeforeTax();
             }
-            if (item.getCategory() == 853 || item.getCategory() == 854|| item.getCategory() == 860) {
+            if (item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860) {
                 requires2Receipts = true;
             }
             String itemName = "";
@@ -341,35 +412,43 @@ public class CheckoutHandler {
 
         }
         String storeCopy = "";
-        if (isCreditSale) {
+        if (isCreditSale || isDebitSale) {
             storeCopy = receipt;
-            storeCopy += "\n\n\n\n      X___________________________________\n";
-            storeCopy += "               Customer Signature\n";
+            if (isCreditSale) {
+                storeCopy += "\n\n\n\n      X___________________________________\n";
+                storeCopy += "               Customer Signature\n";
+            }
+
             storeCopy += "\nMerchant ID: " + creditInfo.get(0) + "\n";
             receipt += "\nMerchant ID: " + creditInfo.get(0) + "\n";
             storeCopy += "Approval Code: " + creditInfo.get(1) + "\n";
             receipt += "Approval Code: " + creditInfo.get(1) + "\n";
             storeCopy += "Transaction ID: " + creditInfo.get(2) + "\n";
             receipt += "Transaction ID: " + creditInfo.get(2) + "\n";
-            if(!creditInfo.get(3).contentEquals("")){
-            storeCopy += "AID: " + creditInfo.get(3) + "\n";
-            receipt += "AID: " + creditInfo.get(3) + "\n";
-            storeCopy += "TVR: " + creditInfo.get(4) + "\n";
-            receipt += "TVR: " + creditInfo.get(4) + "\n";
-            storeCopy += "TSI: " + creditInfo.get(5) + "\n";
-            receipt += "TSI: " + creditInfo.get(5) + "\n";
+            if (!creditInfo.get(3).contentEquals("")) {
+                storeCopy += "AID: " + creditInfo.get(3) + "\n";
+                receipt += "AID: " + creditInfo.get(3) + "\n";
+                storeCopy += "TVR: " + creditInfo.get(4) + "\n";
+                receipt += "TVR: " + creditInfo.get(4) + "\n";
+                storeCopy += "TSI: " + creditInfo.get(5) + "\n";
+                receipt += "TSI: " + creditInfo.get(5) + "\n";
             }
-            storeCopy+="\n       I AGREE TO PAY ABOVE TOTAL AMOUNT IN\n      ACCORDANCE WITH CARD ISSUER'S AGREEMENT\n";
-            receipt+="\n       I AGREE TO PAY ABOVE TOTAL AMOUNT IN\n      ACCORDANCE WITH CARD ISSUER'S AGREEMENT\n";
+            storeCopy += "\n       I AGREE TO PAY ABOVE TOTAL AMOUNT IN\n      ACCORDANCE WITH CARD ISSUER'S AGREEMENT\n";
+            receipt += "\n       I AGREE TO PAY ABOVE TOTAL AMOUNT IN\n      ACCORDANCE WITH CARD ISSUER'S AGREEMENT\n";
         }
         storeCopy += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
         receipt += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
-        storeCopy += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                  STORE COPY\n\n\n\n\n\n\n";
-        receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                 CUSTOMER COPY\n\n\n\n\n\n\n";
-
-        if (isCreditSale) {
+        storeCopy += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                  ";
+        receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                 ";
+        
+        if (isCreditSale||isDebitSale) {
+            storeCopy+="STORE COPY\n\n\n\n\n\n\n";
+            receipt+="CUSTOMER COPY\n\n\n\n\n\n\n";
             printerService.printString(printerName, storeCopy);
+            
         } else {
+            storeCopy+="\n\n\n\n\n\n\n";
+            receipt+="\n\n\n\n\n\n\n";
             printerService.printString(printerName, receipt);
         }
 

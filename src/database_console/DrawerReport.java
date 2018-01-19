@@ -29,6 +29,7 @@ public class DrawerReport implements Serializable {
     private double totalCashAmt = 0;//UPDATED
     private double totalChecksAmt = 0;//UPDATED
     private double totalCreditAmt = 0;//UPDATED
+    private double totalDebitAmt=0;
 
     //Total Refunded Today
     private double totalRefundedCash = 0;//UPDATED
@@ -39,6 +40,7 @@ public class DrawerReport implements Serializable {
     private double lunchTotalAmt = 0;
     private double lunchTotalCash = 0;
     private double lunchTotalCredit = 0;
+    private double lunchTotalDebit=0;
     private double lunchTotalCheck = 0;
     private ArrayList<String> employeesWhoPaidForItems = new ArrayList<>();
     private ArrayList<ArrayList<String>> itemsEmployeesBought = new ArrayList<>();
@@ -52,6 +54,7 @@ public class DrawerReport implements Serializable {
 
     //MANUAL CHARGES
     private double totalChargesRXAmt = 0;//UPDATED
+    
     private ArrayList<String> accountNameCharged = new ArrayList<String>();//UPDATED
     private ArrayList<Double> amountChargedToAccount = new ArrayList<Double>();//UPDATED
     private ArrayList<ArrayList<String>> itemsChargedToAccount = new ArrayList<ArrayList<String>>();//YES THIS LOOKS THAT CRAZY. //UPDATED
@@ -195,7 +198,10 @@ public class DrawerReport implements Serializable {
             } else if (paymentType[i].contains("CREDIT")) {
                 totalCreditAmt += paymentAmt[i];
                 totalCreditAmt = round(totalCreditAmt);
-            } else if (paymentType[i].contains("CHECK")) {
+            }  else if (paymentType[i].contains("DEBIT")) {
+                totalDebitAmt += paymentAmt[i];
+                totalDebitAmt = round(totalDebitAmt);
+            }else if (paymentType[i].contains("CHECK")) {
                 totalChecksAmt += paymentAmt[i];
                 totalChecksAmt = round(totalChecksAmt);
             } else if (paymentType[i].contains("CHARGED")) {
@@ -315,7 +321,9 @@ public class DrawerReport implements Serializable {
                         lunchTotalCash += item.getTotal();
                     } else if (paymentType[0].contains("CREDIT")) {
                         lunchTotalCredit += item.getTotal();
-                    } else if (paymentType[0].contains("CHECK")) {
+                    } else if (paymentType[0].contains("DEBIT")) {
+                        lunchTotalDebit += item.getTotal();
+                    }else if (paymentType[0].contains("CHECK")) {
                         lunchTotalCheck += item.getTotal();
                     }
                 }
@@ -364,6 +372,7 @@ public class DrawerReport implements Serializable {
         System.out.println("\nTotal Cash: " + totalCashAmt);
         System.out.println("Total Coins: " + totalCoinsAmt);
         System.out.println("Total Credit: " + totalCreditAmt);
+        System.out.println("Total Debit: " + totalDebitAmt);
         System.out.println("Total Checks: " + totalChecksAmt + "\n");
 
         System.out.println("Total Tax Charged: " + totalTaxCharged + "\n");
@@ -533,7 +542,8 @@ public class DrawerReport implements Serializable {
             bw.write(totalCashAmt + "\n");
             bw.write(totalChecksAmt + "\n");
             bw.write(totalCreditAmt + "\n");
-
+            bw.write(totalDebitAmt + "\n");
+            
             bw.write(totalRefundedCash + "\n");
             bw.write(totalRefundedCredit + "\n");
 
