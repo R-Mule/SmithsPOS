@@ -889,6 +889,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     addRemoveInsuranceButton.setVisible(false);
                                     masterReprintReceiptButton.setVisible(false);
                                     creditButton.setVisible(false);
+                                    upsButton.setVisible(false);
                                     cancelRefundButton.setVisible(true);
                                     updateCartScreen();
                                 }
@@ -1102,6 +1103,46 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
         };//end otcButtonAction
+
+        upsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                    JFrame textInputFrame = new JFrame("");
+                    JTextField field3 = new JTextField();
+                    Object[] message = {
+                        "Amount:", field3};
+                    field3.setText("");
+                    field3.addAncestorListener(new RequestFocusListener());
+                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "OTC Item Information", JOptionPane.OK_CANCEL_OPTION);
+                    if (option == JOptionPane.OK_OPTION) {
+                        if (!validateDouble(field3.getText())) {//check price
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Amount is invalid.");
+                        } else {//price is good
+                            // randomItemCntr++;
+                            DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
+                            Date date = new Date();
+                            String tempID;
+                            tempID = dateFormat.format(date);
+                            System.out.println(tempID);
+                            String upc = 'T' + tempID;
+                            Item tempItem = new Item(myDB, tempID, upc, "UPS Package", Double.parseDouble(field3.getText()), Double.parseDouble(field3.getText()), false, 860, 0, "", "", 1, false, 0, false);
+                            curCart.addItem(tempItem);
+                            guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                            displayChangeDue = false;
+                        }//end else
+
+                    }//end else
+
+                    updateCartScreen();
+
+                } else {//No employee Selected!
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Select an employee first!");
+                }
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }//end actionPerformed
+        });//end upsButtonAction
 
         upsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -2280,6 +2321,7 @@ public class MainFrame extends javax.swing.JFrame {
         dmePaymentButton.setVisible(true);
         paperButton.setVisible(true);
         creditButton.setVisible(true);
+        upsButton.setVisible(true);
         if (!displayActive) {
             activateDisplayButton.setVisible(true);
         }
@@ -2436,7 +2478,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.0", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.01", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
