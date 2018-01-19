@@ -1361,7 +1361,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         changeDue.setText("Change Due: $" + String.format("%.2f", change));
                                         String goodCheckout = checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()),Double.parseDouble(field7.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field5.getText()), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
                                         if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
-                                            changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
+                                            changeDue.setText("Change Due: $" + String.format("%.2f", change));
                                             displayChangeDue = true;
                                         } else {
                                             JFrame message1 = new JFrame("");
