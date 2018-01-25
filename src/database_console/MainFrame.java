@@ -187,14 +187,14 @@ public class MainFrame extends javax.swing.JFrame {
         totalNumRXinCart.setVisible(true);
 
         //This creates the two Load and Save Buttons
-        createTicket.setLocation(1800, 350);
+        createTicket.setLocation(1800, 400);
         createTicket.setSize(100, 100);
         createTicket.setBackground(new Color(0, 255, 0));
-        loadTicket.setLocation(1800, 250);
+        loadTicket.setLocation(1800, 300);
         loadTicket.setSize(100, 100);
         loadTicket.setBackground(new Color(255, 255, 0));
         //this creates the lookupReceiptByRXButton
-        lookupReceiptByRXButton.setLocation(1800, 450);
+        lookupReceiptByRXButton.setLocation(1800, 500);
         lookupReceiptByRXButton.setSize(100, 100);
         lookupReceiptByRXButton.setBackground(new Color(255, 200, 100));
 
@@ -2515,7 +2515,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.05", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.06", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
