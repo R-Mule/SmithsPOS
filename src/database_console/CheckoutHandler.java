@@ -684,7 +684,8 @@ public class CheckoutHandler {
         printerService.printBytes(printerName, kickDrawer);
         printerService.printBytes(printerName, cutP);
         myself.previousReceipt = receipt;
-
+        myself.changeDue.setText("Change Due: $" + String.format("%.2f", total));
+        myself.displayChangeDue = true;
         storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true, "NO");
     }
 
