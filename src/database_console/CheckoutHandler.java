@@ -55,7 +55,7 @@ public class CheckoutHandler {
             if (cdr.transTerminated()) {
                 return cdr.responseText;
             }
-            creditInfo.add("8788290392911");//Merchant ID
+            creditInfo.add("3130031394051");//Merchant ID
             creditInfo.add(cdr.approvalCode);
             creditInfo.add(cdr.transID);
             creditInfo.add(cdr.AID);
@@ -73,7 +73,7 @@ public class CheckoutHandler {
             if (cdr.transTerminated()) {
                 return cdr.responseText;
             }
-            creditInfo.add("8788290392911");//Merchant ID
+            creditInfo.add("3130031394051");//Merchant ID
             creditInfo.add(cdr.approvalCode);
             creditInfo.add(cdr.transID);
             creditInfo.add(cdr.AID);
@@ -207,7 +207,7 @@ public class CheckoutHandler {
             mainFrame.receiptNum = receiptNum;
         }
         myDB.storeReceipt(curCart, receiptNum);
-        creditInfo.add("8788290392911");//Merchant ID
+        creditInfo.add("3130031394051");//Merchant ID
         creditInfo.add(cdr.approvalCode);
         creditInfo.add(cdr.transID);
         creditInfo.add(cdr.AID);
@@ -247,7 +247,7 @@ public class CheckoutHandler {
             mainFrame.receiptNum = receiptNum;
         }
         myDB.storeReceipt(curCart, receiptNum);
-        creditInfo.add("8788290392911");//Merchant ID
+        creditInfo.add("3130031394051");//Merchant ID
         creditInfo.add(cdr.approvalCode);
         creditInfo.add(cdr.transID);
         creditInfo.add(cdr.AID);
