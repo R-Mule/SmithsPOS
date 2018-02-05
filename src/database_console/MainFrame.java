@@ -737,16 +737,19 @@ public class MainFrame extends javax.swing.JFrame {
 
                     try {
                         File f;
-                        if (field1.getText().contains("R")) {
+                        String path="";
+                        if (field1.getText().toUpperCase().contains("R")) {
                             f = new File("Z:\\" + field1.getText().toUpperCase() + ".posrf");
+                            path="Z:\\";
                            // System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                         } else {
                             f = new File("Y:\\" + field1.getText().toUpperCase() + ".posrf");
+                            path="Y:\\";
                             //System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                         }
                         if (f.exists() && !f.isDirectory()) {
                             // read object from file
-                            FileInputStream fis = new FileInputStream("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
+                            FileInputStream fis = new FileInputStream(path + field1.getText().toUpperCase() + ".posrf");
                             ObjectInputStream ois = new ObjectInputStream(fis);
                             dr = (DrawerReport) ois.readObject();
                             dr.generateReport(field1.getText().toUpperCase());
@@ -2515,7 +2518,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.07", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.08", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
