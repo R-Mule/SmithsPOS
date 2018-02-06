@@ -737,14 +737,14 @@ public class MainFrame extends javax.swing.JFrame {
 
                     try {
                         File f;
-                        String path="";
+                        String path = "";
                         if (field1.getText().toUpperCase().contains("R")) {
                             f = new File("Z:\\" + field1.getText().toUpperCase() + ".posrf");
-                            path="Z:\\";
-                           // System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
+                            path = "Z:\\";
+                            // System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                         } else {
                             f = new File("Y:\\" + field1.getText().toUpperCase() + ".posrf");
-                            path="Y:\\";
+                            path = "Y:\\";
                             //System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                         }
                         if (f.exists() && !f.isDirectory()) {
@@ -900,7 +900,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     activateDisplayButton.setVisible(false);
                                     addRemoveInsuranceButton.setVisible(false);
                                     masterReprintReceiptButton.setVisible(false);
-                                    creditButton.setVisible(false);
+                                    //creditButton.setVisible(false);
                                     debitButton.setVisible(false);
                                     upsButton.setVisible(false);
                                     cancelRefundButton.setVisible(true);
@@ -1583,8 +1583,14 @@ public class MainFrame extends javax.swing.JFrame {
                                 }
                             }
                             if (isItemToRefund) {
-                                checkout.beginRefundCardCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
-
+                                String goodCheckout = checkout.beginRefundCardCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
+                                if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
+                                    displayChangeDue = true;
+                                } else {
+                                    displayChangeDue = false;
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
+                                }
                             }
 
                         }//end cartIsNotEmpty

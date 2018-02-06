@@ -495,21 +495,40 @@ public class CheckoutHandler {
         paymentAmt[0] = refundCart.getTotalPrice();
         paymentType[0] = "CASH REFUND: ";
 
-        printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself);
+        printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself,null);
         handleRefundItems(refundCart, clerkName, guiRefundItems, myself);
     }
 
-    void beginRefundCardCheckout(RefundCart refundCart, String clerkName, ArrayList<GuiRefundCartItem> guiRefundItems, MainFrame myself) {
+   String beginRefundCardCheckout(RefundCart refundCart, String clerkName, ArrayList<GuiRefundCartItem> guiRefundItems, MainFrame myself) {
+        ArrayList<String> creditInfo = new ArrayList<>();
+
+        CardDataRequester cdr = new CardDataRequester();
+        cdr.postRequest(reader.getCardReaderURL(), Double.toString(refundCart.getTotalPrice()), "CCR9");
+        myself.setEnabled(true);
+
+        if (cdr.transTerminated()) {
+            return cdr.responseText;
+        }
+        
         double[] paymentAmt = new double[1];
         String[] paymentType = new String[1];
         paymentAmt[0] = refundCart.getTotalPrice();
-        paymentType[0] = "CARD REFUND: ";
+        paymentType[0] = String.format(cdr.cardType + " CARD REFUND:" + cdr.last4ofCard + ": ");
 
         myDB.updateReceipt(refundCart, refundCart.receiptNum);
 
-        printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself);
+                creditInfo.add("3130031394051");//Merchant ID
+        creditInfo.add(cdr.approvalCode);
+        creditInfo.add(cdr.transID);
+        creditInfo.add(cdr.AID);
+        creditInfo.add(cdr.TVR);
+        creditInfo.add(cdr.TSI);
+        creditInfo.add("CREDIT");
+        
+        printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself,creditInfo);
         handleRefundItems(refundCart, clerkName, guiRefundItems, myself);
-
+        
+        return "SMITHSAPPROVEDCODE";
     }
 
     public void handleRefundItems(RefundCart refundCart, String clerkName, ArrayList<GuiRefundCartItem> guiRefundItems, MainFrame myself) {
@@ -608,11 +627,18 @@ public class CheckoutHandler {
         myself.refundOver();
     }
 
-    public void printRefundReceipt(RefundCart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself) {
+    public void printRefundReceipt(RefundCart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself,ArrayList<String> creditInfo) {
         PrinterService printerService = new PrinterService();
         boolean itemDiscounted = false;
         String receipt = "";
-
+        boolean isCreditSale=false;
+        boolean requires2Receipts=false;
+         for (int i = 0; i < paymentType.length; i++) {
+            if (paymentType[i].contains("CARD")) {
+                isCreditSale = true;
+                requires2Receipts = true;
+            }
+        }
         DateFormat dateFormat2 = new SimpleDateFormat("MM/dd/yyyy KK:mmaa");
         Date date = new Date();
         String displayDate;
@@ -673,16 +699,59 @@ public class CheckoutHandler {
             receipt += String.format("%36s$%8.2f\n", paymentType[i], paymentAmt[i]);
         }
 
-        receipt += "\n              STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
-        receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n\n\n\n\n\n";
-        printerService.printString(printerName, receipt);
+        String storeCopy = "";
+        if (isCreditSale ) {
+            storeCopy = receipt;
+            if (isCreditSale) {
+                storeCopy += "\n\n\n\n      X___________________________________\n";
+                storeCopy += "               Customer Signature\n";
+            }
+
+            storeCopy += "\nMerchant ID: " + creditInfo.get(0) + "\n";
+            receipt += "\nMerchant ID: " + creditInfo.get(0) + "\n";
+            storeCopy += "Approval Code: " + creditInfo.get(1) + "\n";
+            receipt += "Approval Code: " + creditInfo.get(1) + "\n";
+            storeCopy += "Transaction ID: " + creditInfo.get(2) + "\n";
+            receipt += "Transaction ID: " + creditInfo.get(2) + "\n";
+            if (!creditInfo.get(3).contentEquals("")) {
+                storeCopy += "AID: " + creditInfo.get(3) + "\n";
+                receipt += "AID: " + creditInfo.get(3) + "\n";
+                storeCopy += "TVR: " + creditInfo.get(4) + "\n";
+                receipt += "TVR: " + creditInfo.get(4) + "\n";
+                storeCopy += "TSI: " + creditInfo.get(5) + "\n";
+                receipt += "TSI: " + creditInfo.get(5) + "\n";
+            }
+            storeCopy += "\n       I AGREE TO PAY ABOVE TOTAL AMOUNT IN\n      ACCORDANCE WITH CARD ISSUER'S AGREEMENT\n";
+            receipt += "\n       I AGREE TO PAY ABOVE TOTAL AMOUNT IN\n      ACCORDANCE WITH CARD ISSUER'S AGREEMENT\n";
+        }
+        storeCopy += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
+        receipt += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
+        storeCopy += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                  ";
+        receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                 ";
+        
+        byte[] cutP = new byte[]{0x1d, 'V', 1};
+        if (isCreditSale) {
+            storeCopy+="STORE COPY\n\n\n\n\n\n\n";
+            receipt+="CUSTOMER COPY\n\n\n\n\n\n\n";
+            printerService.printString(printerName, storeCopy);
+            printerService.printBytes(printerName, cutP);
+            
+        } else {
+            storeCopy+="\n\n\n\n\n\n\n";
+            receipt+="\n\n\n\n\n\n\n";
+            printerService.printString(printerName, receipt);
+            printerService.printBytes(printerName, cutP);
+        }
+        
 
         // cut that paper!
-        byte[] cutP = new byte[]{0x1d, 'V', 1};
+        
         byte[] kickDrawer = new byte[]{27, 112, 48, 55, 121};
-
+        if(requires2Receipts){
+            printerService.printString(printerName, receipt);
+            printerService.printBytes(printerName, cutP);
+        }
         printerService.printBytes(printerName, kickDrawer);
-        printerService.printBytes(printerName, cutP);
         myself.previousReceipt = receipt;
         myself.changeDue.setText("Change Due: $" + String.format("%.2f", total));
         myself.displayChangeDue = true;

@@ -123,7 +123,7 @@ public class CardDataRequester {
                         last4ofCard = last4ofCard.substring(last4ofCard.lastIndexOf('X'));
                         
                         cardEntryMethod=doc.getElementsByTagName("CARD_ENT_METH").item(0).getTextContent();
-                        if(cardEntryMethod.contentEquals("G")){
+                        if(cardEntryMethod.contentEquals("G")||cardEntryMethod.contentEquals("D")){
                             AID=cardEntryMethod=doc.getElementsByTagName("SI_EMV_AID").item(0).getTextContent();
                             TVR=cardEntryMethod=doc.getElementsByTagName("SI_EMV_TVR").item(0).getTextContent();
                             TSI=cardEntryMethod=doc.getElementsByTagName("SI_EMV_TSI").item(0).getTextContent();
