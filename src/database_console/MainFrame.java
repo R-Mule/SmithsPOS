@@ -973,13 +973,11 @@ public class MainFrame extends javax.swing.JFrame {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     JFrame textInputFrame = new JFrame("");
                     JTextField field1 = new JTextField();
-                    // JTextField field1 = new JTextField();
                     JTextField field2 = new JTextField();
                     JTextField field3 = new JTextField();
 
                     field2.setText(previousDate);
                     String[] possibilities = myDB.getInsurances();
-                    //String[] possibilities = {"AARP", "Aetna", "Amerigroup", "Anthem", "Caremark", "Cash", "Catalyst", "Champva", "Chips", "Cigna", "Envision", "Express Scripts","Healthgram", "Highmark BCBS", "Hospice", "Humana", "Medco","Medco Medicare","Megellan", "Optum RX", "Prime", "Savings Voucher", "Silverscript", "WV Medicaid", "VA Medicaid"};
                     JList list = new JList(possibilities); //data has type Object[]
                     list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     list.setLayoutOrientation(JList.VERTICAL_WRAP);
@@ -2244,14 +2242,14 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
-    private boolean validateRX(int length, int rxNumber, String insurance, String fillDate) {
+    protected boolean validateRX(int length, int rxNumber, String insurance, String fillDate) {
         if (length == 7 && !curCart.containsRX(rxNumber, insurance, fillDate)) {
             return true;
         }
         return false;
     }
 
-    private boolean validateDouble(String copay) {
+    protected boolean validateDouble(String copay) {
         try {
             double cpay = Double.parseDouble(copay);
             if (cpay < 0) {
@@ -2275,7 +2273,7 @@ public class MainFrame extends javax.swing.JFrame {
         return true;
     }
 
-    private boolean validateDate(String fillDate) {
+    protected boolean validateDate(String fillDate) {
         String subString1, subString2, subString3;
         if (fillDate.length() != 6) {
             return false;
@@ -2452,7 +2450,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private javax.swing.JPanel jPanel1;
-    private Database myDB;
+    protected Database myDB;
     private Cart curCart;
     private CheckoutHandler checkout;
     private int[] integerArray = new int[12];
@@ -2524,7 +2522,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.10", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.11", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

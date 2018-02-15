@@ -261,6 +261,16 @@ public class Cart {
         return false;
     }//end contains RX
 
+        public boolean containsMultipleRX(int rxNumber, String insurance,String fillDate,Item myself) {
+        for (Item item : items) {
+            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance)&& item.getFillDate().contentEquals(fillDate)&&item!=myself) {
+                return true;
+            }//end if we found rxNumber already!
+            
+        }//end for
+        return false;
+    }//end contains RX
+        
     void setMassDiscount(double discPer) {
         for (Item item : items) {
             if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854&& item.getCategory()!=860) {

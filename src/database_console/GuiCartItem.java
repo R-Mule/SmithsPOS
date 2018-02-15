@@ -1,14 +1,18 @@
 package database_console;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 /**
@@ -23,6 +27,7 @@ public class GuiCartItem {
     JButton prechargedTrueButton;
     JButton prechargedFalseButton;
     JButton addQuantityButton;
+    JButton editRXButton;
     JButton subQuantityButton;
     JButton discountButton;
 
@@ -115,18 +120,29 @@ public class GuiCartItem {
 
         //ADD BUTTON
         addQuantityButton = new JButton("ADD");
+        editRXButton = new JButton("Edit");
         if (item.isRX() || item.getCategory() == 853 || item.getCategory()==854|| item.getCategory()==860) {
             addQuantityButton.setVisible(false);
+            editRXButton.setVisible(true);
         } else {
             addQuantityButton.setVisible(true);
+            editRXButton.setVisible(false);
         }
         addQuantityButton.setSize(55, 15);
         addQuantityButton.setName(item.getUPC());
         addQuantityButton.setBackground(new Color(0, 255, 0));
         addQuantityButton.setFont(new Font(addQuantityButton.getName(), Font.BOLD, 10));
         addQuantityButton.setLocation(1035, -7 + baseY);
+        
+        editRXButton.setSize(55, 15);
+        editRXButton.setName(item.getUPC());
+        editRXButton.setBackground(new Color(255, 255, 0));
+        editRXButton.setFont(new Font(addQuantityButton.getName(), Font.BOLD, 10));
+        editRXButton.setLocation(1035, -7 + baseY);
+        
         frame.add(addQuantityButton);
-
+        frame.add(editRXButton);
+        
         //SUB BUTTON
         subQuantityButton = new JButton("SUB");
         subQuantityButton.setVisible(true);
@@ -226,6 +242,12 @@ public class GuiCartItem {
         addQuantityButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 addItemButtonPressed(event);
+            }
+        });
+                //ADD ITEM BUTTON PRESSED
+        editRXButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                editRXButtonPressed(event);
             }
         });
         //REMOVE ITEM BUTTON PRESSED
@@ -357,6 +379,121 @@ public class GuiCartItem {
 
     }
 
+        public void editRXButtonPressed(ActionEvent event) {//Since I know, I exist, just increase my quantity 1;
+                           JFrame textInputFrame = new JFrame("");
+                    JTextField field1 = new JTextField();
+                    JTextField field2 = new JTextField();
+                    JTextField field3 = new JTextField();
+
+                    field2.setText(item.fillDate);
+                    String[] possibilities = mainFrame.myDB.getInsurances();
+                    JList list = new JList(possibilities); //data has type Object[]
+                    list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                    list.setLayoutOrientation(JList.VERTICAL_WRAP);
+                    list.setBounds(100, 50, 50, 100);
+                    list.setVisibleRowCount(-1);
+
+                    for (int i = 0; i < possibilities.length; i++) {
+                        if (item.insurance.contentEquals(possibilities[i])) {
+                            list.setSelectedIndex(i);
+                        }//end if
+                    }//end for
+
+                    
+                    JScrollPane listScroller = new JScrollPane(list);
+                    listScroller.setPreferredSize(new Dimension(250, 80));
+                    Object[] message = {
+                        "RX Number:", field1,
+                        "Copay:", field3,
+                        "Fill Date:", field2,
+                        "Insurance:", list};
+                    
+                    field1.setText(Integer.toString(item.rxNumber));
+                    field3.setText(Double.toString(item.itemPrice));
+                    field2.setSelectionStart(0);
+                    field2.setSelectionEnd(6);
+                    field3.setSelectionStart(0);
+                    field3.setSelectionEnd(4);
+                    field1.addAncestorListener(new RequestFocusListener());
+                    field1.setSelectionStart(0);
+                    field1.setSelectionEnd(7);
+                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "RX Information", JOptionPane.OK_CANCEL_OPTION);
+
+                    if (option == JOptionPane.OK_OPTION) {
+                        int rxNumber;
+                        String fillDate;
+                        fillDate = field2.getText();
+                        try {
+                            String insurance = (String) list.getSelectedValue();
+                            rxNumber = Integer.parseInt(field1.getText());
+                            int length = (int) (Math.log10(rxNumber) + 1);
+                            if (length!=7) {//invalid RXNumber
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Invalid RX Number");
+                            } else {
+
+                                if (!mainFrame.validateDate(fillDate)) {
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Invalid Fill Date");
+                                } else {
+                                    String temp = field3.getText();
+                                    if (!mainFrame.validateDouble(temp)) {//check for copay
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Invalid Copay");
+                                    } else {//else everything checks out! WE HAVE ALL GOOD DATA!!!
+                                        if (!curCart.containsMultipleRX(Integer.parseInt(field1.getText()), insurance,fillDate,item)) {
+                                            item.rxNumber=rxNumber;
+                                            item.fillDate=fillDate;
+                                            item.insurance=insurance;
+                                            item.itemPrice=Double.parseDouble(field3.getText());
+                                            item.itemCost=Double.parseDouble(field3.getText());
+                                            item.itemName = rxNumber + " " + insurance + " " + fillDate;
+                                            item.mutID = "X"+Integer.toString(rxNumber).substring(2, 7);
+                                            item.itemUPC = "X"+Integer.toString(rxNumber).substring(0, 5)+fillDate;
+        
+                                            nameLabel.setText(item.itemName);
+                                            priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
+                                            pricePerItemLabel.setText(String.format("%.2f", item.getPrice()));
+                                            if(item.isPreCharged){
+                                                totalItemPriceLabel.setText(String.format("%4s", "PCHG"));
+                                            }else{
+                                                totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
+                                            }
+                                            curCart.updateTotal();
+                                            mainFrame.updateCartScreen();
+                                            
+                                        }else{
+                                            JFrame message1 = new JFrame("");
+                                            JOptionPane.showMessageDialog(message1, "RX Already in Cart");
+                                        }
+}
+                                }//end else valid fillDate
+                            }//end else valid RXNumber
+                        } catch (NumberFormatException e) {
+                            //If number is not number for RX, print error msg.
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Invalid RX Number");
+                        }//end catch
+
+                    }//end if
+ 
+
+
+
+
+       // int quantity = item.getQuantity();
+       // item.setQuantity(quantity + 1);
+       // 
+       // taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
+       // priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
+       // quantityLabel.setText(item.getQuantity() + "x");
+       // discountLabel.setText(String.format("%.2f", item.getDiscountAmount()));
+        //totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
+        
+        
+
+    }
+        
     public void removeItemButtonPressed(ActionEvent event) {
 
         if (item.getQuantity() > 1) {
@@ -468,6 +605,8 @@ public class GuiCartItem {
         taxTotalLabel.setVisible(false);
         percentOffItemLabel.setVisible(false);
         totalItemPriceLabel.setVisible(false);
+        
+        editRXButton.setVisible(false);
     }
 
     public void reposition(int baseY) {
@@ -482,6 +621,7 @@ public class GuiCartItem {
         nameLabel.setLocation(100, -25 + baseY);
         totalItemPriceLabel.setLocation(875, -25 + baseY);
         addQuantityButton.setLocation(1035, -7 + baseY);
+        editRXButton.setLocation(1035, -7 + baseY);
         subQuantityButton.setLocation(980, -7 + baseY);
         taxableButton.setLocation(875, -7 + baseY);
         notTaxableButton.setLocation(875, -7 + baseY);
