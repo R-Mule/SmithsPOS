@@ -123,9 +123,15 @@ public class GuiCartItem {
         editRXButton = new JButton("Edit");
         if (item.isRX() || item.getCategory() == 853 || item.getCategory()==854|| item.getCategory()==860) {
             addQuantityButton.setVisible(false);
-            editRXButton.setVisible(true);
-        } else {
+            
+        }else {
             addQuantityButton.setVisible(true);
+            
+        }
+        
+        if(item.isRX()){
+            editRXButton.setVisible(true);
+        }else{
             editRXButton.setVisible(false);
         }
         addQuantityButton.setSize(55, 15);
