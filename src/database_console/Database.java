@@ -70,7 +70,7 @@ public class Database {
                 Statement stmt = con.createStatement();
                 receipt = receipt.replaceAll("'", " ");
                 stmt.executeUpdate("INSERT INTO `receiptsFull`(`pid`,`receiptNum`,`receipt`) VALUES (NULL,'" + receiptNum + "','" + receipt + "')");
-
+                con.close();
             } catch (Exception e) {
                 System.out.println(e);
             }//end catch
@@ -207,7 +207,7 @@ public class Database {
 //INSERT INTO
 //ResultSet rs=stmt.executeQuery("select * from inventory where upc = "+myItem.itemUPC); 
             stmt.executeUpdate("INSERT INTO `tickets` (`pid`,`custId`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`) VALUES (NULL,'" + id + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.getCost() + "," + item.isTaxable() + "," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + ")");
-
+            con.close();
         } catch (Exception e) {
             System.out.println(e);
         }//end catch
@@ -441,7 +441,7 @@ public class Database {
                         host, userName, password);
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate("INSERT INTO `receipts`(`pid`,`receiptNum`,`mutID`,`upc`,`itemName`,`amtPaidBeforeTax`,`wasTaxed`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`,`hasBeenRefunded`,`hasTaxBeenRefunded`) VALUES (NULL,'" + receiptNum + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.isTaxable() + " ," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + "," + item.hasBeenRefunded() + "," + item.hasTaxBeenRefunded() + ")");
-
+            con.close();
             } catch (Exception e) {
                 System.out.println(e);
             }//end catch
@@ -456,7 +456,7 @@ public class Database {
                         host, userName, password);
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate("INSERT INTO `receipts`(`pid`,`receiptNum`,`mutID`,`upc`,`itemName`,`amtPaidBeforeTax`,`wasTaxed`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`,`hasBeenRefunded`,`hasTaxBeenRefunded`) VALUES (NULL,'" + receiptNum + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.isTaxable() + " ," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + "," + item.hasBeenRefunded() + "," + item.hasTaxBeenRefunded() + ")");
-
+                con.close();
             } catch (Exception e) {
                 System.out.println(e);
             }//end catch
@@ -471,7 +471,7 @@ public class Database {
                         host, userName, password);
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate("DELETE from receipts where receiptNum = '"+receiptNum+"' AND mutID = '"+item.getID()+"';");
-
+                con.close();
             } catch (Exception e) {
                 System.out.println(e);
             }//end catch
@@ -552,6 +552,7 @@ public class Database {
                     System.out.println("UPDATE " + item.getName() + " :" + item.hasTaxBeenRefunded());
                     stmt.executeUpdate("UPDATE `receipts` set quantity = " + item.getQuantity() + ", hasBeenRefunded=" + item.hasBeenRefunded() + ", hasTaxBeenRefunded=" + item.hasTaxBeenRefunded() + " where receiptNum='" + item.receiptNum + "' AND upc = '" + item.getUPC() + "' AND mutID = '" + item.getID() + "'  ;");
                 }
+                con.close();
             } catch (Exception e) {
                 System.out.println(e);
             }//end catch
@@ -565,7 +566,7 @@ public class Database {
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '" + mutID + "','" + upc + "','" + name + "'," + price + "," + cost + "," + taxed + "," + category + ");");
-
+            con.close();
         } catch (Exception e) {
             System.out.println(e);
         }//end catch
@@ -579,7 +580,7 @@ public class Database {
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`) VALUES (NULL, '" + accountName + "','" + lastName + "','" + firstName + "','" + dob + "');");
-
+            con.close();
         } catch (Exception e) {
             System.out.println(e);
         }//end catch
@@ -593,7 +594,7 @@ public class Database {
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("INSERT INTO `dmeaccounts` (`pid`,`pan`,`firstname`,`lastname`,`dob`) VALUES (NULL, '" + accountName + "','" + firstName + "','" + lastName + "','" + dob + "');");
-
+            con.close();
         } catch (Exception e) {
             System.out.println(e);
         }//end catch
@@ -635,7 +636,7 @@ public class Database {
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("INSERT INTO `insurances` (`pid`,`insurance`) VALUES (NULL, '" + text+ "');");
-
+            con.close();
         } catch (Exception e) {
             System.out.println(e);
         }//end catch
@@ -648,7 +649,7 @@ public class Database {
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("DELETE FROM `insurances` where insurance = '"+text+ "';");
-
+            con.close();
         } catch (Exception e) {
             System.out.println(e);
         }//end catch
