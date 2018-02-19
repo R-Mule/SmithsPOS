@@ -166,6 +166,25 @@ public class MainFrame extends javax.swing.JFrame {
         subTotalHeader.setSize(250, 50);
         subTotalHeader.setFont(new Font(subTotalHeader.getName(), Font.BOLD, 12));
         subTotalHeader.setVisible(true);
+        
+        estimatedCheckTotalLabel.setLocation(1790, 885);
+        estimatedCheckTotalLabel.setSize(250, 50);
+        estimatedCheckTotalLabel.setFont(new Font(estimatedCheckTotalLabel.getName(), Font.BOLD, 12));
+        estimatedCheckTotalLabel.setVisible(true);
+        this.add(estimatedCheckTotalLabel);
+        
+        estimatedCashTotalLabel.setLocation(1790, 900);
+        estimatedCashTotalLabel.setSize(250, 50);
+        estimatedCashTotalLabel.setFont(new Font(estimatedCashTotalLabel.getName(), Font.BOLD, 12));
+        estimatedCashTotalLabel.setVisible(true);
+        this.add(estimatedCashTotalLabel);
+        
+        estimatedCoinTotalLabel.setLocation(1790, 915);
+        estimatedCoinTotalLabel.setSize(250, 50);
+        estimatedCoinTotalLabel.setFont(new Font(estimatedCoinTotalLabel.getName(), Font.BOLD, 12));
+        estimatedCoinTotalLabel.setVisible(true);
+        this.add(estimatedCoinTotalLabel);
+         
 
         this.add(employeeCheckoutHeader);
         employeeCheckoutHeader.setVisible(true);
@@ -2123,8 +2142,15 @@ public class MainFrame extends javax.swing.JFrame {
         } else {
             changeDue.setVisible(false);
         }
+        
+        
         this.add(changeDue);
-
+        
+        estimatedCheckTotalLabel.setText(String.format("Checks: $%.2f", estimatedCheckTotal));
+        estimatedCashTotalLabel.setText(String.format("Cash: $%d", estimatedCashTotal));
+        estimatedCoinTotalLabel.setText(String.format("Coin: $%.2f", estimatedCoinTotal));
+        
+        
         if (curCart.getRequiresRepaint()) {
             int y = 15;
             for (GuiCartItem item : guiItems) {
@@ -2522,13 +2548,19 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.12", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.13", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
     JButton splitTenderButton = new JButton("<html>" + st.replaceAll("\\n", "<br>") + "</html>");
     JButton arPaymentButton = new JButton("<html>" + ar.replaceAll("\\n", "<br>") + "</html>");
     String receipt = "Reprint\nReceipt";
+    protected double estimatedCheckTotal=0;
+    protected double estimatedCoinTotal=0;
+    protected long estimatedCashTotal=0;
+    JLabel estimatedCheckTotalLabel = new JLabel(String.format("Checks: $%.2f", estimatedCheckTotal), SwingConstants.LEFT);
+    JLabel estimatedCashTotalLabel = new JLabel(String.format("Cash: $%d", estimatedCashTotal), SwingConstants.LEFT);
+    JLabel estimatedCoinTotalLabel = new JLabel(String.format("Coin: $%.2f", estimatedCoinTotal), SwingConstants.LEFT);
     JButton reprintReceiptButton = new JButton("<html>" + receipt.replaceAll("\\n", "<br>") + "</html>");
     private boolean itemIsTaxable = true;//assume every item is taxable at first.
     JTextField textField = new JTextField(10);

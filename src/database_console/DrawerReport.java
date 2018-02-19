@@ -25,11 +25,11 @@ public class DrawerReport implements Serializable {
     private ArrayList<Integer> employeeTransactions = new ArrayList<Integer>();//UPDATED
 
     //TOTAL AMOUNTS OF $ IN DRAWERS
-    private double totalCoinsAmt = 0;//UPDATED
-    private double totalCashAmt = 0;//UPDATED
-    private double totalChecksAmt = 0;//UPDATED
-    private double totalCreditAmt = 0;//UPDATED
-    private double totalDebitAmt=0;
+    protected double totalCoinsAmt = 0;//UPDATED
+    protected double totalCashAmt = 0;//UPDATED
+    protected double totalChecksAmt = 0;//UPDATED
+    protected double totalCreditAmt = 0;//UPDATED
+    protected double totalDebitAmt=0;
 
     //Total Refunded Today
     private double totalRefundedCash = 0;//UPDATED

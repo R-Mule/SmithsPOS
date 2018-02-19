@@ -474,7 +474,7 @@ public class CheckoutHandler {
 
         myself.previousReceipt = receipt;
         myDB.storeReceiptString(receiptNum, receipt);
-        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, false, employeeCheckoutName);
+        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, false, employeeCheckoutName,myself);
 
     }
 
@@ -755,7 +755,7 @@ public class CheckoutHandler {
         myself.previousReceipt = receipt;
         myself.changeDue.setText("Change Due: $" + String.format("%.2f", total));
         myself.displayChangeDue = true;
-        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true, "NO");
+        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true, "NO",myself);
     }
 
     public void reprintReceipt(String receipt) {
@@ -845,7 +845,7 @@ public class CheckoutHandler {
         }
     }
 
-    public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund, String employeeCheckoutName) {
+    public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund, String employeeCheckoutName,MainFrame mainFrame) {
         DrawerReport dr = null;
 
         try {
@@ -869,7 +869,11 @@ public class CheckoutHandler {
                     dr = new DrawerReport((RefundCart) curCart, clerkName, paymentType, paymentAmt, isRefund);
                 }
             }
-
+            
+            mainFrame.estimatedCoinTotal=dr.totalCoinsAmt;
+            mainFrame.estimatedCashTotal=Math.round(dr.totalCashAmt);
+            mainFrame.estimatedCheckTotal=dr.totalChecksAmt;
+            
             // write object to file
             FileOutputStream fos = new FileOutputStream(reader.getRegisterReportPath() + receiptNum.substring(12) + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -900,7 +904,11 @@ public class CheckoutHandler {
                         dr = new DrawerReport((RefundCart) curCart, clerkName, paymentType, paymentAmt, isRefund);
                     }
                 }
-
+                
+                mainFrame.estimatedCoinTotal=dr.totalCoinsAmt;
+                mainFrame.estimatedCashTotal=Math.round(dr.totalCashAmt);
+                mainFrame.estimatedCheckTotal=dr.totalChecksAmt;
+                
                 // write object to file
                 FileOutputStream fos = new FileOutputStream(emergencyDrivePath + receiptNum.substring(12) + ".posrf");
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
