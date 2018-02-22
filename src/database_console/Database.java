@@ -103,7 +103,7 @@ public class Database {
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from inventory where mutID = " + mutID);
+            ResultSet rs = stmt.executeQuery("select * from inventory where mutID = '" + mutID+"'");
             while (rs.next()) {
                 Statement stmt2 = con.createStatement();
                 stmt2.executeUpdate("UPDATE `inventory` set price=" + price + " where mutID = '" + mutID + "';");
