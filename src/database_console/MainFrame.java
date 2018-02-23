@@ -260,14 +260,13 @@ public class MainFrame extends javax.swing.JFrame {
                                 //if it does, send error message!
                                 JFrame message2 = new JFrame("");
                                 //JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Would you like me to load those?");
-                                int dialogButton = JOptionPane.YES_NO_OPTION;
-                                JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING", dialogButton);
-                                if (dialogButton == JOptionPane.YES_OPTION) {
+
+                                if (JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING",
+                                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                                     loadTicketWithId(id);
                                     updateCartScreen();
-                                    if (dialogButton == JOptionPane.NO_OPTION) {
-                                        remove(dialogButton);
-                                    }
+                                } else {
+                                    // no option
                                 }
 
                             }//end else already items in tickets
