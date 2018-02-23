@@ -117,13 +117,14 @@ public class CardDataRequester {
                     authAmtReq = doc.getElementsByTagName("AUTH_AMOUNT_REQUESTED").item(0).getTextContent();
                     if (Double.parseDouble(authAmt)==Double.parseDouble(authAmtReq)) {
                         transID = doc.getElementsByTagName("AUTH_GUID").item(0).getTextContent();
-
+                        //gets here
                         approvalCode = doc.getElementsByTagName("AUTH_CODE").item(0).getTextContent();
                         last4ofCard = doc.getElementsByTagName("AUTH_MASKED_ACCOUNT_NBR").item(0).getTextContent();
                         last4ofCard = last4ofCard.substring(last4ofCard.lastIndexOf('X'));
-                        
+                        //gets here too
                         cardEntryMethod=doc.getElementsByTagName("CARD_ENT_METH").item(0).getTextContent();
-                        if(cardEntryMethod.contentEquals("G")||cardEntryMethod.contentEquals("D")){
+                        if(cardEntryMethod.contentEquals("G")){//TOOK THIS OUT ||cardEntryMethod.contentEquals("D")
+                            //and here
                             AID=cardEntryMethod=doc.getElementsByTagName("SI_EMV_AID").item(0).getTextContent();
                             TVR=cardEntryMethod=doc.getElementsByTagName("SI_EMV_TVR").item(0).getTextContent();
                             TSI=cardEntryMethod=doc.getElementsByTagName("SI_EMV_TSI").item(0).getTextContent();
@@ -136,11 +137,11 @@ public class CardDataRequester {
                     }
                 } else {
                     transTerminate=true;
-                    System.out.println("TRANS DECLINED??");
+                    System.out.println("TRANS DECLINED1??");
                 }
                 }else{
                     transTerminate=true;
-                    System.out.println("TRANS DECLINED??");
+                    System.out.println("TRANS DECLINED2??");
                 }
             } catch (SAXException e) {
                 // handle SAXException
@@ -152,7 +153,7 @@ public class CardDataRequester {
         } catch (NullPointerException ex) {
             transTerminate=true;
             responseText="FAILED TO FIND AUTH RETRY";
-            System.out.println("TRANS DECLINED??");
+            System.out.println("TRANS DECLINED3??");
         }
     }
 

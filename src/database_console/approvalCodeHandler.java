@@ -507,6 +507,7 @@ public class approvalCodeHandler {
 
     private void unknown() {
         System.out.println(code);
+        System.out.println("SPECIAL CARD");
         approved=false;
         switch (code) {
             case "00":
