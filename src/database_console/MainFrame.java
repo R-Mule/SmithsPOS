@@ -166,25 +166,24 @@ public class MainFrame extends javax.swing.JFrame {
         subTotalHeader.setSize(250, 50);
         subTotalHeader.setFont(new Font(subTotalHeader.getName(), Font.BOLD, 12));
         subTotalHeader.setVisible(true);
-        
+
         estimatedCheckTotalLabel.setLocation(1790, 885);
         estimatedCheckTotalLabel.setSize(250, 50);
         estimatedCheckTotalLabel.setFont(new Font(estimatedCheckTotalLabel.getName(), Font.BOLD, 12));
         estimatedCheckTotalLabel.setVisible(true);
         this.add(estimatedCheckTotalLabel);
-        
+
         estimatedCashTotalLabel.setLocation(1790, 900);
         estimatedCashTotalLabel.setSize(250, 50);
         estimatedCashTotalLabel.setFont(new Font(estimatedCashTotalLabel.getName(), Font.BOLD, 12));
         estimatedCashTotalLabel.setVisible(true);
         this.add(estimatedCashTotalLabel);
-        
+
         estimatedCoinTotalLabel.setLocation(1790, 915);
         estimatedCoinTotalLabel.setSize(250, 50);
         estimatedCoinTotalLabel.setFont(new Font(estimatedCoinTotalLabel.getName(), Font.BOLD, 12));
         estimatedCoinTotalLabel.setVisible(true);
         this.add(estimatedCoinTotalLabel);
-         
 
         this.add(employeeCheckoutHeader);
         employeeCheckoutHeader.setVisible(true);
@@ -260,7 +259,17 @@ public class MainFrame extends javax.swing.JFrame {
                             } else {
                                 //if it does, send error message!
                                 JFrame message2 = new JFrame("");
-                                JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Maybe load those?");
+                                //JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Would you like me to load those?");
+                                int dialogButton = JOptionPane.YES_NO_OPTION;
+                                JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING", dialogButton);
+                                if (dialogButton == JOptionPane.YES_OPTION) {
+                                    loadTicketWithId(id);
+                                    updateCartScreen();
+                                    if (dialogButton == JOptionPane.NO_OPTION) {
+                                        remove(dialogButton);
+                                    }
+                                }
+
                             }//end else already items in tickets
                         }//end string null or empty part, didnt do an else, we just do nothing.
                     } else {//CARTS EMPTY!
@@ -2142,15 +2151,13 @@ public class MainFrame extends javax.swing.JFrame {
         } else {
             changeDue.setVisible(false);
         }
-        
-        
+
         this.add(changeDue);
-        
+
         estimatedCheckTotalLabel.setText(String.format("Checks: $%.2f", estimatedCheckTotal));
         estimatedCashTotalLabel.setText(String.format("Cash: $%d", estimatedCashTotal));
         estimatedCoinTotalLabel.setText(String.format("Coin: $%.2f", estimatedCoinTotal));
-        
-        
+
         if (curCart.getRequiresRepaint()) {
             int y = 15;
             for (GuiCartItem item : guiItems) {
@@ -2548,16 +2555,16 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.15", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.16", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
     JButton splitTenderButton = new JButton("<html>" + st.replaceAll("\\n", "<br>") + "</html>");
     JButton arPaymentButton = new JButton("<html>" + ar.replaceAll("\\n", "<br>") + "</html>");
     String receipt = "Reprint\nReceipt";
-    protected double estimatedCheckTotal=0;
-    protected double estimatedCoinTotal=0;
-    protected long estimatedCashTotal=0;
+    protected double estimatedCheckTotal = 0;
+    protected double estimatedCoinTotal = 0;
+    protected long estimatedCashTotal = 0;
     JLabel estimatedCheckTotalLabel = new JLabel(String.format("Checks: $%.2f", estimatedCheckTotal), SwingConstants.LEFT);
     JLabel estimatedCashTotalLabel = new JLabel(String.format("Cash: $%d", estimatedCashTotal), SwingConstants.LEFT);
     JLabel estimatedCoinTotalLabel = new JLabel(String.format("Coin: $%.2f", estimatedCoinTotal), SwingConstants.LEFT);
