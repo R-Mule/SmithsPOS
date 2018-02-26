@@ -41,6 +41,7 @@ public class GuiRefundCartItem extends GuiCartItem {
         this.discountButton.setVisible(false);
         prechargedFalseButton.setVisible(false);
         prechargedTrueButton.setVisible(false);
+        editRXButton.setVisible(false);
         this.item = item;
         this.refundCart = curCart;
         discountLabel.setVisible(false);
