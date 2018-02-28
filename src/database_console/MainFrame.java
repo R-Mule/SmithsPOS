@@ -1063,6 +1063,18 @@ public class MainFrame extends javax.swing.JFrame {
                                             displayChangeDue = false;
                                             previousInsurance = insurance;
                                             previousDate = fillDate;
+                                            ArrayList<String> ticketIDs = myDB.getAllTicketsNamesWithRxNumber(rxNumber);
+                                            if (!ticketIDs.isEmpty()) {
+                                                if (JOptionPane.showConfirmDialog(null, "There are already  ticket(s) with that RX Number. Would you like me to load those?", "WARNING",
+                                                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                                                    for(String id : ticketIDs){
+                                                    loadTicketWithId(id);
+                                                    }
+                                                    updateCartScreen();
+                                                } else {
+                                                    // no option
+                                                }
+                                            }
                                         }
 
                                     }
@@ -2554,7 +2566,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.18", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.19", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

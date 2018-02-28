@@ -242,6 +242,29 @@ public class Database {
         return ticketNamesActual;
     }
 
+        public ArrayList<String> getAllTicketsNamesWithRxNumber(int rxNumber) {
+        ArrayList<String> ticketNames = new ArrayList<>();
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from tickets  where rxnumber = "+rxNumber+" order by custId;");
+            int i = 0;
+            while (rs.next()) {
+                if (!ticketNames.contains(rs.getString(2))) {
+                    ticketNames.add(rs.getString(2));
+                    i++;
+                }
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return ticketNames;
+    }
+        
     public ArrayList<Item> getTicketItemsFromDatabase(String id) {
         ArrayList<Item> loadedItems = new ArrayList<Item>();
         try {
