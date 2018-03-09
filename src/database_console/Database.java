@@ -32,7 +32,7 @@ public class Database {
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from employees order by wins desc;");
+            ResultSet rs = stmt.executeQuery("select * from employees order by wins desc,losses,empname;");
             while (rs.next()) {
                 data.add(rs.getString(2)+" : "+rs.getInt(4)+" : "+rs.getInt(5));
                 

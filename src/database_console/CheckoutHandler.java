@@ -456,7 +456,7 @@ public class CheckoutHandler {
         byte[] cutP = new byte[]{0x1d, 'V', 1};
         byte[] kickDrawer = new byte[]{27, 112, 48, 55, 121};
         boolean drawerHasBeenKicked = false;
-        if (changeDue > 0 || (isCashSale && curCart.getTotalPrice() != 0) || isCreditSale) {
+        if (changeDue > 0 || (isCashSale && curCart.getTotalPrice() != 0)) {
             printerService.printBytes(printerName, kickDrawer);
             drawerHasBeenKicked = true;
         }
@@ -465,10 +465,10 @@ public class CheckoutHandler {
         if (requires2Receipts) {
             printerService.printString(printerName, receipt);
             printerService.printBytes(printerName, cutP);
-            if (!drawerHasBeenKicked) {
+           /* if (!drawerHasBeenKicked) {
                 printerService.printBytes(printerName, kickDrawer);
                 drawerHasBeenKicked = true;
-            }
+            }*/
 
         }
 
