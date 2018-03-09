@@ -25,6 +25,25 @@ public class Database {
         password = reader.getPassword();
     }//end databaseCtor
     
+        public ArrayList<String> getEmployeesAndWinLossMM(){
+                try {
+                   ArrayList<String> data = new ArrayList<>();
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from employees order by wins desc;");
+            while (rs.next()) {
+                data.add(rs.getString(2)+" : "+rs.getInt(4)+" : "+rs.getInt(5));
+                
+            }//end while
+            con.close();
+            return data;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
     public String getQuote(){
                 try {
                    ArrayList<String> quotes = new ArrayList<>();

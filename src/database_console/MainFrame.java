@@ -412,6 +412,12 @@ public class MainFrame extends javax.swing.JFrame {
         //This creates the UPS Payment Button
         upsButton.setLocation(1800, 100);
         upsButton.setSize(100, 100);
+
+        mmButton.setSize(350, 100);
+        mmButton.setLocation(1400, 900);
+        mmButton.setVisible(true);
+        this.add(mmButton);
+
         //upsButton.setBackground(new Color(100, 65, 23));
         //This creates the Void Item Button
         voidButton.setLocation(1300, 200);
@@ -530,6 +536,24 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(clerkLoginButton);
         this.add(masterReprintReceiptButton);
         masterReprintReceiptButton.setVisible(false);
+
+        mmButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                ArrayList<String> data = myDB.getEmployeesAndWinLossMM();
+                System.out.println(data.get(0));
+                JFrame frame = new JFrame("");
+                String dataString="Name : Wins : Losses\n";
+                for(String temp : data){
+                    dataString+=temp+"\n";
+                }
+//custom title, no icon
+                JOptionPane.showMessageDialog(frame,
+                        dataString,
+                        "Yes...I spent time on this.",
+                        JOptionPane.PLAIN_MESSAGE);
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }
+        });
 
         masterReprintReceiptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -930,6 +954,8 @@ public class MainFrame extends javax.swing.JFrame {
                                     //creditButton.setVisible(false);
                                     debitButton.setVisible(false);
                                     upsButton.setVisible(false);
+                                    mmButton.setVisible(false);
+
                                     cancelRefundButton.setVisible(true);
                                     updateCartScreen();
                                 }
@@ -1067,8 +1093,8 @@ public class MainFrame extends javax.swing.JFrame {
                                             if (!ticketIDs.isEmpty()) {
                                                 if (JOptionPane.showConfirmDialog(null, "There are already  ticket(s) with that RX Number. Would you like me to load those?", "WARNING",
                                                         JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                                                    for(String id : ticketIDs){
-                                                    loadTicketWithId(id);
+                                                    for (String id : ticketIDs) {
+                                                        loadTicketWithId(id);
                                                     }
                                                     updateCartScreen();
                                                 } else {
@@ -2409,6 +2435,7 @@ public class MainFrame extends javax.swing.JFrame {
         creditButton.setVisible(true);
         debitButton.setVisible(true);
         upsButton.setVisible(true);
+        mmButton.setVisible(true);
         if (!displayActive) {
             activateDisplayButton.setVisible(true);
         }
@@ -2566,7 +2593,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.21", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.22", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -2589,6 +2616,9 @@ public class MainFrame extends javax.swing.JFrame {
     RefundCart refundCart = new RefundCart();
     boolean displayActive = false;
     String receiptNum = "";
+
+    ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");
+    JButton mmButton = new JButton(mmimg);
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
