@@ -417,7 +417,17 @@ public class MainFrame extends javax.swing.JFrame {
         mmButton.setLocation(1400, 900);
         mmButton.setVisible(true);
         this.add(mmButton);
-
+        //EASTER UPDATE
+       // e1imageLabel.setBounds(100, 100, 100, 100);
+        e1imageLabel.setSize(800, 200);
+        e1imageLabel.setLocation(1100, 540);
+        e1imageLabel.setVisible(true);
+        this.add(e1imageLabel);
+        e2imageLabel.setSize(800, 400);
+        e2imageLabel.setLocation(1200, 100);
+        e2imageLabel.setVisible(true);
+        this.add(e2imageLabel);
+        
         //upsButton.setBackground(new Color(100, 65, 23));
         //This creates the Void Item Button
         voidButton.setLocation(1300, 200);
@@ -2567,6 +2577,12 @@ public class MainFrame extends javax.swing.JFrame {
     String previousDate = "";
     JButton otcButton = new JButton("OTC");
     ImageIcon upsimg = new ImageIcon("C:/POS/SOFTWARE/ups.png");
+    //EASTER
+    ImageIcon easter1img = new ImageIcon("C:/POS/Software/Easter1.png");
+    JLabel e1imageLabel = new JLabel(easter1img);
+    ImageIcon easter2img = new ImageIcon("C:/POS/Software/Easter2.png");
+    JLabel e2imageLabel = new JLabel(easter2img);
+    
     JButton upsButton = new JButton(upsimg);
     JButton paperButton = new JButton("Paper");
     JButton voidButton = new JButton("Void");
@@ -2593,7 +2609,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.23", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.24", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
