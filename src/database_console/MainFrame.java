@@ -412,21 +412,24 @@ public class MainFrame extends javax.swing.JFrame {
         //This creates the UPS Payment Button
         upsButton.setLocation(1800, 100);
         upsButton.setSize(100, 100);
-
-        mmButton.setSize(350, 100);
-        mmButton.setLocation(1400, 900);
-        mmButton.setVisible(true);
-        this.add(mmButton);
-        //EASTER UPDATE
-        // e1imageLabel.setBounds(100, 100, 100, 100);
-        e1imageLabel.setSize(800, 200);
-        e1imageLabel.setLocation(1100, 540);
-        e1imageLabel.setVisible(true);
-        this.add(e1imageLabel);
-        e2imageLabel.setSize(800, 400);
-        e2imageLabel.setLocation(1200, 100);
-        e2imageLabel.setVisible(true);
-        this.add(e2imageLabel);
+        if (isMarchMadness) {
+            mmButton.setSize(350, 100);
+            mmButton.setLocation(1400, 900);
+            mmButton.setVisible(true);
+            this.add(mmButton);
+        }
+        if (isEaster) {
+            //EASTER UPDATE
+            // e1imageLabel.setBounds(100, 100, 100, 100);
+            e1imageLabel.setSize(800, 200);
+            e1imageLabel.setLocation(1100, 540);
+            e1imageLabel.setVisible(true);
+            this.add(e1imageLabel);
+            e2imageLabel.setSize(800, 400);
+            e2imageLabel.setLocation(1200, 100);
+            e2imageLabel.setVisible(true);
+            this.add(e2imageLabel);
+        }
 
         //upsButton.setBackground(new Color(100, 65, 23));
         //This creates the Void Item Button
@@ -547,24 +550,25 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(masterReprintReceiptButton);
         masterReprintReceiptButton.setVisible(false);
 
-        mmButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                ArrayList<String> data = myDB.getEmployeesAndWinLossMM();
-                System.out.println(data.get(0));
-                JFrame frame = new JFrame("");
-                String dataString = "Name : Wins : Losses\n";
-                for (String temp : data) {
-                    dataString += temp + "\n";
-                }
+        if (isMarchMadness) {
+            mmButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    ArrayList<String> data = myDB.getEmployeesAndWinLossMM();
+                    System.out.println(data.get(0));
+                    JFrame frame = new JFrame("");
+                    String dataString = "Name : Wins : Losses\n";
+                    for (String temp : data) {
+                        dataString += temp + "\n";
+                    }
 //custom title, no icon
-                JOptionPane.showMessageDialog(frame,
-                        dataString,
-                        "Yes...I spent time on this.",
-                        JOptionPane.PLAIN_MESSAGE);
-                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-            }
-        });
-
+                    JOptionPane.showMessageDialog(frame,
+                            dataString,
+                            "Yes...I spent time on this.",
+                            JOptionPane.PLAIN_MESSAGE);
+                    textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+                }
+            });
+        }
         masterReprintReceiptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -964,7 +968,9 @@ public class MainFrame extends javax.swing.JFrame {
                                     //creditButton.setVisible(false);
                                     debitButton.setVisible(false);
                                     upsButton.setVisible(false);
-                                    mmButton.setVisible(false);
+                                    if (isMarchMadness) {
+                                        mmButton.setVisible(false);
+                                    }
 
                                     cancelRefundButton.setVisible(true);
                                     updateCartScreen();
@@ -2446,7 +2452,9 @@ public class MainFrame extends javax.swing.JFrame {
         creditButton.setVisible(true);
         debitButton.setVisible(true);
         upsButton.setVisible(true);
-        mmButton.setVisible(true);
+        if(isMarchMadness){
+            mmButton.setVisible(true);
+        }
         if (!displayActive) {
             activateDisplayButton.setVisible(true);
         }
@@ -2633,7 +2641,9 @@ public class MainFrame extends javax.swing.JFrame {
     RefundCart refundCart = new RefundCart();
     boolean displayActive = false;
     String receiptNum = "";
-
+    //Holiday Flags!
+    boolean isEaster = true;
+    boolean isMarchMadness = true;
     ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");
     JButton mmButton = new JButton(mmimg);
     // Variables declaration - do not modify//GEN-BEGIN:variables
