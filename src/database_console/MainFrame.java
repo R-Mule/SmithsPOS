@@ -418,7 +418,7 @@ public class MainFrame extends javax.swing.JFrame {
         mmButton.setVisible(true);
         this.add(mmButton);
         //EASTER UPDATE
-       // e1imageLabel.setBounds(100, 100, 100, 100);
+        // e1imageLabel.setBounds(100, 100, 100, 100);
         e1imageLabel.setSize(800, 200);
         e1imageLabel.setLocation(1100, 540);
         e1imageLabel.setVisible(true);
@@ -427,7 +427,7 @@ public class MainFrame extends javax.swing.JFrame {
         e2imageLabel.setLocation(1200, 100);
         e2imageLabel.setVisible(true);
         this.add(e2imageLabel);
-        
+
         //upsButton.setBackground(new Color(100, 65, 23));
         //This creates the Void Item Button
         voidButton.setLocation(1300, 200);
@@ -552,9 +552,9 @@ public class MainFrame extends javax.swing.JFrame {
                 ArrayList<String> data = myDB.getEmployeesAndWinLossMM();
                 System.out.println(data.get(0));
                 JFrame frame = new JFrame("");
-                String dataString="Name : Wins : Losses\n";
-                for(String temp : data){
-                    dataString+=temp+"\n";
+                String dataString = "Name : Wins : Losses\n";
+                for (String temp : data) {
+                    dataString += temp + "\n";
                 }
 //custom title, no icon
                 JOptionPane.showMessageDialog(frame,
@@ -1424,32 +1424,33 @@ public class MainFrame extends javax.swing.JFrame {
                                         JFrame message1 = new JFrame("");
                                         JOptionPane.showMessageDialog(message1, "Totals do not match.");
 
-                                    }
-                                    if (Double.parseDouble(field7.getText()) > 0 && Double.parseDouble(field6.getText()) > 0) {
-                                        JFrame message2 = new JFrame("");
-                                        JOptionPane.showMessageDialog(message2, "You can only use either credit or debit, not both!");
-                                    } else if (curCart.getTotalPrice() < Double.parseDouble(field7.getText())) {
-                                        JFrame message2 = new JFrame("");
-                                        JOptionPane.showMessageDialog(message2, "Debit Card amount MUST be LESS THAN the TOTAL amount of the Cart!");
-                                    } else if (curCart.getTotalPrice() < Double.parseDouble(field6.getText())) {
-                                        JFrame message2 = new JFrame("");
-                                        JOptionPane.showMessageDialog(message2, "Credit Card amount MUST be LESS THAN the TOTAL amount of the Cart!");
                                     } else {
-                                        double amtReceived = Double.parseDouble(field7.getText()) + Double.parseDouble(field1.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field6.getText());
-                                        amtReceived = round(amtReceived);
-                                        double change = amtReceived - curCart.getTotalPrice();
-                                        change = round(change);
-                                        changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                        String goodCheckout = checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field5.getText()), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
-                                        if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
-                                            changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                            displayChangeDue = true;
+                                        if (Double.parseDouble(field7.getText()) > 0 && Double.parseDouble(field6.getText()) > 0) {
+                                            JFrame message2 = new JFrame("");
+                                            JOptionPane.showMessageDialog(message2, "You can only use either credit or debit, not both!");
+                                        } else if (curCart.getTotalPrice() < Double.parseDouble(field7.getText())) {
+                                            JFrame message2 = new JFrame("");
+                                            JOptionPane.showMessageDialog(message2, "Debit Card amount MUST be LESS THAN the TOTAL amount of the Cart!");
+                                        } else if (curCart.getTotalPrice() < Double.parseDouble(field6.getText())) {
+                                            JFrame message2 = new JFrame("");
+                                            JOptionPane.showMessageDialog(message2, "Credit Card amount MUST be LESS THAN the TOTAL amount of the Cart!");
                                         } else {
-                                            JFrame message1 = new JFrame("");
-                                            JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
-                                        }
-                                        updateCartScreen();
-                                    }//end else
+                                            double amtReceived = Double.parseDouble(field7.getText()) + Double.parseDouble(field1.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field6.getText());
+                                            amtReceived = round(amtReceived);
+                                            double change = amtReceived - curCart.getTotalPrice();
+                                            change = round(change);
+                                            changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                            String goodCheckout = checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field5.getText()), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
+                                            if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
+                                                changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                                displayChangeDue = true;
+                                            } else {
+                                                JFrame message1 = new JFrame("");
+                                                JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
+                                            }
+                                            updateCartScreen();
+                                        }//end else
+                                    }
                                 }//end else
                             }//end if
                         }//end if isNotEmpty
@@ -2582,7 +2583,7 @@ public class MainFrame extends javax.swing.JFrame {
     JLabel e1imageLabel = new JLabel(easter1img);
     ImageIcon easter2img = new ImageIcon("C:/POS/Software/Easter2.png");
     JLabel e2imageLabel = new JLabel(easter2img);
-    
+
     JButton upsButton = new JButton(upsimg);
     JButton paperButton = new JButton("Paper");
     JButton voidButton = new JButton("Void");
@@ -2609,7 +2610,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.24", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.25", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
