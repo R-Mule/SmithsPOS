@@ -95,6 +95,20 @@ public class MainFrame extends javax.swing.JFrame {
              if(day<15){
                  isValentinesDay=true;
              }
+         }else if(month.contentEquals("06")){
+             if(day>15){
+                 isFourthOfJuly=true;
+             }
+         }else if(month.contentEquals("07")){
+             if(day<=4){
+                 isFourthOfJuly=true;
+             }else{
+                 isSummerTime=true;
+             }
+         }else if(month.contentEquals("08")){
+             isSummerTime=true;
+         }else if(month.contentEquals("09")){
+             //nothing right now, give them a month off :)
          }
          
         DateFormat dateFormat = new SimpleDateFormat("MMddyy");
@@ -662,6 +676,48 @@ public class MainFrame extends javax.swing.JFrame {
 
         }
 
+                if (isSummerTime) {
+            //SUMMER!
+            ImageIcon christmas1img = new ImageIcon("C:/POS/Software/beach1.png");
+            JLabel christmas1imageLabel = new JLabel(christmas1img);
+            ImageIcon christmas2img = new ImageIcon("C:/POS/Software/beach2.png");
+            JLabel christmas2imageLabel = new JLabel(christmas2img);
+            ImageIcon christmas3img = new ImageIcon("C:/POS/Software/beach3.png");
+            JLabel christmas3imageLabel = new JLabel(christmas3img);
+            ImageIcon christmas4img = new ImageIcon("C:/POS/Software/beach4.png");
+            JLabel christmas4imageLabel = new JLabel(christmas4img);
+            ImageIcon christmas5img = new ImageIcon("C:/POS/Software/beach5.png");
+            JLabel christmas5imageLabel = new JLabel(christmas5img);
+            ImageIcon christmas6img = new ImageIcon("C:/POS/Software/beach6.png");
+            JLabel christmas6imageLabel = new JLabel(christmas6img);
+
+            christmas1imageLabel.setSize(300, 300);
+            christmas1imageLabel.setLocation(1400, 175);
+            christmas1imageLabel.setVisible(true);
+            this.add(christmas1imageLabel);
+            christmas2imageLabel.setSize(300, 200);
+            christmas2imageLabel.setLocation(1450, 850);
+            christmas2imageLabel.setVisible(true);
+            this.add(christmas2imageLabel);
+            christmas3imageLabel.setSize(350, 400);
+            christmas3imageLabel.setLocation(1275, 710);
+            christmas3imageLabel.setVisible(true);
+            this.add(christmas3imageLabel);
+            christmas4imageLabel.setSize(600, 200);
+            christmas4imageLabel.setLocation(1375, 500);
+            christmas4imageLabel.setVisible(true);
+            this.add(christmas4imageLabel);
+            christmas5imageLabel.setSize(200, 200);
+            christmas5imageLabel.setLocation(300, -30);
+            christmas5imageLabel.setVisible(true);
+            this.add(christmas5imageLabel);
+            christmas6imageLabel.setSize(200, 200);
+            christmas6imageLabel.setLocation(1300, 500);
+            christmas6imageLabel.setVisible(true);
+            this.add(christmas6imageLabel);
+
+        }
+                
         if (isThanksgiving) {
             ImageIcon thanksgiving1img = new ImageIcon("C:/POS/Software/thanksgiving1.png");
             JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
@@ -2559,6 +2615,10 @@ public class MainFrame extends javax.swing.JFrame {
         if (isSaintPatricksDay) {
             getContentPane().setBackground(new Color(96, 168, 48));
         }
+        if (isSummerTime) {
+           // getContentPane().setBackground(new Color(21, 178, 211));
+           getContentPane().setBackground(new Color(219,209,180));
+        }
         checkout = new CheckoutHandler(myDB);
         quote.setText(myDB.getQuote());
         this.add(quote);
@@ -2911,7 +2971,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.26", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.27", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -2943,6 +3003,7 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isChristmas = false;
     boolean isValentinesDay = false;
     boolean isSaintPatricksDay = false;
+    boolean isSummerTime=false;
    
     ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");
     JButton mmButton = new JButton(mmimg);
