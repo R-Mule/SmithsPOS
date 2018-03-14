@@ -23,6 +23,7 @@ public class ConfigFileReader {
     private String registerReportPath;
     private String displayComPort;
     private String cardReaderURL;
+    private String pharmacyName;
 
     public ConfigFileReader() {
         try {
@@ -59,6 +60,8 @@ public class ConfigFileReader {
                 }else if(line.contains("Card Terminal Address:")){
                     cardReaderURL = line.substring(22).trim();
                     
+                }else if(line.contains("Pharmacy Name:")){
+                    pharmacyName = line.substring(14).trim();
                 }
 
             }//end while
@@ -68,6 +71,10 @@ public class ConfigFileReader {
         } catch (IOException e) {
             //System.out.println("Error reading the file");
         }
+    }
+    
+    public String getPharmacyName(){
+        return pharmacyName;
     }
 
     public String getCardReaderURL(){

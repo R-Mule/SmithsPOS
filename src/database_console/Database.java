@@ -601,6 +601,44 @@ public class Database {
         }
     }
 
+    boolean doesItemExistByUPC(String upc){
+                try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from inventory where upc = '" + upc + "'");
+            while (rs.next()) {
+                // System.out.println(rs.getString(2));
+                return true;//there was atleast one item with this UPC
+
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+    boolean doesItemExistByID(String mutID){
+                        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from inventory where mutID = '" + mutID + "'");
+            while (rs.next()) {
+                // System.out.println(rs.getString(2));
+                return true;//there was atleast one item with this UPC
+
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return false;
+    }
     void addItem(String mutID, String upc, String name, double price, double cost, boolean taxed, int category) {
         try {
             Class.forName(driverPath);
@@ -613,7 +651,26 @@ public class Database {
             System.out.println(e);
         }//end catch
     }
+   boolean doesChargeAccountExisit(String accountName){
+                                try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from chargeaccounts where accntname = '" + accountName + "'");
+            while (rs.next()) {
+                // System.out.println(rs.getString(2));
+                return true;//there was atleast one item with this UPC
 
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+   
     void addChargeAccount(String accountName, String lastName, String firstName, String dob) {
 
         try {
@@ -628,6 +685,26 @@ public class Database {
         }//end catch
     }
 
+    boolean doesDMEAccountExisit(String accountName){
+                                try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from dmeaccounts where pan = '" + accountName + "'");
+            while (rs.next()) {
+                // System.out.println(rs.getString(2));
+                return true;//there was atleast one item with this UPC
+
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+    
     void addDMEAccount(String accountName, String lastName, String firstName, String dob) {
 
         try {
@@ -671,6 +748,26 @@ public class Database {
         return insurances;
     }
 
+        boolean doesInsuranceExisit(String insurance){
+                                try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from insurances where insurance = '" + insurance + "'");
+            while (rs.next()) {
+                // System.out.println(rs.getString(2));
+                return true;//there was atleast one item with this UPC
+
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+        
     void addInsurance(String text) {
                 try {
             Class.forName(driverPath);

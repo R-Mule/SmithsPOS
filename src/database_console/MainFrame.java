@@ -61,59 +61,60 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new Dimension(1120, 2000));
         helpSP.setVisible(true);
         this.add(helpSP);
-
-        DateFormat dateFormat1 = new SimpleDateFormat("MMdd");//ddyyhhmmss");
-        Date date1 = new Date();
-        String month;
-        month = dateFormat1.format(date1);
-        String dayTemp = month.substring(2);
-        month = month.substring(0, 2);
-        int day = Integer.parseInt(dayTemp);
-        if (month.contentEquals("03")) {//its march
-             isMarchMadness=true;
-            if (day >= 1 && day < 18) {//18th is day after St Patricks Day 2018
-                 isSaintPatricksDay=true;
-            } else {
-                isEaster = true;
-            }
-        } else if (month.contentEquals("04")) {
-            if (day == 1) {
-                isEaster = true;
-            } else{
-                isWeddingMonth = true;
-            }
-        } else if (month.contentEquals("11")) {
-            isThanksgiving = true;
-        } else if (month.contentEquals("10")) {
-            isHalloween = true;
-        } else if (month.contentEquals("12")) {
-            if (day <= 25) {
-                isChristmas = true;
-            }
-        } else if (month.contentEquals("01")) {
-            if (day > 15) {
-                isValentinesDay = true;
-            }
-        } else if (month.contentEquals("02")) {
-            if (day < 15) {
-                isValentinesDay = true;
-            }
-        } else if (month.contentEquals("06")) {
-            if (day > 15) {
-                isFourthOfJuly = true;
-            }
-        } else if (month.contentEquals("07")) {
-            if (day <= 4) {
-                isFourthOfJuly = true;
-            } else {
+        pharmacyName = reader.getPharmacyName();
+        if (pharmacyName.contentEquals(superaid)) {//This only allows Holiday events for Super-Aid Pharmacy
+            DateFormat dateFormat1 = new SimpleDateFormat("MMdd");//ddyyhhmmss");
+            Date date1 = new Date();
+            String month;
+            month = dateFormat1.format(date1);
+            String dayTemp = month.substring(2);
+            month = month.substring(0, 2);
+            int day = Integer.parseInt(dayTemp);
+            if (month.contentEquals("03")) {//its march
+                isMarchMadness = true;
+                if (day >= 1 && day < 18) {//18th is day after St Patricks Day 2018
+                    isSaintPatricksDay = true;
+                } else {
+                    isEaster = true;
+                }
+            } else if (month.contentEquals("04")) {
+                if (day == 1) {
+                    isEaster = true;
+                } else {
+                    isWeddingMonth = true;
+                }
+            } else if (month.contentEquals("11")) {
+                isThanksgiving = true;
+            } else if (month.contentEquals("10")) {
+                isHalloween = true;
+            } else if (month.contentEquals("12")) {
+                if (day <= 25) {
+                    isChristmas = true;
+                }
+            } else if (month.contentEquals("01")) {
+                if (day > 15) {
+                    isValentinesDay = true;
+                }
+            } else if (month.contentEquals("02")) {
+                if (day < 15) {
+                    isValentinesDay = true;
+                }
+            } else if (month.contentEquals("06")) {
+                if (day > 15) {
+                    isFourthOfJuly = true;
+                }
+            } else if (month.contentEquals("07")) {
+                if (day <= 4) {
+                    isFourthOfJuly = true;
+                } else {
+                    isSummerTime = true;
+                }
+            } else if (month.contentEquals("08")) {
                 isSummerTime = true;
+            } else if (month.contentEquals("09")) {
+                //nothing right now, give them a month off :)
             }
-        } else if (month.contentEquals("08")) {
-            isSummerTime = true;
-        } else if (month.contentEquals("09")) {
-            //nothing right now, give them a month off :)
         }
-
         DateFormat dateFormat = new SimpleDateFormat("MMddyy");
         Date date = new Date();
         previousDate = dateFormat.format(date);
@@ -764,8 +765,8 @@ public class MainFrame extends javax.swing.JFrame {
             thanksgiving3imgLabel.setVisible(true);
             this.add(thanksgiving3imgLabel);
         }
-        if(isWeddingMonth){
-                    //Christmas
+        if (isWeddingMonth) {
+            //Christmas
             ImageIcon christmas1img = new ImageIcon("C:/POS/Software/wedding1.png");
             JLabel christmas1imageLabel = new JLabel(christmas1img);
             ImageIcon christmas2img = new ImageIcon("C:/POS/Software/wedding2.png");
@@ -776,8 +777,8 @@ public class MainFrame extends javax.swing.JFrame {
             JLabel christmas4imageLabel = new JLabel(christmas4img);
             ImageIcon christmas5img = new ImageIcon("C:/POS/Software/wedding5.png");
             JLabel christmas5imageLabel = new JLabel(christmas5img);
-          //  ImageIcon christmas6img = new ImageIcon("C:/POS/Software/wedding6.png");
-          //  JLabel christmas6imageLabel = new JLabel(christmas6img);
+            //  ImageIcon christmas6img = new ImageIcon("C:/POS/Software/wedding6.png");
+            //  JLabel christmas6imageLabel = new JLabel(christmas6img);
 
             christmas1imageLabel.setSize(500, 500);
             christmas1imageLabel.setLocation(1250, 675);
@@ -799,9 +800,9 @@ public class MainFrame extends javax.swing.JFrame {
             christmas5imageLabel.setLocation(1375, 200);
             christmas5imageLabel.setVisible(true);
             this.add(christmas5imageLabel);
-          //  christmas6imageLabel.setSize(200, 200);
-           // christmas6imageLabel.setLocation(1450, 200);
-           // christmas6imageLabel.setVisible(true);
+            //  christmas6imageLabel.setSize(200, 200);
+            // christmas6imageLabel.setLocation(1450, 200);
+            // christmas6imageLabel.setVisible(true);
             //this.add(christmas6imageLabel);
 
         }
@@ -1013,10 +1014,20 @@ public class MainFrame extends javax.swing.JFrame {
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Insurance Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
                     if (!field1.getText().isEmpty()) {
+                        if(myDB.doesInsuranceExisit(field1.getText().replaceAll("'", " "))){
+                            JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: Insurance already exisits!");
+                        }else{
                         myDB.addInsurance(field1.getText().replaceAll("'", " "));
+                        }
                     }
                     if (!field2.getText().isEmpty()) {
+                        if(!myDB.doesInsuranceExisit(field2.getText())){
+                            JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: No such insurance to remove!");
+                        }else{
                         myDB.removeInsurance(field2.getText());
+                        }
                     }
 
                 }
@@ -1052,7 +1063,10 @@ public class MainFrame extends javax.swing.JFrame {
                     if (!validateInteger(field4.getText())) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Not a valid DOB");
-                    } else {
+                    }else if(myDB.doesChargeAccountExisit(field1.getText().toUpperCase())){
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: Charge Account Name already exisits!");
+                    }else {
 
                         Object[] message2 = {
                             "Are you sure?\nAccount Name: " + field1.getText().toUpperCase(), "First Name: " + field2.getText().toUpperCase(), "Last Name: " + field3.getText().toUpperCase(), "DOB: example: 010520: " + field4.getText()};
@@ -1089,6 +1103,9 @@ public class MainFrame extends javax.swing.JFrame {
                     if (!validateInteger(field4.getText())) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Not a valid DOB");
+                    } else if (myDB.doesDMEAccountExisit(field1.getText().toUpperCase())) {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: DME Account Name already exisits!");
                     } else {
 
                         Object[] message2 = {
@@ -1135,10 +1152,16 @@ public class MainFrame extends javax.swing.JFrame {
                     } else if (!field7.getText().toUpperCase().contentEquals("YES") && !field7.getText().toUpperCase().contentEquals("NO")) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Must enter YES or NO for Is Taxed");
+                    } else if (myDB.doesItemExistByUPC(field3.getText())) {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: Same UPC exists for item already.");
+                    } else if (myDB.doesItemExistByID(field2.getText())) {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: Same mutual ID exists for item already.");
                     } else {
 
                         Object[] message2 = {
-                            "Are you sure?\nName: " + field1.getText(), "ID: " + field2.getText(), "UPC: $ " + field3.getText(), "Cost: $ " + field4.getText(), "Price: $ " + field5.getText(), "Category: " + field6.getText(), "Is Taxed:  " + field7.getText()};
+                            "Are you sure?\nName: " + field1.getText().replaceAll("'", " "), "ID: " + field2.getText().replaceAll("'", " "), "UPC: " + field3.getText().replaceAll("'", " "), "Cost: $ " + field4.getText(), "Price: $ " + field5.getText(), "Category: " + field6.getText(), "Is Taxed:  " + field7.getText()};
 
                         int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add Item Menu", JOptionPane.OK_CANCEL_OPTION);
                         if (option2 == JOptionPane.OK_OPTION) {
@@ -1148,9 +1171,10 @@ public class MainFrame extends javax.swing.JFrame {
                             }
                             String upc = field3.getText();
                             if (upc.length() > 11) {
+                                upc = upc.replaceAll("'", "");
                                 upc = upc.substring(0, 11);
                             }
-                            myDB.addItem(field2.getText(), upc, field1.getText(), Double.parseDouble(field5.getText()), Double.parseDouble(field4.getText()), taxed, Integer.parseInt(field6.getText()));
+                            myDB.addItem(field2.getText().replaceAll("'", ""), upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field5.getText()), Double.parseDouble(field4.getText()), taxed, Integer.parseInt(field6.getText()));
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Success!");
                         }
@@ -3008,7 +3032,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.28", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.29", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -3042,7 +3066,8 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isSaintPatricksDay = false;
     boolean isSummerTime = false;
     boolean isWeddingMonth = false;
-
+    String pharmacyName = "";
+    final String superaid = "Smiths Super Aid";
     ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");
     JButton mmButton = new JButton(mmimg);
     // Variables declaration - do not modify//GEN-BEGIN:variables
