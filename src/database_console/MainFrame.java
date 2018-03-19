@@ -75,25 +75,32 @@ public class MainFrame extends javax.swing.JFrame {
                 if (day >= 1 && day < 18) {//18th is day after St Patricks Day 2018
                     isSaintPatricksDay = true;
                 } else {
-                    isEaster = true;
+                    isEaster = true;                 
                 }
             } else if (month.contentEquals("04")) {
                 if (day == 1) {
+                    isMarchMadness = true;
                     isEaster = true;
-                } else {
+                }else if(day<3){
+                    isMarchMadness=true;
+                }else {
                     isWeddingMonth = true;
+                    quotesActive=false;//disable quotes, due to graphics
                 }
             } else if (month.contentEquals("11")) {
                 isThanksgiving = true;
             } else if (month.contentEquals("10")) {
                 isHalloween = true;
+                quotesActive=false;
             } else if (month.contentEquals("12")) {
                 if (day <= 25) {
                     isChristmas = true;
+                    quotesActive=false;
                 }
             } else if (month.contentEquals("01")) {
                 if (day > 15) {
                     isValentinesDay = true;
+                    quotesActive=false;
                 }
             } else if (month.contentEquals("02")) {
                 if (day < 15) {
@@ -108,9 +115,11 @@ public class MainFrame extends javax.swing.JFrame {
                     isFourthOfJuly = true;
                 } else {
                     isSummerTime = true;
+                    quotesActive=false;
                 }
             } else if (month.contentEquals("08")) {
                 isSummerTime = true;
+                quotesActive=false;
             } else if (month.contentEquals("09")) {
                 //nothing right now, give them a month off :)
             }
@@ -315,14 +324,14 @@ public class MainFrame extends javax.swing.JFrame {
         lookupReceiptByRXButton.setSize(100, 100);
         lookupReceiptByRXButton.setBackground(new Color(255, 200, 100));
 
-        //this creates the quoteButton
+
+        if(quotesActive){
+        quoteButton.setVisible(true);
+         //this creates the quoteButton
         quoteButton.setLocation(10, 10);
         quoteButton.setSize(100, 15);
         quoteButton.setBackground(new Color(10, 255, 10));
-        quoteButton.setVisible(true);
-        this.add(quoteButton);
-
-        quoteButton.addActionListener(new java.awt.event.ActionListener() {
+         quoteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 String temp = myDB.getQuote();
                 while (!temp.contentEquals("") && temp.contentEquals(quote.getText())) {
@@ -332,6 +341,12 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
+        }else{
+            quoteButton.setVisible(false);
+        }
+        this.add(quoteButton);
+
+
 
         createTicket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -2681,10 +2696,12 @@ public class MainFrame extends javax.swing.JFrame {
             getContentPane().setBackground(new Color(192, 192, 192));
         }
         checkout = new CheckoutHandler(myDB);
+        if(quotesActive){
         quote.setText(myDB.getQuote());
         this.add(quote);
         quote.setVisible(true);
         quote.setBounds(10, 10, 1900, 50);
+        }
         curCart = new Cart();//new cart because program just launched!
         String[] employeeStrings = myDB.getEmployeesFromDatabase();
         employeeSelectionHeader.setBounds(120, 825, 400, 30);
@@ -3032,7 +3049,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.29", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.30", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -3066,6 +3083,8 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isSaintPatricksDay = false;
     boolean isSummerTime = false;
     boolean isWeddingMonth = false;
+    boolean quotesActive=true;
+    
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";
     ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");
