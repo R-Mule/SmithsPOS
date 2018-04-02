@@ -75,32 +75,32 @@ public class MainFrame extends javax.swing.JFrame {
                 if (day >= 1 && day < 18) {//18th is day after St Patricks Day 2018
                     isSaintPatricksDay = true;
                 } else {
-                    isEaster = true;                 
+                    isEaster = true;
                 }
             } else if (month.contentEquals("04")) {
                 if (day == 1) {
                     isMarchMadness = true;
                     isEaster = true;
-                }else if(day<3){
-                    isMarchMadness=true;
-                }else {
+                } else if (day < 3) {
+                    isMarchMadness = true;
+                } else {
                     isWeddingMonth = true;
-                    quotesActive=false;//disable quotes, due to graphics
+                    quotesActive = false;//disable quotes, due to graphics
                 }
             } else if (month.contentEquals("11")) {
                 isThanksgiving = true;
             } else if (month.contentEquals("10")) {
                 isHalloween = true;
-                quotesActive=false;
+                quotesActive = false;
             } else if (month.contentEquals("12")) {
                 if (day <= 25) {
                     isChristmas = true;
-                    quotesActive=false;
+                    quotesActive = false;
                 }
             } else if (month.contentEquals("01")) {
                 if (day > 15) {
                     isValentinesDay = true;
-                    quotesActive=false;
+                    quotesActive = false;
                 }
             } else if (month.contentEquals("02")) {
                 if (day < 15) {
@@ -115,11 +115,11 @@ public class MainFrame extends javax.swing.JFrame {
                     isFourthOfJuly = true;
                 } else {
                     isSummerTime = true;
-                    quotesActive=false;
+                    quotesActive = false;
                 }
             } else if (month.contentEquals("08")) {
                 isSummerTime = true;
-                quotesActive=false;
+                quotesActive = false;
             } else if (month.contentEquals("09")) {
                 //nothing right now, give them a month off :)
             }
@@ -316,37 +316,64 @@ public class MainFrame extends javax.swing.JFrame {
         createTicket.setLocation(1800, 400);
         createTicket.setSize(100, 100);
         createTicket.setBackground(new Color(0, 255, 0));
+
+        //resave
+        resaveTicket.setLocation(1800, 500);
+        resaveTicket.setSize(100, 100);
+        resaveTicket.setBackground(new Color(95, 255, 188));
+        resaveTicket.setVisible(false);
+        this.add(resaveTicket);
+
         loadTicket.setLocation(1800, 300);
         loadTicket.setSize(100, 100);
         loadTicket.setBackground(new Color(255, 255, 0));
         //this creates the lookupReceiptByRXButton
-        lookupReceiptByRXButton.setLocation(1800, 500);
+        lookupReceiptByRXButton.setLocation(1700, 400);
         lookupReceiptByRXButton.setSize(100, 100);
         lookupReceiptByRXButton.setBackground(new Color(255, 200, 100));
 
-
-        if(quotesActive){
-        quoteButton.setVisible(true);
-         //this creates the quoteButton
-        quoteButton.setLocation(10, 10);
-        quoteButton.setSize(100, 15);
-        quoteButton.setBackground(new Color(10, 255, 10));
-         quoteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                String temp = myDB.getQuote();
-                while (!temp.contentEquals("") && temp.contentEquals(quote.getText())) {
-                    temp = myDB.getQuote();
+        if (quotesActive) {
+            quoteButton.setVisible(true);
+            //this creates the quoteButton
+            quoteButton.setLocation(10, 10);
+            quoteButton.setSize(100, 15);
+            quoteButton.setBackground(new Color(10, 255, 10));
+            quoteButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    String temp = myDB.getQuote();
+                    while (!temp.contentEquals("") && temp.contentEquals(quote.getText())) {
+                        temp = myDB.getQuote();
+                    }
+                    quote.setText(temp);
+                    textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
                 }
-                quote.setText(temp);
-                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-            }
-        });
-        }else{
+            });
+        } else {
             quoteButton.setVisible(false);
         }
         this.add(quoteButton);
 
+        resaveTicket.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                    if (!curCart.isEmpty()) {
+                        saveTicket(loadedTicketID);
+                    } else {//CARTS EMPTY!
+                        //notify nothing to save
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "There is nothing in the cart to save!");
+                    }//end else its empty
 
+                    updateCartScreen();
+
+                } else {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Select an employee first!");
+                }
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }//end actionPerformed
+
+        });//END createTicket ActionListener!
 
         createTicket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -359,32 +386,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 "Customer Account Name Input",
                                 JOptionPane.INFORMATION_MESSAGE
                         );
-                        if (id != null && !id.isEmpty()) {
-                            id = id.toUpperCase();
-                            if (!myDB.checkDatabaseForTicket(id)) {//check ID to see if it exists in database
-                                //if it doesnt, lets create it!
-                                for (GuiCartItem item : guiItems) {
-                                    item.removeAllGUIData();
-                                }
-                                guiItems.clear();
-                                curCart.storeCart(id, myDB);
-                                resetVars();
-
-                            } else {
-                                //if it does, send error message!
-                                JFrame message2 = new JFrame("");
-                                //JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Would you like me to load those?");
-
-                                if (JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING",
-                                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                                    loadTicketWithId(id);
-                                    updateCartScreen();
-                                } else {
-                                    // no option
-                                }
-
-                            }//end else already items in tickets
-                        }//end string null or empty part, didnt do an else, we just do nothing.
+                        saveTicket(id);
                     } else {//CARTS EMPTY!
                         //notify nothing to save
                         JFrame message1 = new JFrame("");
@@ -420,6 +422,10 @@ public class MainFrame extends javax.swing.JFrame {
                         id = id.toUpperCase();
                         if (id != null && !id.isEmpty() && myDB.checkDatabaseForTicket(id)) {
                             loadTicketWithId(id);
+                            loadedTicketID = id;
+                            resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
+                            resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
+                            resaveTicket.setVisible(true);
                             updateCartScreen();
                         } else {//Load All Tickets into selectable GUI
                             //Sorry no such ticket found
@@ -434,6 +440,10 @@ public class MainFrame extends javax.swing.JFrame {
                                         choices[0]); // Initial choice
                                 if (id != null) {
                                     loadTicketWithId(id);
+                                    loadedTicketID = id;
+                                    resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
+                                    resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
+                                    resaveTicket.setVisible(true);
                                     updateCartScreen();
                                 } //end if
                             }//end if
@@ -1029,19 +1039,19 @@ public class MainFrame extends javax.swing.JFrame {
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Insurance Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
                     if (!field1.getText().isEmpty()) {
-                        if(myDB.doesInsuranceExisit(field1.getText().replaceAll("'", " "))){
+                        if (myDB.doesInsuranceExisit(field1.getText().replaceAll("'", " "))) {
                             JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Error: Insurance already exisits!");
-                        }else{
-                        myDB.addInsurance(field1.getText().replaceAll("'", " "));
+                            JOptionPane.showMessageDialog(message1, "Error: Insurance already exisits!");
+                        } else {
+                            myDB.addInsurance(field1.getText().replaceAll("'", " "));
                         }
                     }
                     if (!field2.getText().isEmpty()) {
-                        if(!myDB.doesInsuranceExisit(field2.getText())){
+                        if (!myDB.doesInsuranceExisit(field2.getText())) {
                             JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Error: No such insurance to remove!");
-                        }else{
-                        myDB.removeInsurance(field2.getText());
+                            JOptionPane.showMessageDialog(message1, "Error: No such insurance to remove!");
+                        } else {
+                            myDB.removeInsurance(field2.getText());
                         }
                     }
 
@@ -1078,10 +1088,10 @@ public class MainFrame extends javax.swing.JFrame {
                     if (!validateInteger(field4.getText())) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Not a valid DOB");
-                    }else if(myDB.doesChargeAccountExisit(field1.getText().toUpperCase())){
+                    } else if (myDB.doesChargeAccountExisit(field1.getText().toUpperCase())) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: Charge Account Name already exisits!");
-                    }else {
+                    } else {
 
                         Object[] message2 = {
                             "Are you sure?\nAccount Name: " + field1.getText().toUpperCase(), "First Name: " + field2.getText().toUpperCase(), "Last Name: " + field3.getText().toUpperCase(), "DOB: example: 010520: " + field4.getText()};
@@ -1524,6 +1534,10 @@ public class MainFrame extends javax.swing.JFrame {
                                                 if (JOptionPane.showConfirmDialog(null, "There are already  ticket(s) with that RX Number. Would you like me to load those?", "WARNING",
                                                         JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                                                     for (String id : ticketIDs) {
+                                                        loadedTicketID = id;
+                                                        resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
+                                                        resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
+                                                        resaveTicket.setVisible(true);
                                                         loadTicketWithId(id);
                                                     }
                                                     updateCartScreen();
@@ -2586,6 +2600,10 @@ public class MainFrame extends javax.swing.JFrame {
             changeDue.setSize(350, 50);
             changeDue.setFont(new Font(subTotal.getName(), Font.BOLD, 30));
             totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
+            
+            if(curCart.isEmpty()){
+                resaveTicket.setVisible(false);
+            }
         } else {
             discountHeader.setText("Qty to Refund: ");
             subTotal.setText(String.format("Subtotal: $%.2f", refundCart.getSubTotal()));
@@ -2696,11 +2714,11 @@ public class MainFrame extends javax.swing.JFrame {
             getContentPane().setBackground(new Color(192, 192, 192));
         }
         checkout = new CheckoutHandler(myDB);
-        if(quotesActive){
-        quote.setText(myDB.getQuote());
-        this.add(quote);
-        quote.setVisible(true);
-        quote.setBounds(10, 10, 1900, 50);
+        if (quotesActive) {
+            quote.setText(myDB.getQuote());
+            this.add(quote);
+            quote.setVisible(true);
+            quote.setBounds(10, 10, 1900, 50);
         }
         curCart = new Cart();//new cart because program just launched!
         String[] employeeStrings = myDB.getEmployeesFromDatabase();
@@ -2907,6 +2925,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         curCart.voidCart();
         refundCart.voidCart();
+        resaveTicket.setVisible(false);
         previousInsurance = "AARP";
         DateFormat dateFormat = new SimpleDateFormat("MMddyy");
         Date date = new Date();
@@ -2922,6 +2941,40 @@ public class MainFrame extends javax.swing.JFrame {
         empList2.setSelectedIndex(0);
         //displayChangeDue = false;//cant do this!
         updateCartScreen();
+    }
+
+    public void saveTicket(String id) {
+        if (id != null && !id.isEmpty()) {
+            id = id.toUpperCase();
+            if (!myDB.checkDatabaseForTicket(id)) {//check ID to see if it exists in database
+                //if it doesnt, lets create it!
+                for (GuiCartItem item : guiItems) {
+                    item.removeAllGUIData();
+                }
+                guiItems.clear();
+                curCart.storeCart(id, myDB);
+                resaveTicket.setVisible(false);
+                resetVars();
+
+            } else {
+                //if it does, send error message!
+                JFrame message2 = new JFrame("");
+                //JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Would you like me to load those?");
+
+                if (JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING",
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    loadTicketWithId(id);
+                    loadedTicketID = id;
+                    resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
+                    resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
+                    resaveTicket.setVisible(true);
+                    updateCartScreen();
+                } else {
+                    // no option
+                }
+
+            }//end else already items in tickets
+        }//end string null or empty part, didnt do an else, we just do nothing.
     }
 
     public void rxSignout() {
@@ -3002,6 +3055,9 @@ public class MainFrame extends javax.swing.JFrame {
     JLabel itemQuantityHeader = new JLabel("Quantity: ", SwingConstants.RIGHT);
     String createTicketText = "Save\nTicket";
     JButton createTicket = new JButton("<html>" + createTicketText.replaceAll("\\n", "<br>") + "</html>");
+    String loadedTicketID = "";
+    String resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
+    JButton resaveTicket = new JButton("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
     String loadTicketText = "Open\nTicket";
     JButton loadTicket = new JButton("<html>" + loadTicketText.replaceAll("\\n", "<br>") + "</html>");
     String chargeButtonText = "Charge to\nAccount";
@@ -3049,7 +3105,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.30", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.31", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -3083,8 +3139,8 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isSaintPatricksDay = false;
     boolean isSummerTime = false;
     boolean isWeddingMonth = false;
-    boolean quotesActive=true;
-    
+    boolean quotesActive = true;
+
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";
     ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");
