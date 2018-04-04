@@ -892,6 +892,13 @@ public class MainFrame extends javax.swing.JFrame {
         massDiscountButton.setLocation(875, 65);
         massDiscountButton.setSize(20, 20);
         massDiscountButton.setBackground(new Color(255, 255, 100));
+        //This creates the massPrechargeButton
+        massPrechargeButton.setLocation(155, 65);
+        massPrechargeButton.setSize(20, 20);
+        massPrechargeButton.setBackground(new Color(50, 50, 255));
+        massPrechargeButton.setVisible(true);
+        this.add(massPrechargeButton);
+
         //This creates the UpdatePrice Button
         updatePriceButton.setLocation(350, 850);
         updatePriceButton.setSize(150, 40);
@@ -1389,6 +1396,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     activateDisplayButton.setVisible(false);
                                     addRemoveInsuranceButton.setVisible(false);
                                     masterReprintReceiptButton.setVisible(false);
+                                    massPrechargeButton.setVisible(false);
                                     //creditButton.setVisible(false);
                                     debitButton.setVisible(false);
                                     upsButton.setVisible(false);
@@ -1461,6 +1469,36 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
         });//end massDiscountAction
+
+        massPrechargeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                if (!curCart.isEmpty()) {
+                    if(isMassPreCharged){
+                        massPrechargeButton.setBackground(new Color(255,0,0));
+                    }else{
+                        massPrechargeButton.setBackground(new Color(0,255,0));
+                    }
+                    isMassPreCharged = !isMassPreCharged;
+                    for (Item item : curCart.getItems()) {
+                        if (item.isRX) {
+                            item.setIsPreCharged(isMassPreCharged);
+                        }
+                    }
+                    for (GuiCartItem tempItem : guiItems) {
+                        if (tempItem.item.isRX()) {
+                            if (isMassPreCharged) {
+                                tempItem.setPrechargedFalsePressed(event);
+                            } else {
+                                tempItem.setPrechargedTruePressed(event);
+                            }
+                        }
+                    }
+                    updateCartScreen();
+                }//end cartIsNotEmpty
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }//end actionPerformed
+        });//end massPrechargeAction
+
         AbstractAction rxButtonAA = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -2600,9 +2638,11 @@ public class MainFrame extends javax.swing.JFrame {
             changeDue.setSize(350, 50);
             changeDue.setFont(new Font(subTotal.getName(), Font.BOLD, 30));
             totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
-            
-            if(curCart.isEmpty()){
+
+            if (curCart.isEmpty()) {
                 resaveTicket.setVisible(false);
+                isMassPreCharged=false;
+                massPrechargeButton.setBackground(new Color(255,0,0));
             }
         } else {
             discountHeader.setText("Qty to Refund: ");
@@ -2906,6 +2946,8 @@ public class MainFrame extends javax.swing.JFrame {
         creditButton.setVisible(true);
         debitButton.setVisible(true);
         upsButton.setVisible(true);
+        massPrechargeButton.setVisible(true);
+        
         if (isMarchMadness) {
             mmButton.setVisible(true);
         }
@@ -2954,6 +2996,8 @@ public class MainFrame extends javax.swing.JFrame {
                 guiItems.clear();
                 curCart.storeCart(id, myDB);
                 resaveTicket.setVisible(false);
+                isMassPreCharged=false;
+                massPrechargeButton.setBackground(new Color(255,0,0));
                 resetVars();
 
             } else {
@@ -3099,13 +3143,15 @@ public class MainFrame extends javax.swing.JFrame {
     String cancelRefund = "Cancel\nRefund";
     JButton cancelRefundButton = new JButton("<html>" + cancelRefund.replaceAll("\\n", "<br>") + "</html>");
     JButton massDiscountButton = new JButton("");
+    JButton massPrechargeButton = new JButton("");
+    boolean isMassPreCharged = false;//always start out with mass precharged off
     ConfigFileReader reader = new ConfigFileReader();
     JButton masterReprintReceiptButton = new JButton("Master Rpt Receipt");
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.31", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.32", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
