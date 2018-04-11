@@ -895,7 +895,7 @@ public class MainFrame extends javax.swing.JFrame {
         //This creates the massPrechargeButton
         massPrechargeButton.setLocation(155, 65);
         massPrechargeButton.setSize(20, 20);
-        massPrechargeButton.setBackground(new Color(50, 50, 255));
+        massPrechargeButton.setBackground(new Color(255,0,0));
         massPrechargeButton.setVisible(true);
         this.add(massPrechargeButton);
 
@@ -2709,7 +2709,7 @@ public class MainFrame extends javax.swing.JFrame {
             masterRefundButton.setVisible(true);
             addRemoveInsuranceButton.setVisible(true);
             masterReprintReceiptButton.setVisible(true);
-        } else if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Haley") || employeeSelectionHeader.getText().substring(14).contentEquals("Booth, Sam")) {
+        } else if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Haley") || employeeSelectionHeader.getText().substring(14).contentEquals("Booth, Sam")||employeeSelectionHeader.getText().substring(14).contentEquals("Broussard, Kayla")) {
             updatePriceButton.setVisible(true);
             addNewItemButton.setVisible(true);
             addRxAccountButton.setVisible(true);
