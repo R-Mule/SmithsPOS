@@ -849,11 +849,11 @@ public class CheckoutHandler {
         DrawerReport dr = null;
 
         try {
-
-            File f = new File(reader.getRegisterReportPath() + receiptNum.substring(12) + ".posrf");
+            
+            File f = new File(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory()) {
                 // read object from file
-                FileInputStream fis = new FileInputStream(reader.getRegisterReportPath() + receiptNum.substring(12) + ".posrf");
+                FileInputStream fis = new FileInputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
@@ -875,7 +875,7 @@ public class CheckoutHandler {
             mainFrame.estimatedCheckTotal=dr.totalChecksAmt;
             
             // write object to file
-            FileOutputStream fos = new FileOutputStream(reader.getRegisterReportPath() + receiptNum.substring(12) + ".posrf");
+            FileOutputStream fos = new FileOutputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             dr.printReport();
             oos.writeObject(dr);
@@ -885,10 +885,10 @@ public class CheckoutHandler {
         } catch (FileNotFoundException e) {
             try {
                 String emergencyDrivePath = "C:\\POS\\Emergency_Report_Saves\\";
-                File f = new File(emergencyDrivePath + receiptNum.substring(12) + ".posrf");
+                File f = new File(emergencyDrivePath + reader.getRegisterID() + ".posrf");
                 if (f.exists() && !f.isDirectory()) {
                     // read object from file
-                    FileInputStream fis = new FileInputStream(emergencyDrivePath + receiptNum.substring(12) + ".posrf");
+                    FileInputStream fis = new FileInputStream(emergencyDrivePath + reader.getRegisterID() + ".posrf");
                     ObjectInputStream ois = new ObjectInputStream(fis);
                     dr = (DrawerReport) ois.readObject();
                     ois.close();
@@ -910,7 +910,7 @@ public class CheckoutHandler {
                 mainFrame.estimatedCheckTotal=dr.totalChecksAmt;
                 
                 // write object to file
-                FileOutputStream fos = new FileOutputStream(emergencyDrivePath + receiptNum.substring(12) + ".posrf");
+                FileOutputStream fos = new FileOutputStream(emergencyDrivePath + reader.getRegisterID() + ".posrf");
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 dr.printReport();
                 oos.writeObject(dr);
