@@ -354,6 +354,31 @@ public class Database {
         }
     }
 
+    public boolean checkFrozenAccount(String accountName){
+                try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from chargeaccounts where accntname = '" + accountName + "'");
+
+            while (rs.next()) {
+                // System.out.println(rs.getString(2));
+                if (rs.getString(2).contentEquals(accountName)&&rs.getBoolean(8)) {
+                    con.close();
+                    return true;
+                }
+//}//end if
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return false;
+    }
+    
     public void loadARData(String path) {
         try {
             BufferedReader in = new BufferedReader(new FileReader(path));
@@ -370,7 +395,14 @@ public class Database {
                         String lastname = line.substring(24, 43).replaceAll(" ", "");
                         String firstname = line.substring(43, 57).replaceAll(" ", "");
                         String dob = line.substring(57, 67).replaceAll(" ", "");
-                        String balance = line.substring(68).replaceAll(" ", "");
+                        String balance = line.substring(68,87).replaceAll(" ", "");
+                        String fro = line.substring(87).replaceAll(" ", "");
+                        boolean frozen;
+                        if(fro.contentEquals("YES")){
+                            frozen=true;
+                        }else{
+                            frozen=false;
+                        }
                         // uuid=uuid.replaceAll(" ","");
                         if (firstname.isEmpty()) {
                             firstname = "_";
@@ -395,7 +427,9 @@ public class Database {
                         System.out.println(uuid + accntname + lastname + firstname + dob + balance + "      " + realBal);
 
                         boolean itemFound = false;
-                        if (!accntname.isEmpty()) {
+                        if (accntname.isEmpty()) {
+                            accntname = "DELETED";
+                        }
                             try {
                                 Class.forName(driverPath);
                                 Connection con = DriverManager.getConnection(
@@ -406,18 +440,18 @@ public class Database {
                                 while (rs.next()) {
                                     itemFound = true;
                                     Statement stmt2 = con.createStatement();
-                                    stmt2.executeUpdate("UPDATE `chargeaccounts` set lastname = '" + lastname + "',firstname='" + firstname + "',balance=" + realBal + ",dob='" + dob + "',accntname='" + accntname + "' where uuid = '" + uuid + "';");
+                                    stmt2.executeUpdate("UPDATE `chargeaccounts` set lastname = '" + lastname + "',firstname='" + firstname + "',balance=" + realBal + ",dob='" + dob + "',accntname='" + accntname + "',frozen =  "+frozen+" where uuid = '" + uuid + "';");
                                     System.out.println("FOUND ACCOUNT!");
 
                                 }//end while
                                 if (!itemFound) {
-                                    stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`balance`,`uuid`) VALUES (NULL, '" + accntname + "','" + lastname + "','" + firstname + "','" + dob + "'," + realBal + ",'" + uuid + "');");
+                                    stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`balance`,`uuid`,`frozen`) VALUES (NULL, '" + accntname + "','" + lastname + "','" + firstname + "','" + dob + "'," + realBal + ",'" + uuid + "',"+frozen+");");
                                 }
                                 con.close();
                             } catch (Exception e) {
                                 System.out.println(e);
                             }
-                        }//end if account name isnt empty
+                       
 
                     }//end if lines not empty
 

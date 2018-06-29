@@ -2516,7 +2516,10 @@ public class MainFrame extends javax.swing.JFrame {
                                                 // icon
                                                 choices, // Array of choices
                                                 choices[0]); // Initial choice
-                                        if (accountName != null) {
+                                        if(myDB.checkFrozenAccount(accountName.substring(0, accountName.indexOf(" ")))){
+                                            JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "This account has been FROZEN. Please speak to Hollie. Customer CANNOT charge!");
+                                        }else if (accountName != null) {
                                             changeDue.setText("Change Due: $0.00");
                                             displayChangeDue = true;
                                             checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
@@ -3185,7 +3188,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.34", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.35", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
