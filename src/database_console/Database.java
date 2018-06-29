@@ -1,5 +1,9 @@
 package database_console;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -24,18 +28,18 @@ public class Database {
         userName = reader.getUserName();
         password = reader.getPassword();
     }//end databaseCtor
-    
-        public ArrayList<String> getEmployeesAndWinLossMM(){
-                try {
-                   ArrayList<String> data = new ArrayList<>();
+
+    public ArrayList<String> getEmployeesAndWinLossMM() {
+        try {
+            ArrayList<String> data = new ArrayList<>();
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from employees order by wins desc,losses,empname;");
             while (rs.next()) {
-                data.add(rs.getString(2)+" : "+rs.getInt(4)+" : "+rs.getInt(5));
-                
+                data.add(rs.getString(2) + " : " + rs.getInt(4) + " : " + rs.getInt(5));
+
             }//end while
             con.close();
             return data;
@@ -44,9 +48,10 @@ public class Database {
         }
         return null;
     }
-    public String getQuote(){
-                try {
-                   ArrayList<String> quotes = new ArrayList<>();
+
+    public String getQuote() {
+        try {
+            ArrayList<String> quotes = new ArrayList<>();
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -55,7 +60,7 @@ public class Database {
             while (rs.next()) {
                 quotes.add(rs.getString(2));
             }//end while
-            int index = (int)(Math.random() * (quotes.size()-1 - 0) + 0);
+            int index = (int) (Math.random() * (quotes.size() - 1 - 0) + 0);
             con.close();
             return quotes.get(index);
         } catch (Exception e) {
@@ -63,14 +68,14 @@ public class Database {
         }
         return null;
     }
-    
-    public String getReceiptString(String receiptNum){
-                try {
+
+    public String getReceiptString(String receiptNum) {
+        try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from receiptsFull where receiptNum = '" + receiptNum+"';");
+            ResultSet rs = stmt.executeQuery("select * from receiptsFull where receiptNum = '" + receiptNum + "';");
             while (rs.next()) {
                 String temp = rs.getString(3);
                 con.close();
@@ -81,21 +86,23 @@ public class Database {
         }
         return null;
     }
-    public void storeReceiptString(String receiptNum, String receipt){
-            try {
-                Class.forName(driverPath);
-                Connection con = DriverManager.getConnection(
-                        host, userName, password);
-                Statement stmt = con.createStatement();
-                receipt = receipt.replaceAll("'", " ");
-                stmt.executeUpdate("INSERT INTO `receiptsFull`(`pid`,`receiptNum`,`receipt`) VALUES (NULL,'" + receiptNum + "','" + receipt + "')");
-                con.close();
-            } catch (Exception e) {
-                System.out.println(e);
-            }//end catch
+
+    public void storeReceiptString(String receiptNum, String receipt) {
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            receipt = receipt.replaceAll("'", " ");
+            stmt.executeUpdate("INSERT INTO `receiptsFull`(`pid`,`receiptNum`,`receipt`) VALUES (NULL,'" + receiptNum + "','" + receipt + "')");
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }//end catch
     }
-    public String getEmployeeNameByCode(int code){
-        
+
+    public String getEmployeeNameByCode(int code) {
+
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -105,24 +112,25 @@ public class Database {
             while (rs.next()) {
                 //Statement stmt2 = con.createStatement();
                 //stmt2.executeUpdate("UPDATE `inventory` set price=" + price + " where mutID = '" + mutID + "';");
-                String temp  = rs.getString(2);
+                String temp = rs.getString(2);
                 con.close();
                 return temp;
             }//end while
-            
+
             con.close();
         } catch (Exception e) {
             System.out.println(e);
         }
         return null;
     }
+
     void updateItemPrice(String mutID, double price) {//0 return means not found, otherwise returns mutID from database.
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from inventory where mutID = '" + mutID+"'");
+            ResultSet rs = stmt.executeQuery("select * from inventory where mutID = '" + mutID + "'");
             while (rs.next()) {
                 Statement stmt2 = con.createStatement();
                 stmt2.executeUpdate("UPDATE `inventory` set price=" + price + " where mutID = '" + mutID + "';");
@@ -261,14 +269,14 @@ public class Database {
         return ticketNamesActual;
     }
 
-        public ArrayList<String> getAllTicketsNamesWithRxNumber(int rxNumber) {
+    public ArrayList<String> getAllTicketsNamesWithRxNumber(int rxNumber) {
         ArrayList<String> ticketNames = new ArrayList<>();
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from tickets  where rxnumber = "+rxNumber+" order by custId;");
+            ResultSet rs = stmt.executeQuery("select * from tickets  where rxnumber = " + rxNumber + " order by custId;");
             int i = 0;
             while (rs.next()) {
                 if (!ticketNames.contains(rs.getString(2))) {
@@ -283,7 +291,7 @@ public class Database {
         }
         return ticketNames;
     }
-        
+
     public ArrayList<Item> getTicketItemsFromDatabase(String id) {
         ArrayList<Item> loadedItems = new ArrayList<Item>();
         try {
@@ -321,6 +329,109 @@ public class Database {
         }
         return loadedItems;
     }//end getTicketFromDatabase
+
+    public void updateChargeAccountBalance(String accountName, double amtToUpdate) {
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+//here sonoo is database name, root is username and password  
+            Statement stmt = con.createStatement();
+            accountName = accountName.substring(0, accountName.indexOf(" "));
+            System.out.println(accountName);
+            ResultSet rs = stmt.executeQuery("select * from chargeaccounts where accntname = '" + accountName + "';");
+            while (rs.next()) {
+                Statement stmt2 = con.createStatement();
+                amtToUpdate+=rs.getDouble(6);
+                stmt2.executeUpdate("UPDATE `chargeaccounts` set balance='" + amtToUpdate+ "' where accntname = '" + accountName + "';");
+                System.out.println("FOUND ACCOUNT!");
+
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public void loadARData(String path) {
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(path));
+            String line;
+            while ((line = in.readLine()) != null) {
+                String[] tokens = line.split(":");
+
+                if (line != null && !line.isEmpty() && !line.contains("*")) {
+                    double realBal = 0;
+                    line = line.trim();
+                    if (!line.isEmpty()) {
+                        String uuid = line.substring(0, 12).replaceAll(" ", "");
+                        String accntname = line.substring(12, 24).replaceAll(" ", "");
+                        String lastname = line.substring(24, 43).replaceAll(" ", "");
+                        String firstname = line.substring(43, 57).replaceAll(" ", "");
+                        String dob = line.substring(57, 67).replaceAll(" ", "");
+                        String balance = line.substring(68).replaceAll(" ", "");
+                        // uuid=uuid.replaceAll(" ","");
+                        if (firstname.isEmpty()) {
+                            firstname = "_";
+                        }
+                        if (lastname.isEmpty()) {
+                            lastname = "_";
+                        }
+                        accntname = accntname.replaceAll(" ", "");
+                        dob = dob.replaceAll("/", "");
+                        dob = dob.substring(0, 4) + dob.substring(6, 8);
+                        firstname = firstname.replaceAll("'", " ");
+                        lastname = lastname.replaceAll("'", " ");
+                        accntname = accntname.replaceAll("'", " ");
+
+                        balance = balance.replaceAll(",", "");
+                        if (balance.charAt(balance.length() - 1) == '-') {
+                            realBal = Double.parseDouble(balance.substring(0, balance.indexOf('-')));
+                            realBal = realBal * -1;
+                        } else {
+                            realBal = Double.parseDouble(balance.substring(0, balance.length()));
+                        }
+                        System.out.println(uuid + accntname + lastname + firstname + dob + balance + "      " + realBal);
+
+                        boolean itemFound = false;
+                        if (!accntname.isEmpty()) {
+                            try {
+                                Class.forName(driverPath);
+                                Connection con = DriverManager.getConnection(
+                                        host, userName, password);
+//here sonoo is database name, root is username and password  
+                                Statement stmt = con.createStatement();
+                                ResultSet rs = stmt.executeQuery("select * from chargeaccounts where uuid = '" + uuid + "';");
+                                while (rs.next()) {
+                                    itemFound = true;
+                                    Statement stmt2 = con.createStatement();
+                                    stmt2.executeUpdate("UPDATE `chargeaccounts` set lastname = '" + lastname + "',firstname='" + firstname + "',balance=" + realBal + ",dob='" + dob + "',accntname='" + accntname + "' where uuid = '" + uuid + "';");
+                                    System.out.println("FOUND ACCOUNT!");
+
+                                }//end while
+                                if (!itemFound) {
+                                    stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`balance`,`uuid`) VALUES (NULL, '" + accntname + "','" + lastname + "','" + firstname + "','" + dob + "'," + realBal + ",'" + uuid + "');");
+                                }
+                                con.close();
+                            } catch (Exception e) {
+                                System.out.println(e);
+                            }
+                        }//end if account name isnt empty
+
+                    }//end if lines not empty
+
+                }//end if line is garbage
+                if (line.contains("*")) {
+                    break;
+                }
+            }//end while next line
+        } catch (FileNotFoundException e) {
+            System.out.println("The file could not be found or opened");
+        } catch (IOException e) {
+            System.out.println("Error reading the file");
+        }
+    }
 
     public String[] getARList(String accntName, String lastName, String firstName, String dob) {
         boolean oneBefore = false;
@@ -364,7 +475,7 @@ public class Database {
 
             while (rs.next()) {
                 // System.out.println(rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4)+" "+rs.getString(5).substring(0, 2)+"-"+rs.getString(5).substring(2, 4)+"-"+rs.getString(5).substring(4, 6));
-                accounts[i] = rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6);
+                accounts[i] = rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6) + " Current Balance $" + String.format("%.2f", rs.getDouble(6));
                 i++;
             }//end while
 
@@ -483,7 +594,7 @@ public class Database {
                         host, userName, password);
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate("INSERT INTO `receipts`(`pid`,`receiptNum`,`mutID`,`upc`,`itemName`,`amtPaidBeforeTax`,`wasTaxed`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`,`hasBeenRefunded`,`hasTaxBeenRefunded`) VALUES (NULL,'" + receiptNum + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.isTaxable() + " ," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + "," + item.hasBeenRefunded() + "," + item.hasTaxBeenRefunded() + ")");
-            con.close();
+                con.close();
             } catch (Exception e) {
                 System.out.println(e);
             }//end catch
@@ -512,7 +623,7 @@ public class Database {
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
                 Statement stmt = con.createStatement();
-                stmt.executeUpdate("DELETE from receipts where receiptNum = '"+receiptNum+"' AND mutID = '"+item.getID()+"';");
+                stmt.executeUpdate("DELETE from receipts where receiptNum = '" + receiptNum + "' AND mutID = '" + item.getID() + "';");
                 con.close();
             } catch (Exception e) {
                 System.out.println(e);
@@ -601,8 +712,8 @@ public class Database {
         }
     }
 
-    boolean doesItemExistByUPC(String upc){
-                try {
+    boolean doesItemExistByUPC(String upc) {
+        try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -620,8 +731,9 @@ public class Database {
         }
         return false;
     }
-    boolean doesItemExistByID(String mutID){
-                        try {
+
+    boolean doesItemExistByID(String mutID) {
+        try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -639,6 +751,7 @@ public class Database {
         }
         return false;
     }
+
     void addItem(String mutID, String upc, String name, double price, double cost, boolean taxed, int category) {
         try {
             Class.forName(driverPath);
@@ -651,8 +764,9 @@ public class Database {
             System.out.println(e);
         }//end catch
     }
-   boolean doesChargeAccountExisit(String accountName){
-                                try {
+
+    boolean doesChargeAccountExisit(String accountName) {
+        try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -670,7 +784,26 @@ public class Database {
         }
         return false;
     }
-   
+    boolean doesQS1UUIDExisit(String uuid){
+                try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from chargeaccounts where uuid = '" + uuid + "'");
+            while (rs.next()) {
+                // System.out.println(rs.getString(2));
+                return true;//there was atleast one item with this UPC
+
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
     void addChargeAccount(String accountName, String lastName, String firstName, String dob) {
 
         try {
@@ -685,8 +818,8 @@ public class Database {
         }//end catch
     }
 
-    boolean doesDMEAccountExisit(String accountName){
-                                try {
+    boolean doesDMEAccountExisit(String accountName) {
+        try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -704,7 +837,7 @@ public class Database {
         }
         return false;
     }
-    
+
     void addDMEAccount(String accountName, String lastName, String firstName, String dob) {
 
         try {
@@ -748,8 +881,8 @@ public class Database {
         return insurances;
     }
 
-        boolean doesInsuranceExisit(String insurance){
-                                try {
+    boolean doesInsuranceExisit(String insurance) {
+        try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -767,14 +900,14 @@ public class Database {
         }
         return false;
     }
-        
+
     void addInsurance(String text) {
-                try {
+        try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("INSERT INTO `insurances` (`pid`,`insurance`) VALUES (NULL, '" + text+ "');");
+            stmt.executeUpdate("INSERT INTO `insurances` (`pid`,`insurance`) VALUES (NULL, '" + text + "');");
             con.close();
         } catch (Exception e) {
             System.out.println(e);
@@ -782,12 +915,12 @@ public class Database {
     }
 
     void removeInsurance(String text) {
-                        try {
+        try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("DELETE FROM `insurances` where insurance = '"+text+ "';");
+            stmt.executeUpdate("DELETE FROM `insurances` where insurance = '" + text + "';");
             con.close();
         } catch (Exception e) {
             System.out.println(e);

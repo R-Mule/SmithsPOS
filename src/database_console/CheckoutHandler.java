@@ -276,6 +276,7 @@ public class CheckoutHandler {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
+        myDB.updateChargeAccountBalance(accountName,curCart.getTotalPrice());
         myDB.storeReceipt(curCart, receiptNum);
         printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
         mainFrame.voidCarts();
@@ -329,6 +330,9 @@ public class CheckoutHandler {
             }
             if (item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860) {
                 requires2Receipts = true;
+                if(item.getCategory()==853){
+                    myDB.updateChargeAccountBalance(item.getName(), item.getTotal()*-1);
+                }
             }
             String itemName = "";
             String quantity = Integer.toString(item.getQuantity()) + "@" + String.format("%.2f", round(item.getPrice()));

@@ -895,7 +895,7 @@ public class MainFrame extends javax.swing.JFrame {
         //This creates the massPrechargeButton
         massPrechargeButton.setLocation(155, 65);
         massPrechargeButton.setSize(20, 20);
-        massPrechargeButton.setBackground(new Color(255,0,0));
+        massPrechargeButton.setBackground(new Color(255, 0, 0));
         massPrechargeButton.setVisible(true);
         this.add(massPrechargeButton);
 
@@ -931,6 +931,10 @@ public class MainFrame extends javax.swing.JFrame {
         masterReprintReceiptButton.setSize(150, 40);
         masterReprintReceiptButton.setBackground(new Color(255, 100, 100));
 
+        loadDailyDataButton.setLocation(650, 970);
+        loadDailyDataButton.setSize(150, 40);
+        loadDailyDataButton.setBackground(new Color(255, 0, 0));
+
         //This creates the activateDisplayButton 
         activateDisplayButton.setLocation(500, 890);
         activateDisplayButton.setSize(150, 40);
@@ -956,6 +960,8 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(clerkLogoutButton);
         this.add(clerkLoginButton);
         this.add(masterReprintReceiptButton);
+        this.add(loadDailyDataButton);
+        loadDailyDataButton.setVisible(false);
         masterReprintReceiptButton.setVisible(false);
 
         if (isMarchMadness) {
@@ -997,6 +1003,21 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                     }
 
+                }
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }
+        });
+
+        loadDailyDataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                //C://QS1/AR.txt is account filepath to parse.
+                String path = "C://QS1/AR.txt";
+                if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    // yes option
+                    myDB.loadARData(path);
+                } else {
+                    // no option
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
@@ -1082,14 +1103,15 @@ public class MainFrame extends javax.swing.JFrame {
         addRxAccountButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
+                JTextField field5 = new JTextField();
                 JTextField field1 = new JTextField();
                 JTextField field2 = new JTextField();
                 JTextField field3 = new JTextField();
                 JTextField field4 = new JTextField();
                 Object[] message = {
-                    "Account Name: ", field1, "First Name: ", field2, "Last Name: ", field3, "DOB: example: 010520", field4};
+                    "QS1 UUID: ",field5,"Account Name: ", field1, "First Name: ", field2, "Last Name: ", field3, "DOB: example: 010520", field4};
 
-                field1.addAncestorListener(new RequestFocusListener());
+                field5.addAncestorListener(new RequestFocusListener());
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add RX Account Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
                     if (!validateInteger(field4.getText())) {
@@ -1098,6 +1120,9 @@ public class MainFrame extends javax.swing.JFrame {
                     } else if (myDB.doesChargeAccountExisit(field1.getText().toUpperCase())) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: Charge Account Name already exisits!");
+                    }else if (myDB.doesQS1UUIDExisit(field5.getText().toUpperCase())) {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: QS1 UUID already exisits!");
                     } else {
 
                         Object[] message2 = {
@@ -1396,6 +1421,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     activateDisplayButton.setVisible(false);
                                     addRemoveInsuranceButton.setVisible(false);
                                     masterReprintReceiptButton.setVisible(false);
+                                    loadDailyDataButton.setVisible(false);
                                     massPrechargeButton.setVisible(false);
                                     //creditButton.setVisible(false);
                                     debitButton.setVisible(false);
@@ -1473,10 +1499,10 @@ public class MainFrame extends javax.swing.JFrame {
         massPrechargeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!curCart.isEmpty()) {
-                    if(isMassPreCharged){
-                        massPrechargeButton.setBackground(new Color(255,0,0));
-                    }else{
-                        massPrechargeButton.setBackground(new Color(0,255,0));
+                    if (isMassPreCharged) {
+                        massPrechargeButton.setBackground(new Color(255, 0, 0));
+                    } else {
+                        massPrechargeButton.setBackground(new Color(0, 255, 0));
                     }
                     isMassPreCharged = !isMassPreCharged;
                     for (Item item : curCart.getItems()) {
@@ -2244,6 +2270,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         choices, // Array of choices
                                         choices[0]); // Initial choice
                                 if (accountName != null) {
+                                    accountName = accountName.substring(0,accountName.indexOf("Current"));
                                     field5.addAncestorListener(new RequestFocusListener());
                                     int option2 = JOptionPane.showConfirmDialog(textInputFrame2, message2, "Enter Amount To Pay", JOptionPane.OK_CANCEL_OPTION);
                                     if (option2 == JOptionPane.OK_OPTION) {
@@ -2479,6 +2506,9 @@ public class MainFrame extends javax.swing.JFrame {
                                     //do nothing, they clicked OK with everything blank
                                 } else {
                                     String[] choices = myDB.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
+                                    for(int i=0;i<choices.length;i++){//this removes current from the display when they are charging TO account
+                                        choices[i]= choices[i].substring(0,choices[i].indexOf("Current"));
+                                    }
                                     if (choices != null) {
                                         accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
                                                 "Choose AR Account", JOptionPane.QUESTION_MESSAGE, null, // Use
@@ -2641,8 +2671,8 @@ public class MainFrame extends javax.swing.JFrame {
 
             if (curCart.isEmpty()) {
                 resaveTicket.setVisible(false);
-                isMassPreCharged=false;
-                massPrechargeButton.setBackground(new Color(255,0,0));
+                isMassPreCharged = false;
+                massPrechargeButton.setBackground(new Color(255, 0, 0));
             }
         } else {
             discountHeader.setText("Qty to Refund: ");
@@ -2709,7 +2739,8 @@ public class MainFrame extends javax.swing.JFrame {
             masterRefundButton.setVisible(true);
             addRemoveInsuranceButton.setVisible(true);
             masterReprintReceiptButton.setVisible(true);
-        } else if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Haley") || employeeSelectionHeader.getText().substring(14).contentEquals("Booth, Sam")||employeeSelectionHeader.getText().substring(14).contentEquals("Broussard, Kayla")) {
+            loadDailyDataButton.setVisible(true);
+        } else if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Haley") || employeeSelectionHeader.getText().substring(14).contentEquals("Booth, Sam") || employeeSelectionHeader.getText().substring(14).contentEquals("Broussard, Kayla")) {
             updatePriceButton.setVisible(true);
             addNewItemButton.setVisible(true);
             addRxAccountButton.setVisible(true);
@@ -2718,6 +2749,7 @@ public class MainFrame extends javax.swing.JFrame {
             masterRefundButton.setVisible(true);
             addRemoveInsuranceButton.setVisible(true);
             masterReprintReceiptButton.setVisible(true);
+            loadDailyDataButton.setVisible(false);
         } else {
             updatePriceButton.setVisible(false);
             generateReportButton.setVisible(false);
@@ -2727,6 +2759,7 @@ public class MainFrame extends javax.swing.JFrame {
             masterRefundButton.setVisible(false);
             addRemoveInsuranceButton.setVisible(false);
             masterReprintReceiptButton.setVisible(false);
+            loadDailyDataButton.setVisible(false);
         }
     }
 
@@ -2947,7 +2980,7 @@ public class MainFrame extends javax.swing.JFrame {
         debitButton.setVisible(true);
         upsButton.setVisible(true);
         massPrechargeButton.setVisible(true);
-        
+
         if (isMarchMadness) {
             mmButton.setVisible(true);
         }
@@ -2996,8 +3029,8 @@ public class MainFrame extends javax.swing.JFrame {
                 guiItems.clear();
                 curCart.storeCart(id, myDB);
                 resaveTicket.setVisible(false);
-                isMassPreCharged=false;
-                massPrechargeButton.setBackground(new Color(255,0,0));
+                isMassPreCharged = false;
+                massPrechargeButton.setBackground(new Color(255, 0, 0));
                 resetVars();
 
             } else {
@@ -3147,11 +3180,12 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isMassPreCharged = false;//always start out with mass precharged off
     ConfigFileReader reader = new ConfigFileReader();
     JButton masterReprintReceiptButton = new JButton("Master Rpt Receipt");
+    JButton loadDailyDataButton = new JButton("Load Data");
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.33", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.34", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
