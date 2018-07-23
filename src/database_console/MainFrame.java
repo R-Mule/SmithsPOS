@@ -1011,11 +1011,18 @@ public class MainFrame extends javax.swing.JFrame {
         loadDailyDataButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 //C://QS1/AR.txt is account filepath to parse.
-                String path = "C://QS1/AR.txt";
+                
                 if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
                         JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     // yes option
-                    myDB.loadARData(path);
+                    if(employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")){//load DME AR
+                    System.out.println("HELLO DEBBIE!");
+                    String path = "C://Users/Office/Desktop/RptAging.csv";
+                    myDB.loadDMEData(path);
+                    }else{//Hollie or Drew, do AR.
+                        String path = "C://QS1/AR.txt";
+                        myDB.loadARData(path);
+                    }
                 } else {
                     // no option
                 }
@@ -2373,7 +2380,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             String upc = "D" + tempID;
                                             //boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity,boolean isRX)
                                             if (!curCart.containsAP(accountName)) {
-                                                Item tempItem = new Item(myDB, tempID, upc, accountName, price, price, false, 854, 0, "", "", 1, false, 0, false);
+                                                Item tempItem = new Item(myDB, tempID, upc, accountName.substring(0,accountName.indexOf("Current Bal")-1), price, price, false, 854, 0, "", "", 1, false, 0, false);
                                                 curCart.addItem(tempItem);
                                                 guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                                 displayChangeDue = false;
@@ -3188,7 +3195,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.36", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.37", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

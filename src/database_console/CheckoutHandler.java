@@ -333,6 +333,8 @@ public class CheckoutHandler {
                 requires2Receipts = true;
                 if(item.getCategory()==853){
                     myDB.updateChargeAccountBalance(item.getName(), item.getTotal()*-1);
+                }else if(item.getCategory()==854){
+                    myDB.updateDMEAccountBalance(item.getName(), item.getTotal()*-1);
                 }
             }
             String itemName = "";

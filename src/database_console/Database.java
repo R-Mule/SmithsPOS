@@ -9,6 +9,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -342,8 +344,8 @@ public class Database {
             ResultSet rs = stmt.executeQuery("select * from chargeaccounts where accntname = '" + accountName + "';");
             while (rs.next()) {
                 Statement stmt2 = con.createStatement();
-                amtToUpdate+=rs.getDouble(6);
-                stmt2.executeUpdate("UPDATE `chargeaccounts` set balance='" + amtToUpdate+ "' where accntname = '" + accountName + "';");
+                amtToUpdate += rs.getDouble(6);
+                stmt2.executeUpdate("UPDATE `chargeaccounts` set balance='" + amtToUpdate + "' where accntname = '" + accountName + "';");
                 System.out.println("FOUND ACCOUNT!");
 
             }//end while
@@ -354,8 +356,32 @@ public class Database {
         }
     }
 
-    public boolean checkFrozenAccount(String accountName){
-                try {
+    public void updateDMEAccountBalance(String accountName, double amtToUpdate) {
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+//here sonoo is database name, root is username and password  
+            Statement stmt = con.createStatement();
+            accountName = accountName.substring(0, accountName.indexOf(" "));
+            System.out.println(accountName);
+            ResultSet rs = stmt.executeQuery("select * from dmeaccounts where pan = '" + accountName + "';");
+            while (rs.next()) {
+                Statement stmt2 = con.createStatement();
+                amtToUpdate += rs.getDouble(6);
+                stmt2.executeUpdate("UPDATE `dmeaccounts` set balance='" + amtToUpdate + "' where pan = '" + accountName + "';");
+                System.out.println("FOUND ACCOUNT!");
+
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public boolean checkFrozenAccount(String accountName) {
+        try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -364,7 +390,7 @@ public class Database {
 
             while (rs.next()) {
                 // System.out.println(rs.getString(2));
-                if (rs.getString(2).contentEquals(accountName)&&rs.getBoolean(8)) {
+                if (rs.getString(2).contentEquals(accountName) && rs.getBoolean(8)) {
                     con.close();
                     return true;
                 }
@@ -378,7 +404,95 @@ public class Database {
 
         return false;
     }
-    
+
+    public void loadDMEData(String path) {
+        BufferedReader br = null;
+        String lineTemp = "";
+        String cvsSplitBy = ",";
+        ArrayList<String[]> goodStrings = new ArrayList<>();
+
+        ArrayList<String> accounts = new ArrayList<>();
+        ArrayList<Double> balances = new ArrayList<>();
+        ArrayList<String> firstNames = new ArrayList<>();
+        ArrayList<String> lastNames = new ArrayList<>();
+        ArrayList<String> unfoundAccounts = new ArrayList<>();
+        String unfound = "";
+        try {
+
+            br = new BufferedReader(new FileReader(path));
+            while ((lineTemp = br.readLine()) != null) {
+
+                // use comma as separator
+                String[] line = lineTemp.split(cvsSplitBy);
+
+                // System.out.println("Guess " + line[22] + " , Guess 2 " + line[41] + "");
+                if (line[22].contentEquals("Patient Pay Claims")) {
+                    line[41] = line[41].trim();
+                    goodStrings.add(line);
+                }//end if
+
+            }//end while
+            for (String[] s : goodStrings) {
+                //System.out.println(s[22] + " " + s[41]+" " +s[42]+" "+s[43]+ " " + s[47] + " " + s[48] + " " + s[49] + " " + s[50]);
+                if (accounts.contains(s[41])) {//already added him before, need to just update balance
+                    double total = round(balances.get(accounts.indexOf(s[41])) + Double.parseDouble(s[47].substring(1)) + Double.parseDouble(s[48].substring(1)) + Double.parseDouble(s[49].substring(1)) + Double.parseDouble(s[50].substring(1)));
+                    balances.set(accounts.indexOf(s[41]), total);
+                } else {//new account to update!
+                    accounts.add(s[41]);
+                    double total = round(Double.parseDouble(s[47].substring(1)) + Double.parseDouble(s[48].substring(1)) + Double.parseDouble(s[49].substring(1)) + Double.parseDouble(s[50].substring(1)));
+                    balances.add(total);
+                    firstNames.add(s[42].substring(1));
+                    lastNames.add(s[43].substring(0, s[43].indexOf("\"")));
+
+                }//end else
+            }//end for
+
+            for (String s : accounts) {
+                //  System.out.println("FIRST: "+firstNames.get(accounts.indexOf(s))+" LAST "+lastNames.get(accounts.indexOf(s))+" ACCOUNT: " + s + " BALANCE DUE: " + balances.get(accounts.indexOf(s)));
+                boolean itemFound = false;
+                try {
+                    Class.forName(driverPath);
+                    Connection con = DriverManager.getConnection(
+                            host, userName, password);
+//here sonoo is database name, root is username and password  
+                    Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery("select * from dmeaccounts where pan = '" + s + "';");
+                    while (rs.next()) {
+                        itemFound = true;
+                        Statement stmt2 = con.createStatement();
+                        stmt2.executeUpdate("UPDATE `dmeaccounts` set lastname = '" + lastNames.get(accounts.indexOf(s)) + "',firstname='" + firstNames.get(accounts.indexOf(s)) + "',balance=" + balances.get(accounts.indexOf(s)) + " where pan = '" + s + "';");
+                        //System.out.println("FOUND ACCOUNT!");
+
+                    }//end while
+                    if (!itemFound) {
+                        unfoundAccounts.add(s);
+                        unfound += "\n " + s + " ";
+                        // System.out.println("COULD NOT FIND: "+s);
+                    }
+                    con.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }//end for all accounts
+            JFrame message1 = new JFrame("");
+            JOptionPane.showMessageDialog(message1, "Couldn't Find: " + unfound + "\n Maybe entered wrong or unadded?");
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
     public void loadARData(String path) {
         try {
             BufferedReader in = new BufferedReader(new FileReader(path));
@@ -395,13 +509,13 @@ public class Database {
                         String lastname = line.substring(24, 43).replaceAll(" ", "");
                         String firstname = line.substring(43, 57).replaceAll(" ", "");
                         String dob = line.substring(57, 67).replaceAll(" ", "");
-                        String balance = line.substring(68,87).replaceAll(" ", "");
+                        String balance = line.substring(68, 87).replaceAll(" ", "");
                         String fro = line.substring(87).replaceAll(" ", "");
                         boolean frozen;
-                        if(fro.contentEquals("YES")){
-                            frozen=true;
-                        }else{
-                            frozen=false;
+                        if (fro.contentEquals("YES")) {
+                            frozen = true;
+                        } else {
+                            frozen = false;
                         }
                         // uuid=uuid.replaceAll(" ","");
                         if (firstname.isEmpty()) {
@@ -430,28 +544,27 @@ public class Database {
                         if (accntname.isEmpty()) {
                             accntname = "DELETED";
                         }
-                            try {
-                                Class.forName(driverPath);
-                                Connection con = DriverManager.getConnection(
-                                        host, userName, password);
+                        try {
+                            Class.forName(driverPath);
+                            Connection con = DriverManager.getConnection(
+                                    host, userName, password);
 //here sonoo is database name, root is username and password  
-                                Statement stmt = con.createStatement();
-                                ResultSet rs = stmt.executeQuery("select * from chargeaccounts where uuid = '" + uuid + "';");
-                                while (rs.next()) {
-                                    itemFound = true;
-                                    Statement stmt2 = con.createStatement();
-                                    stmt2.executeUpdate("UPDATE `chargeaccounts` set lastname = '" + lastname + "',firstname='" + firstname + "',balance=" + realBal + ",dob='" + dob + "',accntname='" + accntname + "',frozen =  "+frozen+" where uuid = '" + uuid + "';");
-                                    System.out.println("FOUND ACCOUNT!");
+                            Statement stmt = con.createStatement();
+                            ResultSet rs = stmt.executeQuery("select * from chargeaccounts where uuid = '" + uuid + "';");
+                            while (rs.next()) {
+                                itemFound = true;
+                                Statement stmt2 = con.createStatement();
+                                stmt2.executeUpdate("UPDATE `chargeaccounts` set lastname = '" + lastname + "',firstname='" + firstname + "',balance=" + realBal + ",dob='" + dob + "',accntname='" + accntname + "',frozen =  " + frozen + " where uuid = '" + uuid + "';");
+                                System.out.println("FOUND ACCOUNT!");
 
-                                }//end while
-                                if (!itemFound) {
-                                    stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`balance`,`uuid`,`frozen`) VALUES (NULL, '" + accntname + "','" + lastname + "','" + firstname + "','" + dob + "'," + realBal + ",'" + uuid + "',"+frozen+");");
-                                }
-                                con.close();
-                            } catch (Exception e) {
-                                System.out.println(e);
+                            }//end while
+                            if (!itemFound) {
+                                stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`balance`,`uuid`,`frozen`) VALUES (NULL, '" + accntname + "','" + lastname + "','" + firstname + "','" + dob + "'," + realBal + ",'" + uuid + "'," + frozen + ");");
                             }
-                       
+                            con.close();
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
 
                     }//end if lines not empty
 
@@ -572,7 +685,7 @@ public class Database {
 
             while (rs.next()) {
                 System.out.println(rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6));
-                accounts[i] = rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6);
+                accounts[i] = rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6) + " Current Balance $" + String.format("%.2f", rs.getDouble(6));
                 i++;
             }//end while
 
@@ -818,8 +931,9 @@ public class Database {
         }
         return false;
     }
-    boolean doesQS1UUIDExisit(String uuid){
-                try {
+
+    boolean doesQS1UUIDExisit(String uuid) {
+        try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -960,5 +1074,10 @@ public class Database {
             System.out.println(e);
         }//end catch
     }
+
+    private double round(double num) {//rounds to 2 decimal places.
+        num = Math.round(num * 100.0) / 100.0;
+        return num;
+    }//end round
 
 }//end Database
