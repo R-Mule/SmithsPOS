@@ -20,6 +20,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -1692,19 +1701,38 @@ public class MainFrame extends javax.swing.JFrame {
                                         boolean part1 = false;
                                         boolean part2 = false;
                                         for (Item item : curCart.getItems()) {
-                                            if(item.itemName.contentEquals("Be")&&item.getPriceOfItemsBeforeTax() == 0.03){
-                                                part1=true;
-                                            }
-                                            else if(item.itemName.contentEquals("Our")&&item.getPriceOfItemBeforeTax() == 0.17){
-                                                part2=true;
+                                            if (item.itemName.contentEquals("Be") && item.getPriceOfItemsBeforeTax() == 0.03) {
+                                                part1 = true;
+                                            } else if (item.itemName.contentEquals("Our") && item.getPriceOfItemBeforeTax() == 0.17) {
+                                                part2 = true;
                                             }
                                         }
                                         if (part1 && part2) {
                                             JFrame message1 = new JFrame("");
-                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/bnb.gif");
-                                        JOptionPane.showMessageDialog(message1, "", "Try the gray stuff, it's delicious!", 0, icon);
-                                        }
-                                    }
+                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/bnb.gif");
+                                             try {
+                                                 File audioFile = new File("C:/POS/SOFTWARE/BOG.wav");
+                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                                AudioFormat format = audioStream.getFormat();
+
+                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                                audioClip.open(audioStream);
+                                                audioClip.start();
+                                            JOptionPane.showMessageDialog(message1, "", "Try the gray stuff, it's delicious!", 0, icon);
+                                            audioClip.stop();
+                                            } catch (UnsupportedAudioFileException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (IOException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (LineUnavailableException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            }//end try catch for audio
+
+                                           
+                                        }//end if BNB Protocol
+                                    }//end EE protocol
 
                                     Item tempItem = new Item(myDB, tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
                                     curCart.addItem(tempItem);
@@ -2297,6 +2325,29 @@ public class MainFrame extends javax.swing.JFrame {
                         if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty()) {
                             //do nothing, they clicked OK with everything blank
                         } else {
+                            if(field1.getText().contentEquals("BTITUDE")){
+                         JFrame message1 = new JFrame("");
+                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/bat.gif");
+                                             try {
+                                                 File audioFile = new File("C:/POS/SOFTWARE/batman.wav");
+                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                                AudioFormat format = audioStream.getFormat();
+
+                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                                audioClip.open(audioStream);
+                                                audioClip.start();
+                                            JOptionPane.showMessageDialog(message1, "", "You think muscles are big, you haven't seen my brain!", 0, icon);
+                                            audioClip.stop();
+                                            } catch (UnsupportedAudioFileException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (IOException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (LineUnavailableException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            }//end try catch for audio
+                    }
                             String[] choices = myDB.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
                             if (choices != null) {
                                 accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
@@ -2769,7 +2820,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//end updateCartScreen
 
     public void checkForAdminButtonVisible() {
-        if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Andrew") || employeeSelectionHeader.getText().substring(14).contentEquals("Fuller, Hollie") || employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")) {
+        if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Andrew") || employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Hollie") || employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")) {
             updatePriceButton.setVisible(true);
             generateReportButton.setVisible(true);
             addNewItemButton.setVisible(true);
@@ -3224,7 +3275,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.38", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.39", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
