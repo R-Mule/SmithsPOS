@@ -1011,15 +1011,15 @@ public class MainFrame extends javax.swing.JFrame {
         loadDailyDataButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 //C://QS1/AR.txt is account filepath to parse.
-                
+
                 if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
                         JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     // yes option
-                    if(employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")){//load DME AR
-                    System.out.println("HELLO DEBBIE!");
-                    String path = "C://Users/Office/Desktop/RptAging.csv";
-                    myDB.loadDMEData(path);
-                    }else{//Hollie or Drew, do AR.
+                    if (employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")) {//load DME AR
+                        System.out.println("HELLO DEBBIE!");
+                        String path = "C://Users/Office/Desktop/RptAging.csv";
+                        myDB.loadDMEData(path);
+                    } else {//Hollie or Drew, do AR.
                         String path = "C://QS1/AR.txt";
                         myDB.loadARData(path);
                     }
@@ -1040,6 +1040,12 @@ public class MainFrame extends javax.swing.JFrame {
                     "Enter Passcode:", field1};
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Employee Login Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
+                    if (field1.getText().contentEquals("Please")) {//EE Protocol
+
+                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/ssj.gif");
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "“I am the hope of the universe.\nI am the answer to all living things that cry out for peace.\nI am protector of the innocent.\nI am the light in the darkness. \nI am truth.\nAlly to good!\nNightmare to you!”", "", 0, icon);
+                    }
                     if (!field1.getText().isEmpty() && validateInteger(field1.getText())) {
                         String clerkName = myDB.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
                         if (clerkName != null) {
@@ -1116,7 +1122,7 @@ public class MainFrame extends javax.swing.JFrame {
                 JTextField field3 = new JTextField();
                 JTextField field4 = new JTextField();
                 Object[] message = {
-                    "QS1 UUID: ",field5,"Account Name: ", field1, "First Name: ", field2, "Last Name: ", field3, "DOB: example: 010520", field4};
+                    "QS1 UUID: ", field5, "Account Name: ", field1, "First Name: ", field2, "Last Name: ", field3, "DOB: example: 010520", field4};
 
                 field5.addAncestorListener(new RequestFocusListener());
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add RX Account Menu", JOptionPane.OK_CANCEL_OPTION);
@@ -1127,7 +1133,7 @@ public class MainFrame extends javax.swing.JFrame {
                     } else if (myDB.doesChargeAccountExisit(field1.getText().toUpperCase())) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: Charge Account Name already exisits!");
-                    }else if (myDB.doesQS1UUIDExisit(field5.getText().toUpperCase())) {
+                    } else if (myDB.doesQS1UUIDExisit(field5.getText().toUpperCase())) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: QS1 UUID already exisits!");
                     } else {
@@ -1677,6 +1683,29 @@ public class MainFrame extends javax.swing.JFrame {
                                     tempID = dateFormat.format(date);
                                     System.out.println(tempID);
                                     String upc = 'T' + tempID;
+                                    if (Double.parseDouble(field3.getText()) > 9000 && field1.getText().contentEquals("Son Goku")) {//EE Protocol
+                                        JFrame message1 = new JFrame("");
+                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/over9000.jpg");
+                                        JOptionPane.showMessageDialog(message1, "", "", 0, icon);
+                                    }
+                                    if (field1.getText().contentEquals("Guest") && Double.parseDouble(field3.getText()) == 20.17) {
+                                        boolean part1 = false;
+                                        boolean part2 = false;
+                                        for (Item item : curCart.getItems()) {
+                                            if(item.itemName.contentEquals("Be")&&item.getPriceOfItemsBeforeTax() == 0.03){
+                                                part1=true;
+                                            }
+                                            else if(item.itemName.contentEquals("Our")&&item.getPriceOfItemBeforeTax() == 0.17){
+                                                part2=true;
+                                            }
+                                        }
+                                        if (part1 && part2) {
+                                            JFrame message1 = new JFrame("");
+                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/bnb.gif");
+                                        JOptionPane.showMessageDialog(message1, "", "Try the gray stuff, it's delicious!", 0, icon);
+                                        }
+                                    }
+
                                     Item tempItem = new Item(myDB, tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
                                     curCart.addItem(tempItem);
                                     guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
@@ -2277,7 +2306,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         choices, // Array of choices
                                         choices[0]); // Initial choice
                                 if (accountName != null) {
-                                    accountName = accountName.substring(0,accountName.indexOf("Current"));
+                                    accountName = accountName.substring(0, accountName.indexOf("Current"));
                                     field5.addAncestorListener(new RequestFocusListener());
                                     int option2 = JOptionPane.showConfirmDialog(textInputFrame2, message2, "Enter Amount To Pay", JOptionPane.OK_CANCEL_OPTION);
                                     if (option2 == JOptionPane.OK_OPTION) {
@@ -2380,7 +2409,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             String upc = "D" + tempID;
                                             //boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity,boolean isRX)
                                             if (!curCart.containsAP(accountName)) {
-                                                Item tempItem = new Item(myDB, tempID, upc, accountName.substring(0,accountName.indexOf("Current Bal")-1), price, price, false, 854, 0, "", "", 1, false, 0, false);
+                                                Item tempItem = new Item(myDB, tempID, upc, accountName.substring(0, accountName.indexOf("Current Bal") - 1), price, price, false, 854, 0, "", "", 1, false, 0, false);
                                                 curCart.addItem(tempItem);
                                                 guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                                 displayChangeDue = false;
@@ -2513,8 +2542,8 @@ public class MainFrame extends javax.swing.JFrame {
                                     //do nothing, they clicked OK with everything blank
                                 } else {
                                     String[] choices = myDB.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
-                                    for(int i=0;i<choices.length;i++){//this removes current from the display when they are charging TO account
-                                        choices[i]= choices[i].substring(0,choices[i].indexOf("Current"));
+                                    for (int i = 0; i < choices.length; i++) {//this removes current from the display when they are charging TO account
+                                        choices[i] = choices[i].substring(0, choices[i].indexOf("Current"));
                                     }
                                     if (choices != null) {
                                         accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
@@ -2523,10 +2552,10 @@ public class MainFrame extends javax.swing.JFrame {
                                                 // icon
                                                 choices, // Array of choices
                                                 choices[0]); // Initial choice
-                                        if(myDB.checkFrozenAccount(accountName.substring(0, accountName.indexOf(" ")))){
+                                        if (myDB.checkFrozenAccount(accountName.substring(0, accountName.indexOf(" ")))) {
                                             JFrame message1 = new JFrame("");
-                                        JOptionPane.showMessageDialog(message1, "This account has been FROZEN. Please speak to Hollie. Customer CANNOT charge!");
-                                        }else if (accountName != null) {
+                                            JOptionPane.showMessageDialog(message1, "This account has been FROZEN. Please speak to Hollie. Customer CANNOT charge!");
+                                        } else if (accountName != null) {
                                             changeDue.setText("Change Due: $0.00");
                                             displayChangeDue = true;
                                             checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
@@ -3195,7 +3224,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.37", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.38", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

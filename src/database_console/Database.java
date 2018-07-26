@@ -474,9 +474,13 @@ public class Database {
                     System.out.println(e);
                 }
             }//end for all accounts
+            if(!unfound.contentEquals("")){//if not empty show popup
             JFrame message1 = new JFrame("");
             JOptionPane.showMessageDialog(message1, "Couldn't Find: " + unfound + "\n Maybe entered wrong or unadded?");
-
+            }else{
+                JFrame message1 = new JFrame("");
+            JOptionPane.showMessageDialog(message1, "Successfully Loaded! No Errors!");
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
