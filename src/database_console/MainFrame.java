@@ -1710,8 +1710,8 @@ public class MainFrame extends javax.swing.JFrame {
                                         if (part1 && part2) {
                                             JFrame message1 = new JFrame("");
                                             ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/bnb.gif");
-                                             try {
-                                                 File audioFile = new File("C:/POS/SOFTWARE/BOG.wav");
+                                            try {
+                                                File audioFile = new File("C:/POS/SOFTWARE/BOG.wav");
                                                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
                                                 AudioFormat format = audioStream.getFormat();
 
@@ -1720,8 +1720,8 @@ public class MainFrame extends javax.swing.JFrame {
                                                 Clip audioClip = (Clip) AudioSystem.getLine(info);
                                                 audioClip.open(audioStream);
                                                 audioClip.start();
-                                            JOptionPane.showMessageDialog(message1, "", "Try the gray stuff, it's delicious!", 0, icon);
-                                            audioClip.stop();
+                                                JOptionPane.showMessageDialog(message1, "", "Try the gray stuff, it's delicious!", 0, icon);
+                                                audioClip.stop();
                                             } catch (UnsupportedAudioFileException ex) {
                                                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                                             } catch (IOException ex) {
@@ -1730,7 +1730,6 @@ public class MainFrame extends javax.swing.JFrame {
                                                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                                             }//end try catch for audio
 
-                                           
                                         }//end if BNB Protocol
                                     }//end EE protocol
 
@@ -2325,29 +2324,29 @@ public class MainFrame extends javax.swing.JFrame {
                         if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty()) {
                             //do nothing, they clicked OK with everything blank
                         } else {
-                            if(field1.getText().contentEquals("BTITUDE")){
-                         JFrame message1 = new JFrame("");
-                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/bat.gif");
-                                             try {
-                                                 File audioFile = new File("C:/POS/SOFTWARE/batman.wav");
-                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                                AudioFormat format = audioStream.getFormat();
+                            if (field1.getText().contentEquals("BTITUDE")) {
+                                JFrame message1 = new JFrame("");
+                                ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/bat.gif");
+                                try {
+                                    File audioFile = new File("C:/POS/SOFTWARE/batman.wav");
+                                    AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                    AudioFormat format = audioStream.getFormat();
 
-                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+                                    DataLine.Info info = new DataLine.Info(Clip.class, format);
 
-                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                                audioClip.open(audioStream);
-                                                audioClip.start();
-                                            JOptionPane.showMessageDialog(message1, "", "You think muscles are big, you haven't seen my brain!", 0, icon);
-                                            audioClip.stop();
-                                            } catch (UnsupportedAudioFileException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (IOException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (LineUnavailableException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            }//end try catch for audio
-                    }
+                                    Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                    audioClip.open(audioStream);
+                                    audioClip.start();
+                                    JOptionPane.showMessageDialog(message1, "", "You think muscles are big, you haven't seen my brain!", 0, icon);
+                                    audioClip.stop();
+                                } catch (UnsupportedAudioFileException ex) {
+                                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (LineUnavailableException ex) {
+                                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                }//end try catch for audio
+                            }
                             String[] choices = myDB.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
                             if (choices != null) {
                                 accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
@@ -3113,15 +3112,76 @@ public class MainFrame extends javax.swing.JFrame {
             id = id.toUpperCase();
             if (!myDB.checkDatabaseForTicket(id)) {//check ID to see if it exists in database
                 //if it doesnt, lets create it!
-                for (GuiCartItem item : guiItems) {
-                    item.removeAllGUIData();
+                boolean eefound = false;
+                if (id.toUpperCase().contentEquals("DENNIS NEDRY")) {//EE Protocol
+                    boolean itemFound = false;
+                    for (Item item : curCart.getItems()) {
+                        if (item.mutID.contentEquals("012849")) {
+                            itemFound = true;
+                            try {
+                                eefound = true;
+                                File audioFile = new File("C:/POS/SOFTWARE/jp2.wav");
+                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                AudioFormat format = audioStream.getFormat();
+
+                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                audioClip.open(audioStream);
+                                audioClip.start();
+                                ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/jp2.png");
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "", "Life finds a way!", 0, icon);
+                                audioClip.stop();
+                            } catch (UnsupportedAudioFileException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (LineUnavailableException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }//end try catch for audio
+
+                        }
+                    }
+                        if (!itemFound){
+                            try {
+                                eefound = true;
+                                File audioFile = new File("C:/POS/SOFTWARE/jp1.wav");
+                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                AudioFormat format = audioStream.getFormat();
+
+                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                audioClip.open(audioStream);
+                                audioClip.start();
+                                ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/jp1.gif");
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, " \nIt would seem the Park, I mean CART is missing something...\n", "Ah Ah Ah, you did't say the magic word!", 0, icon);
+                                audioClip.stop();
+                            } catch (UnsupportedAudioFileException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (LineUnavailableException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }//end try catch for audio
+                        }//not found!
+                    
+
+                }//end if EE Protocol
+
+                if (!eefound) {
+                    for (GuiCartItem item : guiItems) {
+                        item.removeAllGUIData();
+                    }
+                    guiItems.clear();
+                    curCart.storeCart(id, myDB);
+                    resaveTicket.setVisible(false);
+                    isMassPreCharged = false;
+                    massPrechargeButton.setBackground(new Color(255, 0, 0));
+                    resetVars();
                 }
-                guiItems.clear();
-                curCart.storeCart(id, myDB);
-                resaveTicket.setVisible(false);
-                isMassPreCharged = false;
-                massPrechargeButton.setBackground(new Color(255, 0, 0));
-                resetVars();
 
             } else {
                 //if it does, send error message!
