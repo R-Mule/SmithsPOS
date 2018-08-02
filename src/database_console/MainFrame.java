@@ -124,6 +124,7 @@ public class MainFrame extends javax.swing.JFrame {
                     isFourthOfJuly = true;
                 } else {
                     isSummerTime = true;
+                    //isHalloween=true;
                     quotesActive = false;
                 }
             } else if (month.contentEquals("08")) {
@@ -169,7 +170,7 @@ public class MainFrame extends javax.swing.JFrame {
 
                             displayChangeDue = false;
                             updateCartScreen();
-                        }//end if
+                        }
                         textField.setText("");
                     } catch (StringIndexOutOfBoundsException e) {
                         textField.setText("");
@@ -1049,12 +1050,44 @@ public class MainFrame extends javax.swing.JFrame {
                     "Enter Passcode:", field1};
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Employee Login Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
+                    if (field1.getText().contentEquals("Prince Ali Ababwa")) {
+                        boolean found = false;
+                        for (Item item : curCart.getItems()) {
+                            if (item.itemName.contentEquals("Bread") && item.itemPrice == 112519.92 && item.getDiscountPercentage() == 1) {
+                                found = true;
+                            }
+                        }
+                        if (found) {
+                            JFrame message1 = new JFrame("");
+                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/al2.gif");
+                            try {
+                                File audioFile = new File("C:/POS/SOFTWARE/al2.wav");
+                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                AudioFormat format = audioStream.getFormat();
+
+                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                audioClip.open(audioStream);
+                                audioClip.start();
+                                JOptionPane.showMessageDialog(message1, "", "You ain't never had a friend like me!", 0, icon);
+                                audioClip.stop();
+                            } catch (UnsupportedAudioFileException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (LineUnavailableException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }//end try catch for audio
+                        }
+                    }//end if EE Protocol
                     if (field1.getText().contentEquals("Please")) {//EE Protocol
 
                         ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/ssj.gif");
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "“I am the hope of the universe.\nI am the answer to all living things that cry out for peace.\nI am protector of the innocent.\nI am the light in the darkness. \nI am truth.\nAlly to good!\nNightmare to you!”", "", 0, icon);
-                    }
+
+                    }//end EE Protocol
                     if (!field1.getText().isEmpty() && validateInteger(field1.getText())) {
                         String clerkName = myDB.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
                         if (clerkName != null) {
@@ -1696,8 +1729,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         JFrame message1 = new JFrame("");
                                         ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/over9000.jpg");
                                         JOptionPane.showMessageDialog(message1, "", "", 0, icon);
-                                    }
-                                    if (field1.getText().contentEquals("Guest") && Double.parseDouble(field3.getText()) == 20.17) {
+                                    } else if (field1.getText().contentEquals("Guest") && Double.parseDouble(field3.getText()) == 20.17) {
                                         boolean part1 = false;
                                         boolean part2 = false;
                                         for (Item item : curCart.getItems()) {
@@ -1732,6 +1764,193 @@ public class MainFrame extends javax.swing.JFrame {
 
                                         }//end if BNB Protocol
                                     }//end EE protocol
+                                    else if (isHalloween && Double.parseDouble(field3.getText()) == 3.00 && field1.getText().contentEquals("Come Little Children")) {
+
+                                        JFrame message1 = new JFrame("");
+                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/hp1.gif");
+                                        try {
+                                            File audioFile = new File("C:/POS/SOFTWARE/hp1.wav");
+                                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                            AudioFormat format = audioStream.getFormat();
+
+                                            DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                            Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                            audioClip.open(audioStream);
+                                            audioClip.start();
+                                            JOptionPane.showMessageDialog(message1, "", "Just one item to go!", 0, icon);
+                                            audioClip.stop();
+                                        } catch (UnsupportedAudioFileException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (IOException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (LineUnavailableException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        }//end try catch for audio
+
+                                    } else if (isHalloween && Double.parseDouble(field3.getText()) == 3.00 && field1.getText().contentEquals("Come Little Children")) {
+
+                                        JFrame message1 = new JFrame("");
+                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/hp1.gif");
+                                        try {
+                                            File audioFile = new File("C:/POS/SOFTWARE/hp1.wav");
+                                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                            AudioFormat format = audioStream.getFormat();
+
+                                            DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                            Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                            audioClip.open(audioStream);
+                                            audioClip.start();
+                                            JOptionPane.showMessageDialog(message1, "", "Just one more item to go!", 0, icon);
+                                            audioClip.stop();
+                                        } catch (UnsupportedAudioFileException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (IOException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (LineUnavailableException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        }//end try catch for audio
+
+                                    } else if (Double.parseDouble(field3.getText()) == 16.93 && field1.getText().contentEquals("I Put A Spell On You")) {
+                                        boolean found = false;
+                                        for (Item item : curCart.getItems()) {
+                                            if (item.itemName.contentEquals("Come Little Children") && item.itemPrice == 3.00) {
+                                                found = true;
+                                            }
+                                        }
+                                        if (found) {
+                                            JFrame message1 = new JFrame("");
+                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/hp2.gif");
+                                            try {
+                                                File audioFile = new File("C:/POS/SOFTWARE/hp2.wav");
+                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                                AudioFormat format = audioStream.getFormat();
+
+                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                                audioClip.open(audioStream);
+                                                audioClip.start();
+                                                JOptionPane.showMessageDialog(message1, "", "Max likes your yabbos!", 0, icon);
+                                                audioClip.stop();
+                                            } catch (UnsupportedAudioFileException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (IOException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (LineUnavailableException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            }//end try catch for audio
+                                        }
+                                    }//end if EE Protocol
+                                    else if (Double.parseDouble(field3.getText()) == 112519.92 && field1.getText().contentEquals("Bread")) {
+                                        JFrame message1 = new JFrame("");
+                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/al1.gif");
+                                        try {
+                                            File audioFile = new File("C:/POS/SOFTWARE/al1.wav");
+                                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                            AudioFormat format = audioStream.getFormat();
+
+                                            DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                            Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                            audioClip.open(audioStream);
+                                            audioClip.start();
+                                            JOptionPane.showMessageDialog(message1, "", "Ring bells! Bang the drums!!", 0, icon);
+                                            audioClip.stop();
+                                        } catch (UnsupportedAudioFileException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (IOException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (LineUnavailableException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        }//end try catch for audio
+
+                                    } else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Witch")) {
+                                        boolean found = false;
+                                        for (Item item : curCart.getItems()) {
+                                            if (item.itemName.contentEquals("Duck") && item.itemPrice == 19.75) {
+                                                found = true;
+                                            }
+                                        }
+                                        if (found) {
+                                            JFrame message1 = new JFrame("");
+                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/mp1.gif");
+                                            try {
+                                                File audioFile = new File("C:/POS/SOFTWARE/mp1.wav");
+                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                                AudioFormat format = audioStream.getFormat();
+
+                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                                audioClip.open(audioStream);
+                                                audioClip.start();
+                                                JOptionPane.showMessageDialog(message1, "", "She turned me into a newt!!", 0, icon);
+                                                audioClip.stop();
+                                            } catch (UnsupportedAudioFileException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (IOException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (LineUnavailableException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            }//end try catch for audio
+                                        }
+                                    } else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Duck")) {
+                                        boolean found = false;
+                                        for (Item item : curCart.getItems()) {
+                                            if (item.itemName.contentEquals("Witch") && item.itemPrice == 19.75) {
+                                                found = true;
+                                            }
+                                        }
+                                        if (found) {
+                                            JFrame message1 = new JFrame("");
+                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/mp1.gif");
+                                            try {
+                                                File audioFile = new File("C:/POS/SOFTWARE/mp1.wav");
+                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                                AudioFormat format = audioStream.getFormat();
+
+                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                                audioClip.open(audioStream);
+                                                audioClip.start();
+                                                JOptionPane.showMessageDialog(message1, "", "She turned me into a newt!", 0, icon);
+                                                audioClip.stop();
+                                            } catch (UnsupportedAudioFileException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (IOException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (LineUnavailableException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            }//end try catch for audio
+                                        }
+
+                                    } else if (Double.parseDouble(field3.getText()) == 0.02 && field1.getText().contentEquals("Jango Fett")) {
+                                        JFrame message1 = new JFrame("");
+                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/sw1.gif");
+                                        try {
+                                            File audioFile = new File("C:/POS/SOFTWARE/sw1.wav");
+                                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                            AudioFormat format = audioStream.getFormat();
+
+                                            DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                            Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                            audioClip.open(audioStream);
+                                            audioClip.start();
+                                            JOptionPane.showMessageDialog(message1, "I'm just a simple man, trying to make my way in the universe.", "", 0, icon);
+                                            audioClip.stop();
+                                        } catch (UnsupportedAudioFileException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (IOException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (LineUnavailableException ex) {
+                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                        }//end try catch for audio
+
+                                    }//end if EE Protocol
 
                                     Item tempItem = new Item(myDB, tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
                                     curCart.addItem(tempItem);
@@ -1807,7 +2026,10 @@ public class MainFrame extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
-                        if (!curCart.isEmpty()) {
+                        if (!curCart.isEmpty()) {if (curCart.getTotalPrice() < 0) {
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                            } else {
                             JLabel splitTenderTotal = new JLabel("Total: $", SwingConstants.RIGHT);
                             JLabel splitTenderRemaining = new JLabel("Remaining: $", SwingConstants.RIGHT);
                             JFrame textInputFrame = new JFrame("");
@@ -2014,6 +2236,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     }
                                 }//end else
                             }//end if
+                        }//end check for negative amount
                         }//end if isNotEmpty
                     } else {
                         JFrame message1 = new JFrame("");
@@ -2060,51 +2283,60 @@ public class MainFrame extends javax.swing.JFrame {
                             field1.setSelectionStart(0);
                             field1.setSelectionEnd(8);
 
-                            field1.addAncestorListener(new RequestFocusListener());
-                            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Cash Amount", JOptionPane.OK_CANCEL_OPTION);
-                            if (option == JOptionPane.OK_OPTION) {
-                                if (!validateDouble(field1.getText())) {
-                                    JFrame message1 = new JFrame("");
-                                    JOptionPane.showMessageDialog(message1, "Improper cash value.");
-                                } else {
-                                    double amtReceived = Double.parseDouble(field1.getText());
-                                    amtReceived = round(amtReceived);
-                                    if (amtReceived < curCart.getTotalPrice()) {
-                                        JFrame message1 = new JFrame("");
-                                        JOptionPane.showMessageDialog(message1, "Not enough cash.");
-                                    } else {
-
-                                        double change = amtReceived - curCart.getTotalPrice();
-                                        change = round(change);
-                                        changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                        displayChangeDue = true;
-                                        checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
-                                        updateCartScreen();
-
-                                    }//end else
-                                }//end else
-                            }//end if
-                        } else if (!refundCart.isEmpty()) {
-                            boolean isItemToRefund = false;
-                            boolean isCartConditionsMet = true;
-                            for (RefundItem item : refundCart.getRefundItems()) {
-                                if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
-                                    isItemToRefund = true;
-                                }
-                                if (item.quantityBeingRefunded > 0 && !item.isRefundAllActive() && !item.isRefundTaxOnlyActive()) {
-                                    //Houston we have a problem.
-                                    isCartConditionsMet = false;
-                                }
-
-                            }
-                            if (isItemToRefund && isCartConditionsMet) {
-                                checkout.beginRefundCashCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
-
-                            } else if (isCartConditionsMet) {
+                            if (curCart.getTotalPrice() < 0) {
                                 JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "An item in the cart is set to have quantity refunded, but no type of refund is selected.. Please set Quantity to refund to zero for that item or add a refund case.");
-                            }
+                                JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                            } else {
+                                field1.addAncestorListener(new RequestFocusListener());
+                                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Cash Amount", JOptionPane.OK_CANCEL_OPTION);
+                                if (option == JOptionPane.OK_OPTION) {
+                                    if (!validateDouble(field1.getText())) {
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Improper cash value.");
+                                    } else {
+                                        double amtReceived = Double.parseDouble(field1.getText());
+                                        amtReceived = round(amtReceived);
+                                        if (amtReceived < curCart.getTotalPrice()) {
+                                            JFrame message1 = new JFrame("");
+                                            JOptionPane.showMessageDialog(message1, "Not enough cash.");
+                                        } else {
 
+                                            double change = amtReceived - curCart.getTotalPrice();
+                                            change = round(change);
+                                            changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                            displayChangeDue = true;
+                                            checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
+                                            updateCartScreen();
+
+                                        }//end else
+                                    }//end else
+                                }//end if
+                            }
+                        } else if (!refundCart.isEmpty()) {
+                            if (refundCart.getTotalPrice() < 0) {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                            } else {
+                                boolean isItemToRefund = false;
+                                boolean isCartConditionsMet = true;
+                                for (RefundItem item : refundCart.getRefundItems()) {
+                                    if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
+                                        isItemToRefund = true;
+                                    }
+                                    if (item.quantityBeingRefunded > 0 && !item.isRefundAllActive() && !item.isRefundTaxOnlyActive()) {
+                                        //Houston we have a problem.
+                                        isCartConditionsMet = false;
+                                    }
+
+                                }
+                                if (isItemToRefund && isCartConditionsMet) {
+                                    checkout.beginRefundCashCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
+
+                                } else if (isCartConditionsMet) {
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "An item in the cart is set to have quantity refunded, but no type of refund is selected.. Please set Quantity to refund to zero for that item or add a refund case.");
+                                }
+                            }
                         }
                     } else {
                         JFrame message1 = new JFrame("");
@@ -2126,6 +2358,10 @@ public class MainFrame extends javax.swing.JFrame {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
                         if (!curCart.isEmpty()) {
+                            if (curCart.getTotalPrice() < 0) {
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                            } else {
                             JFrame textInputFrame = new JFrame("");
                             JLabel checkTotal = new JLabel("Total: $", SwingConstants.RIGHT);
                             JTextField field1 = new JTextField();
@@ -2180,6 +2416,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     }//end else
                                 }//end else
                             }//end if  
+                            }//end check for negative balance
                         }//end if isNotEmpty
                     } else {
                         JFrame message1 = new JFrame("");
@@ -2198,27 +2435,13 @@ public class MainFrame extends javax.swing.JFrame {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
                         if (!curCart.isEmpty()) {
-                            changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
-                            displayChangeDue = true;
-                            String goodCheckout = checkout.beginCreditCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
-                            if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
-                                displayChangeDue = true;
-                            } else {
-                                displayChangeDue = false;
+                            if (curCart.getTotalPrice() < 0) {
                                 JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
-                            }
-                            updateCartScreen();
-
-                        } else if (!refundCart.isEmpty()) {
-                            boolean isItemToRefund = false;
-                            for (RefundItem item : refundCart.getRefundItems()) {
-                                if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
-                                    isItemToRefund = true;
-                                }
-                            }
-                            if (isItemToRefund) {
-                                String goodCheckout = checkout.beginRefundCardCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
+                                JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                            } else {
+                                changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
+                                displayChangeDue = true;
+                                String goodCheckout = checkout.beginCreditCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
                                 if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
                                     displayChangeDue = true;
                                 } else {
@@ -2226,8 +2449,30 @@ public class MainFrame extends javax.swing.JFrame {
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
                                 }
+                                updateCartScreen();
                             }
-
+                        } else if (!refundCart.isEmpty()) {
+                            if (refundCart.getTotalPrice() < 0) {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                            } else {
+                                boolean isItemToRefund = false;
+                                for (RefundItem item : refundCart.getRefundItems()) {
+                                    if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
+                                        isItemToRefund = true;
+                                    }
+                                }
+                                if (isItemToRefund) {
+                                    String goodCheckout = checkout.beginRefundCardCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
+                                    if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
+                                        displayChangeDue = true;
+                                    } else {
+                                        displayChangeDue = false;
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
+                                    }
+                                }
+                            }
                         }//end cartIsNotEmpty
                     } else {
                         JFrame message1 = new JFrame("");
@@ -2246,6 +2491,10 @@ public class MainFrame extends javax.swing.JFrame {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
                         if (!curCart.isEmpty()) {
+                            if (curCart.getTotalPrice() < 0) {
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                            } else {
                             changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
                             displayChangeDue = true;
                             String goodCheckout = checkout.beginDebitCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
@@ -2257,7 +2506,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
                             }
                             updateCartScreen();
-
+                            }
                         } else if (!refundCart.isEmpty()) {
                             boolean isItemToRefund = false;
                             for (RefundItem item : refundCart.getRefundItems()) {
@@ -2570,6 +2819,10 @@ public class MainFrame extends javax.swing.JFrame {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
                         if (!curCart.isEmpty() && !curCart.containsChargedItem()) {
+                            if (curCart.getTotalPrice() < 0) {
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                            } else {
                             JFrame textInputFrame = new JFrame("");
                             JTextField field1 = new JTextField();
                             JTextField field2 = new JTextField();
@@ -2618,6 +2871,7 @@ public class MainFrame extends javax.swing.JFrame {
 
                                 }//end else
                             }//end if OK_OPTION
+                            }//end if negative amount in cart
                         } else {
                             if (curCart.containsChargedItem()) {
                                 JFrame message1 = new JFrame("");
@@ -3143,10 +3397,39 @@ public class MainFrame extends javax.swing.JFrame {
 
                         }
                     }
-                        if (!itemFound){
+                    if (!itemFound) {
+                        try {
+                            eefound = true;
+                            File audioFile = new File("C:/POS/SOFTWARE/jp1.wav");
+                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                            AudioFormat format = audioStream.getFormat();
+
+                            DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                            Clip audioClip = (Clip) AudioSystem.getLine(info);
+                            audioClip.open(audioStream);
+                            audioClip.start();
+                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/jp1.gif");
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, " \nIt would seem the Park, I mean CART is missing something...\n", "Ah Ah Ah, you did't say the magic word!", 0, icon);
+                            audioClip.stop();
+                        } catch (UnsupportedAudioFileException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (LineUnavailableException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }//end try catch for audio
+                    }//not found!
+
+                } else if (id.toUpperCase().contentEquals("ANTHONY EDWARD STARK")) {//EE Protocol
+                    boolean itemFound = false;
+                    for (Item item : curCart.getItems()) {
+                        if (item.itemName.contentEquals("Mark") && item.itemPrice == 0.42) {
+                            itemFound = true;
                             try {
                                 eefound = true;
-                                File audioFile = new File("C:/POS/SOFTWARE/jp1.wav");
+                                File audioFile = new File("C:/POS/SOFTWARE/im2.wav");
                                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
                                 AudioFormat format = audioStream.getFormat();
 
@@ -3155,9 +3438,9 @@ public class MainFrame extends javax.swing.JFrame {
                                 Clip audioClip = (Clip) AudioSystem.getLine(info);
                                 audioClip.open(audioStream);
                                 audioClip.start();
-                                ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/jp1.gif");
+                                ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/im2.gif");
                                 JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, " \nIt would seem the Park, I mean CART is missing something...\n", "Ah Ah Ah, you did't say the magic word!", 0, icon);
+                                JOptionPane.showMessageDialog(message1, "", "I AM IRONMAN!", 0, icon);
                                 audioClip.stop();
                             } catch (UnsupportedAudioFileException ex) {
                                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -3166,11 +3449,98 @@ public class MainFrame extends javax.swing.JFrame {
                             } catch (LineUnavailableException ex) {
                                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                             }//end try catch for audio
-                        }//not found!
-                    
 
-                }//end if EE Protocol
+                        }
+                    }
+                    if (!itemFound) {
+                        try {
+                            eefound = true;
+                            File audioFile = new File("C:/POS/SOFTWARE/im1.wav");
+                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                            AudioFormat format = audioStream.getFormat();
 
+                            DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                            Clip audioClip = (Clip) AudioSystem.getLine(info);
+                            audioClip.open(audioStream);
+                            audioClip.start();
+                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/im1.gif");
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "", "Jarvis: Greetings sir!", 0, icon);
+                            audioClip.stop();
+                        } catch (UnsupportedAudioFileException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (LineUnavailableException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }//end try catch for audio
+                    }//not found!
+
+                } else if (id.toUpperCase().contentEquals("SIFO-DYAS")) {
+                    for (Item item : curCart.getItems()) {
+                        if (item.getPrice() == 0.02 && item.itemName.contentEquals("Jango Fett") && item.getQuantity() == 2) {
+                            eefound = true;
+                        }
+                    }
+                    if (eefound) {
+                        JFrame message1 = new JFrame("");
+                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/sw3.gif");
+                        try {
+                            File audioFile = new File("C:/POS/SOFTWARE/sw3.wav");
+                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                            AudioFormat format = audioStream.getFormat();
+
+                            DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                            Clip audioClip = (Clip) AudioSystem.getLine(info);
+                            audioClip.open(audioStream);
+                            audioClip.start();
+                            JOptionPane.showMessageDialog(message1, "", "Negotiations with a lightsaber.", 0, icon);
+                            audioClip.stop();
+                        } catch (UnsupportedAudioFileException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (LineUnavailableException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }//end try catch for audio
+                    }
+                } else if (isHalloween && id.toUpperCase().contentEquals("THACKERY BINX")) {
+                    boolean found1 = false;
+                    boolean found2 = false;
+                    for (Item item : curCart.getItems()) {
+                        if (item.itemName.contentEquals("Come Little Children") && item.itemPrice == 3.00) {
+                            found1 = true;
+                        }
+                        if (item.itemName.contentEquals("I Put A Spell On You") && item.itemPrice == 16.93) {
+                            found2 = true;
+                        }
+                    }
+                    if (found1 && found2) {
+                        JFrame message1 = new JFrame("");
+                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/hp3.gif");
+                        try {
+                            File audioFile = new File("C:/POS/SOFTWARE/hp3.wav");
+                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                            AudioFormat format = audioStream.getFormat();
+
+                            DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                            Clip audioClip = (Clip) AudioSystem.getLine(info);
+                            audioClip.open(audioStream);
+                            audioClip.start();
+                            JOptionPane.showMessageDialog(message1, "", "Okay then, let's go!", 0, icon);
+                            audioClip.stop();
+                        } catch (UnsupportedAudioFileException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (LineUnavailableException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }//end try catch for audio
+                    }
+                } else//end if EE Protocol
                 if (!eefound) {
                     for (GuiCartItem item : guiItems) {
                         item.removeAllGUIData();
@@ -3335,7 +3705,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.39", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.40", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -3370,7 +3740,6 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isSummerTime = false;
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
-
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";
     ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");

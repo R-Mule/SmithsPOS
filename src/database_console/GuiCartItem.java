@@ -4,6 +4,18 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -176,7 +188,7 @@ public class GuiCartItem {
         //NOT TAXABLE BUTTON
         notTaxableButton = new JButton("");
 
-        if (item.isRX() || item.getCategory() == 853||item.getCategory()==854|| item.getCategory()==860) {//this HIDES tax buttons for RX because it is ALWAYS false
+        if (item.isRX() || item.getCategory() == 853||item.getCategory()==854|| item.getCategory()==860||item.getCategory()==861) {//this HIDES tax buttons for RX because it is ALWAYS false
             notTaxableButton.setVisible(false);
             notTaxableButton.setVisible(false);
         } else {//this determines wether to show or hide them
@@ -232,7 +244,7 @@ public class GuiCartItem {
             prechargedTrueButton.setVisible(false);
         }
 
-        if (item.isRX() || item.getCategory() == 853||item.getCategory()==854|| item.getCategory()==860) {//this HIDES discount buttons for RX &&RA because it is ALWAYS false
+        if (item.isRX() || item.getCategory() == 853||item.getCategory()==854|| item.getCategory()==860||item.getCategory()==861) {//this HIDES discount buttons for RX &&RA because it is ALWAYS false
             discountButton.setVisible(false);
             discountButton.setVisible(false);
         } else {
@@ -374,6 +386,30 @@ public class GuiCartItem {
     }
     public void addItemButtonPressed(ActionEvent event) {//Since I know, I exist, just increase my quantity 1;
         int quantity = item.getQuantity();
+        if (item.getPrice() == 0.02 && item.itemName.contentEquals("Jango Fett") && quantity == 1) {
+            JFrame message1 = new JFrame("");
+            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/sw2.gif");
+            try {
+                File audioFile = new File("C:/POS/SOFTWARE/sw2.wav");
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                AudioFormat format = audioStream.getFormat();
+
+                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                audioClip.open(audioStream);
+                audioClip.start();
+                JOptionPane.showMessageDialog(message1, "", "Always a pleasure to meet a Jedi.", 0, icon);
+                audioClip.stop();
+            } catch (UnsupportedAudioFileException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (LineUnavailableException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }//end try catch for audio
+
+        }//end if EE Protocol
         item.setQuantity(quantity + 1);
         curCart.updateTotal();
         taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
@@ -511,6 +547,38 @@ public class GuiCartItem {
             totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
             discountLabel.setText(String.format("%.2f", item.getDiscountAmount()));
         } else {
+             if (item.itemPrice == 0.51 && item.itemName.contentEquals("El Diablo")) {
+                                        boolean found = false;
+                                        for (Item item : curCart.getItems()) {
+                                            if (item.itemName.contentEquals("Magic Man") && item.itemPrice == 0.47) {
+                                                found = true;
+                                            }
+                                        }
+                                        if (found) {
+                                            JFrame message1 = new JFrame("");
+                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/tn2.gif");
+                                            try {
+                                                File audioFile = new File("C:/POS/SOFTWARE/tn2.wav");
+                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                                AudioFormat format = audioStream.getFormat();
+
+                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                                audioClip.open(audioStream);
+                                                audioClip.start();
+                                                JOptionPane.showMessageDialog(message1, "", "From now on, it’s Magic Man and El Diablo.", 0, icon);
+                                                audioClip.stop();
+                                            } catch (UnsupportedAudioFileException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (IOException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            } catch (LineUnavailableException ex) {
+                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            }//end try catch for audio
+                                        }
+                                    }//end if EE Protocol
+             
             removeAllGUIData();
             curCart.removeItem(item);
             curCart.setRequiresRepaint(true);

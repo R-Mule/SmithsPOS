@@ -192,6 +192,10 @@ public class Database {
                 myItem.itemName = rs.getString(4);
                 myItem.isTaxable = rs.getBoolean(7);
                 myItem.category = rs.getInt(8);
+                //if(myItem.category==861){
+                //    myItem.hasBeenRefunded=true;
+                //    myItem.hasTaxBeenRefunded=true;
+               // }
                 System.out.println(myItem.itemUPC);
 //}//end if
             }//end while
@@ -235,6 +239,7 @@ public class Database {
             Statement stmt = con.createStatement();
 //INSERT INTO
 //ResultSet rs=stmt.executeQuery("select * from inventory where upc = "+myItem.itemUPC); 
+            
             stmt.executeUpdate("INSERT INTO `tickets` (`pid`,`custId`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`) VALUES (NULL,'" + id + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.getCost() + "," + item.isTaxable() + "," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + ")");
             con.close();
         } catch (Exception e) {

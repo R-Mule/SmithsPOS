@@ -458,6 +458,9 @@ public class CategoryFinder implements Serializable {
             case 860:
                 category = "UPS";
                 break;
+             case 861:
+                category = "DISCOUNT CODES";
+                break;
             default:
                 category = "UNKNOWN";
                 break;

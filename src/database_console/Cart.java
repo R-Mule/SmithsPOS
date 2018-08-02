@@ -1,12 +1,27 @@
 package database_console;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author A.Smith
  */
 public class Cart {
+
     PoleDisplay display;
     protected double totalPriceAfterTax = 0;
     protected double totalPriceBeforeTax = 0;
@@ -14,16 +29,17 @@ public class Cart {
     protected double amtOfTaxCharged = 0;
     private ArrayList<Item> items = new ArrayList<Item>();
     protected boolean requiresRepaint = false;
-    private boolean displayActive=false;
+    private boolean displayActive = false;
 
     Cart() {
         updateTotal();
     }//end Cart ctor
 
-    public void setDisplay(PoleDisplay display){
-        displayActive=true;
-        this.display=display;
+    public void setDisplay(PoleDisplay display) {
+        displayActive = true;
+        this.display = display;
     }
+
     public boolean isEmpty() {
         return items.isEmpty();
     }
@@ -63,7 +79,7 @@ public class Cart {
         tempItems.clear();//get rid of it.
         itemsToAdd.clear();//get rid of this too.
         updateTotal();//everything is loaded, lets update!
-        
+
     }//end loadCart
 
     public void storeCart(String id, Database myDB) {
@@ -91,9 +107,9 @@ public class Cart {
         Item removeItem = null;
         for (Item item : items) {
             if (itemToRemove.isRX()) {
-                if(item.getName().contentEquals(itemToRemove.getName())){
-                    toRemove=true;
-                    removeItem=item;
+                if (item.getName().contentEquals(itemToRemove.getName())) {
+                    toRemove = true;
+                    removeItem = item;
                 }
             } else {
                 if (itemToRemove.getUPC().contentEquals(item.getUPC())) {
@@ -116,12 +132,12 @@ public class Cart {
     public void addItem(Item itemToAdd) {
         boolean tooAdd = true;
         System.out.println(itemToAdd.getID());
-        if (itemToAdd.isRX()){
+        if (itemToAdd.isRX()) {
             for (Item item : items) {
-                if (item.getRxNumber() == itemToAdd.getRxNumber() && item.getInsurance().contentEquals(itemToAdd.getInsurance())&&item.getFillDate().contentEquals(itemToAdd.getFillDate())) {
+                if (item.getRxNumber() == itemToAdd.getRxNumber() && item.getInsurance().contentEquals(itemToAdd.getInsurance()) && item.getFillDate().contentEquals(itemToAdd.getFillDate())) {
                     int i = item.getQuantity();
                     item.setQuantity(i + 1);
-                     System.out.println("HERE1");
+                    System.out.println("HERE1");
                     tooAdd = false;
                 }
             }
@@ -203,7 +219,7 @@ public class Cart {
             totalPriceBeforeTax = 0;
             amtOfTaxCharged = 0;
         }
-        if(displayActive){
+        if (displayActive) {
             display.updateTotal(totalPriceAfterTax);
         }
         // System.out.println("Amount not taxable: $"+nonTaxableAmt+"\nAmount taxable: $"+taxableAmt+"\nTax Charged: $"+amtOfTaxCharged+"\nTotal: $"+totalPriceAfterTax);
@@ -252,31 +268,61 @@ public class Cart {
         return total;
     }
 
-    public boolean containsRX(int rxNumber, String insurance,String fillDate) {
+    public boolean containsRX(int rxNumber, String insurance, String fillDate) {
         for (Item item : items) {
-            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance)&& item.getFillDate().contentEquals(fillDate)) {
+            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance) && item.getFillDate().contentEquals(fillDate)) {
                 return true;
             }//end if we found rxNumber already!
         }//end for
         return false;
     }//end contains RX
 
-        public boolean containsMultipleRX(int rxNumber, String insurance,String fillDate,Item myself) {
+    public boolean containsMultipleRX(int rxNumber, String insurance, String fillDate, Item myself) {
         for (Item item : items) {
-            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance)&& item.getFillDate().contentEquals(fillDate)&&item!=myself) {
+            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance) && item.getFillDate().contentEquals(fillDate) && item != myself) {
                 return true;
             }//end if we found rxNumber already!
-            
+
         }//end for
         return false;
     }//end contains RX
-        
+
     void setMassDiscount(double discPer) {
+        boolean found = false;
         for (Item item : items) {
-            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854&& item.getCategory()!=860) {
+            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860&&item.getCategory()!=861) {
                 item.setDiscountPercentage(discPer);
+
+                if (item.itemName.contentEquals("Bread") && item.itemPrice == 112519.92 && item.getDiscountPercentage() == 1) {
+                    found = true;
+                }
+
             }
         }
+        if (found) {
+            JFrame message1 = new JFrame("");
+            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/al3.gif");
+            try {
+                File audioFile = new File("C:/POS/SOFTWARE/al3.wav");
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                AudioFormat format = audioStream.getFormat();
+
+                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                audioClip.open(audioStream);
+                audioClip.start();
+                JOptionPane.showMessageDialog(message1, "", "A WHOLE NEW WORLD!!", 0, icon);
+                audioClip.stop();
+            } catch (UnsupportedAudioFileException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (LineUnavailableException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }//end try catch for audio
+
+        }//end if EE Protocol
         updateTotal();
     }
 
