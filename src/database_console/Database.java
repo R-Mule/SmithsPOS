@@ -803,6 +803,10 @@ public class Database {
                     RefundItem temp = new RefundItem(this, receiptNum, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getBoolean(7), rs.getInt(8), rs.getInt(9), rs.getString(10), rs.getString(11), rs.getInt(12), rs.getBoolean(13), rs.getDouble(14), rs.getBoolean(15), rs.getBoolean(16), rs.getBoolean(17));
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasBeenRefunded());
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasTaxBeenRefunded());
+                    //if(!temp.hasBeenRefunded&& temp.getCategory()==861){
+                   //     temp.refundAllActive=true;
+                  //  }
+                    
                     loadedItems.add(temp);
                 }//end if
             }//end while
