@@ -20,15 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -1068,27 +1059,7 @@ public class MainFrame extends javax.swing.JFrame {
                             }
                         }
                         if (found) {
-                            JFrame message1 = new JFrame("");
-                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/al2.gif");
-                            try {
-                                File audioFile = new File("C:/POS/SOFTWARE/al2.wav");
-                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                AudioFormat format = audioStream.getFormat();
-
-                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                audioClip.open(audioStream);
-                                audioClip.start();
-                                JOptionPane.showMessageDialog(message1, "", "You ain't never had a friend like me!", 0, icon);
-                                audioClip.stop();
-                            } catch (UnsupportedAudioFileException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IOException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (LineUnavailableException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            }//end try catch for audio
+                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al2.gif","C:/POS/SOFTWARE/al2.wav","","You ain't never had a friend like me!");
                         }
                     }//end if EE Protocol
                     if (field1.getText().contentEquals("Please")) {//EE Protocol
@@ -1115,27 +1086,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             }
                                         }
                                         if (found1 && found2 &&found3&& cntr == 3) {
-                                            JFrame message1 = new JFrame("");
-                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/mx4.gif");
-                                            try {
-                                                File audioFile = new File("C:/POS/SOFTWARE/mx4.wav");
-                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                                AudioFormat format = audioStream.getFormat();
-
-                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                                audioClip.open(audioStream);
-                                                audioClip.start();
-                                                JOptionPane.showMessageDialog(message1, "", "You're not human, are you?", 0, icon);
-                                                audioClip.stop();
-                                            } catch (UnsupportedAudioFileException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (IOException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (LineUnavailableException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            }//end try catch for audio
+                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx4.gif","C:/POS/SOFTWARE/mx4.wav","","You're not human, are you?");
                                         }
                     }
                     if (!field1.getText().isEmpty() && validateInteger(field1.getText())) {
@@ -1790,28 +1741,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             }
                                         }
                                         if (part1 && part2) {
-                                            JFrame message1 = new JFrame("");
-                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/bnb.gif");
-                                            try {
-                                                File audioFile = new File("C:/POS/SOFTWARE/BOG.wav");
-                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                                AudioFormat format = audioStream.getFormat();
-
-                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                                audioClip.open(audioStream);
-                                                audioClip.start();
-                                                JOptionPane.showMessageDialog(message1, "", "Try the gray stuff, it's delicious!", 0, icon);
-                                                audioClip.stop();
-                                            } catch (UnsupportedAudioFileException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (IOException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (LineUnavailableException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            }//end try catch for audio
-
+                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/bnb.gif","C:/POS/SOFTWARE/BOG.wav","","Try the gray stuff, it's delicious!");
                                         }//end if BNB Protocol
                                     }//end EE protocol
                                     else if (field1.getText().contentEquals("Man") && Double.parseDouble(field3.getText()) == 20.03) {
@@ -1825,53 +1755,13 @@ public class MainFrame extends javax.swing.JFrame {
                                             }
                                         }
                                         if (found1 && cntr == 1) {
-                                            JFrame message1 = new JFrame("");
-                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/mx2.gif");
-                                            try {
-                                                File audioFile = new File("C:/POS/SOFTWARE/mx2.wav");
-                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                                AudioFormat format = audioStream.getFormat();
-
-                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                                audioClip.open(audioStream);
-                                                audioClip.start();
-                                                JOptionPane.showMessageDialog(message1, "", "Why do you persist?", 0, icon);
-                                                audioClip.stop();
-                                            } catch (UnsupportedAudioFileException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (IOException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (LineUnavailableException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            }//end try catch for audio
+                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx2.gif","C:/POS/SOFTWARE/mx2.wav","Why do you persist?","");
+  
                                         }
 
                                     } else if (field1.getText().contentEquals("A Dark Knight") && Double.parseDouble(field3.getText()) == 20.08) {
                                         if(curCart.getItems().size()==2&&curCart.getItems().get(0).mutID.contentEquals("BATDIS22")&&curCart.getItems().get(1).mutID.contentEquals("BATMON")&&curCart.getItems().get(1).getDiscountPercentage()==.5){
-                                                                    JFrame message1 = new JFrame("");
-                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/dk3.gif");
-                            try {
-                                File audioFile = new File("C:/POS/SOFTWARE/dk3.wav");
-                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                AudioFormat format = audioStream.getFormat();
-
-                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                audioClip.open(audioStream);
-                                audioClip.start();
-                                JOptionPane.showMessageDialog(message1, "Accomplice? I'm going to tell them the whole thing was your idea.", "", 0, icon);
-                                audioClip.stop();
-
-                            } catch (UnsupportedAudioFileException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IOException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (LineUnavailableException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            }//end try catch for audio
+                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/dk3.gif","C:/POS/SOFTWARE/dk3.wav","Accomplice? I'm going to tell them the whole thing was your idea.","");
                                         }
                                     }else if (field1.getText().contentEquals("Because I choose to.") && Double.parseDouble(field3.getText()) == 20.03) {
 
@@ -1888,76 +1778,11 @@ public class MainFrame extends javax.swing.JFrame {
                                             }
                                         }
                                         if (found1 && found2 && cntr == 2) {
-                                            JFrame message1 = new JFrame("");
-                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/mx3.gif");
-                                            try {
-                                                File audioFile = new File("C:/POS/SOFTWARE/mx3.wav");
-                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                                AudioFormat format = audioStream.getFormat();
-
-                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                                audioClip.open(audioStream);
-                                                audioClip.start();
-                                                JOptionPane.showMessageDialog(message1, "", "Who are you?", 0, icon);
-                                                audioClip.stop();
-                                            } catch (UnsupportedAudioFileException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (IOException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (LineUnavailableException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            }//end try catch for audio
+                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx3.gif","C:/POS/SOFTWARE/mx3.wav","","Who are you?");
                                         }
 
                                     } else if (isHalloween && Double.parseDouble(field3.getText()) == 3.00 && field1.getText().contentEquals("Come Little Children")) {
-
-                                        JFrame message1 = new JFrame("");
-                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/hp1.gif");
-                                        try {
-                                            File audioFile = new File("C:/POS/SOFTWARE/hp1.wav");
-                                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                            AudioFormat format = audioStream.getFormat();
-
-                                            DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                            Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                            audioClip.open(audioStream);
-                                            audioClip.start();
-                                            JOptionPane.showMessageDialog(message1, "", "Just one item to go!", 0, icon);
-                                            audioClip.stop();
-                                        } catch (UnsupportedAudioFileException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (IOException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (LineUnavailableException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        }//end try catch for audio
-
-                                    } else if (isHalloween && Double.parseDouble(field3.getText()) == 3.00 && field1.getText().contentEquals("Come Little Children")) {
-
-                                        JFrame message1 = new JFrame("");
-                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/hp1.gif");
-                                        try {
-                                            File audioFile = new File("C:/POS/SOFTWARE/hp1.wav");
-                                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                            AudioFormat format = audioStream.getFormat();
-
-                                            DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                            Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                            audioClip.open(audioStream);
-                                            audioClip.start();
-                                            JOptionPane.showMessageDialog(message1, "", "Just one more item to go!", 0, icon);
-                                            audioClip.stop();
-                                        } catch (UnsupportedAudioFileException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (IOException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (LineUnavailableException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        }//end try catch for audio
+                                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hp1.gif","C:/POS/SOFTWARE/hp1.wav","","Just one item to go!");
 
                                     } else if (Double.parseDouble(field3.getText()) == 16.93 && field1.getText().contentEquals("I Put A Spell On You")) {
                                         boolean found = false;
@@ -1967,51 +1792,11 @@ public class MainFrame extends javax.swing.JFrame {
                                             }
                                         }
                                         if (found) {
-                                            JFrame message1 = new JFrame("");
-                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/hp2.gif");
-                                            try {
-                                                File audioFile = new File("C:/POS/SOFTWARE/hp2.wav");
-                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                                AudioFormat format = audioStream.getFormat();
-
-                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                                audioClip.open(audioStream);
-                                                audioClip.start();
-                                                JOptionPane.showMessageDialog(message1, "", "Max likes your yabbos!", 0, icon);
-                                                audioClip.stop();
-                                            } catch (UnsupportedAudioFileException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (IOException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (LineUnavailableException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            }//end try catch for audio
+                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hp2.gif","C:/POS/SOFTWARE/hp2.wav","","Max likes your yabbos!");
                                         }
                                     }//end if EE Protocol
                                     else if (Double.parseDouble(field3.getText()) == 112519.92 && field1.getText().contentEquals("Bread")) {
-                                        JFrame message1 = new JFrame("");
-                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/al1.gif");
-                                        try {
-                                            File audioFile = new File("C:/POS/SOFTWARE/al1.wav");
-                                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                            AudioFormat format = audioStream.getFormat();
-
-                                            DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                            Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                            audioClip.open(audioStream);
-                                            audioClip.start();
-                                            JOptionPane.showMessageDialog(message1, "", "Ring bells! Bang the drums!!", 0, icon);
-                                            audioClip.stop();
-                                        } catch (UnsupportedAudioFileException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (IOException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (LineUnavailableException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        }//end try catch for audio
+                                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al1.gif","C:/POS/SOFTWARE/al1.wav","","Ring bells! Bang the drums!!");
 
                                     } else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Witch")) {
                                         boolean found = false;
@@ -2021,27 +1806,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             }
                                         }
                                         if (found) {
-                                            JFrame message1 = new JFrame("");
-                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/mp1.gif");
-                                            try {
-                                                File audioFile = new File("C:/POS/SOFTWARE/mp1.wav");
-                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                                AudioFormat format = audioStream.getFormat();
-
-                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                                audioClip.open(audioStream);
-                                                audioClip.start();
-                                                JOptionPane.showMessageDialog(message1, "", "She turned me into a newt!!", 0, icon);
-                                                audioClip.stop();
-                                            } catch (UnsupportedAudioFileException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (IOException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (LineUnavailableException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            }//end try catch for audio
+                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mp1.gif","C:/POS/SOFTWARE/mp1.wav","","She turned me into a newt!!");
                                         }
                                     } else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Duck")) {
                                         boolean found = false;
@@ -2051,52 +1816,11 @@ public class MainFrame extends javax.swing.JFrame {
                                             }
                                         }
                                         if (found) {
-                                            JFrame message1 = new JFrame("");
-                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/mp1.gif");
-                                            try {
-                                                File audioFile = new File("C:/POS/SOFTWARE/mp1.wav");
-                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                                AudioFormat format = audioStream.getFormat();
-
-                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                                audioClip.open(audioStream);
-                                                audioClip.start();
-                                                JOptionPane.showMessageDialog(message1, "", "She turned me into a newt!", 0, icon);
-                                                audioClip.stop();
-                                            } catch (UnsupportedAudioFileException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (IOException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (LineUnavailableException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            }//end try catch for audio
+                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mp1.gif","C:/POS/SOFTWARE/mp1.wav","","She turned me into a newt!!");
                                         }
 
                                     } else if (Double.parseDouble(field3.getText()) == 0.02 && field1.getText().contentEquals("Jango Fett")) {
-                                        JFrame message1 = new JFrame("");
-                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/sw1.gif");
-                                        try {
-                                            File audioFile = new File("C:/POS/SOFTWARE/sw1.wav");
-                                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                            AudioFormat format = audioStream.getFormat();
-
-                                            DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                            Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                            audioClip.open(audioStream);
-                                            audioClip.start();
-                                            JOptionPane.showMessageDialog(message1, "I'm just a simple man, trying to make my way in the universe.", "", 0, icon);
-                                            audioClip.stop();
-                                        } catch (UnsupportedAudioFileException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (IOException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (LineUnavailableException ex) {
-                                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                        }//end try catch for audio
-
+                                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw1.gif","C:/POS/SOFTWARE/sw1.wav","I'm just a simple man, trying to make my way in the universe.","");
                                     }//end if EE Protocol
 
                                     Item tempItem = new Item(myDB, tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
@@ -2724,27 +2448,8 @@ public class MainFrame extends javax.swing.JFrame {
                             //do nothing, they clicked OK with everything blank
                         } else {
                             if (field1.getText().contentEquals("BTITUDE")) {
-                                JFrame message1 = new JFrame("");
-                                ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/bat.gif");
-                                try {
-                                    File audioFile = new File("C:/POS/SOFTWARE/batman.wav");
-                                    AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                    AudioFormat format = audioStream.getFormat();
+                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/bat.gif","C:/POS/SOFTWARE/batman.wav","","You think muscles are big, you haven't seen my brain!");
 
-                                    DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                    Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                    audioClip.open(audioStream);
-                                    audioClip.start();
-                                    JOptionPane.showMessageDialog(message1, "", "You think muscles are big, you haven't seen my brain!", 0, icon);
-                                    audioClip.stop();
-                                } catch (UnsupportedAudioFileException ex) {
-                                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (IOException ex) {
-                                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (LineUnavailableException ex) {
-                                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                }//end try catch for audio
                             }
                             String[] choices = myDB.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
                             if (choices != null) {
@@ -3522,54 +3227,13 @@ public class MainFrame extends javax.swing.JFrame {
                     for (Item item : curCart.getItems()) {
                         if (item.mutID.contentEquals("012849")) {
                             itemFound = true;
-                            try {
                                 eefound = true;
-                                File audioFile = new File("C:/POS/SOFTWARE/jp2.wav");
-                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                AudioFormat format = audioStream.getFormat();
-
-                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                audioClip.open(audioStream);
-                                audioClip.start();
-                                ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/jp2.png");
-                                JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "", "Life finds a way!", 0, icon);
-                                audioClip.stop();
-                            } catch (UnsupportedAudioFileException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IOException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (LineUnavailableException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            }//end try catch for audio
-
-                        }
-                    }
+                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/jp2.gif","C:/POS/SOFTWARE/jp2.wav","","Life finds a way!");
+                        }//end if
+                    }//end for all items
                     if (!itemFound) {
-                        try {
                             eefound = true;
-                            File audioFile = new File("C:/POS/SOFTWARE/jp1.wav");
-                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                            AudioFormat format = audioStream.getFormat();
-
-                            DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                            Clip audioClip = (Clip) AudioSystem.getLine(info);
-                            audioClip.open(audioStream);
-                            audioClip.start();
-                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/jp1.gif");
-                            JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, " \nIt would seem the Park, I mean CART is missing something...\n", "Ah Ah Ah, you did't say the magic word!", 0, icon);
-                            audioClip.stop();
-                        } catch (UnsupportedAudioFileException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (LineUnavailableException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        }//end try catch for audio
+                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/jp1.gif","C:/POS/SOFTWARE/jp1.wav"," \nIt would seem the Park, I mean CART is missing something...\n","Ah Ah Ah, you did't say the magic word!");
                     }//not found!
 
                 } else if (id.toUpperCase().contentEquals("ANTHONY EDWARD STARK")) {//EE Protocol
@@ -3577,54 +3241,13 @@ public class MainFrame extends javax.swing.JFrame {
                     for (Item item : curCart.getItems()) {
                         if (item.itemName.contentEquals("Mark") && item.itemPrice == 0.42) {
                             itemFound = true;
-                            try {
                                 eefound = true;
-                                File audioFile = new File("C:/POS/SOFTWARE/im2.wav");
-                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                AudioFormat format = audioStream.getFormat();
-
-                                DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                audioClip.open(audioStream);
-                                audioClip.start();
-                                ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/im2.gif");
-                                JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "", "I AM IRONMAN!", 0, icon);
-                                audioClip.stop();
-                            } catch (UnsupportedAudioFileException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IOException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (LineUnavailableException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            }//end try catch for audio
-
+                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/im2.gif","C:/POS/SOFTWARE/im2.wav","","I AM IRONMAN");
                         }
                     }
                     if (!itemFound) {
-                        try {
                             eefound = true;
-                            File audioFile = new File("C:/POS/SOFTWARE/im1.wav");
-                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                            AudioFormat format = audioStream.getFormat();
-
-                            DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                            Clip audioClip = (Clip) AudioSystem.getLine(info);
-                            audioClip.open(audioStream);
-                            audioClip.start();
-                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/im1.gif");
-                            JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, "", "Jarvis: Greetings sir!", 0, icon);
-                            audioClip.stop();
-                        } catch (UnsupportedAudioFileException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (LineUnavailableException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        }//end try catch for audio
+                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/im1.gif","C:/POS/SOFTWARE/im1.wav","","Jarvis: Greetings sir!");
                     }//not found!
 
                 } else if (id.toUpperCase().contentEquals("SIFO-DYAS")) {
@@ -3634,27 +3257,7 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                     }
                     if (eefound) {
-                        JFrame message1 = new JFrame("");
-                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/sw3.gif");
-                        try {
-                            File audioFile = new File("C:/POS/SOFTWARE/sw3.wav");
-                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                            AudioFormat format = audioStream.getFormat();
-
-                            DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                            Clip audioClip = (Clip) AudioSystem.getLine(info);
-                            audioClip.open(audioStream);
-                            audioClip.start();
-                            JOptionPane.showMessageDialog(message1, "", "Negotiations with a lightsaber.", 0, icon);
-                            audioClip.stop();
-                        } catch (UnsupportedAudioFileException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (LineUnavailableException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        }//end try catch for audio
+                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw3.gif","C:/POS/SOFTWARE/sw3.wav","","Negotiations with a lightsaber.");
                     }
                 } else if (isHalloween && id.toUpperCase().contentEquals("THACKERY BINX")) {
                     boolean found1 = false;
@@ -3668,27 +3271,7 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                     }
                     if (found1 && found2) {
-                        JFrame message1 = new JFrame("");
-                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/hp3.gif");
-                        try {
-                            File audioFile = new File("C:/POS/SOFTWARE/hp3.wav");
-                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                            AudioFormat format = audioStream.getFormat();
-
-                            DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-                            Clip audioClip = (Clip) AudioSystem.getLine(info);
-                            audioClip.open(audioStream);
-                            audioClip.start();
-                            JOptionPane.showMessageDialog(message1, "", "Okay then, let's go!", 0, icon);
-                            audioClip.stop();
-                        } catch (UnsupportedAudioFileException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (LineUnavailableException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        }//end try catch for audio
+                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hp3.gif","C:/POS/SOFTWARE/hp3.wav","","Okay then, let's go!");
                     }
                 } else//end if EE Protocol
                 if (!eefound) {
