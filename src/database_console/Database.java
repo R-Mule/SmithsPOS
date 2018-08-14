@@ -195,7 +195,7 @@ public class Database {
                 //if(myItem.category==861){
                 //    myItem.hasBeenRefunded=true;
                 //    myItem.hasTaxBeenRefunded=true;
-               // }
+                // }
                 System.out.println(myItem.itemUPC);
 //}//end if
             }//end while
@@ -206,6 +206,13 @@ public class Database {
     }//end checkDatabaseForItemByI
 
     public boolean checkDatabaseForTicket(String id) {//returns true if ticket exists.
+        if(id.toUpperCase().contentEquals("WONDERLAND")){
+            return true;
+        }else if(id.toUpperCase().contentEquals("STRANGER")){
+            return true;
+        }else if(id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?")){
+            return true;
+        }else{
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -228,10 +235,11 @@ public class Database {
         }
 
         return false;
+        }
     }//end checkDatabaseForTicket
 
     public void storeItem(Item item, String id) {
-
+        
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -239,7 +247,7 @@ public class Database {
             Statement stmt = con.createStatement();
 //INSERT INTO
 //ResultSet rs=stmt.executeQuery("select * from inventory where upc = "+myItem.itemUPC); 
-            
+
             stmt.executeUpdate("INSERT INTO `tickets` (`pid`,`custId`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`) VALUES (NULL,'" + id + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.getCost() + "," + item.isTaxable() + "," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + ")");
             con.close();
         } catch (Exception e) {
@@ -278,6 +286,9 @@ public class Database {
 
     public ArrayList<String> getAllTicketsNamesWithRxNumber(int rxNumber) {
         ArrayList<String> ticketNames = new ArrayList<>();
+        if( rxNumber==0){
+        return ticketNames;
+    }else{
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -297,44 +308,63 @@ public class Database {
             System.out.println(e);
         }
         return ticketNames;
+            }
     }
 
     public ArrayList<Item> getTicketItemsFromDatabase(String id) {
-        ArrayList<Item> loadedItems = new ArrayList<Item>();
-        try {
-            Class.forName(driverPath);
-            Connection con = DriverManager.getConnection(
-                    host, userName, password);
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from tickets where custId = '" + id + "'");
+        ArrayList<Item> loadedItems = new ArrayList<>();
+        if (id.toUpperCase().contentEquals("WONDERLAND")) {
+            loadedItems.add(new Item(this, "MATRED", "MATRED", "Red Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MATBLU", "MATBLU", "Blue Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
+            return loadedItems;
+        }else if (id.toUpperCase().contentEquals("STRANGER")) {
+            for(int i=1;i<41;i++){
+               loadedItems.add(new Item(this, "BATDIS"+i, "BATDIS"+i, "District", 0.07, 0.07, false, 852, 0, "", "", 1, false, 0, false)); 
+            }
 
-            while (rs.next()) {
-                // System.out.println(rs.getString(2));
-                if (rs.getString(2).contentEquals(id)) {
-                    //System.out.println("HERE!");
-                    loadedItems.add(new Item(this, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getDouble(7), rs.getBoolean(8), rs.getInt(9), rs.getInt(10), rs.getString(11), rs.getString(12), rs.getInt(13), rs.getBoolean(14), rs.getDouble(15), rs.getBoolean(16)));
-                }//end if
+            return loadedItems;
+        }else if (id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?")) {
+            loadedItems.add(new Item(this, "BATMON", "BATMON", "Mob Money", 0.36, 0.36, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "BATPEN", "BATPEN", "Pencil", 8.47,8.47, false, 852, 0, "", "", 1, false, 0, false));
 
-            }//end while
+            return loadedItems;
+        }else {
+            try {
+                Class.forName(driverPath);
+                Connection con = DriverManager.getConnection(
+                        host, userName, password);
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery("select * from tickets where custId = '" + id + "'");
 
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+                while (rs.next()) {
+                    // System.out.println(rs.getString(2));
+                    if (rs.getString(2).contentEquals(id)) {
+                        //System.out.println("HERE!");
+                        loadedItems.add(new Item(this, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getDouble(7), rs.getBoolean(8), rs.getInt(9), rs.getInt(10), rs.getString(11), rs.getString(12), rs.getInt(13), rs.getBoolean(14), rs.getDouble(15), rs.getBoolean(16)));
+                    }//end if
 
-        //REMEBER AFTER LOADED, REMOVE ALL THINGS WITH THAT ID TAG!
-        try {
-            Class.forName(driverPath);
-            Connection con = DriverManager.getConnection(
-                    host, userName, password);
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate("DELETE from tickets where custId = '" + id + "'");
+                }//end while
 
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return loadedItems;
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
+            //REMEBER AFTER LOADED, REMOVE ALL THINGS WITH THAT ID TAG!
+            try {
+                Class.forName(driverPath);
+                Connection con = DriverManager.getConnection(
+                        host, userName, password);
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("DELETE from tickets where custId = '" + id + "'");
+
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            return loadedItems;
+        }//end else EE
+        
     }//end getTicketFromDatabase
 
     public void updateChargeAccountBalance(String accountName, double amtToUpdate) {
@@ -479,12 +509,12 @@ public class Database {
                     System.out.println(e);
                 }
             }//end for all accounts
-            if(!unfound.contentEquals("")){//if not empty show popup
-            JFrame message1 = new JFrame("");
-            JOptionPane.showMessageDialog(message1, "Couldn't Find: " + unfound + "\n Maybe entered wrong or unadded?");
-            }else{
+            if (!unfound.contentEquals("")) {//if not empty show popup
                 JFrame message1 = new JFrame("");
-            JOptionPane.showMessageDialog(message1, "Successfully Loaded! No Errors!");
+                JOptionPane.showMessageDialog(message1, "Couldn't Find: " + unfound + "\n Maybe entered wrong or unadded?");
+            } else {
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "Successfully Loaded! No Errors!");
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -804,9 +834,9 @@ public class Database {
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasBeenRefunded());
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasTaxBeenRefunded());
                     //if(!temp.hasBeenRefunded&& temp.getCategory()==861){
-                   //     temp.refundAllActive=true;
-                  //  }
-                    
+                    //     temp.refundAllActive=true;
+                    //  }
+
                     loadedItems.add(temp);
                 }//end if
             }//end while

@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
@@ -86,7 +87,7 @@ public class GuiCartItem {
         discountLabel.setLocation(660, -25 + baseY);
         discountLabel.setVisible(true);
         frame.add(discountLabel);
-        
+
         priceOfItemsLabel = new JLabel(item.getID(), SwingConstants.RIGHT);
         priceOfItemsLabel.setSize(100, 50);
         priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
@@ -133,17 +134,17 @@ public class GuiCartItem {
         //ADD BUTTON
         addQuantityButton = new JButton("ADD");
         editRXButton = new JButton("Edit");
-        if (item.isRX() || item.getCategory() == 853 || item.getCategory()==854|| item.getCategory()==860) {
+        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860) {
             addQuantityButton.setVisible(false);
-            
-        }else {
+
+        } else {
             addQuantityButton.setVisible(true);
-            
+
         }
-        
-        if(item.isRX()){
+
+        if (item.isRX()) {
             editRXButton.setVisible(true);
-        }else{
+        } else {
             editRXButton.setVisible(false);
         }
         addQuantityButton.setSize(55, 15);
@@ -151,16 +152,16 @@ public class GuiCartItem {
         addQuantityButton.setBackground(new Color(0, 255, 0));
         addQuantityButton.setFont(new Font(addQuantityButton.getName(), Font.BOLD, 10));
         addQuantityButton.setLocation(1035, -7 + baseY);
-        
+
         editRXButton.setSize(55, 15);
         editRXButton.setName(item.getUPC());
         editRXButton.setBackground(new Color(255, 255, 0));
         editRXButton.setFont(new Font(addQuantityButton.getName(), Font.BOLD, 10));
         editRXButton.setLocation(1035, -7 + baseY);
-        
+
         frame.add(addQuantityButton);
         frame.add(editRXButton);
-        
+
         //SUB BUTTON
         subQuantityButton = new JButton("SUB");
         subQuantityButton.setVisible(true);
@@ -188,7 +189,7 @@ public class GuiCartItem {
         //NOT TAXABLE BUTTON
         notTaxableButton = new JButton("");
 
-        if (item.isRX() || item.getCategory() == 853||item.getCategory()==854|| item.getCategory()==860||item.getCategory()==861) {//this HIDES tax buttons for RX because it is ALWAYS false
+        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 861) {//this HIDES tax buttons for RX because it is ALWAYS false
             notTaxableButton.setVisible(false);
             notTaxableButton.setVisible(false);
         } else {//this determines wether to show or hide them
@@ -244,7 +245,7 @@ public class GuiCartItem {
             prechargedTrueButton.setVisible(false);
         }
 
-        if (item.isRX() || item.getCategory() == 853||item.getCategory()==854|| item.getCategory()==860||item.getCategory()==861) {//this HIDES discount buttons for RX &&RA because it is ALWAYS false
+        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 861) {//this HIDES discount buttons for RX &&RA because it is ALWAYS false
             discountButton.setVisible(false);
             discountButton.setVisible(false);
         } else {
@@ -262,7 +263,7 @@ public class GuiCartItem {
                 addItemButtonPressed(event);
             }
         });
-                //ADD ITEM BUTTON PRESSED
+        //ADD ITEM BUTTON PRESSED
         editRXButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 editRXButtonPressed(event);
@@ -302,16 +303,16 @@ public class GuiCartItem {
 
     }//end ctor
 
-    public void employeeSaleTriggered(){
-        if(!item.isRX()&&item.getCategory()!=853&&item.getCategory()!=854){
-        item.setPrice(item.getCost());
-        curCart.updateTotal();
-        taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
-        priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
-        quantityLabel.setText(item.getQuantity() + "x");
-        totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
-        pricePerItemLabel.setText(String.format("%.2f", item.getPrice()));
-        mainFrame.updateCartScreen();
+    public void employeeSaleTriggered() {
+        if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
+            item.setPrice(item.getCost());
+            curCart.updateTotal();
+            taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
+            priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
+            quantityLabel.setText(item.getQuantity() + "x");
+            totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
+            pricePerItemLabel.setText(String.format("%.2f", item.getPrice()));
+            mainFrame.updateCartScreen();
         }
     }
 
@@ -320,7 +321,7 @@ public class GuiCartItem {
         totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
         taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
         discountLabel.setText(String.format("%.2f", item.getDiscountAmount()));
-        
+
     }//end updateQuantityLabelAmount
 
     public void updateYcord(int y) {
@@ -364,6 +365,32 @@ public class GuiCartItem {
                     JOptionPane.showMessageDialog(message1, "Not a valid discount amount.");
                 } else {
                     //System.out.println(discPer);
+                    if (item.mutID.contentEquals("BATMON")) {
+                        if (curCart.getItems().size() == 2 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22") && discPer == .5) {
+                            JFrame message1 = new JFrame("");
+                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/dk2.gif");
+                            try {
+                                File audioFile = new File("C:/POS/SOFTWARE/dk2.wav");
+                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                AudioFormat format = audioStream.getFormat();
+
+                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                audioClip.open(audioStream);
+                                audioClip.start();
+                                JOptionPane.showMessageDialog(message1, "", "Because he's not a hero...", 0, icon);
+                                audioClip.stop();
+
+                            } catch (UnsupportedAudioFileException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (LineUnavailableException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }//end try catch for audio
+                        }
+                    }//end EE BATMAN
                     item.setDiscountPercentage(discPer);
                     curCart.updateTotal();
                     discountLabel.setText(String.format("%.2f", item.getDiscountAmount()));
@@ -380,10 +407,10 @@ public class GuiCartItem {
 
     }
 
-    
-    public String getUPC(){
+    public String getUPC() {
         return item.getUPC();
     }
+
     public void addItemButtonPressed(ActionEvent event) {//Since I know, I exist, just increase my quantity 1;
         int quantity = item.getQuantity();
         if (item.getPrice() == 0.02 && item.itemName.contentEquals("Jango Fett") && quantity == 1) {
@@ -421,123 +448,114 @@ public class GuiCartItem {
 
     }
 
-        public void editRXButtonPressed(ActionEvent event) {//Since I know, I exist, just increase my quantity 1;
-                           JFrame textInputFrame = new JFrame("");
-                    JTextField field1 = new JTextField();
-                    JTextField field2 = new JTextField();
-                    JTextField field3 = new JTextField();
+    public void editRXButtonPressed(ActionEvent event) {//Since I know, I exist, just increase my quantity 1;
+        JFrame textInputFrame = new JFrame("");
+        JTextField field1 = new JTextField();
+        JTextField field2 = new JTextField();
+        JTextField field3 = new JTextField();
 
-                    field2.setText(item.fillDate);
-                    String[] possibilities = mainFrame.myDB.getInsurances();
-                    JList list = new JList(possibilities); //data has type Object[]
-                    list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-                    list.setLayoutOrientation(JList.VERTICAL_WRAP);
-                    list.setBounds(100, 50, 50, 100);
-                    list.setVisibleRowCount(-1);
+        field2.setText(item.fillDate);
+        String[] possibilities = mainFrame.myDB.getInsurances();
+        JList list = new JList(possibilities); //data has type Object[]
+        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        list.setLayoutOrientation(JList.VERTICAL_WRAP);
+        list.setBounds(100, 50, 50, 100);
+        list.setVisibleRowCount(-1);
 
-                    for (int i = 0; i < possibilities.length; i++) {
-                        if (item.insurance.contentEquals(possibilities[i])) {
-                            list.setSelectedIndex(i);
-                        }//end if
-                    }//end for
+        for (int i = 0; i < possibilities.length; i++) {
+            if (item.insurance.contentEquals(possibilities[i])) {
+                list.setSelectedIndex(i);
+            }//end if
+        }//end for
 
-                    
-                    JScrollPane listScroller = new JScrollPane(list);
-                    listScroller.setPreferredSize(new Dimension(250, 80));
-                    Object[] message = {
-                        "RX Number:", field1,
-                        "Copay:", field3,
-                        "Fill Date:", field2,
-                        "Insurance:", list};
-                    
-                    field1.setText(Integer.toString(item.rxNumber));
-                    field3.setText(Double.toString(item.itemPrice));
-                    field2.setSelectionStart(0);
-                    field2.setSelectionEnd(6);
-                    field3.setSelectionStart(0);
-                    field3.setSelectionEnd(4);
-                    field1.addAncestorListener(new RequestFocusListener());
-                    field1.setSelectionStart(0);
-                    field1.setSelectionEnd(7);
-                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "RX Information", JOptionPane.OK_CANCEL_OPTION);
+        JScrollPane listScroller = new JScrollPane(list);
+        listScroller.setPreferredSize(new Dimension(250, 80));
+        Object[] message = {
+            "RX Number:", field1,
+            "Copay:", field3,
+            "Fill Date:", field2,
+            "Insurance:", list};
 
-                    if (option == JOptionPane.OK_OPTION) {
-                        int rxNumber;
-                        String fillDate;
-                        fillDate = field2.getText();
-                        try {
-                            String insurance = (String) list.getSelectedValue();
-                            rxNumber = Integer.parseInt(field1.getText());
-                            int length = (int) (Math.log10(rxNumber) + 1);
-                            if (length!=7) {//invalid RXNumber
-                                JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Invalid RX Number");
-                            } else {
+        field1.setText(Integer.toString(item.rxNumber));
+        field3.setText(Double.toString(item.itemPrice));
+        field2.setSelectionStart(0);
+        field2.setSelectionEnd(6);
+        field3.setSelectionStart(0);
+        field3.setSelectionEnd(4);
+        field1.addAncestorListener(new RequestFocusListener());
+        field1.setSelectionStart(0);
+        field1.setSelectionEnd(7);
+        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "RX Information", JOptionPane.OK_CANCEL_OPTION);
 
-                                if (!mainFrame.validateDate(fillDate)) {
-                                    JFrame message1 = new JFrame("");
-                                    JOptionPane.showMessageDialog(message1, "Invalid Fill Date");
-                                } else {
-                                    String temp = field3.getText();
-                                    if (!mainFrame.validateDouble(temp)) {//check for copay
-                                        JFrame message1 = new JFrame("");
-                                        JOptionPane.showMessageDialog(message1, "Invalid Copay");
-                                    } else {//else everything checks out! WE HAVE ALL GOOD DATA!!!
-                                        if (!curCart.containsMultipleRX(Integer.parseInt(field1.getText()), insurance,fillDate,item)) {
-                                            item.rxNumber=rxNumber;
-                                            item.fillDate=fillDate;
-                                            item.insurance=insurance;
-                                            item.itemPrice=Double.parseDouble(field3.getText());
-                                            item.itemCost=Double.parseDouble(field3.getText());
-                                            item.itemName = rxNumber + " " + insurance + " " + fillDate;
-                                            item.mutID = "X"+Integer.toString(rxNumber).substring(2, 7);
-                                            item.itemUPC = "X"+Integer.toString(rxNumber).substring(0, 5)+fillDate;
-        
-                                            nameLabel.setText(item.itemName);
-                                            priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
-                                            pricePerItemLabel.setText(String.format("%.2f", item.getPrice()));
-                                            if(item.isPreCharged){
-                                                totalItemPriceLabel.setText(String.format("%4s", "PCHG"));
-                                            }else{
-                                                totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
-                                            }
-                                            curCart.updateTotal();
-                                            mainFrame.updateCartScreen();
-                                            
-                                        }else{
-                                            JFrame message1 = new JFrame("");
-                                            JOptionPane.showMessageDialog(message1, "RX Already in Cart");
-                                        }
-}
-                                }//end else valid fillDate
-                            }//end else valid RXNumber
-                        } catch (NumberFormatException e) {
-                            //If number is not number for RX, print error msg.
+        if (option == JOptionPane.OK_OPTION) {
+            int rxNumber;
+            String fillDate;
+            fillDate = field2.getText();
+            try {
+                String insurance = (String) list.getSelectedValue();
+                rxNumber = Integer.parseInt(field1.getText());
+                int length = (int) (Math.log10(rxNumber) + 1);
+                if (length != 7) {//invalid RXNumber
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Invalid RX Number");
+                } else {
+
+                    if (!mainFrame.validateDate(fillDate)) {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Invalid Fill Date");
+                    } else {
+                        String temp = field3.getText();
+                        if (!mainFrame.validateDouble(temp)) {//check for copay
                             JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, "Invalid RX Number");
-                        }//end catch
+                            JOptionPane.showMessageDialog(message1, "Invalid Copay");
+                        } else {//else everything checks out! WE HAVE ALL GOOD DATA!!!
+                            if (!curCart.containsMultipleRX(Integer.parseInt(field1.getText()), insurance, fillDate, item)) {
+                                item.rxNumber = rxNumber;
+                                item.fillDate = fillDate;
+                                item.insurance = insurance;
+                                item.itemPrice = Double.parseDouble(field3.getText());
+                                item.itemCost = Double.parseDouble(field3.getText());
+                                item.itemName = rxNumber + " " + insurance + " " + fillDate;
+                                item.mutID = "X" + Integer.toString(rxNumber).substring(2, 7);
+                                item.itemUPC = "X" + Integer.toString(rxNumber).substring(0, 5) + fillDate;
 
-                    }//end if
- 
+                                nameLabel.setText(item.itemName);
+                                priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
+                                pricePerItemLabel.setText(String.format("%.2f", item.getPrice()));
+                                if (item.isPreCharged) {
+                                    totalItemPriceLabel.setText(String.format("%4s", "PCHG"));
+                                } else {
+                                    totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
+                                }
+                                curCart.updateTotal();
+                                mainFrame.updateCartScreen();
 
+                            } else {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "RX Already in Cart");
+                            }
+                        }
+                    }//end else valid fillDate
+                }//end else valid RXNumber
+            } catch (NumberFormatException e) {
+                //If number is not number for RX, print error msg.
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "Invalid RX Number");
+            }//end catch
 
+        }//end if
 
-
-       // int quantity = item.getQuantity();
-       // item.setQuantity(quantity + 1);
-       // 
-       // taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
-       // priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
-       // quantityLabel.setText(item.getQuantity() + "x");
-       // discountLabel.setText(String.format("%.2f", item.getDiscountAmount()));
+        // int quantity = item.getQuantity();
+        // item.setQuantity(quantity + 1);
+        // 
+        // taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
+        // priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
+        // quantityLabel.setText(item.getQuantity() + "x");
+        // discountLabel.setText(String.format("%.2f", item.getDiscountAmount()));
         //totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
-        
-        
-
     }
-        
-    public void removeItemButtonPressed(ActionEvent event) {
 
+    public void removeItemButtonPressed(ActionEvent event) {
         if (item.getQuantity() > 1) {
             int q = item.getQuantity();
             item.setQuantity(q - 1);
@@ -547,44 +565,109 @@ public class GuiCartItem {
             totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
             discountLabel.setText(String.format("%.2f", item.getDiscountAmount()));
         } else {
-             if (item.itemPrice == 0.51 && item.itemName.contentEquals("El Diablo")) {
-                                        boolean found = false;
-                                        for (Item item : curCart.getItems()) {
-                                            if (item.itemName.contentEquals("Magic Man") && item.itemPrice == 0.47) {
-                                                found = true;
-                                            }
-                                        }
-                                        if (found) {
-                                            JFrame message1 = new JFrame("");
-                                            ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/tn2.gif");
-                                            try {
-                                                File audioFile = new File("C:/POS/SOFTWARE/tn2.wav");
-                                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                                                AudioFormat format = audioStream.getFormat();
+            if (item.mutID.contentEquals("MATBLU")) {
+                boolean found = false;
+                for (Item item : curCart.getItems()) {
+                    if (item.mutID.contentEquals("MATRED")) {
+                        found = true;
+                    }
+                }
+                if (found) {
+                    JFrame message1 = new JFrame("");
+                    ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/mx1.gif");
+                    try {
+                        File audioFile = new File("C:/POS/SOFTWARE/mx1.wav");
+                        AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                        AudioFormat format = audioStream.getFormat();
 
-                                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+                        DataLine.Info info = new DataLine.Info(Clip.class, format);
 
-                                                Clip audioClip = (Clip) AudioSystem.getLine(info);
-                                                audioClip.open(audioStream);
-                                                audioClip.start();
-                                                JOptionPane.showMessageDialog(message1, "", "From now on, it’s Magic Man and El Diablo.", 0, icon);
-                                                audioClip.stop();
-                                            } catch (UnsupportedAudioFileException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (IOException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (LineUnavailableException ex) {
-                                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                            }//end try catch for audio
-                                        }
-                                    }//end if EE Protocol
-             
+                        Clip audioClip = (Clip) AudioSystem.getLine(info);
+                        audioClip.open(audioStream);
+                        audioClip.start();
+                        JOptionPane.showMessageDialog(message1, "", "Wake up Neo.", 0, icon);
+                        audioClip.stop();
+                    } catch (UnsupportedAudioFileException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (LineUnavailableException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }//end try catch for audio
+                }
+            } else if (item.itemPrice == 0.51 && item.itemName.contentEquals("El Diablo")) {
+                boolean found = false;
+                for (Item item : curCart.getItems()) {
+                    if (item.itemName.contentEquals("Magic Man") && item.itemPrice == 0.47) {
+                        found = true;
+                    }
+                }
+                if (found) {
+                    JFrame message1 = new JFrame("");
+                    ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/tn2.gif");
+                    try {
+                        File audioFile = new File("C:/POS/SOFTWARE/tn2.wav");
+                        AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                        AudioFormat format = audioStream.getFormat();
+
+                        DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                        Clip audioClip = (Clip) AudioSystem.getLine(info);
+                        audioClip.open(audioStream);
+                        audioClip.start();
+                        JOptionPane.showMessageDialog(message1, "", "From now on, it’s Magic Man and El Diablo.", 0, icon);
+                        audioClip.stop();
+                    } catch (UnsupportedAudioFileException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (LineUnavailableException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }//end try catch for audio
+                }
+            } else if (item.itemName.contentEquals("District")) {
+                ArrayList<Item> items = new ArrayList<>();
+                items = curCart.getItems();
+                if (items.size() == 2) {
+                    Item item2 = items.get(0);
+                    System.out.println(item2.mutID);
+                    if (item2.mutID.contentEquals("BATDIS22")) {
+                        JFrame message1 = new JFrame("");
+                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/dk1.gif");
+                        try {
+                            File audioFile = new File("C:/POS/SOFTWARE/dk1.wav");
+                            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                            AudioFormat format = audioStream.getFormat();
+
+                            DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                            Clip audioClip = (Clip) AudioSystem.getLine(info);
+                            audioClip.open(audioStream);
+                            audioClip.start();
+                            JOptionPane.showMessageDialog(message1, "", "Why So Serious?", 0, icon);
+                            audioClip.stop();
+
+                        } catch (UnsupportedAudioFileException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (LineUnavailableException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }//end try catch for audio
+
+                    }
+                }
+
+            }//end if EE Protocol
+
             removeAllGUIData();
             curCart.removeItem(item);
+
             curCart.setRequiresRepaint(true);
             mainFrame.removeGuiCartItem(this);
+
         }
-        
+
         curCart.updateTotal();
         mainFrame.updateCartScreen();
 
@@ -679,7 +762,7 @@ public class GuiCartItem {
         taxTotalLabel.setVisible(false);
         percentOffItemLabel.setVisible(false);
         totalItemPriceLabel.setVisible(false);
-        
+
         editRXButton.setVisible(false);
     }
 
@@ -702,6 +785,6 @@ public class GuiCartItem {
         prechargedFalseButton.setLocation(50, -7 + baseY);
         prechargedTrueButton.setLocation(50, -7 + baseY);
         discountButton.setLocation(765, -7 + baseY);
-        
+
     }
 }//end GuiCartItem
