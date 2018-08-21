@@ -49,8 +49,8 @@ public class CardDataRequester {
             // specify that we will send output and accept input
             con.setDoInput(true);
             con.setDoOutput(true);
-            //con.setConnectTimeout(200000000);  // long timeout, but not infinite
-            //con.setReadTimeout(200000000);
+           // con.setConnectTimeout(999999999);  // long timeout, but not infinite
+            //con.setReadTimeout(999999999);
             con.setUseCaches(false);
             con.setDefaultUseCaches(false);
             // tell the web server what we are sending
@@ -71,7 +71,7 @@ public class CardDataRequester {
             System.err.println("\nResponse from server after POST:\n" + result);
             readXML(result);
             hasReceivedData = true;//ITS OVER! YA!
-        } catch (Throwable t) {
+        } catch (IOException | NumberFormatException t) {
             t.printStackTrace(System.out);
         }
     }
@@ -143,11 +143,11 @@ public class CardDataRequester {
                     transTerminate=true;
                     System.out.println("TRANS DECLINED2??");
                 }
-            } catch (SAXException e) {
+            } catch (SAXException | IOException e) {
                 // handle SAXException
-            } catch (IOException e) {
-                // handle IOException
             }
+            // handle IOException
+            
         } catch (ParserConfigurationException e1) {
             // handle ParserConfigurationException
         } catch (NullPointerException ex) {

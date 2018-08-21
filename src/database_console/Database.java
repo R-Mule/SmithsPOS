@@ -212,6 +212,10 @@ public class Database {
             return true;
         }else if(id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?")){
             return true;
+        }else if(id.toUpperCase().contentEquals("WET BANDITS")){
+            return true;
+        }else if(id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")){
+            return true;
         }else{
         try {
             Class.forName(driverPath);
@@ -327,6 +331,14 @@ public class Database {
             loadedItems.add(new Item(this, "BATMON", "BATMON", "Mob Money", 0.36, 0.36, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item(this, "BATPEN", "BATPEN", "Pencil", 8.47,8.47, false, 852, 0, "", "", 1, false, 0, false));
 
+            return loadedItems;
+        }else if (id.toUpperCase().contentEquals("WET BANDITS")) {
+            loadedItems.add(new Item(this, "HAPIZZA", "HAPIZZA", "Pizza Box", 11.1363636364, 11.1363636364, false, 852, 0, "", "", 1, false, 0, false));
+            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha1.gif","C:/POS/SOFTWARE/ha1.wav","What're you scared, Marv? Are you afraid? C'mon, get out here.","");
+            return loadedItems;
+        }else if(id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")){
+            loadedItems.add(new Item(this, "HPSS2", "HPSS2", "Erised stra ehru oyt ube cafru oyt on wohsi", 1041.11, 1041.11, false, 852, 0, "", "", 1, false, 0, false));
+            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss2.gif","C:/POS/SOFTWARE/hpss2.wav","It does not do to dwell on dreams and forget to live.","");
             return loadedItems;
         }else {
             try {

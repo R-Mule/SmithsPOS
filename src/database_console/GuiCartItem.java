@@ -383,6 +383,9 @@ public class GuiCartItem {
         if (item.getPrice() == 0.02 && item.itemName.contentEquals("Jango Fett") && quantity == 1) {
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw2.gif","C:/POS/SOFTWARE/sw2.wav","","Always a pleasure to meet a Jedi.");
         }//end if EE Protocol
+        if(mainFrame.isChristmas&&item.mutID.contentEquals("HAPIZZA")&&item.quantity==10){//DREW 11.1363636364 x11 = 122.50
+            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha2.gif","C:/POS/SOFTWARE/ha2.wav","","Keep the change, ya filthy animal!");
+        }
         item.setQuantity(quantity + 1);
         curCart.updateTotal();
         taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
