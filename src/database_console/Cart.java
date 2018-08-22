@@ -78,6 +78,7 @@ public class Cart {
         //totalPriceBeforeTax=0;
         //amtOfTaxCharged=0;
         items.clear();
+        
         updateTotal();
     }//end storeCart
 

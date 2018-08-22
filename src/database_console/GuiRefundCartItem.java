@@ -225,6 +225,7 @@ public class GuiRefundCartItem extends GuiCartItem {
                         }
                         totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
 
+        
          refundInactiveButton.setVisible(false);
         refundActiveButton.setVisible(true);
         item.setRefundAllActive(true);
@@ -233,6 +234,7 @@ public class GuiRefundCartItem extends GuiCartItem {
                     }
              
         }
+        mainFrame.resizeRefundCartWindow();
     }
 
     public void taxRefundedFalsePressed() {
@@ -327,6 +329,7 @@ public class GuiRefundCartItem extends GuiCartItem {
 
     @Override
     public void removeAllGUIData() {
+        mainFrame.resizeRefundCartWindow();
         taxableButton.setVisible(false);
         taxableButton.setVisible(false);
         notTaxableButton.setVisible(false);

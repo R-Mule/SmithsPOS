@@ -289,6 +289,7 @@ public class GuiCartItem {
             }
         });
 
+            mainFrame.resizeCartWindow();
     }//end ctor
 
     public void employeeSaleTriggered() {
@@ -546,10 +547,10 @@ public class GuiCartItem {
                 }
 
             }//end if EE Protocol
-
+            
             removeAllGUIData();
             curCart.removeItem(item);
-
+            mainFrame.resizeCartWindow();
             curCart.setRequiresRepaint(true);
             mainFrame.removeGuiCartItem(this);
 
@@ -632,6 +633,7 @@ public class GuiCartItem {
     }
 
     public void removeAllGUIData() {
+        mainFrame.resizeCartWindow();
         taxableButton.setVisible(false);
         taxableButton.setVisible(false);
         notTaxableButton.setVisible(false);

@@ -42,12 +42,12 @@ import javax.swing.SwingConstants;
  * @author A.Smith
  */
 public class MainFrame extends javax.swing.JFrame {
-
+    
     public MainFrame() {
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         jPanel1 = new JPanel(new FlowLayout());
-        jPanel1.setBounds(100, 100, 1120, 1200);
+        jPanel1.setBounds(100, 100, 1120, 1200);//jPanel1.setBounds(100, 100, 1120, 1200);
         jPanel1.setBackground(new Color(255, 255, 255));
         jPanel1.setAutoscrolls(true);
         JScrollPane helpSP = new JScrollPane(jPanel1,
@@ -56,9 +56,9 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setVisible(true);
         helpSP.setAutoscrolls(true);
         helpSP.setBounds(100, 100, 1120, 700);
-
+        
         helpSP.setPreferredSize(new Dimension(1120, 700));
-        jPanel1.setPreferredSize(new Dimension(1120, 2000));
+        jPanel1.setPreferredSize(new Dimension(1120, 500));//jPanel1.setPreferredSize(new Dimension(1120, 2000));
         helpSP.setVisible(true);
         this.add(helpSP);
         pharmacyName = reader.getPharmacyName();
@@ -119,7 +119,7 @@ public class MainFrame extends javax.swing.JFrame {
                     quotesActive = false;
                 }
             } else if (month.contentEquals("08")) {
-                isSummerTime = true; 
+                isSummerTime = true;                
                 quotesActive = false;
             } else if (month.contentEquals("09")) {
                 //nothing right now, give them a month off :)
@@ -132,40 +132,44 @@ public class MainFrame extends javax.swing.JFrame {
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    String myText = textField.getText();
-                    try {
-                        if (myText.length() > 11) {
-                            myText = myText.substring(0, 11);
-                        }
-
-                        Item myItem = new Item(myDB, myText);
-
-                        if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
-                            curCart.addItem(myItem);
-                            boolean exisits = false;
-                            int index = 0;
-                            int loc = 0;
-                            for (GuiCartItem item : guiItems) {
-
-                                if (item.getUPC().contentEquals(myItem.getUPC())) {
-                                    exisits = true;
-                                    loc = index;
+                    if (refundCart.isEmpty()) {
+                        String myText = textField.getText();
+                        try {
+                            if (myText.length() > 11) {
+                                myText = myText.substring(0, 11);
+                            }
+                            
+                            Item myItem = new Item(myDB, myText);
+                            
+                            if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
+                                curCart.addItem(myItem);
+                                boolean exisits = false;
+                                int index = 0;
+                                int loc = 0;
+                                for (GuiCartItem item : guiItems) {
+                                    
+                                    if (item.getUPC().contentEquals(myItem.getUPC())) {
+                                        exisits = true;
+                                        loc = index;
+                                    }
+                                    index++;
                                 }
-                                index++;
+                                if (exisits) {
+                                    guiItems.get(loc).updateQuantityLabelAmount();
+                                } else {
+                                    guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                                }
+                                
+                                displayChangeDue = false;
+                                updateCartScreen();
                             }
-                            if (exisits) {
-                                guiItems.get(loc).updateQuantityLabelAmount();
-                            } else {
-                                guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
-                            }
-
-                            displayChangeDue = false;
-                            updateCartScreen();
-                        }
+                            textField.setText("");
+                        } catch (StringIndexOutOfBoundsException e) {
+                            textField.setText("");
+                        }//end catch
+                    } else {
                         textField.setText("");
-                    } catch (StringIndexOutOfBoundsException e) {
-                        textField.setText("");
-                    }//end catch
+                    }
                 } else {
                     textField.setText("");
                     JFrame message1 = new JFrame("");
@@ -199,7 +203,7 @@ public class MainFrame extends javax.swing.JFrame {
             subTotalHeader.setForeground(Color.red);
             itemTaxTotalHeader.setForeground(Color.red);
         }
-
+        
         if (isFourthOfJuly) {
             itemNameHeader.setForeground(Color.WHITE);
             employeeCheckoutHeader.setForeground(Color.WHITE);
@@ -255,7 +259,7 @@ public class MainFrame extends javax.swing.JFrame {
         itemPriceHeader.setSize(250, 50);
         itemPriceHeader.setFont(new Font(itemPriceHeader.getName(), Font.BOLD, 12));
         itemPriceHeader.setVisible(true);
-
+        
         discountHeader.setLocation(625, 50);
         discountHeader.setSize(250, 50);
         discountHeader.setFont(new Font(discountHeader.getName(), Font.BOLD, 12));
@@ -275,25 +279,25 @@ public class MainFrame extends javax.swing.JFrame {
         subTotalHeader.setSize(250, 50);
         subTotalHeader.setFont(new Font(subTotalHeader.getName(), Font.BOLD, 12));
         subTotalHeader.setVisible(true);
-
+        
         estimatedCheckTotalLabel.setLocation(1790, 885);
         estimatedCheckTotalLabel.setSize(250, 50);
         estimatedCheckTotalLabel.setFont(new Font(estimatedCheckTotalLabel.getName(), Font.BOLD, 12));
         estimatedCheckTotalLabel.setVisible(true);
         this.add(estimatedCheckTotalLabel);
-
+        
         estimatedCashTotalLabel.setLocation(1790, 900);
         estimatedCashTotalLabel.setSize(250, 50);
         estimatedCashTotalLabel.setFont(new Font(estimatedCashTotalLabel.getName(), Font.BOLD, 12));
         estimatedCashTotalLabel.setVisible(true);
         this.add(estimatedCashTotalLabel);
-
+        
         estimatedCoinTotalLabel.setLocation(1790, 915);
         estimatedCoinTotalLabel.setSize(250, 50);
         estimatedCoinTotalLabel.setFont(new Font(estimatedCoinTotalLabel.getName(), Font.BOLD, 12));
         estimatedCoinTotalLabel.setVisible(true);
         this.add(estimatedCoinTotalLabel);
-
+        
         this.add(employeeCheckoutHeader);
         employeeCheckoutHeader.setVisible(true);
         this.add(discountHeader);
@@ -324,7 +328,7 @@ public class MainFrame extends javax.swing.JFrame {
         resaveTicket.setBackground(new Color(95, 255, 188));
         resaveTicket.setVisible(false);
         this.add(resaveTicket);
-
+        
         loadTicket.setLocation(1800, 300);
         loadTicket.setSize(100, 100);
         loadTicket.setBackground(new Color(255, 255, 0));
@@ -332,7 +336,7 @@ public class MainFrame extends javax.swing.JFrame {
         lookupReceiptByRXButton.setLocation(1700, 400);
         lookupReceiptByRXButton.setSize(100, 100);
         lookupReceiptByRXButton.setBackground(new Color(255, 200, 100));
-
+        
         if (quotesActive) {
             quoteButton.setVisible(true);
             //this creates the quoteButton
@@ -353,7 +357,7 @@ public class MainFrame extends javax.swing.JFrame {
             quoteButton.setVisible(false);
         }
         this.add(quoteButton);
-
+        
         resaveTicket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -366,7 +370,7 @@ public class MainFrame extends javax.swing.JFrame {
                     }//end else its empty
 
                     updateCartScreen();
-
+                    
                 } else {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -395,7 +399,7 @@ public class MainFrame extends javax.swing.JFrame {
                     }//end else its empty
 
                     updateCartScreen();
-
+                    
                 } else {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -411,12 +415,12 @@ public class MainFrame extends javax.swing.JFrame {
                     //System.out.println("HELLO");
                     JFrame textInputFrame = new JFrame("");
                     JTextField field1 = new JTextField();
-
+                    
                     Object[] message = {
                         "Enter the customer account name to continue:", field1};
                     field1.setText("");
                     field1.addAncestorListener(new RequestFocusListener());
-
+                    
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Ticket Name", JOptionPane.OK_CANCEL_OPTION);
                     if (option == JOptionPane.OK_OPTION) {
                         String id = field1.getText();
@@ -435,12 +439,12 @@ public class MainFrame extends javax.swing.JFrame {
                                     allowed = false;
                                 }
                             }
-                            if(id.contentEquals("WINGARDIUM LEVIOSA")){
-                                for(Item item: curCart.getItems()){
-                                    if(item.itemName.contentEquals("Platform")&&item.itemPrice==9.75){
+                            if (id.contentEquals("WINGARDIUM LEVIOSA")) {
+                                for (Item item : curCart.getItems()) {
+                                    if (item.itemName.contentEquals("Platform") && item.itemPrice == 9.75) {
                                         
-                                    }else{
-                                        allowed=false;
+                                    } else {
+                                        allowed = false;
                                     }
                                 }
                             }
@@ -456,7 +460,7 @@ public class MainFrame extends javax.swing.JFrame {
                             //Sorry no such ticket found
                             String[] choices = myDB.getAllTicketsNames();
                             if (choices != null && choices.length > 0) {
-
+                                
                                 id = (String) JOptionPane.showInputDialog(null, "Couldn't find that ticket? Check these?...",
                                         "Choose Ticket", JOptionPane.QUESTION_MESSAGE, null, // Use
                                         // default
@@ -475,7 +479,7 @@ public class MainFrame extends javax.swing.JFrame {
                         }//end else
 
                     }
-
+                    
                 } else {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -489,23 +493,23 @@ public class MainFrame extends javax.swing.JFrame {
                 //System.out.println("HELLO");
                 JFrame textInputFrame = new JFrame("");
                 JTextField field1 = new JTextField();
-
+                
                 Object[] message = {
                     "Enter RX Number to find filename:", field1};
                 field1.setText("");
                 field1.addAncestorListener(new RequestFocusListener());
-
+                
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter RX Number", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
                     String id = field1.getText();
-
+                    
                     if (id != null && !id.isEmpty() && validateInteger(id)) {
                         int rxNumber = Integer.parseInt(id);
                         String[] choices = myDB.lookupReceiptByRX(rxNumber);
                         if (choices != null && choices.length > 0) {
                             Object[] message2 = {
                                 "Here is what I found:", choices, choices[0]};
-
+                            
                             id = (String) JOptionPane.showInputDialog(null, "Results",
                                     "Here is what I found:", JOptionPane.QUESTION_MESSAGE, null, // Use
                                     // default
@@ -528,7 +532,7 @@ public class MainFrame extends javax.swing.JFrame {
                             JOptionPane.showMessageDialog(message1, "No data for that RX Number.");
                         }
                     }
-
+                    
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed loadTicket
@@ -615,7 +619,7 @@ public class MainFrame extends javax.swing.JFrame {
             JLabel fourth3imageLabel = new JLabel(fourth3img);
             ImageIcon valentines4img = new ImageIcon("C:/POS/Software/valentines4.png");
             JLabel valentines4imageLabel = new JLabel(valentines4img);
-
+            
             fourth1imageLabel.setSize(400, 200);
             fourth1imageLabel.setLocation(1300, 815);
             fourth1imageLabel.setVisible(true);
@@ -633,7 +637,7 @@ public class MainFrame extends javax.swing.JFrame {
             valentines4imageLabel.setVisible(true);
             this.add(valentines4imageLabel);
         }
-
+        
         if (isHalloween) {
             //Halloween
             ImageIcon halloween1img = new ImageIcon("C:/POS/Software/halloween1.png");
@@ -687,7 +691,7 @@ public class MainFrame extends javax.swing.JFrame {
             halloween8imageLabel.setVisible(true);
             this.add(halloween8imageLabel);
         }
-
+        
         if (isChristmas) {
             //Christmas
             ImageIcon christmas1img = new ImageIcon("C:/POS/Software/christmas1.png");
@@ -702,7 +706,7 @@ public class MainFrame extends javax.swing.JFrame {
             JLabel christmas5imageLabel = new JLabel(christmas5img);
             ImageIcon christmas6img = new ImageIcon("C:/POS/Software/christmas6.png");
             JLabel christmas6imageLabel = new JLabel(christmas6img);
-
+            
             christmas1imageLabel.setSize(300, 300);
             christmas1imageLabel.setLocation(1250, 450);
             christmas1imageLabel.setVisible(true);
@@ -727,9 +731,9 @@ public class MainFrame extends javax.swing.JFrame {
             christmas6imageLabel.setLocation(1450, 200);
             christmas6imageLabel.setVisible(true);
             this.add(christmas6imageLabel);
-
+            
         }
-
+        
         if (isSummerTime) {
             //SUMMER!
             ImageIcon christmas1img = new ImageIcon("C:/POS/Software/beach1.png");
@@ -744,7 +748,7 @@ public class MainFrame extends javax.swing.JFrame {
             JLabel christmas5imageLabel = new JLabel(christmas5img);
             ImageIcon christmas6img = new ImageIcon("C:/POS/Software/beach6.png");
             JLabel christmas6imageLabel = new JLabel(christmas6img);
-
+            
             christmas1imageLabel.setSize(300, 300);
             christmas1imageLabel.setLocation(1400, 175);
             christmas1imageLabel.setVisible(true);
@@ -769,9 +773,9 @@ public class MainFrame extends javax.swing.JFrame {
             christmas6imageLabel.setLocation(1300, 500);
             christmas6imageLabel.setVisible(true);
             this.add(christmas6imageLabel);
-
+            
         }
-
+        
         if (isThanksgiving) {
             ImageIcon thanksgiving1img = new ImageIcon("C:/POS/Software/thanksgiving1.png");
             JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
@@ -779,7 +783,7 @@ public class MainFrame extends javax.swing.JFrame {
             JLabel thanksgiving2imageLabel = new JLabel(thanksgiving2img);
             ImageIcon thanksgiving3img = new ImageIcon("C:/POS/Software/thanksgiving3.png");
             JLabel thanksgiving3imgLabel = new JLabel(thanksgiving3img);
-
+            
             thanksgiving1imageLabel.setSize(400, 200);
             thanksgiving1imageLabel.setLocation(1400, 200);
             thanksgiving1imageLabel.setVisible(true);
@@ -793,7 +797,7 @@ public class MainFrame extends javax.swing.JFrame {
             thanksgiving3imgLabel.setVisible(true);
             this.add(thanksgiving3imgLabel);
         }
-
+        
         if (isSaintPatricksDay) {
             ImageIcon thanksgiving1img = new ImageIcon("C:/POS/Software/saintpt1.png");
             JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
@@ -801,7 +805,7 @@ public class MainFrame extends javax.swing.JFrame {
             JLabel thanksgiving2imageLabel = new JLabel(thanksgiving2img);
             ImageIcon thanksgiving3img = new ImageIcon("C:/POS/Software/saintpt3.png");
             JLabel thanksgiving3imgLabel = new JLabel(thanksgiving3img);
-
+            
             thanksgiving1imageLabel.setSize(400, 200);
             thanksgiving1imageLabel.setLocation(1400, 200);
             thanksgiving1imageLabel.setVisible(true);
@@ -955,7 +959,7 @@ public class MainFrame extends javax.swing.JFrame {
         masterReprintReceiptButton.setLocation(650, 930);
         masterReprintReceiptButton.setSize(150, 40);
         masterReprintReceiptButton.setBackground(new Color(255, 100, 100));
-
+        
         loadDailyDataButton.setLocation(650, 970);
         loadDailyDataButton.setSize(150, 40);
         loadDailyDataButton.setBackground(new Color(255, 0, 0));
@@ -979,7 +983,7 @@ public class MainFrame extends javax.swing.JFrame {
         clerkLogoutButton.setLocation(120, 850);
         clerkLogoutButton.setSize(150, 40);
         clerkLogoutButton.setBackground(new Color(255, 0, 0));
-
+        
         clerkLogoutButton.setVisible(false);
         clerkLoginButton.setVisible(true);
         this.add(clerkLogoutButton);
@@ -988,7 +992,7 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(loadDailyDataButton);
         loadDailyDataButton.setVisible(false);
         masterReprintReceiptButton.setVisible(false);
-
+        
         if (isMarchMadness) {
             mmButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(ActionEvent event) {
@@ -1011,7 +1015,7 @@ public class MainFrame extends javax.swing.JFrame {
         masterReprintReceiptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
-
+                
                 JTextField field1 = new JTextField();
                 field1.addAncestorListener(new RequestFocusListener());
                 Object[] message = {
@@ -1027,12 +1031,12 @@ public class MainFrame extends javax.swing.JFrame {
                             JOptionPane.showMessageDialog(message1, "Could not find receipt.");
                         }
                     }
-
+                    
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-
+        
         loadDailyDataButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 //C://QS1/AR.txt is account filepath to parse.
@@ -1054,11 +1058,11 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-
+        
         clerkLoginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
-
+                
                 JTextField field1 = new JTextField();
                 field1.addAncestorListener(new RequestFocusListener());
                 Object[] message = {
@@ -1081,14 +1085,14 @@ public class MainFrame extends javax.swing.JFrame {
                         ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/ssj.gif");
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "“I am the hope of the universe.\nI am the answer to all living things that cry out for peace.\nI am protector of the innocent.\nI am the light in the darkness. \nI am truth.\nAlly to good!\nNightmare to you!”", "", 0, icon);
-
+                        
                     } else if (field1.getText().contentEquals("Kevin McCallister")) {
                         for (Item item : curCart.getItems()) {
                             if (item.mutID.contentEquals("HAPIZZA") && item.quantity == 11 && isChristmas) {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha3.gif", "C:/POS/SOFTWARE/ha3.wav", "", "Did anyone order me a plain cheese?");
                             }
                         }
-
+                        
                     } else if (field1.getText().contentEquals("The One")) {//end EE Protocol
                         boolean found1 = false;
                         boolean found2 = false;
@@ -1118,7 +1122,7 @@ public class MainFrame extends javax.swing.JFrame {
                             clerkLogoutButton.setVisible(true);
                         }
                     }
-
+                    
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
@@ -1131,11 +1135,11 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-
+        
         addRemoveInsuranceButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
-
+                
                 JTextField field1 = new JTextField();
                 JTextField field2 = new JTextField();
                 field1.addAncestorListener(new RequestFocusListener());
@@ -1159,12 +1163,12 @@ public class MainFrame extends javax.swing.JFrame {
                             myDB.removeInsurance(field2.getText());
                         }
                     }
-
+                    
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-
+        
         activateDisplayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 display = new PoleDisplay(reader);
@@ -1176,7 +1180,7 @@ public class MainFrame extends javax.swing.JFrame {
                 activateDisplayButton.setVisible(false);
             }
         });
-
+        
         addRxAccountButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -1187,7 +1191,7 @@ public class MainFrame extends javax.swing.JFrame {
                 JTextField field4 = new JTextField();
                 Object[] message = {
                     "QS1 UUID: ", field5, "Account Name: ", field1, "First Name: ", field2, "Last Name: ", field3, "DOB: example: 010520", field4};
-
+                
                 field5.addAncestorListener(new RequestFocusListener());
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add RX Account Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
@@ -1201,10 +1205,10 @@ public class MainFrame extends javax.swing.JFrame {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: QS1 UUID already exisits!");
                     } else {
-
+                        
                         Object[] message2 = {
                             "Are you sure?\nAccount Name: " + field1.getText().toUpperCase(), "First Name: " + field2.getText().toUpperCase(), "Last Name: " + field3.getText().toUpperCase(), "DOB: example: 010520: " + field4.getText()};
-
+                        
                         int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add RX Account Menu", JOptionPane.OK_CANCEL_OPTION);
                         if (option2 == JOptionPane.OK_OPTION) {
                             myDB.addChargeAccount(field1.getText().toUpperCase(), field3.getText().toUpperCase(), field2.getText().toUpperCase(), field4.getText());
@@ -1230,7 +1234,7 @@ public class MainFrame extends javax.swing.JFrame {
                 JTextField field4 = new JTextField();
                 Object[] message = {
                     "Account Name: ", field1, "First Name: ", field2, "Last Name: ", field3, "DOB: example: 010520", field4};
-
+                
                 field1.addAncestorListener(new RequestFocusListener());
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add DME Account Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
@@ -1241,10 +1245,10 @@ public class MainFrame extends javax.swing.JFrame {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: DME Account Name already exisits!");
                     } else {
-
+                        
                         Object[] message2 = {
                             "Are you sure?\nAccount Name: " + field1.getText().toUpperCase(), "First Name: " + field2.getText().toUpperCase(), "Last Name: " + field3.getText().toUpperCase(), "DOB: example: 010520: " + field4.getText()};
-
+                        
                         int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add DME Account Menu", JOptionPane.OK_CANCEL_OPTION);
                         if (option2 == JOptionPane.OK_OPTION) {
                             myDB.addDMEAccount(field1.getText().toUpperCase(), field2.getText().toUpperCase(), field3.getText().toUpperCase(), field4.getText());
@@ -1276,7 +1280,7 @@ public class MainFrame extends javax.swing.JFrame {
                 field7.setText("Yes");
                 field7.setSelectionStart(0);
                 field7.setSelectionEnd(4);
-
+                
                 field1.addAncestorListener(new RequestFocusListener());
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add Item Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
@@ -1293,10 +1297,10 @@ public class MainFrame extends javax.swing.JFrame {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: Same mutual ID exists for item already.");
                     } else {
-
+                        
                         Object[] message2 = {
                             "Are you sure?\nName: " + field1.getText().replaceAll("'", " "), "ID: " + field2.getText().replaceAll("'", " "), "UPC: " + field3.getText().replaceAll("'", " "), "Cost: $ " + field4.getText(), "Price: $ " + field5.getText(), "Category: " + field6.getText(), "Is Taxed:  " + field7.getText()};
-
+                        
                         int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add Item Menu", JOptionPane.OK_CANCEL_OPTION);
                         if (option2 == JOptionPane.OK_OPTION) {
                             boolean taxed = false;
@@ -1332,7 +1336,7 @@ public class MainFrame extends javax.swing.JFrame {
                     "Report Date: EX. 012017D", field1};
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Report Name", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
-
+                    
                     try {
                         File f;
                         String path = "";
@@ -1367,7 +1371,7 @@ public class MainFrame extends javax.swing.JFrame {
                         e.printStackTrace();
                         System.out.println("JERsE");
                     }
-
+                    
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
@@ -1383,7 +1387,7 @@ public class MainFrame extends javax.swing.JFrame {
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Refund Amount Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
                     if (validateDouble(field1.getText()) && field2.getText() != null && !field2.getText().isEmpty()) {
-
+                        
                         checkout.beginMasterRefund(Double.parseDouble(field1.getText()), field2.getText());
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Success! Please give them: $" + field1.getText());
@@ -1395,11 +1399,11 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-
+        
         updatePriceButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
-
+                
                 JTextField field1 = new JTextField();
                 JTextField field2 = new JTextField();
                 field1.addAncestorListener(new RequestFocusListener());
@@ -1414,19 +1418,19 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-
+        
         paperButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     Item myItem = new Item(myDB, "NEWSPAPER");
-
+                    
                     if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
                         curCart.addItem(myItem);
                         boolean exisits = false;
                         int index = 0;
                         int loc = 0;
                         for (GuiCartItem item : guiItems) {
-
+                            
                             if (item.getUPC().contentEquals(myItem.getUPC())) {
                                 exisits = true;
                                 loc = index;
@@ -1438,7 +1442,7 @@ public class MainFrame extends javax.swing.JFrame {
                         } else {
                             guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                         }
-
+                        
                         displayChangeDue = false;
                         updateCartScreen();
                     }
@@ -1449,7 +1453,7 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
         });
-
+        
         refundButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -1457,12 +1461,12 @@ public class MainFrame extends javax.swing.JFrame {
                     if (curCart.isEmpty()) {
                         JFrame textInputFrame = new JFrame("");
                         JTextField field1 = new JTextField();
-
+                        
                         Object[] message = {
                             "Enter receipt number:", field1};
                         field1.setText("");
                         field1.addAncestorListener(new RequestFocusListener());
-
+                        
                         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Receipt Number", JOptionPane.OK_CANCEL_OPTION);
                         if (option == JOptionPane.OK_OPTION) {
                             String receiptNum = field1.getText();
@@ -1506,7 +1510,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     if (isMarchMadness) {
                                         mmButton.setVisible(false);
                                     }
-
+                                    
                                     cancelRefundButton.setVisible(true);
                                     updateCartScreen();
                                 }
@@ -1544,7 +1548,7 @@ public class MainFrame extends javax.swing.JFrame {
                     field1.setText("0");
                     field1.setSelectionStart(0);
                     field1.setSelectionEnd(2);
-
+                    
                     field1.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Mass Discount Menu", JOptionPane.OK_CANCEL_OPTION);
                     if (option == JOptionPane.OK_OPTION) {
@@ -1609,7 +1613,7 @@ public class MainFrame extends javax.swing.JFrame {
                     JTextField field1 = new JTextField();
                     JTextField field2 = new JTextField();
                     JTextField field3 = new JTextField();
-
+                    
                     field2.setText(previousDate);
                     String[] possibilities = myDB.getInsurances();
                     JList list = new JList(possibilities); //data has type Object[]
@@ -1617,7 +1621,7 @@ public class MainFrame extends javax.swing.JFrame {
                     list.setLayoutOrientation(JList.VERTICAL_WRAP);
                     list.setBounds(100, 50, 50, 100);
                     list.setVisibleRowCount(-1);
-
+                    
                     for (int i = 0; i < possibilities.length; i++) {
                         if (previousInsurance.contentEquals(possibilities[i])) {
                             list.setSelectedIndex(i);
@@ -1638,7 +1642,7 @@ public class MainFrame extends javax.swing.JFrame {
                     field3.setSelectionEnd(4);
                     field1.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "RX Information", JOptionPane.OK_CANCEL_OPTION);
-
+                    
                     if (option == JOptionPane.OK_OPTION) {
                         int rxNumber;
                         String fillDate;
@@ -1651,7 +1655,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Invalid RX Number");
                             } else {
-
+                                
                                 if (!validateDate(fillDate)) {
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "Invalid Fill Date");
@@ -1687,7 +1691,7 @@ public class MainFrame extends javax.swing.JFrame {
                                                 }
                                             }
                                         }
-
+                                        
                                     }
                                 }//end else valid fillDate
                             }//end else valid RXNumber
@@ -1699,7 +1703,7 @@ public class MainFrame extends javax.swing.JFrame {
 
                     }//end if
                     updateCartScreen();
-
+                    
                 } else {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -1751,22 +1755,22 @@ public class MainFrame extends javax.swing.JFrame {
                                         JFrame message1 = new JFrame("");
                                         ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/over9000.jpg");
                                         JOptionPane.showMessageDialog(message1, "", "", 0, icon);
-                                    }else if(field1.getText().contentEquals("I show not your face but your hearts desire") && Double.parseDouble(field3.getText()) == 1114.01){
-                                        boolean part1=false;
-                                        boolean part2=false;
-                                        for(Item item: curCart.getItems()){
-                                            if(item.mutID.contentEquals("HPSS2")){
-                                                part1=true;
-                                            }else if(item.itemName.contentEquals("Platform")&&item.itemPrice==9.75){
-                                                part2=true;
+                                    } else if (field1.getText().contentEquals("I show not your face but your hearts desire") && Double.parseDouble(field3.getText()) == 1114.01) {
+                                        boolean part1 = false;
+                                        boolean part2 = false;
+                                        for (Item item : curCart.getItems()) {
+                                            if (item.mutID.contentEquals("HPSS2")) {
+                                                part1 = true;
+                                            } else if (item.itemName.contentEquals("Platform") && item.itemPrice == 9.75) {
+                                                part2 = true;
                                             }
                                             
                                         }
-                                        if(part1&&part2){
+                                        if (part1 && part2) {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss3.gif", "C:/POS/SOFTWARE/hpss3.wav", "", "One can never have enough socks.");
                                         }
                                         
-                                    }else if(field1.getText().contentEquals("Platform") && Double.parseDouble(field3.getText()) == 9.75){
+                                    } else if (field1.getText().contentEquals("Platform") && Double.parseDouble(field3.getText()) == 9.75) {
                                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss1.gif", "C:/POS/SOFTWARE/hpss1.wav", "", "Alas! Earwax!");
                                         
                                     } else if (field1.getText().contentEquals("Guest") && Double.parseDouble(field3.getText()) == 20.17) {
@@ -1784,7 +1788,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         }//end if BNB Protocol
                                     }//end EE protocol
                                     else if (field1.getText().contentEquals("Man") && Double.parseDouble(field3.getText()) == 20.03) {
-
+                                        
                                         boolean found1 = false;
                                         int cntr = 0;
                                         for (Item item : curCart.getItems()) {
@@ -1795,15 +1799,15 @@ public class MainFrame extends javax.swing.JFrame {
                                         }
                                         if (found1 && cntr == 1) {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx2.gif", "C:/POS/SOFTWARE/mx2.wav", "Why do you persist?", "");
-
+                                            
                                         }
-
+                                        
                                     } else if (field1.getText().contentEquals("A Dark Knight") && Double.parseDouble(field3.getText()) == 20.08) {
                                         if (curCart.getItems().size() == 2 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22") && curCart.getItems().get(1).mutID.contentEquals("BATMON") && curCart.getItems().get(1).getDiscountPercentage() == .5) {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/dk3.gif", "C:/POS/SOFTWARE/dk3.wav", "Accomplice? I'm going to tell them the whole thing was your idea.", "");
                                         }
                                     } else if (field1.getText().contentEquals("Because I choose to.") && Double.parseDouble(field3.getText()) == 20.03) {
-
+                                        
                                         boolean found1 = false;
                                         boolean found2 = false;
                                         int cntr = 0;
@@ -1819,10 +1823,10 @@ public class MainFrame extends javax.swing.JFrame {
                                         if (found1 && found2 && cntr == 2) {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx3.gif", "C:/POS/SOFTWARE/mx3.wav", "", "Who are you?");
                                         }
-
+                                        
                                     } else if (isHalloween && Double.parseDouble(field3.getText()) == 3.00 && field1.getText().contentEquals("Come Little Children")) {
                                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hp1.gif", "C:/POS/SOFTWARE/hp1.wav", "", "Just one item to go!");
-
+                                        
                                     } else if (Double.parseDouble(field3.getText()) == 16.93 && field1.getText().contentEquals("I Put A Spell On You")) {
                                         boolean found = false;
                                         for (Item item : curCart.getItems()) {
@@ -1836,7 +1840,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     }//end if EE Protocol
                                     else if (Double.parseDouble(field3.getText()) == 112519.92 && field1.getText().contentEquals("Bread")) {
                                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al1.gif", "C:/POS/SOFTWARE/al1.wav", "", "Ring bells! Bang the drums!!");
-
+                                        
                                     } else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Witch")) {
                                         boolean found = false;
                                         for (Item item : curCart.getItems()) {
@@ -1857,7 +1861,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         if (found) {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mp1.gif", "C:/POS/SOFTWARE/mp1.wav", "", "She turned me into a newt!!");
                                         }
-
+                                        
                                     } else if (Double.parseDouble(field3.getText()) == 0.02 && field1.getText().contentEquals("Jango Fett")) {
                                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw1.gif", "C:/POS/SOFTWARE/sw1.wav", "I'm just a simple man, trying to make my way in the universe.", "");
                                     }//end if EE Protocol
@@ -1871,7 +1875,7 @@ public class MainFrame extends javax.swing.JFrame {
                         }//end else
                     }//end if
                     updateCartScreen();
-
+                    
                 } else {//No employee Selected!
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -1881,7 +1885,7 @@ public class MainFrame extends javax.swing.JFrame {
         };//end otcButtonAction
 
         upsButton.addActionListener(new java.awt.event.ActionListener() {
-
+            
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     JFrame textInputFrame = new JFrame("");
@@ -1912,7 +1916,7 @@ public class MainFrame extends javax.swing.JFrame {
                     }//end else
 
                     updateCartScreen();
-
+                    
                 } else {//No employee Selected!
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -1926,7 +1930,7 @@ public class MainFrame extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
                     checkout.beginNoSaleCheckout((String) employeeSelectionHeader.getText().substring(14));
-
+                    
                 } else {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -1953,7 +1957,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 JTextField field5 = new JTextField();
                                 JTextField field6 = new JTextField();
                                 JTextField field7 = new JTextField();
-
+                                
                                 field1.addFocusListener(new java.awt.event.FocusAdapter() {
                                     public void focusGained(java.awt.event.FocusEvent evt) {
                                         field1.setSelectionStart(0);
@@ -2103,7 +2107,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 field6.setSelectionEnd(4);
                                 field7.setSelectionStart(0);
                                 field7.setSelectionEnd(4);
-
+                                
                                 field1.addAncestorListener(new RequestFocusListener());
                                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Split Tender Menu", JOptionPane.OK_CANCEL_OPTION);
                                 if (option == JOptionPane.OK_OPTION) {
@@ -2119,7 +2123,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             //must have some name
                                             JFrame message1 = new JFrame("");
                                             JOptionPane.showMessageDialog(message1, "Totals do not match.");
-
+                                            
                                         } else {
                                             if (Double.parseDouble(field7.getText()) > 0 && Double.parseDouble(field6.getText()) > 0) {
                                                 JFrame message2 = new JFrame("");
@@ -2167,7 +2171,7 @@ public class MainFrame extends javax.swing.JFrame {
         voidButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 voidCarts();
-
+                
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
         });//end voidButtonAction
@@ -2195,7 +2199,7 @@ public class MainFrame extends javax.swing.JFrame {
                             field1.setText(String.format("%.2f", curCart.getTotalPrice()));
                             field1.setSelectionStart(0);
                             field1.setSelectionEnd(8);
-
+                            
                             if (curCart.getTotalPrice() < 0) {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
@@ -2213,14 +2217,14 @@ public class MainFrame extends javax.swing.JFrame {
                                             JFrame message1 = new JFrame("");
                                             JOptionPane.showMessageDialog(message1, "Not enough cash.");
                                         } else {
-
+                                            
                                             double change = amtReceived - curCart.getTotalPrice();
                                             change = round(change);
                                             changeDue.setText("Change Due: $" + String.format("%.2f", change));
                                             displayChangeDue = true;
                                             checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
                                             updateCartScreen();
-
+                                            
                                         }//end else
                                     }//end else
                                 }//end if
@@ -2240,11 +2244,11 @@ public class MainFrame extends javax.swing.JFrame {
                                         //Houston we have a problem.
                                         isCartConditionsMet = false;
                                     }
-
+                                    
                                 }
                                 if (isItemToRefund && isCartConditionsMet) {
                                     checkout.beginRefundCashCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
-
+                                    
                                 } else if (isCartConditionsMet) {
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "An item in the cart is set to have quantity refunded, but no type of refund is selected.. Please set Quantity to refund to zero for that item or add a refund case.");
@@ -2259,7 +2263,7 @@ public class MainFrame extends javax.swing.JFrame {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
-
+                
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
 
             }//end actionPerformed
@@ -2306,7 +2310,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 field2.setText("0");
                                 field2.setSelectionStart(0);
                                 field2.setSelectionEnd(2);
-
+                                
                                 field1.addAncestorListener(new RequestFocusListener());
                                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Check Value", JOptionPane.OK_CANCEL_OPTION);
                                 if (option == JOptionPane.OK_OPTION) {
@@ -2429,9 +2433,9 @@ public class MainFrame extends javax.swing.JFrame {
                             }
                             if (isItemToRefund) {
                                 checkout.beginRefundCardCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
-
+                                
                             }
-
+                            
                         }//end cartIsNotEmpty
                     } else {
                         JFrame message1 = new JFrame("");
@@ -2459,7 +2463,7 @@ public class MainFrame extends javax.swing.JFrame {
         arPaymentButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-
+                    
                     JFrame textInputFrame = new JFrame("");
                     JFrame textInputFrame2 = new JFrame("");
                     JTextField field1 = new JTextField();
@@ -2543,7 +2547,7 @@ public class MainFrame extends javax.swing.JFrame {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
-
+                
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
 
@@ -2665,7 +2669,7 @@ public class MainFrame extends javax.swing.JFrame {
                     field2.setText("0.00");
                     field2.setSelectionStart(0);
                     field2.setSelectionEnd(4);
-
+                    
                     field1.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Paid Out Menu", JOptionPane.OK_CANCEL_OPTION);
                     if (option == JOptionPane.OK_OPTION) {
@@ -2685,7 +2689,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 } else {
                                     Object[] message2 = {
                                         "Are you sure?\nDescription: " + field1.getText(), "Amount: $ " + field2.getText()};
-
+                                    
                                     int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Paid Out Menu", JOptionPane.OK_CANCEL_OPTION);
                                     if (option2 == JOptionPane.OK_OPTION) {
                                         checkout.beginPaidOut(field1.getText().replaceAll("'", " "), Double.parseDouble(field2.getText()));
@@ -2796,6 +2800,7 @@ public class MainFrame extends javax.swing.JFrame {
                 guiRefundItems.clear();
                 displayChangeDue = false;
                 refundOver();
+                resizeRefundCartWindow();
                 updateCartScreen();
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
@@ -2861,7 +2866,7 @@ public class MainFrame extends javax.swing.JFrame {
         rxButton.getActionMap().put("Page Up", rxButtonAA);
         rxButton.addActionListener(rxButtonAA);
         otcButton.addActionListener(otcButtonAA);
-
+        
         KeyStroke down = KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0);
         KeyStroke tab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
         KeyStroke ctrlTab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.CTRL_DOWN_MASK);
@@ -2875,15 +2880,15 @@ public class MainFrame extends javax.swing.JFrame {
     public void removeGuiCartItem(GuiCartItem item) {
         guiItems.remove(item);
     }
-
+    
     public void updateCartScreen() {
-
+        
         jPanel1.setLayout(null);
-
+        
         this.repaint(10);
         this.setVisible(true);
         jPanel1.setVisible(true);
-
+        
         if (refundCart.isEmpty()) {
             discountHeader.setText("Discount: ");
             subTotal.setText(String.format("Subtotal: $%.2f", curCart.getSubTotal()));
@@ -2908,7 +2913,7 @@ public class MainFrame extends javax.swing.JFrame {
             changeDue.setSize(350, 50);
             changeDue.setFont(new Font(subTotal.getName(), Font.BOLD, 30));
             totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
-
+            
             if (curCart.isEmpty()) {
                 resaveTicket.setVisible(false);
                 isMassPreCharged = false;
@@ -2938,7 +2943,7 @@ public class MainFrame extends javax.swing.JFrame {
             changeDue.setSize(350, 50);
             changeDue.setFont(new Font(subTotal.getName(), Font.BOLD, 30));
         }
-
+        
         if (displayChangeDue) {
             changeDue.setVisible(true);
             if (displayActive) {
@@ -2947,13 +2952,13 @@ public class MainFrame extends javax.swing.JFrame {
         } else {
             changeDue.setVisible(false);
         }
-
+        
         this.add(changeDue);
-
+        
         estimatedCheckTotalLabel.setText(String.format("Checks: $%.2f", estimatedCheckTotal));
         estimatedCashTotalLabel.setText(String.format("Cash: $%d", estimatedCashTotal));
         estimatedCoinTotalLabel.setText(String.format("Coin: $%.2f", estimatedCoinTotal));
-
+        
         if (curCart.getRequiresRepaint()) {
             int y = 15;
             for (GuiCartItem item : guiItems) {
@@ -2962,10 +2967,10 @@ public class MainFrame extends javax.swing.JFrame {
             }
             curCart.setRequiresRepaint(false);
         }
-
+        
         jPanel1.setVisible(true);
         this.setVisible(true);
-
+        
         textField.requestFocusInWindow();
     }//end updateCartScreen
 
@@ -3002,11 +3007,11 @@ public class MainFrame extends javax.swing.JFrame {
             loadDailyDataButton.setVisible(false);
         }
     }
-
+    
     public void setData(Database myDB) {
         this.setTitle("Smith's Super-Aid POS");
         this.myDB = myDB;
-
+        
         if (isHalloween) {
             getContentPane().setBackground(Color.BLACK);
         } else if (isThanksgiving) {
@@ -3061,10 +3066,10 @@ public class MainFrame extends javax.swing.JFrame {
             }//end actionPerformed
         });//end empListActionListener
         this.add(empList2);
-
+        
         updateCartScreen();
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -3095,14 +3100,14 @@ public class MainFrame extends javax.swing.JFrame {
             display.close();
         }
     }//GEN-LAST:event_formWindowClosing
-
+    
     protected boolean validateRX(int length, int rxNumber, String insurance, String fillDate) {
         if (length == 7 && !curCart.containsRX(rxNumber, insurance, fillDate)) {
             return true;
         }
         return false;
     }
-
+    
     protected boolean validateDouble(String copay) {
         try {
             double cpay = Double.parseDouble(copay);
@@ -3114,7 +3119,7 @@ public class MainFrame extends javax.swing.JFrame {
         }//end catch
         return true;
     }
-
+    
     private boolean validateInteger(String integer) {
         try {
             int integ = Integer.parseInt(integer);
@@ -3126,7 +3131,7 @@ public class MainFrame extends javax.swing.JFrame {
         }//end catch
         return true;
     }
-
+    
     protected boolean validateDate(String fillDate) {
         String subString1, subString2, subString3;
         if (fillDate.length() != 6) {
@@ -3139,7 +3144,7 @@ public class MainFrame extends javax.swing.JFrame {
             int month = Integer.parseInt(subString1);
             int day = Integer.parseInt(subString2);
             int year = Integer.parseInt(subString3);
-
+            
             if (month < 1 || month > 12) {
                 return false;
             }
@@ -3159,7 +3164,7 @@ public class MainFrame extends javax.swing.JFrame {
         num = Math.round(num * 100.0) / 100.0;
         return num;
     }
-
+    
     public void resetVars() {
         DateFormat dateFormat = new SimpleDateFormat("MMddyy");
         Date date = new Date();
@@ -3167,7 +3172,7 @@ public class MainFrame extends javax.swing.JFrame {
         previousInsurance = "AARP";
         hasSigBeenCap = false;
     }
-
+    
     public void loadTicketWithId(String id) {
         id = id.toUpperCase();
         //if it does, lets load it!
@@ -3183,22 +3188,23 @@ public class MainFrame extends javax.swing.JFrame {
         }
         displayChangeDue = false;
     }
-
+    
     private void loadReceipt(String receiptNum) {
         //if it does, lets load it!
         refundCart.loadRefundCart(receiptNum, myDB);
         int i = 15;
-
+        
         for (RefundItem item : refundCart.getRefundItems()) {
             guiRefundItems.add(new GuiRefundCartItem(item, i, jPanel1, refundCart, myself));
             i += 15;
             refundCart.setReceiptNum(item.getReceiptNum());
+            
         }
         displayChangeDue = false;
     }
-
+    
     public void refundOver() {
-
+        
         rxButton.setVisible(true);
         otcButton.setVisible(true);
         arPaymentButton.setVisible(true);
@@ -3220,7 +3226,7 @@ public class MainFrame extends javax.swing.JFrame {
         debitButton.setVisible(true);
         upsButton.setVisible(true);
         massPrechargeButton.setVisible(true);
-
+        
         if (isMarchMadness) {
             mmButton.setVisible(true);
         }
@@ -3230,9 +3236,9 @@ public class MainFrame extends javax.swing.JFrame {
         cancelRefundButton.setVisible(false);
         checkForAdminButtonVisible();
     }
-
+    
     public void voidCarts() {
-
+        
         if (!receiptNum.isEmpty()) {
             updateCartScreen();
             rxSignout();
@@ -3257,7 +3263,7 @@ public class MainFrame extends javax.swing.JFrame {
         //displayChangeDue = false;//cant do this!
         updateCartScreen();
     }
-
+    
     public void saveTicket(String id) {
         if (id != null && !id.isEmpty()) {
             id = id.toUpperCase();
@@ -3322,17 +3328,18 @@ public class MainFrame extends javax.swing.JFrame {
                     }
                     guiItems.clear();
                     curCart.storeCart(id, myDB);
+                    resizeCartWindow();
                     resaveTicket.setVisible(false);
                     isMassPreCharged = false;
                     massPrechargeButton.setBackground(new Color(255, 0, 0));
                     resetVars();
                 }
-
+                
             } else {
                 //if it does, send error message!
                 JFrame message2 = new JFrame("");
                 //JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Would you like me to load those?");
-                if (!id.toUpperCase().contentEquals("WONDERLAND") && !id.toUpperCase().contentEquals("STRANGER") && !id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?") && !id.toUpperCase().contentEquals("WET BANDITS")&& !id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")) {
+                if (!id.toUpperCase().contentEquals("WONDERLAND") && !id.toUpperCase().contentEquals("STRANGER") && !id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?") && !id.toUpperCase().contentEquals("WET BANDITS") && !id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")) {
                     if (JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING",
                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         loadTicketWithId(id);
@@ -3345,9 +3352,19 @@ public class MainFrame extends javax.swing.JFrame {
                         // no option
                     }
                 }
-
+                
             }//end else already items in tickets
         }//end string null or empty part, didnt do an else, we just do nothing.
+    }
+
+    public void resizeCartWindow() {
+        int extra = 15 + (curCart.getItems().size() * 15);
+        jPanel1.setPreferredSize(new Dimension(1120, extra));
+    }
+
+    public void resizeRefundCartWindow() {
+        int extra = 15 + (refundCart.getRefundItems().size() * 15);
+        jPanel1.setPreferredSize(new Dimension(1120, extra));
     }
 
     public void rxSignout() {
@@ -3359,10 +3376,10 @@ public class MainFrame extends javax.swing.JFrame {
 
         //We need sig, and to save RX File.TEST
         CapSignature frame = new CapSignature(this, curCart, checkout.reader.getRemoteDrivePath(), receiptNum);
-
+        
         frame.begin(questions);
         frame.setVisible(true);
-
+        
         while (!frame.hasBeenSaved) {
             frame = new CapSignature(this, curCart, checkout.reader.getRemoteDrivePath(), receiptNum);
             frame.begin(questions);
@@ -3400,8 +3417,8 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
     }
-
-    private javax.swing.JPanel jPanel1;
+    
+    public javax.swing.JPanel jPanel1;
     protected Database myDB;
     private Cart curCart;
     private CheckoutHandler checkout;
@@ -3451,7 +3468,7 @@ public class MainFrame extends javax.swing.JFrame {
     String previousDate = "";
     JButton otcButton = new JButton("OTC");
     ImageIcon upsimg = new ImageIcon("C:/POS/SOFTWARE/ups.png");
-
+    
     JButton upsButton = new JButton(upsimg);
     JButton paperButton = new JButton("Paper");
     JButton voidButton = new JButton("Void");
@@ -3481,7 +3498,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.42", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.43", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
