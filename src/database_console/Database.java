@@ -513,8 +513,8 @@ public class Database {
                     } else {//add it to update
                         accounts.add(record.get(ACCOUNT_NAME).trim());
                         balances.add(round(balance));
-                        lastNames.add(record.get(PATIENT_NAME).substring(0, record.get(PATIENT_NAME).indexOf(',')).trim());
-                        firstNames.add(record.get(PATIENT_NAME).substring(record.get(PATIENT_NAME).indexOf(',') + 1).trim());
+                        firstNames.add(record.get(PATIENT_NAME).substring(0, record.get(PATIENT_NAME).indexOf(',')).trim());//These are inverted....
+                        lastNames.add(record.get(PATIENT_NAME).substring(record.get(PATIENT_NAME).indexOf(',') + 1).trim());
                         // System.out.println(record.get(PATIENT_NAME).substring(record.get(PATIENT_NAME).indexOf(',')+1).trim());
                     }
                     // System.out.println(record.get(PATIENT_NAME));	
@@ -522,7 +522,7 @@ public class Database {
             }//end for all claims
 
             for (String s : accounts) {
-                System.out.println("FIRST: " + firstNames.get(accounts.indexOf(s)) + " LAST " + lastNames.get(accounts.indexOf(s)) + " ACCOUNT: " + s + " BALANCE DUE: " + balances.get(accounts.indexOf(s)));
+                System.out.println("LAST: " + firstNames.get(accounts.indexOf(s)) + " FIRST " + lastNames.get(accounts.indexOf(s)) + " ACCOUNT: " + s + " BALANCE DUE: " + balances.get(accounts.indexOf(s)));
                 boolean itemFound = false;
                 try {
                     Class.forName(driverPath);
