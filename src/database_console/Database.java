@@ -1,5 +1,6 @@
 package database_console;
 
+import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,10 +8,16 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.apache.commons.csv.CSVFormat;
+
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 
 /**
  *
@@ -206,44 +213,44 @@ public class Database {
     }//end checkDatabaseForItemByI
 
     public boolean checkDatabaseForTicket(String id) {//returns true if ticket exists.
-        if(id.toUpperCase().contentEquals("WONDERLAND")){
+        if (id.toUpperCase().contentEquals("WONDERLAND")) {
             return true;
-        }else if(id.toUpperCase().contentEquals("STRANGER")){
+        } else if (id.toUpperCase().contentEquals("STRANGER")) {
             return true;
-        }else if(id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?")){
+        } else if (id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?")) {
             return true;
-        }else if(id.toUpperCase().contentEquals("WET BANDITS")){
+        } else if (id.toUpperCase().contentEquals("WET BANDITS")) {
             return true;
-        }else if(id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")){
+        } else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")) {
             return true;
-        }else{
-        try {
-            Class.forName(driverPath);
-            Connection con = DriverManager.getConnection(
-                    host, userName, password);
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from tickets where custId = '" + id + "'");
+        } else {
+            try {
+                Class.forName(driverPath);
+                Connection con = DriverManager.getConnection(
+                        host, userName, password);
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery("select * from tickets where custId = '" + id + "'");
 
-            while (rs.next()) {
-                // System.out.println(rs.getString(2));
-                if (rs.getString(2).contentEquals(id)) {
-                    con.close();
-                    return true;
-                }
+                while (rs.next()) {
+                    // System.out.println(rs.getString(2));
+                    if (rs.getString(2).contentEquals(id)) {
+                        con.close();
+                        return true;
+                    }
 //}//end if
-            }//end while
+                }//end while
 
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
 
-        return false;
+            return false;
         }
     }//end checkDatabaseForTicket
 
     public void storeItem(Item item, String id) {
-        
+
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -290,29 +297,29 @@ public class Database {
 
     public ArrayList<String> getAllTicketsNamesWithRxNumber(int rxNumber) {
         ArrayList<String> ticketNames = new ArrayList<>();
-        if( rxNumber==0){
-        return ticketNames;
-    }else{
-        try {
-            Class.forName(driverPath);
-            Connection con = DriverManager.getConnection(
-                    host, userName, password);
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from tickets  where rxnumber = " + rxNumber + " order by custId;");
-            int i = 0;
-            while (rs.next()) {
-                if (!ticketNames.contains(rs.getString(2))) {
-                    ticketNames.add(rs.getString(2));
-                    i++;
-                }
-            }//end while
+        if (rxNumber == 0) {
+            return ticketNames;
+        } else {
+            try {
+                Class.forName(driverPath);
+                Connection con = DriverManager.getConnection(
+                        host, userName, password);
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery("select * from tickets  where rxnumber = " + rxNumber + " order by custId;");
+                int i = 0;
+                while (rs.next()) {
+                    if (!ticketNames.contains(rs.getString(2))) {
+                        ticketNames.add(rs.getString(2));
+                        i++;
+                    }
+                }//end while
 
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return ticketNames;
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
             }
+            return ticketNames;
+        }
     }
 
     public ArrayList<Item> getTicketItemsFromDatabase(String id) {
@@ -321,26 +328,26 @@ public class Database {
             loadedItems.add(new Item(this, "MATRED", "MATRED", "Red Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item(this, "MATBLU", "MATBLU", "Blue Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
             return loadedItems;
-        }else if (id.toUpperCase().contentEquals("STRANGER")) {
-            for(int i=1;i<41;i++){
-               loadedItems.add(new Item(this, "BATDIS"+i, "BATDIS"+i, "District", 0.07, 0.07, false, 852, 0, "", "", 1, false, 0, false)); 
+        } else if (id.toUpperCase().contentEquals("STRANGER")) {
+            for (int i = 1; i < 41; i++) {
+                loadedItems.add(new Item(this, "BATDIS" + i, "BATDIS" + i, "District", 0.07, 0.07, false, 852, 0, "", "", 1, false, 0, false));
             }
 
             return loadedItems;
-        }else if (id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?")) {
+        } else if (id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?")) {
             loadedItems.add(new Item(this, "BATMON", "BATMON", "Mob Money", 0.36, 0.36, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "BATPEN", "BATPEN", "Pencil", 8.47,8.47, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "BATPEN", "BATPEN", "Pencil", 8.47, 8.47, false, 852, 0, "", "", 1, false, 0, false));
 
             return loadedItems;
-        }else if (id.toUpperCase().contentEquals("WET BANDITS")) {
+        } else if (id.toUpperCase().contentEquals("WET BANDITS")) {
             loadedItems.add(new Item(this, "HAPIZZA", "HAPIZZA", "Pizza Box", 11.1363636364, 11.1363636364, false, 852, 0, "", "", 1, false, 0, false));
-            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha1.gif","C:/POS/SOFTWARE/ha1.wav","What're you scared, Marv? Are you afraid? C'mon, get out here.","");
+            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha1.gif", "C:/POS/SOFTWARE/ha1.wav", "What're you scared, Marv? Are you afraid? C'mon, get out here.", "");
             return loadedItems;
-        }else if(id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")){
+        } else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")) {
             loadedItems.add(new Item(this, "HPSS2", "HPSS2", "Erised stra ehru oyt ube cafru oyt on wohsi", 1041.11, 1041.11, false, 852, 0, "", "", 1, false, 0, false));
-            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss2.gif","C:/POS/SOFTWARE/hpss2.wav","It does not do to dwell on dreams and forget to live.","");
+            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss2.gif", "C:/POS/SOFTWARE/hpss2.wav", "It does not do to dwell on dreams and forget to live.", "");
             return loadedItems;
-        }else {
+        } else {
             try {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
@@ -376,7 +383,7 @@ public class Database {
             }
             return loadedItems;
         }//end else EE
-        
+
     }//end getTicketFromDatabase
 
     public void updateChargeAccountBalance(String accountName, double amtToUpdate) {
@@ -453,49 +460,69 @@ public class Database {
     }
 
     public void loadDMEData(String path) {
-        BufferedReader br = null;
-        String lineTemp = "";
-        String cvsSplitBy = ",";
-        ArrayList<String[]> goodStrings = new ArrayList<>();
-
         ArrayList<String> accounts = new ArrayList<>();
         ArrayList<Double> balances = new ArrayList<>();
         ArrayList<String> firstNames = new ArrayList<>();
         ArrayList<String> lastNames = new ArrayList<>();
         ArrayList<String> unfoundAccounts = new ArrayList<>();
         String unfound = "";
+
+        //CSV file header
+        final String[] FILE_HEADER_MAPPING = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43"};
+
+        //File attributes
+        final String ACCOUNT_NAME = "35";
+        final String PATIENT_NAME = "36";
+        final String PATIENT_BALANCE1 = "40";
+        final String PATIENT_BALANCE2 = "41";
+        final String PATIENT_BALANCE3 = "42";
+        final String PATIENT_BALANCE4 = "43";
+
+        final String INSURANCE = "17";
+        FileReader fileReader = null;
+
+        CSVParser csvFileParser = null;
+
+        //Create the CSVFormat object with the header mapping
+        CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
+
         try {
+            //initialize FileReader object
+            fileReader = new FileReader(path);
 
-            br = new BufferedReader(new FileReader(path));
-            while ((lineTemp = br.readLine()) != null) {
+            //initialize CSVParser object
+            csvFileParser = new CSVParser(fileReader, csvFileFormat);
 
-                // use comma as separator
-                String[] line = lineTemp.split(cvsSplitBy);
+            //Get a list of CSV file records
+            List csvRecords = csvFileParser.getRecords();
 
-                // System.out.println("Guess " + line[22] + " , Guess 2 " + line[41] + "");
-                if (line[22].contentEquals("Patient Pay Claims")) {
-                    line[41] = line[41].trim();
-                    goodStrings.add(line);
-                }//end if
+            //Read the CSV file records starting from the second record to skip the header
+            for (int i = 0; i < csvRecords.size(); i++) {
+                CSVRecord record = (CSVRecord) csvRecords.get(i);
+                //Create a new student object and fill his data
 
-            }//end while
-            for (String[] s : goodStrings) {
-                //System.out.println(s[22] + " " + s[41]+" " +s[42]+" "+s[43]+ " " + s[47] + " " + s[48] + " " + s[49] + " " + s[50]);
-                if (accounts.contains(s[41])) {//already added him before, need to just update balance
-                    double total = round(balances.get(accounts.indexOf(s[41])) + Double.parseDouble(s[47].substring(1)) + Double.parseDouble(s[48].substring(1)) + Double.parseDouble(s[49].substring(1)) + Double.parseDouble(s[50].substring(1)));
-                    balances.set(accounts.indexOf(s[41]), total);
-                } else {//new account to update!
-                    accounts.add(s[41]);
-                    double total = round(Double.parseDouble(s[47].substring(1)) + Double.parseDouble(s[48].substring(1)) + Double.parseDouble(s[49].substring(1)) + Double.parseDouble(s[50].substring(1)));
-                    balances.add(total);
-                    firstNames.add(s[42].substring(1));
-                    lastNames.add(s[43].substring(0, s[43].indexOf("\"")));
-
-                }//end else
-            }//end for
+                if (record.get(INSURANCE).trim().contentEquals("Patient Pay Claims")) {//Its a claim we care about
+                    double balance1 = Double.parseDouble(record.get(PATIENT_BALANCE1).substring(1));
+                    double balance2 = Double.parseDouble(record.get(PATIENT_BALANCE2).substring(1));
+                    double balance3 = Double.parseDouble(record.get(PATIENT_BALANCE3).substring(1));
+                    double balance4 = Double.parseDouble(record.get(PATIENT_BALANCE4).substring(1));
+                    double balance = balance1 + balance2 + balance3 + balance4;
+                    if (accounts.contains(record.get(ACCOUNT_NAME).trim())) {//if we have already added this account to be updated
+                        int index = accounts.indexOf(record.get(ACCOUNT_NAME).trim());
+                        balances.set(index, round(balance + balances.get(index)));
+                    } else {//add it to update
+                        accounts.add(record.get(ACCOUNT_NAME).trim());
+                        balances.add(round(balance));
+                        lastNames.add(record.get(PATIENT_NAME).substring(0, record.get(PATIENT_NAME).indexOf(',')).trim());
+                        firstNames.add(record.get(PATIENT_NAME).substring(record.get(PATIENT_NAME).indexOf(',') + 1).trim());
+                        // System.out.println(record.get(PATIENT_NAME).substring(record.get(PATIENT_NAME).indexOf(',')+1).trim());
+                    }
+                    // System.out.println(record.get(PATIENT_NAME));	
+                }//end if claims we care about
+            }//end for all claims
 
             for (String s : accounts) {
-                //  System.out.println("FIRST: "+firstNames.get(accounts.indexOf(s))+" LAST "+lastNames.get(accounts.indexOf(s))+" ACCOUNT: " + s + " BALANCE DUE: " + balances.get(accounts.indexOf(s)));
+                System.out.println("FIRST: " + firstNames.get(accounts.indexOf(s)) + " LAST " + lastNames.get(accounts.indexOf(s)) + " ACCOUNT: " + s + " BALANCE DUE: " + balances.get(accounts.indexOf(s)));
                 boolean itemFound = false;
                 try {
                     Class.forName(driverPath);
@@ -517,7 +544,7 @@ public class Database {
                         // System.out.println("COULD NOT FIND: "+s);
                     }
                     con.close();
-                } catch (Exception e) {
+                } catch (ClassNotFoundException | SQLException e) {
                     System.out.println(e);
                 }
             }//end for all accounts
@@ -528,20 +555,19 @@ public class Database {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Successfully Loaded! No Errors!");
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+
+        } catch (HeadlessException | IOException | NumberFormatException e) {
+            System.out.println("Error in CsvFileReader !!!");
             e.printStackTrace();
         } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                fileReader.close();
+                csvFileParser.close();
+            } catch (IOException e) {
+                System.out.println("Error while closing fileReader/csvFileParser !!!");
+                e.printStackTrace();
             }
         }
-
     }
 
     public void loadARData(String path) {
@@ -1007,14 +1033,14 @@ public class Database {
         return false;
     }
 
-    void addChargeAccount(String accountName, String lastName, String firstName, String dob) {
+    void addChargeAccount(String accountName, String lastName, String firstName, String dob, String uuid) {
 
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`) VALUES (NULL, '" + accountName + "','" + lastName + "','" + firstName + "','" + dob + "');");
+            stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`uuid`) VALUES (NULL, '" + accountName + "','" + lastName + "','" + firstName + "','" + dob + "','" + uuid + "');");
             con.close();
         } catch (Exception e) {
             System.out.println(e);

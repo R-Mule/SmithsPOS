@@ -1046,7 +1046,7 @@ public class MainFrame extends javax.swing.JFrame {
                     // yes option
                     if (employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")) {//load DME AR
                         System.out.println("HELLO DEBBIE!");
-                        String path = "C://Users/Office/Desktop/RptAging.csv";
+                        String path = "C://Users/Office/Desktop/RptAging.csv"; //String path = "C://RptAging.csv";//
                         myDB.loadDMEData(path);
                     } else {//Hollie or Drew, do AR.
                         String path = "C://QS1/AR.txt";
@@ -1204,14 +1204,17 @@ public class MainFrame extends javax.swing.JFrame {
                     } else if (myDB.doesQS1UUIDExisit(field5.getText().toUpperCase())) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: QS1 UUID already exisits!");
+                    }else if(field5.getText().isEmpty()){
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Must enter a UUID!");
                     } else {
 
                         Object[] message2 = {
-                            "Are you sure?\nAccount Name: " + field1.getText().toUpperCase(), "First Name: " + field2.getText().toUpperCase(), "Last Name: " + field3.getText().toUpperCase(), "DOB: example: 010520: " + field4.getText()};
+                            "Are you sure?\nUUID: "+ field5.getText().toUpperCase()+"\nAccount Name: " + field1.getText().toUpperCase(), "First Name: " + field2.getText().toUpperCase(), "Last Name: " + field3.getText().toUpperCase(), "DOB: example: 010520: " + field4.getText()};
 
                         int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add RX Account Menu", JOptionPane.OK_CANCEL_OPTION);
                         if (option2 == JOptionPane.OK_OPTION) {
-                            myDB.addChargeAccount(field1.getText().toUpperCase(), field3.getText().toUpperCase(), field2.getText().toUpperCase(), field4.getText());
+                            myDB.addChargeAccount(field1.getText().toUpperCase(), field3.getText().toUpperCase(), field2.getText().toUpperCase(), field4.getText(),field5.getText().toUpperCase());
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Success!");
                         }
@@ -3526,7 +3529,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.44", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.45", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
