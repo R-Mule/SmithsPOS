@@ -223,6 +223,8 @@ public class Database {
             return true;
         } else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")) {
             return true;
+        } else if (id.toUpperCase().contentEquals("MICHAEL MYERS")) {
+            return true;
         } else {
             try {
                 Class.forName(driverPath);
@@ -346,6 +348,24 @@ public class Database {
         } else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")) {
             loadedItems.add(new Item(this, "HPSS2", "HPSS2", "Erised stra ehru oyt ube cafru oyt on wohsi", 1041.11, 1041.11, false, 852, 0, "", "", 1, false, 0, false));
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss2.gif", "C:/POS/SOFTWARE/hpss2.wav", "It does not do to dwell on dreams and forget to live.", "");
+            return loadedItems;
+        }else if (id.toUpperCase().contentEquals("MICHAEL MYERS")) {
+            loadedItems.add(new Item(this, "MMHA1", "MMHA1", "Loomis", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA2", "MMHA2", "Laurie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA3", "MMHA3", "Annie", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA4", "MMHA4", "Bob", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA5", "MMHA5", "Brackett", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA6", "MMHA6", "Lindsey", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA7", "MMHA7", "Tommy", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA8", "MMHA8", "Judith", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA9", "MMHA9", "Lynda", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA10", "MMHA10", "Marion", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA11", "MMHA11", "Richie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA12", "MMHA12", "Lonnie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA13", "MMHA13", "Keith", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA14", "MMHA14", "Dr. Wynn", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            
+            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mmha1.gif", "C:/POS/SOFTWARE/mmha1.wav", "", "Was that the Boogeyman?");
             return loadedItems;
         } else {
             try {

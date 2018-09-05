@@ -115,13 +115,15 @@ public class MainFrame extends javax.swing.JFrame {
                     isFourthOfJuly = true;
                 } else {
                     isSummerTime = true;
-                    //isHalloween=true;
+                    
                     quotesActive = false;
                 }
             } else if (month.contentEquals("08")) {
                 isSummerTime = true;
                 quotesActive = false;
             } else if (month.contentEquals("09")) {
+                isHalloween=true;
+                quotesActive = false;
                 //nothing right now, give them a month off :)
             }
         }
@@ -436,6 +438,11 @@ public class MainFrame extends javax.swing.JFrame {
                             }
                             if (id.contentEquals("WET BANDITS")) {
                                 if (!isChristmas) {
+                                    allowed = false;
+                                }
+                            }
+                            if (id.contentEquals("MICHAEL MYERS")) {
+                                if (!isHalloween) {
                                     allowed = false;
                                 }
                             }
@@ -3370,7 +3377,7 @@ public class MainFrame extends javax.swing.JFrame {
                 //if it does, send error message!
                 JFrame message2 = new JFrame("");
                 //JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Would you like me to load those?");
-                if (!id.toUpperCase().contentEquals("WONDERLAND") && !id.toUpperCase().contentEquals("STRANGER") && !id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?") && !id.toUpperCase().contentEquals("WET BANDITS") && !id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")) {
+                if (!id.toUpperCase().contentEquals("WONDERLAND") && !id.toUpperCase().contentEquals("STRANGER") && !id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?") && !id.toUpperCase().contentEquals("WET BANDITS") && !id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")&&!id.toUpperCase().contentEquals("MICHAEL MYERS")) {
                     if (JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING",
                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         loadTicketWithId(id);
