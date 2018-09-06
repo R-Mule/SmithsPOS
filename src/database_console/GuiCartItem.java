@@ -546,7 +546,7 @@ public class GuiCartItem {
                     }
                 }
 
-            } else if (item.mutID.contains("MMHA")) {
+            } else if (item.mutID.contains("MMHA")&&mainFrame.isHalloween) {
                 boolean one = false, two = false, five = false, six = false, seven = false, ten = false, eleven = false, twelve = true, thirteen = true, fourteen = true;
                 if (curCart.getItems().size() == 11) {
 
