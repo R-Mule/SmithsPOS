@@ -351,19 +351,20 @@ public class Database {
             return loadedItems;
         }else if (id.toUpperCase().contentEquals("MICHAEL MYERS")) {
             loadedItems.add(new Item(this, "MMHA1", "MMHA1", "Loomis", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA2", "MMHA2", "Laurie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA3", "MMHA3", "Annie", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA4", "MMHA4", "Bob", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA5", "MMHA5", "Brackett", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA6", "MMHA6", "Lindsey", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA2", "MMHA2", "Laurie", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA3", "MMHA3", "Annie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA4", "MMHA4", "Bob", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA5", "MMHA5", "Brackett", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA6", "MMHA6", "Lindsey", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item(this, "MMHA7", "MMHA7", "Tommy", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA8", "MMHA8", "Judith", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA8", "MMHA8", "Judith", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item(this, "MMHA9", "MMHA9", "Lynda", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA10", "MMHA10", "Marion", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA11", "MMHA11", "Richie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA12", "MMHA12", "Lonnie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA13", "MMHA13", "Keith", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA14", "MMHA14", "Dr. Wynn", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA10", "MMHA10", "Marion", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA11", "MMHA11", "Richie", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA12", "MMHA12", "Lonnie", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA13", "MMHA13", "Keith", 10.25, 10.25, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA14", "MMHA14", "Dr. Wynn", 19.78, 19.78, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item(this, "MMHA15", "MMHA15", "Christopher", 8.00, 8.00, false, 852, 0, "", "", 1, false, 0, false));
             
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mmha1.gif", "C:/POS/SOFTWARE/mmha1.wav", "", "Was that the Boogeyman?");
             return loadedItems;

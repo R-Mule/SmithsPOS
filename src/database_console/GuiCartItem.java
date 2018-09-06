@@ -289,7 +289,7 @@ public class GuiCartItem {
             }
         });
 
-            mainFrame.resizeCartWindow();
+        mainFrame.resizeCartWindow();
     }//end ctor
 
     public void employeeSaleTriggered() {
@@ -356,7 +356,7 @@ public class GuiCartItem {
                     //System.out.println(discPer);
                     if (item.mutID.contentEquals("BATMON")) {
                         if (curCart.getItems().size() == 2 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22") && discPer == .5) {
-                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/dk2.gif","C:/POS/SOFTWARE/dk2.wav","","Because he's not a hero...");
+                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/dk2.gif", "C:/POS/SOFTWARE/dk2.wav", "", "Because he's not a hero...");
                         }
                     }//end EE BATMAN
                     item.setDiscountPercentage(discPer);
@@ -382,10 +382,10 @@ public class GuiCartItem {
     public void addItemButtonPressed(ActionEvent event) {//Since I know, I exist, just increase my quantity 1;
         int quantity = item.getQuantity();
         if (item.getPrice() == 0.02 && item.itemName.contentEquals("Jango Fett") && quantity == 1) {
-            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw2.gif","C:/POS/SOFTWARE/sw2.wav","","Always a pleasure to meet a Jedi.");
+            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw2.gif", "C:/POS/SOFTWARE/sw2.wav", "", "Always a pleasure to meet a Jedi.");
         }//end if EE Protocol
-        if(mainFrame.isChristmas&&item.mutID.contentEquals("HAPIZZA")&&item.quantity==10){//DREW 11.1363636364 x11 = 122.50
-            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha2.gif","C:/POS/SOFTWARE/ha2.wav","","Keep the change, ya filthy animal!");
+        if (mainFrame.isChristmas && item.mutID.contentEquals("HAPIZZA") && item.quantity == 10) {//DREW 11.1363636364 x11 = 122.50
+            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha2.gif", "C:/POS/SOFTWARE/ha2.wav", "", "Keep the change, ya filthy animal!");
         }
         item.setQuantity(quantity + 1);
         curCart.updateTotal();
@@ -523,7 +523,7 @@ public class GuiCartItem {
                     }
                 }
                 if (found) {
-                    EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx1.gif","C:/POS/SOFTWARE/mx1.wav","","Wake up Neo.");
+                    EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx1.gif", "C:/POS/SOFTWARE/mx1.wav", "", "Wake up Neo.");
                 }
             } else if (item.itemPrice == 0.51 && item.itemName.contentEquals("El Diablo")) {
                 boolean found = false;
@@ -533,7 +533,7 @@ public class GuiCartItem {
                     }
                 }
                 if (found) {
-                    EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/tn2.gif","C:/POS/SOFTWARE/tn2.wav","","From now on, it’s Magic Man and El Diablo.");
+                    EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/tn2.gif", "C:/POS/SOFTWARE/tn2.wav", "", "From now on, it’s Magic Man and El Diablo.");
                 }
             } else if (item.itemName.contentEquals("District")) {
                 ArrayList<Item> items = new ArrayList<>();
@@ -542,26 +542,88 @@ public class GuiCartItem {
                     Item item2 = items.get(0);
                     System.out.println(item2.mutID);
                     if (item2.mutID.contentEquals("BATDIS22")) {
-                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/dk1.gif","C:/POS/SOFTWARE/dk1.wav","","Why So Serious?");
+                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/dk1.gif", "C:/POS/SOFTWARE/dk1.wav", "", "Why So Serious?");
                     }
                 }
 
+            } else if (item.mutID.contains("MMHA")) {
+                boolean one = false, two = false, five = false, six = false, seven = false, ten = false, eleven = false, twelve = true, thirteen = true, fourteen = true;
+                if (curCart.getItems().size() == 11) {
+
+                    for (Item tempItem : curCart.getItems()) {
+                        if (!item.mutID.contentEquals(tempItem.mutID)) {
+                            switch (tempItem.mutID) {
+
+                                case "MMHA1":
+                                    one = true;
+                                    break;
+
+                                case "MMHA2":
+                                    two = true;
+                                    break;
+
+                                case "MMHA5":
+                                    five = true;
+                                    break;
+
+                                case "MMHA6":
+                                    six = true;
+                                    break;
+
+                                case "MMHA7":
+                                    seven = true;
+                                    break;
+
+                                case "MMHA10":
+                                    ten = true;
+                                    break;
+
+                                case "MMHA11":
+                                    eleven = true;
+                                    break;
+
+                                case "MMHA12":
+                                    twelve = true;
+                                    break;
+
+                                case "MMHA13":
+                                    thirteen = true;
+                                    break;
+
+                                case "MMHA14":
+                                    fourteen = true;
+                                    break;
+                            }//switch
+                        }//end if not deleted item.
+                    }//end for
+                    if (one && two && five && six && seven && ten && eleven && twelve && thirteen && fourteen) {
+                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mmha2.gif", "C:/POS/SOFTWARE/mmha2.wav", "", "HAPPY HALLOWEEN!");
+                    }
+                }//end if
             }//end if EE Protocol
             
-            removeAllGUIData();
-            curCart.removeItem(item);
-            mainFrame.resizeCartWindow();
-            curCart.setRequiresRepaint(true);
-            mainFrame.removeGuiCartItem(this);
+                removeAllGUIData();
+                curCart.removeItem(item);
+                mainFrame.resizeCartWindow();
+                curCart.setRequiresRepaint(true);
+                mainFrame.removeGuiCartItem(this);
 
+            }
+
+            curCart.updateTotal();
+            mainFrame.updateCartScreen();
+
+            //displayChangeDue = false;
+            //updateCartScreen();
         }
 
-        curCart.updateTotal();
-        mainFrame.updateCartScreen();
+    
 
-        //displayChangeDue = false;
-        //updateCartScreen();
-    }
+    
+
+    
+
+    
 
     public void notTaxableButtonPressed(ActionEvent event) {
 
