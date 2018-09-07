@@ -181,7 +181,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         this.add(textField);
         this.setVisible(true);
-
+        
         //HEADERS FOR ITEMS
         if (isHalloween) {
             itemNameHeader.setForeground(Color.red);
@@ -1124,6 +1124,9 @@ public class MainFrame extends javax.swing.JFrame {
                     if (!field1.getText().isEmpty() && validateInteger(field1.getText())) {
                         String clerkName = myDB.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
                         if (clerkName != null) {
+                            if(isHalloween){
+                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mario1.wav");
+                            }
                             employeeSelectionHeader.setText("Active Clerk: " + clerkName);
                             checkForAdminButtonVisible();
                             clerkLogoutButton.setVisible(true);
@@ -3536,7 +3539,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.48", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.1.49", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

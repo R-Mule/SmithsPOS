@@ -433,6 +433,7 @@ public class CheckoutHandler {
             storeCopy += "Transaction ID: " + creditInfo.get(2) + "\n";
             receipt += "Transaction ID: " + creditInfo.get(2) + "\n";
             if (!creditInfo.get(3).contentEquals("")) {
+                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/apple.wav");// This is on CHIP READER SOUND!
                 storeCopy += "AID: " + creditInfo.get(3) + "\n";
                 receipt += "AID: " + creditInfo.get(3) + "\n";
                 storeCopy += "TVR: " + creditInfo.get(4) + "\n";

@@ -42,5 +42,22 @@ public class EasterEgg {
                             }
         //end try catch for audio
     }
+    public EasterEgg(String audioFilePath){
+         try {
+                                File audioFile = new File(audioFilePath);
+                                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                                AudioFormat format = audioStream.getFormat();
+
+                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                                Clip audioClip = (Clip) AudioSystem.getLine(info);
+                                audioClip.open(audioStream);
+                                audioClip.start();
+                               // audioClip.stop();
+
+                            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+    }
     
 }
