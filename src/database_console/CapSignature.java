@@ -1,7 +1,6 @@
 package database_console;
 
 /**
- *
  * @author A.Smith
  */
 import com.lowagie.text.Document;
