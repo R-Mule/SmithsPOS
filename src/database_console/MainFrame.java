@@ -2505,7 +2505,7 @@ public class MainFrame extends javax.swing.JFrame {
                         } else {
                             if (field1.getText().contentEquals("BTITUDE")) {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/bat.gif", "C:/POS/SOFTWARE/batman.wav", "", "You think muscles are big, you haven't seen my brain!");
-                            } else if (field1.getText().contentEquals("Prince") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Anduin") && field4.getText().contentEquals("102718")) {
+                            } else if (field1.getText().contentEquals("Prince") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Anduin") && field4.getText().contentEquals("091318")) {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/as1.gif", "C:/POS/SOFTWARE/as1.wav", "", "Sometimes we must fight for what we believe in.");
                             } else if (field1.getText().contentEquals("Princess") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Kieryn") && field4.getText().contentEquals("022411")) {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ks1.gif", "C:/POS/SOFTWARE/ks1.wav", "", "Sometimes our strengths lie beneath the surface.");
