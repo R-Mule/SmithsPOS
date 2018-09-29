@@ -28,7 +28,7 @@ public class Database {
     private String host;
     private String userName;
     private String password;
-    private String driverPath = "com.mysql.jdbc.Driver";
+    private String driverPath = "com.mysql.cj.jdbc.Driver";
     private ConfigFileReader reader;
 
     Database() {

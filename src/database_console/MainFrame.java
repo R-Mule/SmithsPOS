@@ -56,7 +56,7 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setVisible(true);
         helpSP.setAutoscrolls(true);
         helpSP.setBounds(100, 100, 1120, 700);
-
+        TopMenuBar menuBar = new TopMenuBar();//Hollie's Menu Bar!
         helpSP.setPreferredSize(new Dimension(1120, 700));
         jPanel1.setPreferredSize(new Dimension(1120, 500));//jPanel1.setPreferredSize(new Dimension(1120, 2000));
         helpSP.setVisible(true);
