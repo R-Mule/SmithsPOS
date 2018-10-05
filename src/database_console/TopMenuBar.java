@@ -17,7 +17,9 @@ public class TopMenuBar extends JMenuBar {
 
     //Class Variables
     JMenu addMenu, remMenu, dataMenu;
-    JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance, addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload;
+    JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
+            addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
+            masterRefund,masterRptRecpt,drawerReports,updatePrice;
     Database myDB;
     MainFrame mf;
 
@@ -86,7 +88,7 @@ public class TopMenuBar extends JMenuBar {
         this.add(addMenu);
         this.add(remMenu);
         this.add(dataMenu);
-        
+
 //Action listeners for addition menu
         addDmeAccount.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -215,7 +217,48 @@ public class TopMenuBar extends JMenuBar {
     }//end dmeAccountActionPerformed
 
     private void addRxAccountActionPerformed(java.awt.event.ActionEvent evt) {
-        System.out.println("Add Rx Account Menu Item Pressed!");
+        JFrame textInputFrame = new JFrame("");
+        JTextField field5 = new JTextField();
+        JTextField field1 = new JTextField();
+        JTextField field2 = new JTextField();
+        JTextField field3 = new JTextField();
+        JTextField field4 = new JTextField();
+        Object[] message = {
+            "QS1 UUID: ", field5, "Account Name: ", field1, "First Name: ", field2, "Last Name: ", field3, "DOB: example: 030986", field4};
+
+        field5.addAncestorListener(new RequestFocusListener());
+        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add RX Account Menu", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            if (!mf.validateInteger(field4.getText())) {
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "Not a valid DOB");
+            } else if (myDB.doesChargeAccountExisit(field1.getText().toUpperCase())) {
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "Error: Charge Account Name already exisits!");
+            } else if (myDB.doesQS1UUIDExisit(field5.getText().toUpperCase())) {
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "Error: QS1 UUID already exisits!");
+            } else if (field5.getText().isEmpty()) {
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "Must enter a UUID!");
+            } else {
+
+                Object[] message2 = {
+                    "Are you sure?\nUUID: " + field5.getText().toUpperCase() + "\nAccount Name: " + field1.getText().toUpperCase(), "First Name: " + field2.getText().toUpperCase(), "Last Name: " + field3.getText().toUpperCase(), "DOB: example: 010520: " + field4.getText()};
+
+                int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add RX Account Menu", JOptionPane.OK_CANCEL_OPTION);
+                if (option2 == JOptionPane.OK_OPTION) {
+                    myDB.addChargeAccount(field1.getText().toUpperCase(), field3.getText().toUpperCase(), field2.getText().toUpperCase(), field4.getText(), field5.getText().toUpperCase());
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Success!");
+                }
+                //FIELD1 CONTAINS DESCRIPTION
+                //FIELD2 AMOUNT
+                mf.displayChangeDue = false;
+                mf.updateCartScreen();
+            }//end else
+        }//end if  
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
     }//end addRxAccountActionPerformed
 
     private void addInsuranceActionPerformed(java.awt.event.ActionEvent evt) {
@@ -264,11 +307,11 @@ public class TopMenuBar extends JMenuBar {
 
     }//end updateVisible()
 
-    public void setAllVisible(){
-        
+    public void setAllVisible() {
+
     }//end setAllVisible()
-    
-    public void setAllNotVisible(){
-        
+
+    public void setAllNotVisible() {
+
     }//end setAllNotVisible()
 }//end TopMenuBar Class
