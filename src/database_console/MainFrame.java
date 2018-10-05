@@ -3052,7 +3052,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void setData(Database myDB) {
-        this.setTitle("Smith's Super-Aid POS - Developed by: Andrew Smith");
+        this.setTitle("Smith's Super-Aid POS - Developed by: Andrew & Hollie Smith");
         this.myDB = myDB;
 
         if (isHalloween) {
