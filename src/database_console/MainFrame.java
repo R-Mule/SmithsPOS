@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
@@ -46,7 +45,7 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        jPanel1 = new JPanel(new FlowLayout());
+        jPanel1 = new JPanel(new BorderLayout());
         jPanel1.setBounds(100, 100, 1120, 1200);//jPanel1.setBounds(100, 100, 1120, 1200);
         jPanel1.setBackground(new Color(255, 255, 255));
         jPanel1.setAutoscrolls(true);
@@ -56,10 +55,13 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setVisible(true);
         helpSP.setAutoscrolls(true);
         helpSP.setBounds(100, 100, 1120, 700);
-        TopMenuBar menuBar = new TopMenuBar();//Hollie's Menu Bar!
+        TopMenuBar menuBar = new TopMenuBar(myDB,this);//Hollie's Menu Bar!
+        this.setJMenuBar(menuBar);
+       // this.add(menuBar);
         helpSP.setPreferredSize(new Dimension(1120, 700));
         jPanel1.setPreferredSize(new Dimension(1120, 500));//jPanel1.setPreferredSize(new Dimension(1120, 2000));
         helpSP.setVisible(true);
+        
         this.add(helpSP);
         pharmacyName = reader.getPharmacyName();
         if (pharmacyName.contentEquals(superaid)) {//This only allows Holiday events for Super-Aid Pharmacy
@@ -3161,7 +3163,7 @@ public class MainFrame extends javax.swing.JFrame {
         return true;
     }
 
-    private boolean validateInteger(String integer) {
+    protected boolean validateInteger(String integer) {
         try {
             int integ = Integer.parseInt(integer);
             if (integ < 0) {
