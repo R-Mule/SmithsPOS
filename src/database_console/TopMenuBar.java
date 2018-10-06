@@ -1,18 +1,19 @@
 package database_console;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -484,34 +485,39 @@ public class TopMenuBar extends JMenuBar {
     //Path selection to be implemented (below)
     private void dmeDataUploadActionPerformed(java.awt.event.ActionEvent evt) {
         {
-            //C://QS1/AR.txt is account filepath to parse.
-
-            if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                // yes option
-                if (mf.employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")) {//load DME AR
-                    System.out.println("HELLO DEBBIE!");
-                } else {
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files", "csv");
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileFilter(filter);
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.name")));
+            int result = fileChooser.showOpenDialog(mf);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    myDB.loadDMEData(selectedFile.getAbsolutePath());
+                    mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
                 }
-                String path = "C://Users/Office/Desktop/RptAging.csv"; //String path = "C://RptAging.csv";//
-                myDB.loadDMEData(path);
-                mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
-
-            System.out.println("DME Data Upload Menu Item Pressed!");
         }
     }//end dmeDataUploadActionPerformed    
     //Path selection to be implemented (below)
+
     private void rxDataUploadActionPerformed(java.awt.event.ActionEvent evt) {
         {
             {
-                //C://QS1/AR.txt is account filepath to parse.
-
-                if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
-                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    //Hollie or Drew, do AR.
-                    String path = "C://QS1/AR.txt";
-                    myDB.loadARData(path);
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileFilter(filter);
+                fileChooser.setCurrentDirectory(new File(System.getProperty("user.name")));
+                int result = fileChooser.showOpenDialog(mf);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
+                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        //Hollie or Drew, do AR.
+                        // String path = "C://QS1/AR.txt";
+                        myDB.loadARData(selectedFile.getAbsolutePath());
+                    }
                 }
             }
             mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
