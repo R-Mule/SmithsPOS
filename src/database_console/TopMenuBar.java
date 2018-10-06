@@ -1,6 +1,12 @@
 package database_console;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -16,10 +22,10 @@ import javax.swing.JTextField;
 public class TopMenuBar extends JMenuBar {
 
     //Class Variables
-    JMenu addMenu, remMenu, dataMenu;
+    JMenu addMenu, remMenu, mgmtMenu, feedMenu;
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
-            masterRefund,masterRptRecpt,drawerReports,updatePrice;
+            masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest; //bugReport and featureRequest - Hollie's suggestions
     Database myDB;
     MainFrame mf;
 
@@ -33,10 +39,12 @@ public class TopMenuBar extends JMenuBar {
         remMenu.setMnemonic(KeyEvent.VK_R);
         //This is where Hollie added a new menu to accommodate data uploads in a separate way that seems clean...
         //If it's screwy, delete from the above comment line down to happy code
-        dataMenu = new JMenu("Data");
-        dataMenu.setMnemonic(KeyEvent.VK_D);
+        mgmtMenu = new JMenu("Management");
+        mgmtMenu.setMnemonic(KeyEvent.VK_M);
+        feedMenu = new JMenu("Feedback");
+        feedMenu.setMnemonic(KeyEvent.VK_F);
 
-//All addition items grouped here
+//Add  menu items
         addDmeAccount = new JMenuItem();
         addDmeAccount.setText("DME Account");
         addMenu.add(addDmeAccount);//This adds DME Account Selection to Add Menu Choices
@@ -56,7 +64,7 @@ public class TopMenuBar extends JMenuBar {
         addInventoryItem = new JMenuItem();
         addInventoryItem.setText("Inventory Item");
         addMenu.add(addInventoryItem);//This adds Inventory Item Selection to Add Menu Choices
-//All removal items grouped here
+//Remove menu items
         remDmeAccount = new JMenuItem();
         remDmeAccount.setText("DME Account");
         remMenu.add(remDmeAccount);//This adds DME Account Selection to Rem Menu Choices
@@ -76,20 +84,45 @@ public class TopMenuBar extends JMenuBar {
         remInventoryItem = new JMenuItem();
         remInventoryItem.setText("Inventory Item");
         remMenu.add(remInventoryItem);//This adds Inventory Item Selection to Rem Menu Choices
-//Both data upload items grouped here
+//Management menu items
         dmeDataUpload = new JMenuItem();
         dmeDataUpload.setText("DME Data Upload");
-        dataMenu.add(dmeDataUpload);//This adds DME Data Upload to Data Menu Choices
+        mgmtMenu.add(dmeDataUpload);//This adds DME Data Upload to Management Menu Choices
 
         rxDataUpload = new JMenuItem();
         rxDataUpload.setText("Rx Data Upload");
-        dataMenu.add(rxDataUpload);//This adds Rx Data Upload to Data Menu Choices
+        mgmtMenu.add(rxDataUpload);//This adds Rx Data Upload to Management Menu Choices
+
+        masterRefund = new JMenuItem();
+        masterRefund.setText("Master Refund");
+        mgmtMenu.add(masterRefund);//This adds Master Refund to Management Menu Choices
+
+        masterRptRecpt = new JMenuItem();
+        masterRptRecpt.setText("Master Reprint Receipt");
+        mgmtMenu.add(masterRptRecpt);//This adds Master Reprint Receipt to Management Menu Choices
+
+        drawerReports = new JMenuItem();
+        drawerReports.setText("Drawer Reports");
+        mgmtMenu.add(drawerReports);//This adds Drawer Reports to Management Menu Choices
+
+        updatePrice = new JMenuItem();
+        updatePrice.setText("Update Price");
+        mgmtMenu.add(updatePrice);//This adds Update Price to Management Menu Choices
+//Feedback menu items
+        bugReport = new JMenuItem();
+        bugReport.setText("Bug Report");
+        feedMenu.add(bugReport);//This adds Update Price to Management Menu Choices
+
+        featureRequest = new JMenuItem();
+        featureRequest.setText("Feature Request");
+        feedMenu.add(featureRequest);//This adds Update Price to Management Menu Choices
 
         this.add(addMenu);
         this.add(remMenu);
-        this.add(dataMenu);
+        this.add(mgmtMenu);
+        this.add(feedMenu);
 
-//Action listeners for addition menu
+//Add menu action listeners
         addDmeAccount.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -124,7 +157,7 @@ public class TopMenuBar extends JMenuBar {
                 addInventoryItemActionPerformed(evt);
             }
         });
-//Action listeners for removal menu
+//Remove menu action listeners
         remDmeAccount.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -159,7 +192,7 @@ public class TopMenuBar extends JMenuBar {
                 remInventoryItemActionPerformed(evt);
             }
         });
-
+//Management menu action listeners
         dmeDataUpload.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -171,6 +204,45 @@ public class TopMenuBar extends JMenuBar {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rxDataUploadActionPerformed(evt);
+            }
+        });
+
+        masterRefund.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                masterRefundActionPerformed(evt);
+            }
+        });
+        masterRptRecpt.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                masterRptRecptActionPerformed(evt);
+            }
+        });
+        drawerReports.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                drawerReportsActionPerformed(evt);
+            }
+        });
+        updatePrice.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updatePriceActionPerformed(evt);
+            }
+        });
+//Feedback menu action listeners
+        bugReport.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bugReportActionPerformed(evt);
+            }
+        });
+
+        featureRequest.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                featureRequestActionPerformed(evt);
             }
         });
     }//end ctor
@@ -213,7 +285,6 @@ public class TopMenuBar extends JMenuBar {
             }//end else
         }//end if  
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-        System.out.println("DME Add Account Menu Item Pressed!");
     }//end dmeAccountActionPerformed
 
     private void addRxAccountActionPerformed(java.awt.event.ActionEvent evt) {
@@ -262,45 +333,325 @@ public class TopMenuBar extends JMenuBar {
     }//end addRxAccountActionPerformed
 
     private void addInsuranceActionPerformed(java.awt.event.ActionEvent evt) {
+        {
+            JFrame textInputFrame = new JFrame("");
+
+            JTextField field1 = new JTextField();
+            field1.addAncestorListener(new RequestFocusListener());
+            Object[] message = {
+                "Insurance to Add:", field1};
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Insurance Menu", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                if (!field1.getText().isEmpty()) {
+                    if (myDB.doesInsuranceExisit(field1.getText().replaceAll("'", " "))) {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: Insurance already exisits!");
+                    } else {
+                        myDB.addInsurance(field1.getText().replaceAll("'", " "));
+                    }
+                }
+                /*
+                JFrame textInputFrame = new JFrame("");
+                JTextField field2 = new JTextField();
+                field2.addAncestorListener(new RequestFocusListener());
+                Object[] message = {"Insurance to Remove", field2};
+                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Insurance Menu", JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.OK_OPTION)
+                if (!field2.getText().isEmpty()) {
+                    if (!myDB.doesInsuranceExisit(field2.getText())) {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: No such insurance to remove!");
+                    } else {
+                        myDB.removeInsurance(field2.getText());
+                    }
+                }*/
+
+            }
+            mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+        }
+
         System.out.println("Add Insurance Menu Item Pressed!");
     }//end addInsuranceActionPerformed
+    //Fn to be built (below)
 
     private void addEmployeeActionPerformed(java.awt.event.ActionEvent evt) {
         System.out.println("Add Employee Menu Item Pressed!");
     }//end addEmployeeActionPerformed
 
     private void addInventoryItemActionPerformed(java.awt.event.ActionEvent evt) {
+        {
+            JFrame textInputFrame = new JFrame("");
+            JTextField field1 = new JTextField();
+            JTextField field2 = new JTextField();
+            JTextField field3 = new JTextField();
+            JTextField field4 = new JTextField();
+            JTextField field5 = new JTextField();
+            JTextField field6 = new JTextField();
+            JTextField field7 = new JTextField();
+            Object[] message = {
+                "Name: ", field1, "ID: ", field2, "UPC: ", field3, "Cost: $", field4, "Price: $", field5, "Category: ", field6, "Is Taxed: ", field7};
+            field7.setText("Yes");
+            field7.setSelectionStart(0);
+            field7.setSelectionEnd(4);
+
+            field1.addAncestorListener(new RequestFocusListener());
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add Item Menu", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                if (!mf.validateDouble(field4.getText()) || !mf.validateDouble(field5.getText()) || !mf.validateInteger(field6.getText())) {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Invalid price, cost, or category.");
+                } else if (!field7.getText().toUpperCase().contentEquals("YES") && !field7.getText().toUpperCase().contentEquals("NO")) {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Must enter YES or NO for Is Taxed");
+                } else if (myDB.doesItemExistByUPC(field3.getText())) {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: Same UPC exists for item already.");
+                } else if (myDB.doesItemExistByID(field2.getText())) {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: Same mutual ID exists for item already.");
+                } else {
+
+                    Object[] message2 = {
+                        "Are you sure?\nName: " + field1.getText().replaceAll("'", " "), "ID: " + field2.getText().replaceAll("'", " "), "UPC: " + field3.getText().replaceAll("'", " "), "Cost: $ " + field4.getText(), "Price: $ " + field5.getText(), "Category: " + field6.getText(), "Is Taxed:  " + field7.getText()};
+
+                    int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add Item Menu", JOptionPane.OK_CANCEL_OPTION);
+                    if (option2 == JOptionPane.OK_OPTION) {
+                        boolean taxed = false;
+                        if (field7.getText().toUpperCase().contentEquals("YES")) {
+                            taxed = true;
+                        }
+                        String upc = field3.getText();
+                        if (upc.length() > 11) {
+                            upc = upc.replaceAll("'", "");
+                            upc = upc.substring(0, 11);
+                        }
+                        myDB.addItem(field2.getText().replaceAll("'", ""), upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field5.getText()), Double.parseDouble(field4.getText()), taxed, Integer.parseInt(field6.getText()));
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Success!");
+                    }
+                    //FIELD1 CONTAINS DESCRIPTION
+                    //FIELD2 AMOUNT
+                    mf.displayChangeDue = false;
+                    mf.updateCartScreen();
+                }//end else
+            }//end if  
+            mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+        }//end actionPerformed
         System.out.println("Add Inventory Item Menu Item Pressed!");
     }//end addInventoryItemActionPerformed
 
 //Removal menu item functions
+    //Fn to be built (below)
     private void remDmeAccountActionPerformed(java.awt.event.ActionEvent evt) {
         System.out.println("DME Remove Account Menu Item Pressed!");
     }//end dmeAccountActionPerformed
+    //Fn to be built (below)
 
     private void remRxAccountActionPerformed(java.awt.event.ActionEvent evt) {
         System.out.println("Remove Rx Account Menu Item Pressed!");
     }//end rxAccountActionPerformed
 
     private void remInsuranceActionPerformed(java.awt.event.ActionEvent evt) {
+        JFrame textInputFrame = new JFrame("");
+        JTextField field2 = new JTextField();
+        field2.addAncestorListener(new RequestFocusListener());
+        Object[] message = {"Insurance to Remove", field2};
+        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Insurance Menu", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            if (!field2.getText().isEmpty()) {
+                if (!myDB.doesInsuranceExisit(field2.getText())) {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: No such insurance to remove!");
+                } else {
+                    myDB.removeInsurance(field2.getText());
+                }
+            }
+        }
         System.out.println("Remove Insurance Menu Item Pressed!");
     }//end InsuranceActionPerformed
+    //Fn to be built (below)
 
     private void remEmployeeActionPerformed(java.awt.event.ActionEvent evt) {
         System.out.println("Remove Employee Menu Item Pressed!");
     }//end EmployeeActionPerformed
+    //Fn to be built (below)
 
     private void remInventoryItemActionPerformed(java.awt.event.ActionEvent evt) {
         System.out.println("Remove Inventory Item Menu Item Pressed!");
     }//end rxAccountActionPerformed
 
+//Management menu items
+    //Path selection to be implemented (below)
     private void dmeDataUploadActionPerformed(java.awt.event.ActionEvent evt) {
-        System.out.println("DME Data Upload Menu Item Pressed!");
-    }//end rxAccountActionPerformed
+        {
+            //C://QS1/AR.txt is account filepath to parse.
 
+            if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                // yes option
+                if (mf.employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")) {//load DME AR
+                    System.out.println("HELLO DEBBIE!");
+                } else {
+                }
+                String path = "C://Users/Office/Desktop/RptAging.csv"; //String path = "C://RptAging.csv";//
+                myDB.loadDMEData(path);
+                mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }
+
+            System.out.println("DME Data Upload Menu Item Pressed!");
+        }
+    }//end dmeDataUploadActionPerformed    
+    //Path selection to be implemented (below)
     private void rxDataUploadActionPerformed(java.awt.event.ActionEvent evt) {
+        {
+            {
+                //C://QS1/AR.txt is account filepath to parse.
+
+                if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    //Hollie or Drew, do AR.
+                    String path = "C://QS1/AR.txt";
+                    myDB.loadARData(path);
+                }
+            }
+            mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+        }
         System.out.println("Rx Data Upload Menu Item Pressed!");
-    }//end rxAccountActionPerformed
+    }//end rxDataUploadActionPerformed
+
+    private void masterRefundActionPerformed(java.awt.event.ActionEvent evt) {
+        {
+            JFrame textInputFrame = new JFrame("");
+            JTextField field2 = new JTextField();
+            JTextField field1 = new JTextField();
+            field2.addAncestorListener(new RequestFocusListener());
+            Object[] message = {"Description: ", field2,
+                "Refund Amount: $", field1};
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Refund Amount Menu", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                if (mf.validateDouble(field1.getText()) && field2.getText() != null && !field2.getText().isEmpty()) {
+
+                    mf.checkout.beginMasterRefund(Double.parseDouble(field1.getText()), field2.getText());
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Success! Please give them: $" + field1.getText());
+                } else {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Refund failed. Enter a description and a number please.");
+                }
+            }
+            mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+        }
+        System.out.println("Master Refund Menu Item Pressed!");
+    }//end masterRefundActionPerformed
+
+    private void masterRptRecptActionPerformed(java.awt.event.ActionEvent evt) {
+        {
+            JFrame textInputFrame = new JFrame("");
+
+            JTextField field1 = new JTextField();
+            field1.addAncestorListener(new RequestFocusListener());
+            Object[] message = {
+                "Receipt #:", field1};
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Master Reprint Receipt Menu", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                if (!field1.getText().isEmpty()) {
+                    String receipt = myDB.getReceiptString(field1.getText());
+                    if (receipt != null && !receipt.isEmpty()) {
+                        mf.checkout.reprintReceipt(receipt);
+                    } else {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Could not find receipt.");
+                    }
+                }
+
+            }
+            mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+        }
+        System.out.println("Master Reprint Receipt Menu Item Pressed!");
+    }//end masterRptRecptActionPerformed
+
+    private void drawerReportsActionPerformed(java.awt.event.ActionEvent evt) {
+        {
+            JFrame textInputFrame = new JFrame("");
+            DrawerReport dr = null;
+            JTextField field1 = new JTextField();
+            field1.addAncestorListener(new RequestFocusListener());
+            Object[] message = {
+                "Report Date: EX. 012017D", field1};
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Report Name", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+
+                try {
+                    File f;
+                    String path = "";
+                    if (field1.getText().toUpperCase().contains("R")) {
+                        f = new File("Z:\\" + field1.getText().toUpperCase() + ".posrf");
+                        path = "Z:\\";
+                        // System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
+                    } else {
+                        f = new File("Y:\\" + field1.getText().toUpperCase() + ".posrf");
+                        path = "Y:\\";
+                        //System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
+                    }
+                    if (f.exists() && !f.isDirectory()) {
+                        // read object from file
+                        FileInputStream fis = new FileInputStream(path + field1.getText().toUpperCase() + ".posrf");
+                        ObjectInputStream ois = new ObjectInputStream(fis);
+                        dr = (DrawerReport) ois.readObject();
+                        dr.generateReport(field1.getText().toUpperCase());
+                        ois.close();
+                    } else {
+                        //WRONG DOESNT EXISIT!
+                    }
+
+                    //System.out.println("One:" + result.getOne() + ", Two:" + result.getTwo());
+                } catch (FileNotFoundException e) {
+                    System.out.println("JERE");
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    System.out.println("EERE");
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                    System.out.println("JERsE");
+                }
+
+            }
+            mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+        }
+        System.out.println("Drawer Reports Menu Item Pressed!");
+    }//end DrawerReportsActionPerformed
+
+    private void updatePriceActionPerformed(java.awt.event.ActionEvent evt) {
+        {
+            JFrame textInputFrame = new JFrame("");
+
+            JTextField field1 = new JTextField();
+            JTextField field2 = new JTextField();
+            field1.addAncestorListener(new RequestFocusListener());
+            Object[] message = {
+                "Mutual ID:", field1, "New Price: $", field2};
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Item Info", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                if (mf.validateDouble(field2.getText())) {
+                    myDB.updateItemPrice(field1.getText(), Double.parseDouble(field2.getText()));
+                }
+            }
+            mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+        }
+        System.out.println("Update Price Menu Item Pressed!");
+    }//end updatePriceActionPerformed
+//Feedback menu items
+    //Fn to be built (below)
+
+    private void bugReportActionPerformed(java.awt.event.ActionEvent evt) {
+        System.out.println("Bug Report Menu Item Pressed!");
+    }//end masterRefundActionPerformed
+    //Fn to be built (below)
+
+    private void featureRequestActionPerformed(java.awt.event.ActionEvent evt) {
+        System.out.println("Feature Request Menu Item Pressed!");
+    }//end masterRefundActionPerformed
 
     //Other action events go here.
     public void updateVisible() {//this will eventually handle responsible menu items to show or not show.

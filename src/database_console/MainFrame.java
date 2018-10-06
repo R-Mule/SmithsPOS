@@ -55,8 +55,7 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setVisible(true);
         helpSP.setAutoscrolls(true);
         helpSP.setBounds(100, 100, 1120, 700);
-        TopMenuBar menuBar = new TopMenuBar(myDB,this);//Hollie's Menu Bar!
-        this.setJMenuBar(menuBar);
+        //OLD DREW
        // this.add(menuBar);
         helpSP.setPreferredSize(new Dimension(1120, 700));
         jPanel1.setPreferredSize(new Dimension(1120, 500));//jPanel1.setPreferredSize(new Dimension(1120, 2000));
@@ -3054,7 +3053,8 @@ public class MainFrame extends javax.swing.JFrame {
     public void setData(Database myDB) {
         this.setTitle("Smith's Super-Aid POS - Developed by: Andrew & Hollie Smith");
         this.myDB = myDB;
-
+        TopMenuBar menuBar = new TopMenuBar(myDB,this);//Hollie's Menu Bar!
+        this.setJMenuBar(menuBar);
         if (isHalloween) {
             getContentPane().setBackground(Color.BLACK);
         } else if (isThanksgiving) {
@@ -3464,7 +3464,7 @@ public class MainFrame extends javax.swing.JFrame {
     public javax.swing.JPanel jPanel1;
     protected Database myDB;
     private Cart curCart;
-    private CheckoutHandler checkout;
+    protected CheckoutHandler checkout;
     private int[] integerArray = new int[12];
     private int arrayLoc = 0;
     JLabel totalPrice = new JLabel("Total Price: ", SwingConstants.RIGHT);
