@@ -48,7 +48,7 @@ public class GuiCartItem {
 
     Item item;//corresponding item in cart that I belong to.
     Cart curCart;//the cart in which I am placed.
-
+    
     public GuiCartItem(Item item, int baseY, JPanel frameGUI, Cart curCart, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         this.frame = frameGUI;
@@ -294,7 +294,8 @@ public class GuiCartItem {
 
     public void employeeSaleTriggered() {
         if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
-            item.setPrice(item.getCost());
+            //System.out.println("1");
+            //item.setPrice(item.getCost());
             curCart.updateTotal();
             taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
             priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
@@ -304,7 +305,19 @@ public class GuiCartItem {
             mainFrame.updateCartScreen();
         }
     }
-
+    public void employeeSaleCancelled() {
+        if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
+           // System.out.println("4");
+            //item.setPrice(item.getPrice());
+            curCart.updateTotal();
+            taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
+            priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
+            quantityLabel.setText(item.getQuantity() + "x");
+            totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
+            pricePerItemLabel.setText(String.format("%.2f", item.getPrice()));
+            mainFrame.updateCartScreen();
+        }
+    }
     public void updateQuantityLabelAmount() {
         quantityLabel.setText(item.getQuantity() + "x");
         totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));

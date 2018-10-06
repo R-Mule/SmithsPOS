@@ -7,7 +7,8 @@ package database_console;
 public class Item {
 
     protected String itemName = "";
-    protected double itemPrice = -1;
+    public double itemPrice = -1;
+    
     protected String mutID = "";
     protected double itemCost = 0;
     protected String itemUPC = "";
@@ -25,7 +26,8 @@ public class Item {
     protected boolean isPreCharged = false;
     protected boolean hasBeenRefunded=false;
     protected boolean hasTaxBeenRefunded=false;
-
+    protected double employeePrice=itemPrice;
+    
     Item(Database myDB, String UPCorID) {
         this.myDB = myDB;
         if (UPCorID.length() == 6) {
@@ -34,10 +36,13 @@ public class Item {
             itemUPC = UPCorID;
         }
         setup();
+        employeePrice=itemPrice;
+       // setEmployeeDiscount(employeeDiscActive);
     }
 
     Item(Database myDB){
         this.myDB=myDB;
+      //  setEmployeeDiscount(employeeDiscActive);
     }
 //THIS CONSTRUCTOR IS TO BE USED ONLY BY RX's
     Item(Database myDB, int rxNumber, String fillDate, String insurance, double copay, boolean isPreCharged) {
@@ -57,7 +62,7 @@ public class Item {
         this.isPreCharged = isPreCharged;
         hasBeenRefunded=false;
         hasTaxBeenRefunded=false;
-
+        employeePrice=itemPrice;
     }
 
     Item(Database myDB, String mutID, String upc, String name, double price, double cost, boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged) {
@@ -78,6 +83,8 @@ public class Item {
         this.isPreCharged = isPreCharged;
         hasBeenRefunded=false;
         hasTaxBeenRefunded=false;
+        employeePrice=itemPrice;
+      //  setEmployeeDiscount(employeeDiscActive);
 
     }
 
@@ -133,10 +140,21 @@ public class Item {
         return quantity;
     }
 
+    public void setEmployeeDiscount(boolean isActive){
+       // employeeDiscActive = isActive;
+        if(isActive&&employeePrice<=itemPrice){
+            employeePrice = itemPrice;
+            itemPrice = itemCost;
+        }else if(!isActive){
+            itemPrice = employeePrice;
+        }
+    }
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
+
+    
     public double getTotal() {
         double totalOnItem = 0;
         double itemP;

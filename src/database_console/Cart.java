@@ -1,8 +1,6 @@
 package database_console;
 
-
 import java.util.ArrayList;
-
 
 /**
  *
@@ -15,9 +13,12 @@ public class Cart {
     protected double totalPriceBeforeTax = 0;
     final protected double taxRate = 0.053;
     protected double amtOfTaxCharged = 0;
-    private ArrayList<Item> items = new ArrayList<Item>();
+    private ArrayList<Item> items = new ArrayList<>();
+    private ArrayList<String> employeeIDs = new ArrayList<>();
+    //private ArrayList<Double> employeePrice = new ArrayList<>();
     protected boolean requiresRepaint = false;
     private boolean displayActive = false;
+    boolean isEmpDiscountActive = false;
 
     Cart() {
         updateTotal();
@@ -31,6 +32,12 @@ public class Cart {
     public boolean isEmpty() {
         return items.isEmpty();
     }
+
+public void isEmpDiscountActive(boolean isActive){
+    isEmpDiscountActive=isActive;
+    updateTotal();
+
+}
 
     public void loadCart(String id, Database myDB) {
         ArrayList<Item> tempItems = myDB.getTicketItemsFromDatabase(id);
@@ -72,13 +79,14 @@ public class Cart {
 
     public void storeCart(String id, Database myDB) {
         for (Item item : items) {
+            
             myDB.storeItem(item, id);
         }
         //totalPriceAfterTax=0;
         //totalPriceBeforeTax=0;
         //amtOfTaxCharged=0;
         items.clear();
-        
+
         updateTotal();
     }//end storeCart
 
@@ -147,6 +155,7 @@ public class Cart {
             if (tooAdd) {
                 items.add(itemToAdd);
                 itemToAdd.setQuantity(1);
+
                 //  System.out.println("HERE2");
             }
 
@@ -154,6 +163,7 @@ public class Cart {
         if (items.isEmpty()) {//no matches because cart must be empty
             items.add(itemToAdd);
             itemToAdd.setQuantity(1);
+
             //  System.out.println("HERE3");
         }
         if (!tooAdd) {
@@ -187,6 +197,8 @@ public class Cart {
             totalPriceAfterTax = 0;
             amtOfTaxCharged = 0;
             for (Item temp : items) {
+                temp.setEmployeeDiscount(isEmpDiscountActive);
+
                 if (!temp.isPreCharged()) {
                     if (temp.isTaxable()) {
                         taxableAmt += round(round(temp.getPrice() * temp.getQuantity()) - temp.getDiscountAmount());
@@ -279,7 +291,7 @@ public class Cart {
     void setMassDiscount(double discPer) {
         boolean found = false;
         for (Item item : items) {
-            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860&&item.getCategory()!=861) {
+            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860 && item.getCategory() != 861) {
                 item.setDiscountPercentage(discPer);
 
                 if (item.itemName.contentEquals("Bread") && item.itemPrice == 112519.92 && item.getDiscountPercentage() == 1) {
@@ -289,7 +301,7 @@ public class Cart {
             }
         }
         if (found) {
-            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al3.gif","C:/POS/SOFTWARE/al3.wav","","A WHOLE NEW WORLD!!");
+            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al3.gif", "C:/POS/SOFTWARE/al3.wav", "", "A WHOLE NEW WORLD!!");
         }//end if EE Protocol
         updateTotal();
     }

@@ -3098,13 +3098,37 @@ public class MainFrame extends javax.swing.JFrame {
         empList2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 String employeeToCheckout = (String) empList2.getSelectedItem();
+                System.out.println(employeeToCheckout);
                 if (!employeeToCheckout.contentEquals("NO")) {
+                    curCart.isEmpDiscountActive(true);
+                    /*
+                    for(Item item : curCart.getItems()){
+                        if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
+                        item.setEmployeeDiscount(true);
+                        }
+                    }*/
+                    //curCart.updateTotal();
+                    updateCartScreen();
                     for (GuiCartItem item : guiItems) {
                         item.employeeSaleTriggered();
                     }
-                } else {
-                    voidCarts();
+                    
+                } else{
+                    curCart.isEmpDiscountActive(false);
+                   /* for(Item item : curCart.getItems()){
+                        if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
+                        item.setEmployeeDiscount(false);
+                        }
+                    }*/
+                    //curCart.updateTotal();
+                    for (GuiCartItem item : guiItems) {
+                        
+                        item.employeeSaleCancelled();
+                    }
+                    
+                   // voidCarts();
                 }
+                //updateCartScreen();
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
         });//end empListActionListener
@@ -3281,7 +3305,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void voidCarts() {
-
+        
         if (!receiptNum.isEmpty()) {
             updateCartScreen();
             rxSignout();
@@ -3370,6 +3394,10 @@ public class MainFrame extends javax.swing.JFrame {
                         item.removeAllGUIData();
                     }
                     guiItems.clear();
+                    if(curCart.isEmpDiscountActive){
+                    curCart.isEmpDiscountActive(false);
+                    empList2.setSelectedIndex(0);
+                    }
                     curCart.storeCart(id, myDB);
                     resizeCartWindow();
                     resaveTicket.setVisible(false);
@@ -3477,7 +3505,6 @@ public class MainFrame extends javax.swing.JFrame {
     JComboBox empList2;
     JLabel itemPriceHeader = new JLabel("Price Per Item: ", SwingConstants.RIGHT);
     JLabel employeeCheckoutHeader = new JLabel("Employee To Checkout:", SwingConstants.RIGHT);
-    private boolean employeeCheckout = false;
     JLabel subTotalHeader = new JLabel("Price of Item(s): ", SwingConstants.RIGHT);
     JLabel totalNumRXinCart = new JLabel("# of Rx's in Cart: 0", SwingConstants.RIGHT);
     boolean hasSigBeenCap = false;
