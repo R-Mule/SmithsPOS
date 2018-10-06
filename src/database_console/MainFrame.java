@@ -9,10 +9,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,11 +53,11 @@ public class MainFrame extends javax.swing.JFrame {
         helpSP.setAutoscrolls(true);
         helpSP.setBounds(100, 100, 1120, 700);
         //OLD DREW
-       // this.add(menuBar);
+        // this.add(menuBar);
         helpSP.setPreferredSize(new Dimension(1120, 700));
         jPanel1.setPreferredSize(new Dimension(1120, 500));//jPanel1.setPreferredSize(new Dimension(1120, 2000));
         helpSP.setVisible(true);
-        
+
         this.add(helpSP);
         pharmacyName = reader.getPharmacyName();
         if (pharmacyName.contentEquals(superaid)) {//This only allows Holiday events for Super-Aid Pharmacy
@@ -116,14 +113,14 @@ public class MainFrame extends javax.swing.JFrame {
                     isFourthOfJuly = true;
                 } else {
                     isSummerTime = true;
-                    
+
                     quotesActive = false;
                 }
             } else if (month.contentEquals("08")) {
                 isSummerTime = true;
                 quotesActive = false;
             } else if (month.contentEquals("09")) {
-                isHalloween=true;
+                isHalloween = true;
                 quotesActive = false;
                 //nothing right now, give them a month off :)
             }
@@ -182,7 +179,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         this.add(textField);
         this.setVisible(true);
-        
+
         //HEADERS FOR ITEMS
         if (isHalloween) {
             itemNameHeader.setForeground(Color.red);
@@ -936,6 +933,7 @@ public class MainFrame extends javax.swing.JFrame {
         massPrechargeButton.setVisible(true);
         this.add(massPrechargeButton);
 
+        /*Removed update 1.2.0
         //This creates the UpdatePrice Button
         updatePriceButton.setLocation(350, 850);
         updatePriceButton.setSize(150, 40);
@@ -971,16 +969,16 @@ public class MainFrame extends javax.swing.JFrame {
         loadDailyDataButton.setLocation(650, 970);
         loadDailyDataButton.setSize(150, 40);
         loadDailyDataButton.setBackground(new Color(255, 0, 0));
-
-        //This creates the activateDisplayButton 
-        activateDisplayButton.setLocation(500, 890);
-        activateDisplayButton.setSize(150, 40);
-        activateDisplayButton.setBackground(new Color(50, 255, 255));
-
+        
         //This creates the addRemoveInsuranceButton
         addRemoveInsuranceButton.setLocation(650, 890);
         addRemoveInsuranceButton.setSize(150, 40);
         addRemoveInsuranceButton.setBackground(new Color(255, 0, 255));
+         */
+        //This creates the activateDisplayButton 
+        activateDisplayButton.setLocation(500, 890);
+        activateDisplayButton.setSize(150, 40);
+        activateDisplayButton.setBackground(new Color(50, 255, 255));
 
         //This creates the clerkLoginButton
         clerkLoginButton.setLocation(10, 820);
@@ -996,10 +994,10 @@ public class MainFrame extends javax.swing.JFrame {
         clerkLoginButton.setVisible(true);
         this.add(clerkLogoutButton);
         this.add(clerkLoginButton);
-        this.add(masterReprintReceiptButton);
-        this.add(loadDailyDataButton);
-        loadDailyDataButton.setVisible(false);
-        masterReprintReceiptButton.setVisible(false);
+//        this.add(masterReprintReceiptButton);Removed update 1.2.0
+        //   this.add(loadDailyDataButton);Removed update 1.2.0
+        //  loadDailyDataButton.setVisible(false);Removed update 1.2.0
+        //  masterReprintReceiptButton.setVisible(false);Removed update 1.2.0
 
         if (isMarchMadness) {
             mmButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1020,6 +1018,7 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             });
         }
+        /*Removed update 1.2.0
         masterReprintReceiptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -1066,7 +1065,7 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-
+         */
         clerkLoginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -1125,7 +1124,8 @@ public class MainFrame extends javax.swing.JFrame {
                     if (!field1.getText().isEmpty() && validateInteger(field1.getText())) {
                         String clerkName = myDB.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
                         if (clerkName != null) {
-                            if(isHalloween){
+                            menuBar.setAllVisible();
+                            if (isHalloween) {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mario1.wav");
                             }
                             employeeSelectionHeader.setText("Active Clerk: " + clerkName);
@@ -1141,12 +1141,13 @@ public class MainFrame extends javax.swing.JFrame {
         clerkLogoutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 employeeSelectionHeader.setText("Active Clerk: NONE");
+                menuBar.setAllNotVisible();
                 clerkLogoutButton.setVisible(false);
                 checkForAdminButtonVisible();
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-
+/*Removed update 1.2.0
         addRemoveInsuranceButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -1179,7 +1180,7 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-
+*/
         activateDisplayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 display = new PoleDisplay(reader);
@@ -1191,7 +1192,7 @@ public class MainFrame extends javax.swing.JFrame {
                 activateDisplayButton.setVisible(false);
             }
         });
-
+        /*Removed update 1.2.0
         addRxAccountButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -1432,7 +1433,7 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
-
+         */
         paperButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -1507,16 +1508,18 @@ public class MainFrame extends javax.swing.JFrame {
                                     massDiscountButton.setVisible(false);
                                     reprintReceiptButton.setVisible(false);
                                     paperButton.setVisible(false);
+                                    /*Removed update 1.2.0
                                     generateReportButton.setVisible(false);
                                     updatePriceButton.setVisible(false);
                                     addNewItemButton.setVisible(false);
                                     masterRefundButton.setVisible(false);
                                     addRxAccountButton.setVisible(false);
                                     addDmeAccountButton.setVisible(false);
-                                    activateDisplayButton.setVisible(false);
                                     addRemoveInsuranceButton.setVisible(false);
                                     masterReprintReceiptButton.setVisible(false);
                                     loadDailyDataButton.setVisible(false);
+                                    */
+                                    activateDisplayButton.setVisible(false);
                                     massPrechargeButton.setVisible(false);
                                     //creditButton.setVisible(false);
                                     debitButton.setVisible(false);
@@ -1524,7 +1527,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     if (isMarchMadness) {
                                         mmButton.setVisible(false);
                                     }
-
+                                    menuBar.setAllNotVisible();//THIS HIDES MENU BAR DURING REFUND!!
                                     cancelRefundButton.setVisible(true);
                                     updateCartScreen();
                                 }
@@ -2839,6 +2842,7 @@ public class MainFrame extends javax.swing.JFrame {
                 for (GuiRefundCartItem item : guiRefundItems) {
                     item.removeAllGUIData();
                 }
+                checkForAdminButtonVisible();
                 guiRefundItems.clear();
                 displayChangeDue = false;
                 refundOver();
@@ -2848,10 +2852,12 @@ public class MainFrame extends javax.swing.JFrame {
             }//end actionPerformed
         });//end cancelRefundAction
 
-        this.add(addRemoveInsuranceButton);
-        addRemoveInsuranceButton.setVisible(false);
+
         activateDisplayButton.setVisible(true);
         this.add(activateDisplayButton);
+        /*Removed Update 1.2.0
+        this.add(addRemoveInsuranceButton);
+        addRemoveInsuranceButton.setVisible(false);
         addDmeAccountButton.setVisible(false);
         this.add(addDmeAccountButton);
         addRxAccountButton.setVisible(false);
@@ -2864,6 +2870,7 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(updatePriceButton);
         masterRefundButton.setVisible(false);
         this.add(masterRefundButton);
+        */
         paperButton.setVisible(true);
         this.add(paperButton);
         dmePaymentButton.setVisible(true);
@@ -3018,6 +3025,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     public void checkForAdminButtonVisible() {
         if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Andrew") || employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Hollie") || employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")) {
+            /*Removed Update 1.2.0
             updatePriceButton.setVisible(true);
             generateReportButton.setVisible(true);
             addNewItemButton.setVisible(true);
@@ -3027,7 +3035,10 @@ public class MainFrame extends javax.swing.JFrame {
             addRemoveInsuranceButton.setVisible(true);
             masterReprintReceiptButton.setVisible(true);
             loadDailyDataButton.setVisible(true);
+            */
+            menuBar.updateVisible(3);//Admin is 3
         } else if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Haley") || employeeSelectionHeader.getText().substring(14).contentEquals("Booth, Sam") || employeeSelectionHeader.getText().substring(14).contentEquals("Broussard, Kayla")) {
+            /*Removed Update 1.2.0
             updatePriceButton.setVisible(true);
             addNewItemButton.setVisible(true);
             addRxAccountButton.setVisible(true);
@@ -3037,7 +3048,10 @@ public class MainFrame extends javax.swing.JFrame {
             addRemoveInsuranceButton.setVisible(true);
             masterReprintReceiptButton.setVisible(true);
             loadDailyDataButton.setVisible(false);
+            */
+            menuBar.updateVisible(2);//Elevated is 2
         } else {
+            /*Removed Update 1.2.0
             updatePriceButton.setVisible(false);
             generateReportButton.setVisible(false);
             addNewItemButton.setVisible(false);
@@ -3047,13 +3061,15 @@ public class MainFrame extends javax.swing.JFrame {
             addRemoveInsuranceButton.setVisible(false);
             masterReprintReceiptButton.setVisible(false);
             loadDailyDataButton.setVisible(false);
+            */
+            menuBar.updateVisible(1);//Minimum is 1
         }
     }
 
     public void setData(Database myDB) {
         this.setTitle("Smith's Super-Aid POS - Developed by: Andrew & Hollie Smith");
         this.myDB = myDB;
-        TopMenuBar menuBar = new TopMenuBar(myDB,this);//Hollie's Menu Bar!
+        menuBar = new TopMenuBar(myDB, this);//Hollie's Menu Bar!
         this.setJMenuBar(menuBar);
         if (isHalloween) {
             getContentPane().setBackground(Color.BLACK);
@@ -3112,21 +3128,21 @@ public class MainFrame extends javax.swing.JFrame {
                     for (GuiCartItem item : guiItems) {
                         item.employeeSaleTriggered();
                     }
-                    
-                } else{
+
+                } else {
                     curCart.isEmpDiscountActive(false);
-                   /* for(Item item : curCart.getItems()){
+                    /* for(Item item : curCart.getItems()){
                         if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
                         item.setEmployeeDiscount(false);
                         }
                     }*/
                     //curCart.updateTotal();
                     for (GuiCartItem item : guiItems) {
-                        
+
                         item.employeeSaleCancelled();
                     }
-                    
-                   // voidCarts();
+
+                    // voidCarts();
                 }
                 //updateCartScreen();
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
@@ -3305,7 +3321,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void voidCarts() {
-        
+
         if (!receiptNum.isEmpty()) {
             updateCartScreen();
             rxSignout();
@@ -3394,9 +3410,9 @@ public class MainFrame extends javax.swing.JFrame {
                         item.removeAllGUIData();
                     }
                     guiItems.clear();
-                    if(curCart.isEmpDiscountActive){
-                    curCart.isEmpDiscountActive(false);
-                    empList2.setSelectedIndex(0);
+                    if (curCart.isEmpDiscountActive) {
+                        curCart.isEmpDiscountActive(false);
+                        empList2.setSelectedIndex(0);
                     }
                     curCart.storeCart(id, myDB);
                     resizeCartWindow();
@@ -3410,7 +3426,7 @@ public class MainFrame extends javax.swing.JFrame {
                 //if it does, send error message!
                 JFrame message2 = new JFrame("");
                 //JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Would you like me to load those?");
-                if (!id.toUpperCase().contentEquals("WONDERLAND") && !id.toUpperCase().contentEquals("STRANGER") && !id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?") && !id.toUpperCase().contentEquals("WET BANDITS") && !id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")&&!id.toUpperCase().contentEquals("MICHAEL MYERS")) {
+                if (!id.toUpperCase().contentEquals("WONDERLAND") && !id.toUpperCase().contentEquals("STRANGER") && !id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?") && !id.toUpperCase().contentEquals("WET BANDITS") && !id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA") && !id.toUpperCase().contentEquals("MICHAEL MYERS")) {
                     if (JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING",
                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         loadTicketWithId(id);
@@ -3527,13 +3543,13 @@ public class MainFrame extends javax.swing.JFrame {
     JButton switchEmployeeButton = new JButton("<html>" + switchEmployeeString.replaceAll("\\n", "<br>") + "</html>");
     String logoutEmployeeString = "Logout\nEmployee";
     JButton logoutEmployeeButton = new JButton("<html>" + logoutEmployeeString.replaceAll("\\n", "<br>") + "</html>");
-    JButton masterRefundButton = new JButton("Master Refund");
+    // JButton masterRefundButton = new JButton("Master Refund"); Removed update 1.2.0
     JButton noSaleButton = new JButton("No Sale");
     JButton rxButton = new JButton("RX");
     String receiptLookup = "Lookup\nReceipt";
     JButton lookupReceiptByRXButton = new JButton("<html>" + receiptLookup.replaceAll("\\n", "<br>") + "</html>");
-    String addRemoveInsuranceName = "Add/Remove\nRX Insurance";
-    JButton addRemoveInsuranceButton = new JButton("<html>" + addRemoveInsuranceName.replaceAll("\\n", "<br>") + "</html>");
+    //String addRemoveInsuranceName = "Add/Remove\nRX Insurance";Removed update 1.2.0
+    //JButton addRemoveInsuranceButton = new JButton("<html>" + addRemoveInsuranceName.replaceAll("\\n", "<br>") + "</html>");Removed update 1.2.0
     String previousInsurance = "AARP";
     String previousDate = "";
     JButton otcButton = new JButton("OTC");
@@ -3547,13 +3563,13 @@ public class MainFrame extends javax.swing.JFrame {
     JButton creditButton = new JButton("Credit Card");
     JButton debitButton = new JButton("Debit Card");
     JButton paidOutButton = new JButton("Paid Out");
-    JButton updatePriceButton = new JButton("Update Price");
-    JButton addNewItemButton = new JButton("Add Item");
-    JButton generateReportButton = new JButton("Reports");
-    JButton addRxAccountButton = new JButton("Add RX Account");
+    // JButton updatePriceButton = new JButton("Update Price");Removed update 1.2.0
+    //JButton addNewItemButton = new JButton("Add Item");Removed update 1.2.0
+    //JButton generateReportButton = new JButton("Reports");Removed update 1.2.0
+    //JButton addRxAccountButton = new JButton("Add RX Account");Removed update 1.2.0
     JButton clerkLoginButton = new JButton("Clerk Login");
     JButton clerkLogoutButton = new JButton("Clerk Logout");
-    JButton addDmeAccountButton = new JButton("Add DME Account");
+    //JButton addDmeAccountButton = new JButton("Add DME Account");Removed update 1.2.0
     JButton activateDisplayButton = new JButton("Activate Display");
     JButton quoteButton = new JButton("New Quote");
     String cancelRefund = "Cancel\nRefund";
@@ -3562,8 +3578,8 @@ public class MainFrame extends javax.swing.JFrame {
     JButton massPrechargeButton = new JButton("");
     boolean isMassPreCharged = false;//always start out with mass precharged off
     ConfigFileReader reader = new ConfigFileReader();
-    JButton masterReprintReceiptButton = new JButton("Master Rpt Receipt");
-    JButton loadDailyDataButton = new JButton("Load Data");
+    // JButton masterReprintReceiptButton = new JButton("Master Rpt Receipt");Removed update 1.2.0
+    // JButton loadDailyDataButton = new JButton("Load Data");Removed update 1.2.0
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
@@ -3607,6 +3623,7 @@ public class MainFrame extends javax.swing.JFrame {
     final String superaid = "Smiths Super Aid";
     ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");
     JButton mmButton = new JButton(mmimg);
+    TopMenuBar menuBar;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 

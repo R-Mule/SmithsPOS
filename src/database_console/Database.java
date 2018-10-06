@@ -38,6 +38,16 @@ public class Database {
         password = reader.getPassword();
     }//end databaseCtor
 
+    public String addEmployee(String firstName,String lastName,int passCode){
+
+        
+        return "Employee: "+lastName+", "+firstName+" added successfully with Passcode: "+passCode;
+    }
+    
+    public boolean checkIfPasscodeExisits(int passCode){
+        return false;
+    }
+    
     public ArrayList<String> getEmployeesAndWinLossMM() {
         try {
             ArrayList<String> data = new ArrayList<>();

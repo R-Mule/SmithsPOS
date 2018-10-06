@@ -36,15 +36,18 @@ public class TopMenuBar extends JMenuBar {
         this.myDB = myDB;
         addMenu = new JMenu("Add");
         addMenu.setMnemonic(KeyEvent.VK_A);
+        addMenu.setVisible(false);
         remMenu = new JMenu("Remove");
         remMenu.setMnemonic(KeyEvent.VK_R);
+        remMenu.setVisible(false);
         //This is where Hollie added a new menu to accommodate data uploads in a separate way that seems clean...
         //If it's screwy, delete from the above comment line down to happy code
         mgmtMenu = new JMenu("Management");
         mgmtMenu.setMnemonic(KeyEvent.VK_M);
+        mgmtMenu.setVisible(false);
         feedMenu = new JMenu("Feedback");
         feedMenu.setMnemonic(KeyEvent.VK_F);
-
+        feedMenu.setVisible(false);
 //Add  menu items
         addDmeAccount = new JMenuItem();
         addDmeAccount.setText("DME Account");
@@ -376,7 +379,61 @@ public class TopMenuBar extends JMenuBar {
     //Fn to be built (below)
 
     private void addEmployeeActionPerformed(java.awt.event.ActionEvent evt) {
-        System.out.println("Add Employee Menu Item Pressed!");
+        boolean tryAgain;
+        JFrame textInputFrame = new JFrame("");
+        JTextField field1 = new JTextField();
+        JTextField field2 = new JTextField();
+        JTextField field3 = new JTextField();
+        Object[] message = {
+            "First Name: ", field1, "Last Name: ", field2, "Passcode: ", field3};
+        do {
+            tryAgain = false;
+            field1.addAncestorListener(new RequestFocusListener());
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add New Employee Menu", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                if (!mf.validateInteger(field3.getText())) {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Not a valid Passcode must be a whole number.");//prompt try again?
+                    tryAgain = true;
+                } else if (myDB.checkIfPasscodeExisits(Integer.parseInt(field3.getText()))) {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: Passcode is already in use.");//prompt try again?
+                    tryAgain = true;
+                } else if (!field1.getText().matches("[A-Z]{1}[a-z]+?")) {//Requires Capital first letter of name, and then all lower case at least 1 lower case unknown more.
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "First Name must have capital first letter and rest all lowercase.");//prompt try again?
+                    tryAgain = true;
+                } else if (!field2.getText().matches("[A-Z]{1}[a-z]+?")) {//Same as above, name Validation.
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Last Name must have capital first letter and rest all lowercase.");//prompt try again?
+                    tryAgain = true;
+                }  
+                if (tryAgain) {
+                    int option2 = JOptionPane.showConfirmDialog(textInputFrame,"Would you like to try again?", "Try Again Menu", JOptionPane.YES_NO_OPTION);
+                    if (option2 != JOptionPane.YES_OPTION) {
+                        tryAgain=false;
+                    }
+                } else {
+
+                    Object[] message2 = {
+                        "Are you sure?\nFirst Name: " + field1.getText(), "Last Name: " + field2.getText(), "Passcode: " + field3.getText()};
+
+                    int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add New Employee Menu", JOptionPane.OK_CANCEL_OPTION);
+                    if (option2 == JOptionPane.OK_OPTION) {
+                        String result = myDB.addEmployee(field1.getText(), field2.getText(), Integer.parseInt(field3.getText()));
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, result);
+                    }
+                    //FIELD1 CONTAINS DESCRIPTION
+                    //FIELD2 AMOUNT
+                    mf.displayChangeDue = false;
+                    mf.updateCartScreen();
+                }//end else
+            }else{
+                tryAgain=false;//Cancel pressed on first menu. Game over man.
+            }//end if  
+            mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+        } while (tryAgain);
     }//end addEmployeeActionPerformed
 
     private void addInventoryItemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -660,15 +717,48 @@ public class TopMenuBar extends JMenuBar {
     }//end masterRefundActionPerformed
 
     //Other action events go here.
-    public void updateVisible() {//this will eventually handle responsible menu items to show or not show.
+    public void updateVisible(int permission) { //this will eventually handle responsible menu items to show or not show.
+        switch (permission) {
+            case 3:
+                feedMenu.setVisible(true);//Menus visible
+                addMenu.setVisible(true);
+                remMenu.setVisible(true);
+                mgmtMenu.setVisible(true);
 
+                masterRptRecpt.setVisible(true);
+                break;
+            case 2:
+                feedMenu.setVisible(true);//Menus visible
+                addMenu.setVisible(true);
+                remMenu.setVisible(true);
+                mgmtMenu.setVisible(true);
+                rxDataUpload.setVisible(false);
+                dmeDataUpload.setVisible(false);
+                drawerReports.setVisible(false);
+                break;
+            case 1:
+                addMenu.setVisible(false);
+                remMenu.setVisible(false);
+                mgmtMenu.setVisible(false);
+                feedMenu.setVisible(true);
+                // masterRptRecpt.setVisible(false);
+                break;
+            default:
+                break;
+        }
     }//end updateVisible()
 
     public void setAllVisible() {
-
+        addMenu.setVisible(true);
+        remMenu.setVisible(true);
+        mgmtMenu.setVisible(true);
+        feedMenu.setVisible(true);
     }//end setAllVisible()
 
     public void setAllNotVisible() {
-
+        addMenu.setVisible(false);
+        remMenu.setVisible(false);
+        mgmtMenu.setVisible(false);
+        feedMenu.setVisible(false);
     }//end setAllNotVisible()
 }//end TopMenuBar Class
