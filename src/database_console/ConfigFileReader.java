@@ -50,32 +50,32 @@ public class ConfigFileReader {
                         tokens[1] += ":" + tokens[i];
                     }
                 }*///backup code for string split with colons in value portion
-                
-                if (tokens[0].contains("Register ID:")) {
+                System.out.println(tokens[0]+" "+ tokens[1]);
+                if (tokens[0].contains("Register ID")) {
                     registerID = tokens[1].trim();
-                } else if (tokens[0].contains("Printer Name:")) {
+                } else if (tokens[0].contains("Printer Name")) {
                     printerName = tokens[1].trim();
-                } else if (tokens[0].contains("Database Hostname:")) {
+                } else if (tokens[0].contains("Database Hostname")) {
                     hostName = tokens[1].trim();
-                } else if (tokens[0].contains("Database Username:")) {
+                } else if (tokens[0].contains("Database Username")) {
                     userName = tokens[1].trim();
-                } else if (tokens[0].contains("Database Password:")) {
+                } else if (tokens[0].contains("Database Password")) {
                     password = tokens[1].trim();
-                } else if (tokens[0].contains("Remote Drive Path:")) {
+                } else if (tokens[0].contains("Remote Drive Path")) {
                     remoteDrivePath = tokens[1].trim();
-                } else if (tokens[0].contains("Register Report Path:")) {
+                } else if (tokens[0].contains("Register Report Path")) {
                     Date date = new Date();
                     DateFormat dateFormat = new SimpleDateFormat("MMddyy");
                     registerReportPath = tokens[1].trim() + dateFormat.format(date);
-                }else if (tokens[0].contains("Display Com Port:")) {
+                }else if (tokens[0].contains("Display Com Port")) {
                     displayComPort = tokens[1].trim();
                    // System.out.println(displayComPort);
-                }else if(tokens[0].contains("Card Terminal Address:")){
+                }else if(tokens[0].contains("Card Terminal Address")){
                     cardReaderURL = tokens[1].trim();
                     
-                }else if(tokens[0].contains("Pharmacy Name:")){
+                }else if(tokens[0].contains("Pharmacy Name")){
                     pharmacyName = tokens[1].trim();
-                }else if(tokens[0].contains("Mail Password:")){
+                }else if(tokens[0].contains("Mail Password")){
                     mailPassword = tokens[1].trim();
                 }
                 //******************Levi

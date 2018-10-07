@@ -1633,7 +1633,7 @@ public class MainFrame extends javax.swing.JFrame {
 
                     field2.setText(previousDate);
                     String[] possibilities = myDB.getInsurances();
-                    JList list = new JList(possibilities); //data has type Object[]
+                    JList<String> list = new JList<>(possibilities); //data has type Object[]
                     list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     list.setLayoutOrientation(JList.VERTICAL_WRAP);
                     list.setBounds(100, 50, 50, 100);
