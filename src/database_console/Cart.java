@@ -60,8 +60,8 @@ public boolean containsAccountName(String accntName){
     }
     return false;
 }
-    public void loadCart(String id, Database myDB) {
-        ArrayList<Item> tempItems = myDB.getTicketItemsFromDatabase(id);
+    public void loadCart(String id) {
+        ArrayList<Item> tempItems = Database.getTicketItemsFromDatabase(id);
         ArrayList<Item> itemsToAdd = new ArrayList<Item>();
         if (!items.isEmpty()) {
             for (Item item : tempItems) {
@@ -98,10 +98,10 @@ public boolean containsAccountName(String accntName){
 
     }//end loadCart
 
-    public void storeCart(String id, Database myDB) {
+    public void storeCart(String id) {
         for (Item item : items) {
             
-            myDB.storeItem(item, id);
+            Database.storeItem(item, id);
         }
         //totalPriceAfterTax=0;
         //totalPriceBeforeTax=0;

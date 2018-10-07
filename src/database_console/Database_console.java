@@ -14,9 +14,9 @@ class Database_console {
         } catch (IOException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Database myDB = new Database();
+        Database.loadDatabase();
         MainFrame jf = new MainFrame();
-        jf.setData(myDB);
+        jf.setData();
         jf.setVisible(true);
     }
 

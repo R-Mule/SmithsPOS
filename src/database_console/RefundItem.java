@@ -13,15 +13,14 @@ public class RefundItem extends Item{
     protected String receiptNum;
     protected int quantityBeingRefunded=0;
     
-    RefundItem(Database myDB,String receiptNum, String mutID, String upc, String name, double amtPaidBeforeTax, boolean wasTaxed, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged,boolean hasBeenRefunded,boolean hasTaxBeenRefunded){
-        super(myDB,  mutID,  upc,  name, amtPaidBeforeTax,  amtPaidBeforeTax, wasTaxed, category, rxNumber, insurance, filldate, quantity,  isRX, percentageDisc, isPreCharged);
+    RefundItem(String receiptNum, String mutID, String upc, String name, double amtPaidBeforeTax, boolean wasTaxed, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged,boolean hasBeenRefunded,boolean hasTaxBeenRefunded){
+        super(  mutID,  upc,  name, amtPaidBeforeTax,  amtPaidBeforeTax, wasTaxed, category, rxNumber, insurance, filldate, quantity,  isRX, percentageDisc, isPreCharged);
         this.hasBeenRefunded=hasBeenRefunded;
         this.hasTaxBeenRefunded=hasTaxBeenRefunded;
         this.receiptNum=receiptNum;
     }//end ctor
     
-    RefundItem(Database myDB,RefundItem item){
-        super(myDB);
+    RefundItem(RefundItem item){
                    
         this.rxNumber = item.rxNumber;
         this.fillDate = item.fillDate;

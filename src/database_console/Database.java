@@ -25,20 +25,22 @@ import org.apache.commons.csv.CSVRecord;
  */
 public class Database {
 
-    private String host;
-    private String userName;
-    private String password;
-    private String driverPath = "com.mysql.cj.jdbc.Driver";
+    private static String host;
+    private static String userName;
+    private static String password;
+    private static String driverPath = "com.mysql.cj.jdbc.Driver";
     //private ConfigFileReader reader;
 
-    Database() {
-        //reader = new ConfigFileReader();
+    private Database() {
+    }//end databaseCtor
+
+    public static void loadDatabase() {
         host = ConfigFileReader.getHostName();
         userName = ConfigFileReader.getUserName();
         password = ConfigFileReader.getPassword();
-    }//end databaseCtor
+    }
 
-    public void removeItemFromInventory(String mutualID){
+    public static void removeItemFromInventory(String mutualID) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -50,8 +52,8 @@ public class Database {
             System.out.println(e);
         }//end catch
     }
-    
-    public String addEmployee(String firstName, String lastName, int passCode) {
+
+    public static String addEmployee(String firstName, String lastName, int passCode) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -65,7 +67,7 @@ public class Database {
         return "Employee: " + lastName + ", " + firstName + " added successfully with Passcode: " + passCode;
     }
 
-    public void removeEmployee(int employeeID) {
+    public static void removeEmployee(int employeeID) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -78,10 +80,10 @@ public class Database {
         }//end catch
     }
 
-    public String getEmployeesSortByPID() {
+    public static String getEmployeesSortByPID() {
         try {
-            String bigList="";
-           // ArrayList<String> data = new ArrayList<>();
+            String bigList = "";
+            // ArrayList<String> data = new ArrayList<>();
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -89,7 +91,7 @@ public class Database {
             ResultSet rs = stmt.executeQuery("select * from employees order by pid asc,empname;");
             while (rs.next()) {
                 if (rs.getInt(1) != 5 && rs.getInt(1) != 10 && rs.getInt(1) != 11 && rs.getInt(1) != 12 && rs.getInt(1) != 14 && rs.getInt(1) != 15) {//These employees CANNOT be deleted.
-                    bigList+=rs.getInt(1) + " : " + rs.getString(2)+"\n";
+                    bigList += rs.getInt(1) + " : " + rs.getString(2) + "\n";
                 }
             }//end while
             con.close();
@@ -100,8 +102,7 @@ public class Database {
         return null;
     }
 
-
-    public boolean checkIfPasscodeExisits(int passCode) {
+    public static boolean checkIfPasscodeExisits(int passCode) {
         try {
             ArrayList<String> data = new ArrayList<>();
             Class.forName(driverPath);
@@ -122,7 +123,7 @@ public class Database {
         return false;
     }
 
-    public ArrayList<String> getEmployeesAndWinLossMM() {
+    public static ArrayList<String> getEmployeesAndWinLossMM() {
         try {
             ArrayList<String> data = new ArrayList<>();
             Class.forName(driverPath);
@@ -142,7 +143,7 @@ public class Database {
         return null;
     }
 
-    public String getQuote() {
+    public static String getQuote() {
         try {
             ArrayList<String> quotes = new ArrayList<>();
             Class.forName(driverPath);
@@ -162,7 +163,7 @@ public class Database {
         return null;
     }
 
-    public String getReceiptString(String receiptNum) {
+    public static String getReceiptString(String receiptNum) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -180,7 +181,7 @@ public class Database {
         return null;
     }
 
-    public void storeReceiptString(String receiptNum, String receipt) {
+    public static void storeReceiptString(String receiptNum, String receipt) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -194,7 +195,7 @@ public class Database {
         }//end catch
     }
 
-    public String getEmployeeNameByCode(int code) {
+    public static String getEmployeeNameByCode(int code) {
 
         try {
             Class.forName(driverPath);
@@ -217,7 +218,7 @@ public class Database {
         return null;
     }
 
-    void updateItemPrice(String mutID, double price) {//0 return means not found, otherwise returns mutID from database.
+    public static void updateItemPrice(String mutID, double price) {//0 return means not found, otherwise returns mutID from database.
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -236,7 +237,7 @@ public class Database {
         }
     }//end checkDatabaseForItem
 
-    void checkDatabaseForItemByUPC(Item myItem) {//0 return means not found, otherwise returns mutID from database.
+    public static void checkDatabaseForItemByUPC(Item myItem) {//0 return means not found, otherwise returns mutID from database.
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -261,7 +262,7 @@ public class Database {
         }
     }//end checkDatabaseForItem
 
-    void checkDatabaseForItemByID(Item myItem) {//0 return means not found, otherwise returns mutID from database.
+    public static void checkDatabaseForItemByID(Item myItem) {//0 return means not found, otherwise returns mutID from database.
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -296,7 +297,7 @@ public class Database {
         }
     }//end checkDatabaseForItemByI
 
-    public boolean checkDatabaseForTicket(String id) {//returns true if ticket exists.
+    public static boolean checkDatabaseForTicket(String id) {//returns true if ticket exists.
         if (id.toUpperCase().contentEquals("WONDERLAND")) {
             return true;
         } else if (id.toUpperCase().contentEquals("STRANGER")) {
@@ -335,7 +336,7 @@ public class Database {
         }
     }//end checkDatabaseForTicket
 
-    public void storeItem(Item item, String id) {
+    public static void storeItem(Item item, String id) {
 
         try {
             Class.forName(driverPath);
@@ -353,7 +354,7 @@ public class Database {
 
     }//end storeTicketInDatabase()
 
-    public String[] getAllTicketsNames() {
+    public static String[] getAllTicketsNames() {
         ArrayList<String> ticketNames = new ArrayList<String>();
         String[] ticketNamesActual = null;
         try {
@@ -381,7 +382,7 @@ public class Database {
         return ticketNamesActual;
     }
 
-    public ArrayList<String> getAllTicketsNamesWithRxNumber(int rxNumber) {
+    public static ArrayList<String> getAllTicketsNamesWithRxNumber(int rxNumber) {
         ArrayList<String> ticketNames = new ArrayList<>();
         if (rxNumber == 0) {
             return ticketNames;
@@ -408,47 +409,47 @@ public class Database {
         }
     }
 
-    public ArrayList<Item> getTicketItemsFromDatabase(String id) {
+    public static ArrayList<Item> getTicketItemsFromDatabase(String id) {
         ArrayList<Item> loadedItems = new ArrayList<>();
         if (id.toUpperCase().contentEquals("WONDERLAND")) {
-            loadedItems.add(new Item(this, "MATRED", "MATRED", "Red Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MATBLU", "MATBLU", "Blue Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MATRED", "MATRED", "Red Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MATBLU", "MATBLU", "Blue Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
             return loadedItems;
         } else if (id.toUpperCase().contentEquals("STRANGER")) {
             for (int i = 1; i < 41; i++) {
-                loadedItems.add(new Item(this, "BATDIS" + i, "BATDIS" + i, "District", 0.07, 0.07, false, 852, 0, "", "", 1, false, 0, false));
+                loadedItems.add(new Item( "BATDIS" + i, "BATDIS" + i, "District", 0.07, 0.07, false, 852, 0, "", "", 1, false, 0, false));
             }
 
             return loadedItems;
         } else if (id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?")) {
-            loadedItems.add(new Item(this, "BATMON", "BATMON", "Mob Money", 0.36, 0.36, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "BATPEN", "BATPEN", "Pencil", 8.47, 8.47, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "BATMON", "BATMON", "Mob Money", 0.36, 0.36, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "BATPEN", "BATPEN", "Pencil", 8.47, 8.47, false, 852, 0, "", "", 1, false, 0, false));
 
             return loadedItems;
         } else if (id.toUpperCase().contentEquals("WET BANDITS")) {
-            loadedItems.add(new Item(this, "HAPIZZA", "HAPIZZA", "Pizza Box", 11.1363636364, 11.1363636364, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "HAPIZZA", "HAPIZZA", "Pizza Box", 11.1363636364, 11.1363636364, false, 852, 0, "", "", 1, false, 0, false));
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha1.gif", "C:/POS/SOFTWARE/ha1.wav", "What're you scared, Marv? Are you afraid? C'mon, get out here.", "");
             return loadedItems;
         } else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")) {
-            loadedItems.add(new Item(this, "HPSS2", "HPSS2", "Erised stra ehru oyt ube cafru oyt on wohsi", 1041.11, 1041.11, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "HPSS2", "HPSS2", "Erised stra ehru oyt ube cafru oyt on wohsi", 1041.11, 1041.11, false, 852, 0, "", "", 1, false, 0, false));
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss2.gif", "C:/POS/SOFTWARE/hpss2.wav", "It does not do to dwell on dreams and forget to live.", "");
             return loadedItems;
         } else if (id.toUpperCase().contentEquals("MICHAEL MYERS")) {
-            loadedItems.add(new Item(this, "MMHA1", "MMHA1", "Loomis", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA2", "MMHA2", "Laurie", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA3", "MMHA3", "Annie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA4", "MMHA4", "Bob", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA5", "MMHA5", "Brackett", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA6", "MMHA6", "Lindsey", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA7", "MMHA7", "Tommy", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA8", "MMHA8", "Judith", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA9", "MMHA9", "Lynda", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA10", "MMHA10", "Marion", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA11", "MMHA11", "Richie", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA12", "MMHA12", "Lonnie", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA13", "MMHA13", "Keith", 10.25, 10.25, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA14", "MMHA14", "Dr. Wynn", 19.78, 19.78, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item(this, "MMHA15", "MMHA15", "Christopher", 8.00, 8.00, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA1", "MMHA1", "Loomis", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item("MMHA2", "MMHA2", "Laurie", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA3", "MMHA3", "Annie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA4", "MMHA4", "Bob", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA5", "MMHA5", "Brackett", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA6", "MMHA6", "Lindsey", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA7", "MMHA7", "Tommy", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA8", "MMHA8", "Judith", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA9", "MMHA9", "Lynda", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA10", "MMHA10", "Marion", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA11", "MMHA11", "Richie", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA12", "MMHA12", "Lonnie", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA13", "MMHA13", "Keith", 10.25, 10.25, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA14", "MMHA14", "Dr. Wynn", 19.78, 19.78, false, 852, 0, "", "", 1, false, 0, false));
+            loadedItems.add(new Item( "MMHA15", "MMHA15", "Christopher", 8.00, 8.00, false, 852, 0, "", "", 1, false, 0, false));
 
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mmha1.gif", "C:/POS/SOFTWARE/mmha1.wav", "", "Was that the Boogeyman?");
             return loadedItems;
@@ -464,7 +465,7 @@ public class Database {
                     // System.out.println(rs.getString(2));
                     if (rs.getString(2).contentEquals(id)) {
                         //System.out.println("HERE!");
-                        loadedItems.add(new Item(this, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getDouble(7), rs.getBoolean(8), rs.getInt(9), rs.getInt(10), rs.getString(11), rs.getString(12), rs.getInt(13), rs.getBoolean(14), rs.getDouble(15), rs.getBoolean(16)));
+                        loadedItems.add(new Item( rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getDouble(7), rs.getBoolean(8), rs.getInt(9), rs.getInt(10), rs.getString(11), rs.getString(12), rs.getInt(13), rs.getBoolean(14), rs.getDouble(15), rs.getBoolean(16)));
                     }//end if
 
                 }//end while
@@ -491,7 +492,7 @@ public class Database {
 
     }//end getTicketFromDatabase
 
-    public void updateChargeAccountBalance(String accountName, double amtToUpdate) {
+    public static void updateChargeAccountBalance(String accountName, double amtToUpdate) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -515,7 +516,7 @@ public class Database {
         }
     }
 
-    public void updateDMEAccountBalance(String accountName, double amtToUpdate) {
+    public static void updateDMEAccountBalance(String accountName, double amtToUpdate) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -539,7 +540,7 @@ public class Database {
         }
     }
 
-    public boolean checkFrozenAccount(String accountName) {
+    public static boolean checkFrozenAccount(String accountName) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -564,7 +565,7 @@ public class Database {
         return false;
     }
 
-    public void loadDMEData(String path) {
+    public static void loadDMEData(String path) {
         ArrayList<String> accounts = new ArrayList<>();
         ArrayList<Double> balances = new ArrayList<>();
         ArrayList<String> firstNames = new ArrayList<>();
@@ -675,7 +676,7 @@ public class Database {
         }
     }
 
-    public void loadARData(String path) {
+    public static void loadARData(String path) {
         try {
             BufferedReader in = new BufferedReader(new FileReader(path));
             String line;
@@ -762,7 +763,7 @@ public class Database {
         }
     }
 
-    public String[] getARList(String accntName, String lastName, String firstName, String dob) {
+    public static String[] getARList(String accntName, String lastName, String firstName, String dob) {
         boolean oneBefore = false;
         String[] accounts = new String[270];
         String statement = "select * from chargeaccounts where ";
@@ -822,33 +823,33 @@ public class Database {
         return accountsActual;
     }
 
-        public void removeDMEAccount(String accountName) {
+    public static void removeDMEAccount(String accountName) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
-                Statement stmt = con.createStatement();
-                stmt.executeUpdate("DELETE FROM `dmeaccounts` where pan = '" + accountName + "';");
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("DELETE FROM `dmeaccounts` where pan = '" + accountName + "';");
             con.close();
         } catch (Exception e) {
             System.out.println(e);
         }
     }
-        
-    public void removeChargeAccount(String accountName) {
+
+    public static void removeChargeAccount(String accountName) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
-                Statement stmt = con.createStatement();
-                stmt.executeUpdate("DELETE FROM `chargeaccounts` where accntName = '" + accountName + "';");
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("DELETE FROM `chargeaccounts` where accntName = '" + accountName + "';");
             con.close();
         } catch (Exception e) {
             System.out.println(e);
         }
     }
-                
-    public String[] getDMEList(String accntName, String lastName, String firstName, String dob) {
+
+    public static String[] getDMEList(String accntName, String lastName, String firstName, String dob) {
         boolean oneBefore = false;
         String[] accounts = new String[2000];
         String statement = "select * from dmeaccounts where ";
@@ -911,7 +912,7 @@ public class Database {
         return accountsActual;
     }
 
-    public String[] getEmployeesFromDatabase() {
+    public static String[] getEmployeesFromDatabase() {
         String[] employees = new String[20];
         int cntr = 0;
         try {
@@ -941,7 +942,7 @@ public class Database {
         return emp;
     }//end getTicketFromDatabase
 
-    public void storeReceipt(Cart curCart, String receiptNum) {
+    public static void storeReceipt(Cart curCart, String receiptNum) {
         for (Item item : curCart.getItems()) {
             try {
                 Class.forName(driverPath);
@@ -956,7 +957,7 @@ public class Database {
         }
     }
 
-    public void storeReceiptByList(ArrayList<RefundItem> items, String receiptNum) {
+    public static void storeReceiptByList(ArrayList<RefundItem> items, String receiptNum) {
         for (Item item : items) {
             try {
                 Class.forName(driverPath);
@@ -971,7 +972,7 @@ public class Database {
         }
     }
 
-    void removeReceiptByList(ArrayList<RefundItem> items2Del, String receiptNum) {
+    public static void removeReceiptByList(ArrayList<RefundItem> items2Del, String receiptNum) {
         for (Item item : items2Del) {
             try {
                 Class.forName(driverPath);
@@ -986,7 +987,7 @@ public class Database {
         }
     }
 
-    public ArrayList<RefundItem> loadReceipt(String receiptNum) {
+    public static ArrayList<RefundItem> loadReceipt(String receiptNum) {
         ArrayList<RefundItem> loadedItems = new ArrayList<RefundItem>();
         try {
             Class.forName(driverPath);
@@ -999,7 +1000,7 @@ public class Database {
                 // System.out.println(rs.getString(2));
                 if (rs.getString(2).contentEquals(receiptNum)) {
                     //System.out.println("HERE!,LOADING!!");
-                    RefundItem temp = new RefundItem(this, receiptNum, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getBoolean(7), rs.getInt(8), rs.getInt(9), rs.getString(10), rs.getString(11), rs.getInt(12), rs.getBoolean(13), rs.getDouble(14), rs.getBoolean(15), rs.getBoolean(16), rs.getBoolean(17));
+                    RefundItem temp = new RefundItem(receiptNum, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getBoolean(7), rs.getInt(8), rs.getInt(9), rs.getString(10), rs.getString(11), rs.getInt(12), rs.getBoolean(13), rs.getDouble(14), rs.getBoolean(15), rs.getBoolean(16), rs.getBoolean(17));
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasBeenRefunded());
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasTaxBeenRefunded());
                     //if(!temp.hasBeenRefunded&& temp.getCategory()==861){
@@ -1018,7 +1019,7 @@ public class Database {
         return loadedItems;
     }
 
-    public String[] lookupReceiptByRX(int rxNumber) {//this returns array of receipt#'s
+    public static String[] lookupReceiptByRX(int rxNumber) {//this returns array of receipt#'s
         ArrayList<String> loadedItems = new ArrayList<String>();
         try {
             Class.forName(driverPath);
@@ -1050,7 +1051,7 @@ public class Database {
         return rxs;
     }
 
-    public void updateReceipt(RefundCart curCart, String receiptNum) {
+    public static void updateReceipt(RefundCart curCart, String receiptNum) {
         for (RefundItem item : curCart.getRefundItems()) {
             try {
                 Class.forName(driverPath);
@@ -1071,7 +1072,7 @@ public class Database {
         }
     }
 
-    boolean doesItemExistByUPC(String upc) {
+    public static boolean doesItemExistByUPC(String upc) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -1091,7 +1092,7 @@ public class Database {
         return false;
     }
 
-    boolean doesItemExistByID(String mutID) {
+    public static boolean doesItemExistByID(String mutID) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -1111,7 +1112,7 @@ public class Database {
         return false;
     }
 
-    void addItem(String mutID, String upc, String name, double price, double cost, boolean taxed, int category) {
+    public static void addItem(String mutID, String upc, String name, double price, double cost, boolean taxed, int category) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -1124,7 +1125,7 @@ public class Database {
         }//end catch
     }
 
-    boolean doesChargeAccountExisit(String accountName) {
+    public static boolean doesChargeAccountExisit(String accountName) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -1144,7 +1145,7 @@ public class Database {
         return false;
     }
 
-    boolean doesQS1UUIDExisit(String uuid) {
+    public static boolean doesQS1UUIDExisit(String uuid) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -1164,7 +1165,7 @@ public class Database {
         return false;
     }
 
-    void addChargeAccount(String accountName, String lastName, String firstName, String dob, String uuid) {
+    public static void addChargeAccount(String accountName, String lastName, String firstName, String dob, String uuid) {
 
         try {
             Class.forName(driverPath);
@@ -1178,7 +1179,7 @@ public class Database {
         }//end catch
     }
 
-    boolean doesDMEAccountExisit(String accountName) {
+   public static boolean doesDMEAccountExisit(String accountName) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -1198,7 +1199,7 @@ public class Database {
         return false;
     }
 
-    void addDMEAccount(String accountName, String lastName, String firstName, String dob) {
+    public static void addDMEAccount(String accountName, String lastName, String firstName, String dob) {
 
         try {
             Class.forName(driverPath);
@@ -1212,7 +1213,7 @@ public class Database {
         }//end catch
     }
 
-    String[] getInsurances() {
+    public static String[] getInsurances() {
         ArrayList<String> loadedItems = new ArrayList<String>();
         try {
             Class.forName(driverPath);
@@ -1241,7 +1242,7 @@ public class Database {
         return insurances;
     }
 
-    boolean doesInsuranceExisit(String insurance) {
+   public static boolean doesInsuranceExisit(String insurance) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -1261,7 +1262,7 @@ public class Database {
         return false;
     }
 
-    void addInsurance(String text) {
+   public static void addInsurance(String text) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -1274,7 +1275,7 @@ public class Database {
         }//end catch
     }
 
-    void removeInsurance(String text) {
+   public static void removeInsurance(String text) {
         try {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
@@ -1287,7 +1288,7 @@ public class Database {
         }//end catch
     }
 
-    private double round(double num) {//rounds to 2 decimal places.
+    private static double round(double num) {//rounds to 2 decimal places.
         num = Math.round(num * 100.0) / 100.0;
         return num;
     }//end round

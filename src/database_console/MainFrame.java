@@ -91,7 +91,7 @@ public class MainFrame extends javax.swing.JFrame {
             } else if (month.contentEquals("11")) {
                 isThanksgiving = true;
             } else if (month.contentEquals("10")) {
-                isHalloween = true;
+                isChristmas = true;
                 quotesActive = false;
             } else if (month.contentEquals("12")) {
                 if (day <= 25) {
@@ -142,7 +142,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 myText = myText.substring(0, 11);
                             }
 
-                            Item myItem = new Item(myDB, myText);
+                            Item myItem = new Item( myText);
 
                             if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
                                 curCart.addItem(myItem);
@@ -348,9 +348,9 @@ public class MainFrame extends javax.swing.JFrame {
             quoteButton.setBackground(new Color(10, 255, 10));
             quoteButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    String temp = myDB.getQuote();
+                    String temp = Database.getQuote();
                     while (!temp.contentEquals("") && temp.contentEquals(quote.getText())) {
-                        temp = myDB.getQuote();
+                        temp = Database.getQuote();
                     }
                     quote.setText(temp);
                     textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
@@ -428,7 +428,7 @@ public class MainFrame extends javax.swing.JFrame {
                     if (option == JOptionPane.OK_OPTION) {
                         String id = field1.getText();
                         id = id.toUpperCase();
-                        if (id != null && !id.isEmpty() && myDB.checkDatabaseForTicket(id)) {
+                        if (id != null && !id.isEmpty() && Database.checkDatabaseForTicket(id)) {
                             boolean allowed = true;
                             if (id.contentEquals("HOW ABOUT A MAGIC TRICK?")) {
                                 if (curCart.getItems().size() == 1 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22")) {
@@ -466,7 +466,7 @@ public class MainFrame extends javax.swing.JFrame {
                             }
                         } else {//Load All Tickets into selectable GUI
                             //Sorry no such ticket found
-                            String[] choices = myDB.getAllTicketsNames();
+                            String[] choices = Database.getAllTicketsNames();
                             if (choices != null && choices.length > 0) {
 
                                 id = (String) JOptionPane.showInputDialog(null, "Couldn't find that ticket? Check these?...",
@@ -513,7 +513,7 @@ public class MainFrame extends javax.swing.JFrame {
 
                     if (id != null && !id.isEmpty() && validateInteger(id)) {
                         int rxNumber = Integer.parseInt(id);
-                        String[] choices = myDB.lookupReceiptByRX(rxNumber);
+                        String[] choices = Database.lookupReceiptByRX(rxNumber);
                         if (choices != null && choices.length > 0) {
                             Object[] message2 = {
                                 "Here is what I found:", choices, choices[0]};
@@ -1005,7 +1005,7 @@ public class MainFrame extends javax.swing.JFrame {
         if (isMarchMadness) {
             mmButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    ArrayList<String> data = myDB.getEmployeesAndWinLossMM();
+                    ArrayList<String> data = Database.getEmployeesAndWinLossMM();
                     System.out.println(data.get(0));
                     JFrame frame = new JFrame("");
                     String dataString = "Name : Wins : Losses\n";
@@ -1125,7 +1125,7 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                     }
                     if (!field1.getText().isEmpty() && validateInteger(field1.getText())) {
-                        String clerkName = myDB.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
+                        String clerkName = Database.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
                         if (clerkName != null) {
                             menuBar.setAllVisible();
                             if (isHalloween) {
@@ -1440,7 +1440,7 @@ public class MainFrame extends javax.swing.JFrame {
         paperButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    Item myItem = new Item(myDB, "NEWSPAPER");
+                    Item myItem = new Item( "NEWSPAPER");
 
                     if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
                         curCart.addItem(myItem);
@@ -1490,7 +1490,7 @@ public class MainFrame extends javax.swing.JFrame {
                             String receiptNum = field1.getText();
                             receiptNum = receiptNum.toUpperCase();
                             if (receiptNum != null && !receiptNum.isEmpty()) {
-                                myDB.loadReceipt(receiptNum);
+                                Database.loadReceipt(receiptNum);
                                 loadReceipt(receiptNum);
                                 if (!guiRefundItems.isEmpty()) {
                                     //Time to hide some buttons...
@@ -1635,7 +1635,7 @@ public class MainFrame extends javax.swing.JFrame {
                     JTextField field3 = new JTextField();
 
                     field2.setText(previousDate);
-                    String[] possibilities = myDB.getInsurances();
+                    String[] possibilities = Database.getInsurances();
                     JList<String> list = new JList<>(possibilities); //data has type Object[]
                     list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     list.setLayoutOrientation(JList.VERTICAL_WRAP);
@@ -1686,7 +1686,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         JOptionPane.showMessageDialog(message1, "Invalid Copay");
                                     } else {//else everything checks out! WE HAVE ALL GOOD DATA!!!
                                         double copay = Double.parseDouble(temp);
-                                        Item tempItem = new Item(myDB, rxNumber, fillDate, insurance, copay, false);
+                                        Item tempItem = new Item( rxNumber, fillDate, insurance, copay, false);
                                         if (!curCart.containsRX(tempItem.rxNumber, insurance, fillDate)) {
                                             curCart.addItem(tempItem);
                                             guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
@@ -1694,7 +1694,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             displayChangeDue = false;
                                             previousInsurance = insurance;
                                             previousDate = fillDate;
-                                            ArrayList<String> ticketIDs = myDB.getAllTicketsNamesWithRxNumber(rxNumber);
+                                            ArrayList<String> ticketIDs = Database.getAllTicketsNamesWithRxNumber(rxNumber);
                                             if (!ticketIDs.isEmpty()) {
                                                 if (JOptionPane.showConfirmDialog(null, "There are already  ticket(s) with that RX Number. Would you like me to load those?", "WARNING",
                                                         JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -1886,7 +1886,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw1.gif", "C:/POS/SOFTWARE/sw1.wav", "I'm just a simple man, trying to make my way in the universe.", "");
                                     }//end if EE Protocol
 
-                                    Item tempItem = new Item(myDB, tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
+                                    Item tempItem = new Item(tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
                                     curCart.addItem(tempItem);
                                     guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                     displayChangeDue = false;
@@ -1927,7 +1927,7 @@ public class MainFrame extends javax.swing.JFrame {
                             tempID = dateFormat.format(date);
                             System.out.println(tempID);
                             String upc = 'U' + tempID;
-                            Item tempItem = new Item(myDB, tempID, upc, "UPS Package", Double.parseDouble(field3.getText()), Double.parseDouble(field3.getText()), false, 860, 0, "", "", 1, false, 0, false);
+                            Item tempItem = new Item( tempID, upc, "UPS Package", Double.parseDouble(field3.getText()), Double.parseDouble(field3.getText()), false, 860, 0, "", "", 1, false, 0, false);
                             curCart.addItem(tempItem);
                             guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                             displayChangeDue = false;
@@ -2545,7 +2545,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         + "Fate always has the upper hand \n"
                                         + "And fate choose me and you.", "");
                             }
-                            String[] choices = myDB.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
+                            String[] choices = Database.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
                             if (choices != null) {
                                 accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
                                         "Choose AR Account", JOptionPane.QUESTION_MESSAGE, null, // Use
@@ -2571,7 +2571,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             // System.out.println(tempID);
                                             String upc = "A" + tempID;
                                             if (!curCart.containsAP(accountName)) {
-                                                Item tempItem = new Item(myDB, tempID, upc, accountName, price, price, false, 853, 0, "", "", 1, false, 0, false);
+                                                Item tempItem = new Item(tempID, upc, accountName, price, price, false, 853, 0, "", "", 1, false, 0, false);
                                                 curCart.addItem(tempItem);
                                                 guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                                 displayChangeDue = false;
@@ -2631,7 +2631,7 @@ public class MainFrame extends javax.swing.JFrame {
                         if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty()) {
                             //do nothing, they clicked OK with everything blank
                         } else {
-                            String[] choices = myDB.getDMEList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
+                            String[] choices = Database.getDMEList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
                             if (choices != null) {
                                 accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
                                         "Choose DME Account", JOptionPane.QUESTION_MESSAGE, null, // Use
@@ -2657,7 +2657,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             String upc = "D" + tempID;
                                             //boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity,boolean isRX)
                                             if (!curCart.containsAP(accountName)) {
-                                                Item tempItem = new Item(myDB, tempID, upc, accountName.substring(0, accountName.indexOf("Current Bal") - 1), price, price, false, 854, 0, "", "", 1, false, 0, false);
+                                                Item tempItem = new Item(tempID, upc, accountName.substring(0, accountName.indexOf("Current Bal") - 1), price, price, false, 854, 0, "", "", 1, false, 0, false);
                                                 curCart.addItem(tempItem);
                                                 guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                                 displayChangeDue = false;
@@ -2793,7 +2793,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty()) {
                                         //do nothing, they clicked OK with everything blank
                                     } else {
-                                        String[] choices = myDB.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
+                                        String[] choices = Database.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
                                         for (int i = 0; i < choices.length; i++) {//this removes current from the display when they are charging TO account
                                             choices[i] = choices[i].substring(0, choices[i].indexOf("Current"));
                                         }
@@ -2804,7 +2804,7 @@ public class MainFrame extends javax.swing.JFrame {
                                                     // icon
                                                     choices, // Array of choices
                                                     choices[0]); // Initial choice
-                                            if (myDB.checkFrozenAccount(accountName.substring(0, accountName.indexOf(" ")))) {
+                                            if (Database.checkFrozenAccount(accountName.substring(0, accountName.indexOf(" ")))) {
                                                 JFrame message1 = new JFrame("");
                                                 JOptionPane.showMessageDialog(message1, "This account has been FROZEN. Please speak to Hollie. Customer CANNOT charge!");
                                             } else if (accountName != null) {
@@ -3071,10 +3071,9 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
-    public void setData(Database myDB) {
+    public void setData() {
         this.setTitle("Smith's Super-Aid POS - Developed by: Andrew & Hollie Smith");
-        this.myDB = myDB;
-        menuBar = new TopMenuBar(myDB, this);//Hollie's Menu Bar!
+        menuBar = new TopMenuBar(this);//Hollie's Menu Bar!
         this.setJMenuBar(menuBar);
         if (isHalloween) {
             getContentPane().setBackground(Color.BLACK);
@@ -3095,15 +3094,15 @@ public class MainFrame extends javax.swing.JFrame {
         } else if (isWeddingMonth) {
             getContentPane().setBackground(new Color(192, 192, 192));
         }
-        checkout = new CheckoutHandler(myDB);
+        checkout = new CheckoutHandler();
         if (quotesActive) {
-            quote.setText(myDB.getQuote());
+            quote.setText(Database.getQuote());
             this.add(quote);
             quote.setVisible(true);
             quote.setBounds(10, 10, 1900, 50);
         }
         curCart = new Cart();//new cart because program just launched!
-        String[] employeeStrings = myDB.getEmployeesFromDatabase();
+        String[] employeeStrings = Database.getEmployeesFromDatabase();
         employeeSelectionHeader.setBounds(120, 825, 400, 30);
         employeeSelectionHeader.setVisible(true);
         this.add(employeeSelectionHeader);
@@ -3264,7 +3263,7 @@ public class MainFrame extends javax.swing.JFrame {
     public void loadTicketWithId(String id) {
         id = id.toUpperCase();
         //if it does, lets load it!
-        curCart.loadCart(id, myDB);
+        curCart.loadCart(id);
         int i = 15;
         for (GuiCartItem item : guiItems) {
             item.removeAllGUIData();
@@ -3279,7 +3278,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void loadReceipt(String receiptNum) {
         //if it does, lets load it!
-        refundCart.loadRefundCart(receiptNum, myDB);
+        refundCart.loadRefundCart(receiptNum);
         int i = 15;
 
         for (RefundItem item : refundCart.getRefundItems()) {
@@ -3355,7 +3354,7 @@ public class MainFrame extends javax.swing.JFrame {
     public void saveTicket(String id) {
         if (id != null && !id.isEmpty()) {
             id = id.toUpperCase();
-            if (!myDB.checkDatabaseForTicket(id)) {//check ID to see if it exists in database
+            if (!Database.checkDatabaseForTicket(id)) {//check ID to see if it exists in database
                 //if it doesnt, lets create it!
                 boolean eefound = false;
                 if (id.toUpperCase().contentEquals("DENNIS NEDRY")) {//EE Protocol
@@ -3419,7 +3418,7 @@ public class MainFrame extends javax.swing.JFrame {
                         curCart.isEmpDiscountActive(false);
                         empList2.setSelectedIndex(0);
                     }
-                    curCart.storeCart(id, myDB);
+                    curCart.storeCart(id);
                     resizeCartWindow();
                     resaveTicket.setVisible(false);
                     isMassPreCharged = false;
@@ -3513,7 +3512,6 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public javax.swing.JPanel jPanel1;
-    protected Database myDB;
     protected Cart curCart;
     protected CheckoutHandler checkout;
     private int[] integerArray = new int[12];

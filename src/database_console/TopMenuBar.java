@@ -29,13 +29,11 @@ public class TopMenuBar extends JMenuBar {
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
             masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest; //bugReport and featureRequest - Hollie's suggestions
-    Database myDB;
     MainFrame mf;
 
     //ctor
-    public TopMenuBar(Database myDB, MainFrame mf) {
+    public TopMenuBar( MainFrame mf) {
         this.mf = mf;
-        this.myDB = myDB;
         addMenu = new JMenu("Add");
         addMenu.setMnemonic(KeyEvent.VK_A);
         addMenu.setVisible(false);
@@ -270,7 +268,7 @@ public class TopMenuBar extends JMenuBar {
             if (!mf.validateInteger(field4.getText())) {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Not a valid DOB");
-            } else if (myDB.doesDMEAccountExisit(field1.getText().toUpperCase())) {
+            } else if (Database.doesDMEAccountExisit(field1.getText().toUpperCase())) {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Error: DME Account Name already exisits!");
             } else {
@@ -280,7 +278,7 @@ public class TopMenuBar extends JMenuBar {
 
                 int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add DME Account Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option2 == JOptionPane.OK_OPTION) {
-                    myDB.addDMEAccount(field1.getText().toUpperCase(), field2.getText().toUpperCase(), field3.getText().toUpperCase(), field4.getText());
+                    Database.addDMEAccount(field1.getText().toUpperCase(), field2.getText().toUpperCase(), field3.getText().toUpperCase(), field4.getText());
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Success!");
                 }
@@ -309,10 +307,10 @@ public class TopMenuBar extends JMenuBar {
             if (!mf.validateInteger(field4.getText())) {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Not a valid DOB");
-            } else if (myDB.doesChargeAccountExisit(field1.getText().toUpperCase())) {
+            } else if (Database.doesChargeAccountExisit(field1.getText().toUpperCase())) {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Error: Charge Account Name already exisits!");
-            } else if (myDB.doesQS1UUIDExisit(field5.getText().toUpperCase())) {
+            } else if (Database.doesQS1UUIDExisit(field5.getText().toUpperCase())) {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Error: QS1 UUID already exisits!");
             } else if (field5.getText().isEmpty()) {
@@ -325,7 +323,7 @@ public class TopMenuBar extends JMenuBar {
 
                 int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add RX Account Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option2 == JOptionPane.OK_OPTION) {
-                    myDB.addChargeAccount(field1.getText().toUpperCase(), field3.getText().toUpperCase(), field2.getText().toUpperCase(), field4.getText(), field5.getText().toUpperCase());
+                    Database.addChargeAccount(field1.getText().toUpperCase(), field3.getText().toUpperCase(), field2.getText().toUpperCase(), field4.getText(), field5.getText().toUpperCase());
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Success!");
                 }
@@ -349,11 +347,11 @@ public class TopMenuBar extends JMenuBar {
             int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Insurance Menu", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
                 if (!field1.getText().isEmpty()) {
-                    if (myDB.doesInsuranceExisit(field1.getText().replaceAll("'", " "))) {
+                    if (Database.doesInsuranceExisit(field1.getText().replaceAll("'", " "))) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: Insurance already exisits!");
                     } else {
-                        myDB.addInsurance(field1.getText().replaceAll("'", " "));
+                        Database.addInsurance(field1.getText().replaceAll("'", " "));
                     }
                 }
             }
@@ -385,7 +383,7 @@ public class TopMenuBar extends JMenuBar {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Passcode must be less than 100 and greater than 0.");//prompt try again?
                     tryAgain = true;
-                } else if (myDB.checkIfPasscodeExisits(Integer.parseInt(field3.getText()))) {
+                } else if (Database.checkIfPasscodeExisits(Integer.parseInt(field3.getText()))) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: Passcode is already in use.");//prompt try again?
                     tryAgain = true;
@@ -410,7 +408,7 @@ public class TopMenuBar extends JMenuBar {
 
                     int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add New Employee Menu", JOptionPane.OK_CANCEL_OPTION);
                     if (option2 == JOptionPane.OK_OPTION) {
-                        String result = myDB.addEmployee(field1.getText(), field2.getText(), Integer.parseInt(field3.getText()));
+                        String result = Database.addEmployee(field1.getText(), field2.getText(), Integer.parseInt(field3.getText()));
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, result);
                     }
@@ -451,10 +449,10 @@ public class TopMenuBar extends JMenuBar {
                 } else if (!field7.getText().toUpperCase().contentEquals("YES") && !field7.getText().toUpperCase().contentEquals("NO")) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Must enter YES or NO for Is Taxed");
-                } else if (myDB.doesItemExistByUPC(field3.getText())) {
+                } else if (Database.doesItemExistByUPC(field3.getText())) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: Same UPC exists for item already.");
-                } else if (myDB.doesItemExistByID(field2.getText())) {
+                } else if (Database.doesItemExistByID(field2.getText())) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: Same mutual ID exists for item already.");
                 } else {
@@ -473,7 +471,7 @@ public class TopMenuBar extends JMenuBar {
                             upc = upc.replaceAll("'", "");
                             upc = upc.substring(0, 11);
                         }
-                        myDB.addItem(field2.getText().replaceAll("'", ""), upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field5.getText()), Double.parseDouble(field4.getText()), taxed, Integer.parseInt(field6.getText()));
+                        Database.addItem(field2.getText().replaceAll("'", ""), upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field5.getText()), Double.parseDouble(field4.getText()), taxed, Integer.parseInt(field6.getText()));
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Success!");
                     }
@@ -498,17 +496,17 @@ public class TopMenuBar extends JMenuBar {
         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "DME Account Removal Menu", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             if (!field2.getText().isEmpty()) {
-                if (!myDB.doesDMEAccountExisit(field2.getText())) {
+                if (!Database.doesDMEAccountExisit(field2.getText())) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: DME Account Name:" + field2.getText() + " does not exisit.");
                 } else if (mf.curCart.containsAccountName(field2.getText())) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: Cannot delete DME account while it is in the cart!");
                 } else {
-                    String[] temp = myDB.getDMEList(field2.getText(), "", "", "");
+                    String[] temp = Database.getDMEList(field2.getText(), "", "", "");
                     if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to delete: " + temp[0] + "?", "WARNING",
                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        myDB.removeDMEAccount(field2.getText());
+                        Database.removeDMEAccount(field2.getText());
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "DME Account Name:" + field2.getText() + " has been deleted successfully.");
                     }//end if yes option
@@ -526,17 +524,17 @@ public class TopMenuBar extends JMenuBar {
         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "RX Account Removal Menu", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             if (!field2.getText().isEmpty()) {
-                if (!myDB.doesChargeAccountExisit(field2.getText())) {
+                if (!Database.doesChargeAccountExisit(field2.getText())) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: RX Account Name:" + field2.getText() + " does not exisit.");
                 } else if (mf.curCart.containsAccountName(field2.getText())) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: Cannot delete RX account while it is in the cart!");
                 } else {
-                    String[] temp = myDB.getARList(field2.getText(), "", "", "");
+                    String[] temp = Database.getARList(field2.getText(), "", "", "");
                     if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to delete: " + temp[0] + "?", "WARNING",
                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        myDB.removeChargeAccount(field2.getText());
+                        Database.removeChargeAccount(field2.getText());
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "RX Account Name:" + field2.getText() + " has been deleted successfully.");
                     }//end if yes option
@@ -553,11 +551,11 @@ public class TopMenuBar extends JMenuBar {
         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Insurance Menu", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             if (!field2.getText().isEmpty()) {
-                if (!myDB.doesInsuranceExisit(field2.getText())) {
+                if (!Database.doesInsuranceExisit(field2.getText())) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: No such insurance to remove!");
                 } else {
-                    myDB.removeInsurance(field2.getText());
+                    Database.removeInsurance(field2.getText());
                 }
             }
         }
@@ -568,7 +566,7 @@ public class TopMenuBar extends JMenuBar {
         JFrame textInputFrame = new JFrame("");
         JTextField field1 = new JTextField();
         field1.addAncestorListener(new RequestFocusListener());
-        String masterList = myDB.getEmployeesSortByPID();//Format PID : NAME \n for all employees in this one String.
+        String masterList = Database.getEmployeesSortByPID();//Format PID : NAME \n for all employees in this one String.
         Object[] message = {"Please select an employee # from this list to remove: \n" + masterList + "Enter Employee #", field1};
         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Remove Employee Menu", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
@@ -586,7 +584,7 @@ public class TopMenuBar extends JMenuBar {
                         JOptionPane.showMessageDialog(message1, "Error: You cannot delete yourself.");
                     } else if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to remove: " + temp, "WARNING",
                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        myDB.removeEmployee(Integer.parseInt(field1.getText()));//Remove, its final.
+                        Database.removeEmployee(Integer.parseInt(field1.getText()));//Remove, its final.
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Employee: " + temp + " removed successfully.");
                     }
@@ -607,21 +605,21 @@ public class TopMenuBar extends JMenuBar {
         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Delete User Made Item Menu", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             if (!field2.getText().isEmpty()) {
-                if (!myDB.doesItemExistByID(field2.getText())) {
+                if (!Database.doesItemExistByID(field2.getText())) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: No such item with ID: " + field2.getText() + " to remove!");
                 } else if (mf.curCart.containsItemByID(field2.getText())) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: Cannot remove item while it is in cart!");
                 } else {
-                    myDB.removeItemFromInventory(field2.getText());
+                    Database.removeItemFromInventory(field2.getText());
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Successfully removed item: " + field2.getText());
 
                 }
             }
         }
-        myDB.doesItemExistByID(TOOL_TIP_TEXT_KEY);
+        Database.doesItemExistByID(TOOL_TIP_TEXT_KEY);
     }//end rxAccountActionPerformed
 
 //Management menu items
@@ -637,7 +635,7 @@ public class TopMenuBar extends JMenuBar {
                 File selectedFile = fileChooser.getSelectedFile();
                 if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
                         JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    myDB.loadDMEData(selectedFile.getAbsolutePath());
+                    Database.loadDMEData(selectedFile.getAbsolutePath());
                     mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
                 }
             }
@@ -659,7 +657,7 @@ public class TopMenuBar extends JMenuBar {
                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         //Hollie or Drew, do AR.
                         // String path = "C://QS1/AR.txt";
-                        myDB.loadARData(selectedFile.getAbsolutePath());
+                        Database.loadARData(selectedFile.getAbsolutePath());
                     }
                 }
             }
@@ -704,7 +702,7 @@ public class TopMenuBar extends JMenuBar {
             int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Master Reprint Receipt Menu", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
                 if (!field1.getText().isEmpty()) {
-                    String receipt = myDB.getReceiptString(field1.getText());
+                    String receipt = Database.getReceiptString(field1.getText());
                     if (receipt != null && !receipt.isEmpty()) {
                         mf.checkout.reprintReceipt(receipt);
                     } else {
@@ -783,7 +781,7 @@ public class TopMenuBar extends JMenuBar {
             int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Item Info", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
                 if (mf.validateDouble(field2.getText())) {
-                    myDB.updateItemPrice(field1.getText(), Double.parseDouble(field2.getText()));
+                    Database.updateItemPrice(field1.getText(), Double.parseDouble(field2.getText()));
                 }
             }
             mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER

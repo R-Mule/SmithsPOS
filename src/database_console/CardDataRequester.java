@@ -35,7 +35,7 @@ public class CardDataRequester {
     String TSI="";
     boolean transTerminate=false;
 
-    CardDataRequester() {
+    public CardDataRequester() {
 
     }
 

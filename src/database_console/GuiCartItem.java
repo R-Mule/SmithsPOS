@@ -418,7 +418,7 @@ public class GuiCartItem {
         JTextField field3 = new JTextField();
 
         field2.setText(item.fillDate);
-        String[] possibilities = mainFrame.myDB.getInsurances();
+        String[] possibilities = Database.getInsurances();
         JList list = new JList(possibilities); //data has type Object[]
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         list.setLayoutOrientation(JList.VERTICAL_WRAP);

@@ -19,7 +19,6 @@ public class Item {
     protected String fillDate = "0";
     protected double taxAmt;
     final protected double taxRate = 0.053;
-    final protected Database myDB;
     protected int quantity = 0;
     protected boolean isRX = false;
     protected double percentageDisc = 0.0;
@@ -28,8 +27,7 @@ public class Item {
     protected boolean hasTaxBeenRefunded=false;
     protected double employeePrice=itemPrice;
     
-    Item(Database myDB, String UPCorID) {
-        this.myDB = myDB;
+    Item( String UPCorID) {
         if (UPCorID.length() == 6) {
             mutID = UPCorID;
         } else {
@@ -40,13 +38,11 @@ public class Item {
        // setEmployeeDiscount(employeeDiscActive);
     }
 
-    Item(Database myDB){
-        this.myDB=myDB;
+    Item(){
       //  setEmployeeDiscount(employeeDiscActive);
     }
 //THIS CONSTRUCTOR IS TO BE USED ONLY BY RX's
-    Item(Database myDB, int rxNumber, String fillDate, String insurance, double copay, boolean isPreCharged) {
-        this.myDB = myDB;
+    Item( int rxNumber, String fillDate, String insurance, double copay, boolean isPreCharged) {
         this.rxNumber = rxNumber;
         this.fillDate = fillDate;
         this.insurance = insurance;
@@ -65,8 +61,7 @@ public class Item {
         employeePrice=itemPrice;
     }
 
-    Item(Database myDB, String mutID, String upc, String name, double price, double cost, boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged) {
-        this.myDB = myDB;
+    Item( String mutID, String upc, String name, double price, double cost, boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged) {
         this.quantity = quantity;
         this.itemName = name;
         this.itemPrice = price;
@@ -110,9 +105,9 @@ public class Item {
 
     private void setup() {
         if(!mutID.isEmpty()){
-        myDB.checkDatabaseForItemByID(this);
+        Database.checkDatabaseForItemByID(this);
         }else{
-            myDB.checkDatabaseForItemByUPC(this);
+            Database.checkDatabaseForItemByUPC(this);
         }
     }
 

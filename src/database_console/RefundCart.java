@@ -25,8 +25,8 @@ public class RefundCart extends Cart {
         return refundItems.isEmpty();
     }
 
-    public void loadRefundCart(String receiptNum, Database myDB) {
-        ArrayList<RefundItem> tempItems = myDB.loadReceipt(receiptNum);
+    public void loadRefundCart(String receiptNum) {
+        ArrayList<RefundItem> tempItems = Database.loadReceipt(receiptNum);
         ArrayList<RefundItem> itemsToAdd = new ArrayList<RefundItem>();
         if (!refundItems.isEmpty()) {
             for (RefundItem item : tempItems) {
