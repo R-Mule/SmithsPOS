@@ -34,12 +34,53 @@ public class ConfigFileReader {
             String line;
 
             while ((line = in.readLine()) != null) {
-                String[] tokens = line.split(":");
+                String[] tokens = line.split(":", 2);   //limits the split to 2 array elements ie only the first occurance so it will keep any colons in the value portion
                 //  for (String s : tokens) {
 
                 //System.out.println(s);
                 // }
-                if (line.contains("Register ID:")) {
+                
+                //*******************Levi
+                if(tokens.length < 2)   //not all data is there just move along
+                    continue;
+                /*if(tokens.length != 2)  //more tokens than expected (most likey due to colons in value portion of config) combine them all back together and place colons between them to get original value
+                {   
+                    for(int i = 2; i < tokens.length; i++)
+                    {
+                        tokens[1] += ":" + tokens[i];
+                    }
+                }*///backup code for string split with colons in value portion
+                
+                if (tokens[0].contains("Register ID:")) {
+                    registerID = tokens[1].trim();
+                } else if (tokens[0].contains("Printer Name:")) {
+                    printerName = tokens[1].trim();
+                } else if (tokens[0].contains("Database Hostname:")) {
+                    hostName = tokens[1].trim();
+                } else if (tokens[0].contains("Database Username:")) {
+                    userName = tokens[1].trim();
+                } else if (tokens[0].contains("Database Password:")) {
+                    password = tokens[1].trim();
+                } else if (tokens[0].contains("Remote Drive Path:")) {
+                    remoteDrivePath = tokens[1].trim();
+                } else if (tokens[0].contains("Register Report Path:")) {
+                    Date date = new Date();
+                    DateFormat dateFormat = new SimpleDateFormat("MMddyy");
+                    registerReportPath = tokens[1].trim() + dateFormat.format(date);
+                }else if (tokens[0].contains("Display Com Port:")) {
+                    displayComPort = tokens[1].trim();
+                   // System.out.println(displayComPort);
+                }else if(tokens[0].contains("Card Terminal Address:")){
+                    cardReaderURL = tokens[1].trim();
+                    
+                }else if(tokens[0].contains("Pharmacy Name:")){
+                    pharmacyName = tokens[1].trim();
+                }else if(tokens[0].contains("Mail Password:")){
+                    mailPassword = tokens[1].trim();
+                }
+                //******************Levi
+                
+                /*if (line.contains("Register ID:")) {
                     registerID = line.substring(13).trim();
                 } else if (line.contains("Printer Name:")) {
                     printerName = line.substring(14).trim();
@@ -65,9 +106,10 @@ public class ConfigFileReader {
                     pharmacyName = line.substring(14).trim();
                 }else if(line.contains("Mail Password:")){
                     mailPassword = line.substring(14).trim();
-                }
+                }*/
 
             }//end while
+
 
         } catch (FileNotFoundException e) {
             //System.out.println("The file could not be found or opened");
