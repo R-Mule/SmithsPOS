@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -59,6 +61,7 @@ public class MainFrame extends javax.swing.JFrame {
         helpSP.setVisible(true);
 
         this.add(helpSP);
+ 
         pharmacyName = ConfigFileReader.getPharmacyName();
         if (pharmacyName.contentEquals(superaid)) {//This only allows Holiday events for Super-Aid Pharmacy
             DateFormat dateFormat1 = new SimpleDateFormat("MMdd");//ddyyhhmmss");
