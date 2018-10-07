@@ -26,12 +26,12 @@ public class PoleDisplay {
      SerialPort	      serialPort;
      OutputStream       outputStream;
      boolean	      outputBufferEmptyFlag = false;
-    ConfigFileReader reader;
+    //ConfigFileReader reader;
     
     @SuppressWarnings("SleepWhileInLoop")
  public void StartDisplay() {
     boolean portFound = false;
-    String  defaultPort = reader.getDisplayComPort();
+    String  defaultPort = ConfigFileReader.getDisplayComPort();
     portList = CommPortIdentifier.getPortIdentifiers();
  
     while (portList.hasMoreElements()) {
@@ -131,8 +131,8 @@ public void close(){
     catch(IOException i){printError(i);}
     }
 
-public PoleDisplay(ConfigFileReader reader) {
-    this.reader =reader;
+public PoleDisplay(/*ConfigFileReader reader*/) {
+    //this.reader =reader;
     StartDisplay();   //optimal choice is start when system start.
     writeMode();
     ClearDisplay();

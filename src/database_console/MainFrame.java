@@ -59,7 +59,7 @@ public class MainFrame extends javax.swing.JFrame {
         helpSP.setVisible(true);
 
         this.add(helpSP);
-        pharmacyName = reader.getPharmacyName();
+        pharmacyName = ConfigFileReader.getPharmacyName();
         if (pharmacyName.contentEquals(superaid)) {//This only allows Holiday events for Super-Aid Pharmacy
             DateFormat dateFormat1 = new SimpleDateFormat("MMdd");//ddyyhhmmss");
             Date date1 = new Date();
@@ -524,7 +524,7 @@ public class MainFrame extends javax.swing.JFrame {
                             if (Desktop.isDesktopSupported()) {
                                 try {
                                     if (id != null && !id.isEmpty()) {
-                                        String path = reader.getRemoteDrivePath();
+                                        String path = ConfigFileReader.getRemoteDrivePath();
                                         File myFile = new File(path + id.substring(0, 2) + id.substring(4, 6) + "\\" + id + ".pdf");
                                         Desktop.getDesktop().open(myFile);
                                     }
@@ -1183,7 +1183,7 @@ public class MainFrame extends javax.swing.JFrame {
 */
         activateDisplayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                display = new PoleDisplay(reader);
+                display = new PoleDisplay(/*reader*/);
                 curCart.setDisplay(display);
                 refundCart.setDisplay(display);
                 curCart.updateTotal();
@@ -3464,13 +3464,15 @@ public class MainFrame extends javax.swing.JFrame {
         }
 
         //We need sig, and to save RX File.TEST
-        CapSignature frame = new CapSignature(this, curCart, checkout.reader.getRemoteDrivePath(), receiptNum);
+        //CapSignature frame = new CapSignature(this, curCart, checkout.reader.getRemoteDrivePath(), receiptNum);
+        CapSignature frame = new CapSignature(this, curCart, ConfigFileReader.getRemoteDrivePath(), receiptNum);
 
         frame.begin(questions);
         frame.setVisible(true);
 
         while (!frame.hasBeenSaved) {
-            frame = new CapSignature(this, curCart, checkout.reader.getRemoteDrivePath(), receiptNum);
+            //frame = new CapSignature(this, curCart, checkout.reader.getRemoteDrivePath(), receiptNum);
+            frame = new CapSignature(this, curCart, ConfigFileReader.getRemoteDrivePath(), receiptNum);
             frame.begin(questions);
             frame.setVisible(true);
         }
@@ -3579,7 +3581,7 @@ public class MainFrame extends javax.swing.JFrame {
     JButton massDiscountButton = new JButton("");
     JButton massPrechargeButton = new JButton("");
     boolean isMassPreCharged = false;//always start out with mass precharged off
-    ConfigFileReader reader = new ConfigFileReader();
+    //ConfigFileReader reader = new ConfigFileReader();
     // JButton masterReprintReceiptButton = new JButton("Master Rpt Receipt");Removed update 1.2.0
     // JButton loadDailyDataButton = new JButton("Load Data");Removed update 1.2.0
     JButton employeeDiscountFalseButton = new JButton("");
