@@ -91,7 +91,7 @@ public class MainFrame extends javax.swing.JFrame {
             } else if (month.contentEquals("11")) {
                 isThanksgiving = true;
             } else if (month.contentEquals("10")) {
-                isChristmas = true;
+                isHalloween = true;
                 quotesActive = false;
             } else if (month.contentEquals("12")) {
                 if (day <= 25) {
