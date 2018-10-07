@@ -39,6 +39,27 @@ public void isEmpDiscountActive(boolean isActive){
 
 }
 
+public boolean containsItemByID(String mutID){
+    for(Item item : items){
+        if(item.mutID.contentEquals(mutID)){
+            System.out.println(item.mutID);
+            return true;
+        }
+    }
+    return false;
+}
+
+public boolean containsAccountName(String accntName){
+    for(Item item : items){
+        if(item.itemName.contains(" ")&&(item.getCategory()==853||item.getCategory()==854)){
+        if(item.itemName.substring(0, item.itemName.indexOf(' ')).contentEquals(accntName)){
+            System.out.println(item.mutID);
+            return true;
+        }
+        }
+    }
+    return false;
+}
     public void loadCart(String id, Database myDB) {
         ArrayList<Item> tempItems = myDB.getTicketItemsFromDatabase(id);
         ArrayList<Item> itemsToAdd = new ArrayList<Item>();

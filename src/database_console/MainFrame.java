@@ -3050,7 +3050,9 @@ public class MainFrame extends javax.swing.JFrame {
             loadDailyDataButton.setVisible(false);
             */
             menuBar.updateVisible(2);//Elevated is 2
-        } else {
+        }else if(employeeSelectionHeader.getText().substring(14).contentEquals("NONE")){
+            menuBar.updateVisible(0);
+        }else {
             /*Removed Update 1.2.0
             updatePriceButton.setVisible(false);
             generateReportButton.setVisible(false);
@@ -3507,7 +3509,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     public javax.swing.JPanel jPanel1;
     protected Database myDB;
-    private Cart curCart;
+    protected Cart curCart;
     protected CheckoutHandler checkout;
     private int[] integerArray = new int[12];
     private int arrayLoc = 0;
@@ -3584,7 +3586,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.1.49", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.0", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

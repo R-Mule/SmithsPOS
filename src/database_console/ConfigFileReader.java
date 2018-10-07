@@ -24,6 +24,7 @@ public class ConfigFileReader {
     private String displayComPort;
     private String cardReaderURL;
     private String pharmacyName;
+    private String mailPassword;
 
     public ConfigFileReader() {
         try {
@@ -62,6 +63,8 @@ public class ConfigFileReader {
                     
                 }else if(line.contains("Pharmacy Name:")){
                     pharmacyName = line.substring(14).trim();
+                }else if(line.contains("Mail Password:")){
+                    mailPassword = line.substring(14).trim();
                 }
 
             }//end while
@@ -109,5 +112,8 @@ public class ConfigFileReader {
 
     public String getRemoteDrivePath() {
         return remoteDrivePath;
+    }
+    public String getMailPassword() {
+        return mailPassword;
     }
 }

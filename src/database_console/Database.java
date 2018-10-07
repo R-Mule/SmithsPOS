@@ -38,16 +38,90 @@ public class Database {
         password = reader.getPassword();
     }//end databaseCtor
 
-    public String addEmployee(String firstName,String lastName,int passCode){
-
-        
-        return "Employee: "+lastName+", "+firstName+" added successfully with Passcode: "+passCode;
+    public void removeItemFromInventory(String mutualID){
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("DELETE FROM `inventory` where mutID='" + mutualID + "';");
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }//end catch
     }
     
-    public boolean checkIfPasscodeExisits(int passCode){
+    public String addEmployee(String firstName, String lastName, int passCode) {
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("INSERT INTO `employees`(`pid`,`empname`,`passcode`,`wins`,`losses`) VALUES (NULL,'" + lastName + ", " + firstName + "','" + passCode + "',0,0)");//zeros are for wins and losses. for March Madness
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }//end catch
+        return "Employee: " + lastName + ", " + firstName + " added successfully with Passcode: " + passCode;
+    }
+
+    public void removeEmployee(int employeeID) {
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("DELETE FROM `employees` where pid=" + employeeID + ";");
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }//end catch
+    }
+
+    public String getEmployeesSortByPID() {
+        try {
+            String bigList="";
+           // ArrayList<String> data = new ArrayList<>();
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from employees order by pid asc,empname;");
+            while (rs.next()) {
+                if (rs.getInt(1) != 5 && rs.getInt(1) != 10 && rs.getInt(1) != 11 && rs.getInt(1) != 12 && rs.getInt(1) != 14 && rs.getInt(1) != 15) {//These employees CANNOT be deleted.
+                    bigList+=rs.getInt(1) + " : " + rs.getString(2)+"\n";
+                }
+            }//end while
+            con.close();
+            return bigList;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+
+    public boolean checkIfPasscodeExisits(int passCode) {
+        try {
+            ArrayList<String> data = new ArrayList<>();
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select passcode from employees;");
+            while (rs.next()) {
+                if (rs.getInt(1) == passCode) {
+                    return true;
+                }
+
+            }//end while
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         return false;
     }
-    
+
     public ArrayList<String> getEmployeesAndWinLossMM() {
         try {
             ArrayList<String> data = new ArrayList<>();
@@ -359,7 +433,7 @@ public class Database {
             loadedItems.add(new Item(this, "HPSS2", "HPSS2", "Erised stra ehru oyt ube cafru oyt on wohsi", 1041.11, 1041.11, false, 852, 0, "", "", 1, false, 0, false));
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss2.gif", "C:/POS/SOFTWARE/hpss2.wav", "It does not do to dwell on dreams and forget to live.", "");
             return loadedItems;
-        }else if (id.toUpperCase().contentEquals("MICHAEL MYERS")) {
+        } else if (id.toUpperCase().contentEquals("MICHAEL MYERS")) {
             loadedItems.add(new Item(this, "MMHA1", "MMHA1", "Loomis", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item(this, "MMHA2", "MMHA2", "Laurie", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item(this, "MMHA3", "MMHA3", "Annie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
@@ -375,7 +449,7 @@ public class Database {
             loadedItems.add(new Item(this, "MMHA13", "MMHA13", "Keith", 10.25, 10.25, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item(this, "MMHA14", "MMHA14", "Dr. Wynn", 19.78, 19.78, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item(this, "MMHA15", "MMHA15", "Christopher", 8.00, 8.00, false, 852, 0, "", "", 1, false, 0, false));
-            
+
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mmha1.gif", "C:/POS/SOFTWARE/mmha1.wav", "", "Was that the Boogeyman?");
             return loadedItems;
         } else {
@@ -748,6 +822,32 @@ public class Database {
         return accountsActual;
     }
 
+        public void removeDMEAccount(String accountName) {
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("DELETE FROM `dmeaccounts` where pan = '" + accountName + "';");
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+        
+    public void removeChargeAccount(String accountName) {
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("DELETE FROM `chargeaccounts` where accntName = '" + accountName + "';");
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+                
     public String[] getDMEList(String accntName, String lastName, String firstName, String dob) {
         boolean oneBefore = false;
         String[] accounts = new String[2000];
