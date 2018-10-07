@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import javax.mail.MessagingException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -793,26 +794,32 @@ public class TopMenuBar extends JMenuBar {
 
     private void bugReportActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");
-        JTextArea field1 = new JTextArea(15,40);
-        JTextArea field2 = new JTextArea(15,40);
+        JTextArea field1 = new JTextArea(15, 40);
+        JTextArea field2 = new JTextArea(15, 40);
         field1.setLineWrap(true);
         field2.setLineWrap(true);
-        
+
         field1.addAncestorListener(new RequestFocusListener());
         Object[] message = {
             "Description: ", field1, "Steps to Reproduce: ", field2};
         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Bug Report - Enter BOTH places", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            if (!field1.getText().isEmpty()&&!field2.getText().isEmpty()) {
+            if (!field1.getText().isEmpty() && !field2.getText().isEmpty()) {
                 MailSender ms = new MailSender();
                 int clerkIndex = mf.employeeSelectionHeader.getText().indexOf("Active Clerk: ") + 14;
                 String activeClerk = mf.employeeSelectionHeader.getText().substring(clerkIndex);
-                ms.sendMail("Bug Report - " + activeClerk, "Description:\n"+field1.getText()+"\nSteps to Reproduce:\n"+field2.getText());
+                try {
+                    ms.sendMail("Bug Report - " + activeClerk, "Description:\n" + field1.getText() + "\nSteps to Reproduce:\n" + field2.getText());
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Bug report submitted.");
+                } catch (MessagingException e) {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Mail server connection failed. Report not sent.");
+                }
+
+            } else {
                 JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Bug report submitted.");
-            }else{
-                JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Both boxes must have content.");
+                JOptionPane.showMessageDialog(message1, "Both boxes must have content.");
             }
         }
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
@@ -821,27 +828,33 @@ public class TopMenuBar extends JMenuBar {
     //Fn to be built (below)
 
     private void featureRequestActionPerformed(java.awt.event.ActionEvent evt) {
-                JFrame textInputFrame = new JFrame("");
-        JTextArea field1 = new JTextArea(15,40);
-        JTextArea field2 = new JTextArea(15,40);
+        JFrame textInputFrame = new JFrame("");
+        JTextArea field1 = new JTextArea(15, 40);
+        JTextArea field2 = new JTextArea(15, 40);
         field1.setLineWrap(true);
         field2.setLineWrap(true);
-        
+
         field1.addAncestorListener(new RequestFocusListener());
         Object[] message = {
             "What is the feature? ", field1, "Why is it better or needed? ", field2};
         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Feature Request - Enter BOTH places", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            if (!field1.getText().isEmpty()&&!field2.getText().isEmpty()) {
+            if (!field1.getText().isEmpty() && !field2.getText().isEmpty()) {
                 MailSender ms = new MailSender();
                 int clerkIndex = mf.employeeSelectionHeader.getText().indexOf("Active Clerk: ") + 14;
                 String activeClerk = mf.employeeSelectionHeader.getText().substring(clerkIndex);
-                ms.sendMail("Feature Request - " + activeClerk, "What is the feature?\n"+field1.getText()+"\nWhy is it better or needed?\n"+field2.getText());
+                try {
+                    ms.sendMail("Feature Request - " + activeClerk, "What is the feature?\n" + field1.getText() + "\nWhy is it better or needed?\n" + field2.getText());
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Feature request submitted.");
+                } catch (MessagingException e) {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Mail server connection failed. Report not sent.");
+                }
+
+            } else {
                 JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Feature request submitted.");
-            }else{
-                JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Both boxes must have content.");
+                JOptionPane.showMessageDialog(message1, "Both boxes must have content.");
             }
         }
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
@@ -874,7 +887,7 @@ public class TopMenuBar extends JMenuBar {
                 feedMenu.setVisible(true);
                 // masterRptRecpt.setVisible(false);
                 break;
-                case 0:
+            case 0:
                 addMenu.setVisible(false);
                 remMenu.setVisible(false);
                 mgmtMenu.setVisible(false);
