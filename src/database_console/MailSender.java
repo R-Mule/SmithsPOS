@@ -22,8 +22,8 @@ public class MailSender {
 
     }
 
-    public void sendMail(String subject, String content) throws AddressException, MessagingException {
-        ConfigFileReader cfr = new ConfigFileReader();
+    public void sendMail(String subject,String content) throws AddressException, MessagingException {
+         //ConfigFileReader cfr = new ConfigFileReader();
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -37,7 +37,7 @@ public class MailSender {
         Session session = Session.getDefaultInstance(props,
                 new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("asmithpbe", cfr.getMailPassword());
+                return new PasswordAuthentication("asmithpbe", ConfigFileReader.getMailPassword());
             }
         });
 

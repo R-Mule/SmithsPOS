@@ -29,13 +29,13 @@ public class Database {
     private String userName;
     private String password;
     private String driverPath = "com.mysql.cj.jdbc.Driver";
-    private ConfigFileReader reader;
+    //private ConfigFileReader reader;
 
     Database() {
-        reader = new ConfigFileReader();
-        host = reader.getHostName();
-        userName = reader.getUserName();
-        password = reader.getPassword();
+        //reader = new ConfigFileReader();
+        host = ConfigFileReader.getHostName();
+        userName = ConfigFileReader.getUserName();
+        password = ConfigFileReader.getPassword();
     }//end databaseCtor
 
     public void removeItemFromInventory(String mutualID){

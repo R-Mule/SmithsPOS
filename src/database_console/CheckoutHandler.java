@@ -24,13 +24,13 @@ public class CheckoutHandler {
     private String remoteDrivePath;
     private PoleDisplay display;
 
-    ConfigFileReader reader;
+    //ConfigFileReader reader;
 
     public CheckoutHandler(Database myDB) {
-        reader = new ConfigFileReader();
-        printerName = reader.getPrinterName();
-        registerID = reader.getRegisterID();
-        remoteDrivePath = reader.getRemoteDrivePath();
+        //reader = new ConfigFileReader();
+        printerName = ConfigFileReader.getPrinterName();
+        registerID = ConfigFileReader.getRegisterID();
+        remoteDrivePath = ConfigFileReader.getRemoteDrivePath();
         this.myDB = myDB;
         //LOAD REGISTER ID and PRINTER NAME from file.
 
@@ -49,7 +49,7 @@ public class CheckoutHandler {
         if (credit1Amt > 0) {
             mainFrame.setEnabled(false);
 
-            cdr.postRequest(reader.getCardReaderURL(), Double.toString(credit1Amt), "CCR1");
+            cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(credit1Amt), "CCR1");
             mainFrame.setEnabled(true);
 
             if (cdr.transTerminated()) {
@@ -67,7 +67,7 @@ public class CheckoutHandler {
         }else if(debitAmount>0){
             mainFrame.setEnabled(false);
 
-            cdr.postRequest(reader.getCardReaderURL(), Double.toString(debitAmount), "DB00");
+            cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(debitAmount), "DB00");
             mainFrame.setEnabled(true);
 
             if (cdr.transTerminated()) {
@@ -186,7 +186,7 @@ public class CheckoutHandler {
         ArrayList<String> creditInfo = new ArrayList<>();
 
         CardDataRequester cdr = new CardDataRequester();
-        cdr.postRequest(reader.getCardReaderURL(), Double.toString(amtPaid), "CCR1");
+        cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(amtPaid), "CCR1");
         mainFrame.setEnabled(true);
 
         if (cdr.transTerminated()) {
@@ -226,7 +226,7 @@ public class CheckoutHandler {
         ArrayList<String> creditInfo = new ArrayList<>();
 
         CardDataRequester cdr = new CardDataRequester();
-        cdr.postRequest(reader.getCardReaderURL(), Double.toString(amtPaid), "DB00");
+        cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(amtPaid), "DB00");
         mainFrame.setEnabled(true);
 
         if (cdr.transTerminated()) {
@@ -511,7 +511,7 @@ public class CheckoutHandler {
         ArrayList<String> creditInfo = new ArrayList<>();
 
         CardDataRequester cdr = new CardDataRequester();
-        cdr.postRequest(reader.getCardReaderURL(), Double.toString(refundCart.getTotalPrice()), "CCR9");
+        cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(refundCart.getTotalPrice()), "CCR9");
         myself.setEnabled(true);
 
         if (cdr.transTerminated()) {
@@ -783,10 +783,10 @@ public class CheckoutHandler {
         printerService.printBytes(printerName, kickDrawer);
         try {
 
-            File f = new File(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            File f = new File(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory()) {
                 // read object from file
-                FileInputStream fis = new FileInputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
@@ -799,7 +799,7 @@ public class CheckoutHandler {
             }
 
             // write object to file
-            FileOutputStream fos = new FileOutputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             dr.printReport();
             oos.writeObject(dr);
@@ -820,10 +820,10 @@ public class CheckoutHandler {
 
         try {
 
-            File f = new File(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            File f = new File(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory()) {
                 // read object from file
-                FileInputStream fis = new FileInputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
@@ -833,7 +833,7 @@ public class CheckoutHandler {
             }
 
             // write object to file
-            FileOutputStream fos = new FileOutputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             dr.printReport();
             oos.writeObject(dr);
@@ -859,10 +859,10 @@ public class CheckoutHandler {
 
         try {
             
-            File f = new File(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            File f = new File(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory()) {
                 // read object from file
-                FileInputStream fis = new FileInputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
@@ -884,7 +884,7 @@ public class CheckoutHandler {
             mainFrame.estimatedCheckTotal=dr.totalChecksAmt;
             
             // write object to file
-            FileOutputStream fos = new FileOutputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             dr.printReport();
             oos.writeObject(dr);
@@ -894,10 +894,10 @@ public class CheckoutHandler {
         } catch (FileNotFoundException e) {
             try {
                 String emergencyDrivePath = "C:\\POS\\Emergency_Report_Saves\\";
-                File f = new File(emergencyDrivePath + reader.getRegisterID() + ".posrf");
+                File f = new File(emergencyDrivePath + ConfigFileReader.getRegisterID() + ".posrf");
                 if (f.exists() && !f.isDirectory()) {
                     // read object from file
-                    FileInputStream fis = new FileInputStream(emergencyDrivePath + reader.getRegisterID() + ".posrf");
+                    FileInputStream fis = new FileInputStream(emergencyDrivePath + ConfigFileReader.getRegisterID() + ".posrf");
                     ObjectInputStream ois = new ObjectInputStream(fis);
                     dr = (DrawerReport) ois.readObject();
                     ois.close();
@@ -919,7 +919,7 @@ public class CheckoutHandler {
                 mainFrame.estimatedCheckTotal=dr.totalChecksAmt;
                 
                 // write object to file
-                FileOutputStream fos = new FileOutputStream(emergencyDrivePath + reader.getRegisterID() + ".posrf");
+                FileOutputStream fos = new FileOutputStream(emergencyDrivePath + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 dr.printReport();
                 oos.writeObject(dr);
