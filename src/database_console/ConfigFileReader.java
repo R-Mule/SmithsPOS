@@ -50,7 +50,6 @@ public class ConfigFileReader {
                         tokens[1] += ":" + tokens[i];
                     }
                 }*///backup code for string split with colons in value portion
-                System.out.println(tokens[0]+" "+ tokens[1]);
                 if (tokens[0].contains("Register ID")) {
                     registerID = tokens[1].trim();
                 } else if (tokens[0].contains("Printer Name")) {
