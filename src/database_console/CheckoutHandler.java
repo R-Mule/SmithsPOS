@@ -21,7 +21,6 @@ public class CheckoutHandler {
     private String printerName; //= "EPSON TM-T20II Receipt";
     private String registerID;// = "D";
     private String remoteDrivePath;
-    private PoleDisplay display;
 
     //ConfigFileReader reader;
 
@@ -34,6 +33,7 @@ public class CheckoutHandler {
 
     }
 
+    
     public String beginSplitTenderCheckout(Cart curCart, double cashAmt,double debitAmount, double credit1Amt, double check1Amt, double check2Amt, int check1Num, int check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame, String employeeCheckoutName) {
         Date date = new Date();
         ArrayList<String> creditInfo = new ArrayList<>();

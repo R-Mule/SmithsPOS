@@ -103,9 +103,6 @@ public boolean containsAccountName(String accntName){
             
             Database.storeItem(item, id);
         }
-        //totalPriceAfterTax=0;
-        //totalPriceBeforeTax=0;
-        //amtOfTaxCharged=0;
         items.clear();
 
         updateTotal();
@@ -195,9 +192,6 @@ public boolean containsAccountName(String accntName){
 
     }//end addItem
 
-    //public void removeItem(Item itemToRemove){
-    //    items.remove(itemToRemove);
-    //    updateTotal();
     // }//end removeItem
     public double getTotalPrice() {
         return totalPriceAfterTax;
