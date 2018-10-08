@@ -2682,7 +2682,7 @@ public class MainFrame extends javax.swing.JFrame {
         for (int i = 1; i < employeeStrings.length + 1; i++) {
             empStrings2[i] = employeeStrings[i - 1];
         }
-        empList2 = new JComboBox(empStrings2);
+        empList2 = new JComboBox<String>(empStrings2);
         empList2.setSelectedIndex(0);
         empList2.setVisible(true);
         empList2.setBounds(100, 950, 200, 30);
