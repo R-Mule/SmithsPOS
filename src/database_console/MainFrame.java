@@ -2629,11 +2629,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         textField.requestFocusInWindow();
     }//end updateCartScreen
-
+ 
     public void checkForAdminButtonVisible() {
         if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Andrew") || employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Hollie") || employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")) {        
             menuBar.updateVisible(3);//Admin is 3
-        } else if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Haley") || employeeSelectionHeader.getText().substring(14).contentEquals("Booth, Sam") || employeeSelectionHeader.getText().substring(14).contentEquals("Broussard, Kayla")) {
+        } else if (employeeSelectionHeader.getText().substring(14).contentEquals("Wagle, Ricky")||employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Haley") || employeeSelectionHeader.getText().substring(14).contentEquals("Booth, Sam") || employeeSelectionHeader.getText().substring(14).contentEquals("Broussard, Kayla")) {
             menuBar.updateVisible(2);//Elevated is 2
         }else if(employeeSelectionHeader.getText().substring(14).contentEquals("NONE")){
             menuBar.updateVisible(0);
