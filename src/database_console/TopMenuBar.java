@@ -28,7 +28,7 @@ public class TopMenuBar extends JMenuBar {
     JMenu addMenu, remMenu, mgmtMenu, feedMenu;
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
-            masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest; //bugReport and featureRequest - Hollie's suggestions
+            masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest,mutualFileUpload; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
 
     //ctor
@@ -112,6 +112,11 @@ public class TopMenuBar extends JMenuBar {
         updatePrice = new JMenuItem();
         updatePrice.setText("Update Price");
         mgmtMenu.add(updatePrice);//This adds Update Price to Management Menu Choices
+        
+        mutualFileUpload = new JMenuItem();
+        mutualFileUpload.setText("Mutual File Upload");
+        mgmtMenu.add(mutualFileUpload);//This adds Mutual File Upload to Management Menu Choices
+        
 //Feedback menu items
         bugReport = new JMenuItem();
         bugReport.setText("Bug Report");
@@ -235,6 +240,14 @@ public class TopMenuBar extends JMenuBar {
                 updatePriceActionPerformed(evt);
             }
         });
+        
+        mutualFileUpload.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mutualFileUploadActionPerformed(evt);
+            }
+        });
+        
 //Feedback menu action listeners
         bugReport.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -337,7 +350,6 @@ public class TopMenuBar extends JMenuBar {
     }//end addRxAccountActionPerformed
 
     private void addInsuranceActionPerformed(java.awt.event.ActionEvent evt) {
-        {
             JFrame textInputFrame = new JFrame("");
 
             JTextField field1 = new JTextField();
@@ -356,9 +368,6 @@ public class TopMenuBar extends JMenuBar {
                 }
             }
             mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-        }
-
-        System.out.println("Add Insurance Menu Item Pressed!");
     }//end addInsuranceActionPerformed
     //Fn to be built (below)
 
@@ -425,7 +434,7 @@ public class TopMenuBar extends JMenuBar {
     }//end addEmployeeActionPerformed
 
     private void addInventoryItemActionPerformed(java.awt.event.ActionEvent evt) {
-        {
+        
             JFrame textInputFrame = new JFrame("");
             JTextField field1 = new JTextField();
             JTextField field2 = new JTextField();
@@ -482,8 +491,6 @@ public class TopMenuBar extends JMenuBar {
                 }//end else
             }//end if  
             mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-        }//end actionPerformed
-        System.out.println("Add Inventory Item Menu Item Pressed!");
     }//end addInventoryItemActionPerformed
 
 //Removal menu item functions
@@ -625,7 +632,7 @@ public class TopMenuBar extends JMenuBar {
 //Management menu items
     //Path selection to be implemented (below)
     private void dmeDataUploadActionPerformed(java.awt.event.ActionEvent evt) {
-        {
+        
             FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files", "csv");
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileFilter(filter);
@@ -639,13 +646,11 @@ public class TopMenuBar extends JMenuBar {
                     mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
                 }
             }
-        }
+        
     }//end dmeDataUploadActionPerformed    
     //Path selection to be implemented (below)
 
-    private void rxDataUploadActionPerformed(java.awt.event.ActionEvent evt) {
-        {
-            {
+    private void rxDataUploadActionPerformed(java.awt.event.ActionEvent evt) {    
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setFileFilter(filter);
@@ -659,15 +664,12 @@ public class TopMenuBar extends JMenuBar {
                         // String path = "C://QS1/AR.txt";
                         Database.loadARData(selectedFile.getAbsolutePath());
                     }
-                }
-            }
+                }    
             mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-        }
-        System.out.println("Rx Data Upload Menu Item Pressed!");
     }//end rxDataUploadActionPerformed
 
     private void masterRefundActionPerformed(java.awt.event.ActionEvent evt) {
-        {
+        
             JFrame textInputFrame = new JFrame("");
             JTextField field2 = new JTextField();
             JTextField field1 = new JTextField();
@@ -687,12 +689,12 @@ public class TopMenuBar extends JMenuBar {
                 }
             }
             mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-        }
-        System.out.println("Master Refund Menu Item Pressed!");
+        
+
     }//end masterRefundActionPerformed
 
     private void masterRptRecptActionPerformed(java.awt.event.ActionEvent evt) {
-        {
+        
             JFrame textInputFrame = new JFrame("");
 
             JTextField field1 = new JTextField();
@@ -713,12 +715,10 @@ public class TopMenuBar extends JMenuBar {
 
             }
             mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-        }
-        System.out.println("Master Reprint Receipt Menu Item Pressed!");
     }//end masterRptRecptActionPerformed
 
     private void drawerReportsActionPerformed(java.awt.event.ActionEvent evt) {
-        {
+        
             JFrame textInputFrame = new JFrame("");
             DrawerReport dr = null;
             JTextField field1 = new JTextField();
@@ -765,12 +765,11 @@ public class TopMenuBar extends JMenuBar {
 
             }
             mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-        }
-        System.out.println("Drawer Reports Menu Item Pressed!");
+        
     }//end DrawerReportsActionPerformed
 
     private void updatePriceActionPerformed(java.awt.event.ActionEvent evt) {
-        {
+        
             JFrame textInputFrame = new JFrame("");
 
             JTextField field1 = new JTextField();
@@ -785,11 +784,14 @@ public class TopMenuBar extends JMenuBar {
                 }
             }
             mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-        }
+        
     }//end updatePriceActionPerformed
 //Feedback menu items
-    //Fn to be built (below)
 
+    private void mutualFileUploadActionPerformed(java.awt.event.ActionEvent evt) {
+        //MUTUAL FILE UPLOAD GUTS HERE:
+    }//end mutualFileUploadActionPerformed()
+    
     private void bugReportActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");
         JTextArea field1 = new JTextArea(15, 40);
