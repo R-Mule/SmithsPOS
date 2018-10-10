@@ -1,20 +1,29 @@
 package database_console;
 
+import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -788,8 +797,112 @@ public class TopMenuBar extends JMenuBar {
 //Feedback menu items
 
     private void mutualFileUploadActionPerformed(java.awt.event.ActionEvent evt) {
-        //MUTUAL FILE UPLOAD GUTS HERE:
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("POS File", "pos");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(filter);
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.name")));
+        int result = fileChooser.showOpenDialog(mf);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                int totalCntr = 0;
+                int totalFound = 0;
+                int totalAdded = 0;
+
+                try {
+
+                    BufferedReader in = new BufferedReader(new FileReader(selectedFile.getAbsolutePath()));
+
+                    String line;
+
+                    while ((line = in.readLine()) != null && !line.isEmpty()) {
+                        totalCntr++;
+                        //WORKING UPC
+                        //  System.out.println("");
+                        String upc = line.substring(0, 11);
+
+                        // System.out.println("UPC: " + upc);
+                        //WORKING NAME
+                        String name = line.substring(26, 71);
+                        name = name.replace("'", " ");
+                        // System.out.println("NAME: " + name);
+
+                        //WORKING PRICE
+                        String price = line.substring(107, 113);
+                        Double d = Double.parseDouble(price);
+                        d = d / 100;
+                        //  System.out.println("PRICE: " + d);
+
+                        //WORKING MUTUAL ID
+                        String mutID = line.substring(114, 117);
+                        mutID += line.substring(118, 121);
+                        //  System.out.println("mutual ID: " + mutID);
+
+                        //COST
+                        String costTemp = line.substring(90, 99);
+                        Double cost = Double.parseDouble(costTemp);
+                        cost = cost / 1000;
+                        //System.out.println(line.substring(124, 127));
+                        int quantity = Integer.parseInt(line.substring(124, 127));
+                        if (quantity != 0) {
+                            cost = round(cost / quantity);
+                        }
+                        // System.out.println("COST: " + cost);
+
+                        //ITEM CATEGORY CODE
+                        String code = line.substring(76, 79);
+                        int actualCode = Integer.parseInt(code);
+
+                        //System.out.println("CODE: " + code);
+                        boolean found;
+
+                        if (actualCode == 11 || actualCode == 12 || actualCode == 31 || actualCode == 32 || actualCode == 151 || actualCode == 152 || actualCode == 153 || actualCode == 154 || actualCode == 252 || actualCode == 371 || actualCode == 372 || actualCode == 471 || actualCode == 651 || actualCode == 851 || actualCode == 801) {
+                            found = Database.updateMutualInventory(mutID, upc, name, d, cost, false, actualCode);
+                            // System.out.println("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '"+mutID+"','"+upc+"','"+name+"',"+d+","+cost+",false,"+actualCode+");");
+                        } else {
+                            //System.out.println("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '"+mutID+"','"+upc+"','"+name+"',"+d+","+cost+",true,"+actualCode+");");
+                            found = Database.updateMutualInventory(mutID, upc, name, d, cost, true, actualCode);
+                        }
+                        if (found) {
+                            totalFound++;
+                        } else {
+                            totalAdded++;
+                        }
+
+                    }//end while
+                    System.out.println("Total Items Updated: " + totalFound);
+                    System.out.println("Total Items Added: " + totalAdded);
+                    System.out.println("Total Items Processed: " + totalCntr);
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "WHOOP THERE IT IS!\nTotal Items Updated: " + totalFound+"\nTotal Items Added: " + totalAdded+"\nTotal Items Processed: " + totalCntr);
+                    //progressFrame.setVisible(false);
+                } catch (FileNotFoundException e) {
+                    System.out.println("The file could not be found or opened");
+                } catch (IOException e) {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error reading the file.");
+                    System.out.println("Error reading the file");
+                }
+            }
+        }
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+
     }//end mutualFileUploadActionPerformed()
+
+    private double round(double num) {//rounds to 2 decimal places.
+        num = Math.round(num * 100.0) / 100.0;
+        return num;
+    }//end round
+
+    private boolean isAllDigits(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            if (!Character.isDigit(s.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private void bugReportActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");

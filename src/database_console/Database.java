@@ -40,6 +40,35 @@ public class Database {
         password = ConfigFileReader.getPassword();
     }
 
+        public static boolean updateMutualInventory(String mutID, String upc, String name, double price, double cost, boolean taxable, int category) {//0 return means not found, otherwise returns mutID from database.
+        boolean itemFound = false;
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+//here sonoo is database name, root is username and password  
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from inventory where mutID = " + mutID);
+            while (rs.next()) {
+                itemFound = true;
+                Statement stmt2 = con.createStatement();
+                stmt2.executeUpdate("UPDATE `inventory` set upc = '" + upc + "',name='" + name + "',price=" + price + ",category=" + category + ",cost=" + cost + ",taxable=" + taxable + " where mutID = '" + mutID + "';");
+              //  System.out.println("FOUND!");
+               // updatedCntr++;
+               // totalUpdated.setText("Total Updated: " + updatedCntr);
+            }//end while
+            if (!itemFound) {
+                stmt.executeUpdate("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '" + mutID + "','" + upc + "','" + name + "'," + price + "," + cost + ",false," + category + ");");
+               // addedCntr++;
+               // totalAdded.setText("Total Added: " + addedCntr);
+            }
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return itemFound;
+    }//end checkDatabaseForItem
+        
     public static void removeItemFromInventory(String mutualID) {
         try {
             Class.forName(driverPath);
