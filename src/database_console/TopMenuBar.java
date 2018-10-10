@@ -895,14 +895,6 @@ public class TopMenuBar extends JMenuBar {
         return num;
     }//end round
 
-    private boolean isAllDigits(String s) {
-        for (int i = 0; i < s.length(); i++) {
-            if (!Character.isDigit(s.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     private void bugReportActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");
