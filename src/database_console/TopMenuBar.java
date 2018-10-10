@@ -1,6 +1,5 @@
 package database_console;
 
-import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,21 +8,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -37,7 +30,8 @@ public class TopMenuBar extends JMenuBar {
     JMenu addMenu, remMenu, mgmtMenu, feedMenu;
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
-            masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload; //bugReport and featureRequest - Hollie's suggestions
+            masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload,
+            modifyPermissions; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
 
     //ctor
@@ -126,6 +120,10 @@ public class TopMenuBar extends JMenuBar {
         mutualFileUpload.setText("Mutual File Upload");
         mgmtMenu.add(mutualFileUpload);//This adds Mutual File Upload to Management Menu Choices
 
+        modifyPermissions = new JMenuItem();
+        modifyPermissions.setText("Modify Permissions");
+        mgmtMenu.add(modifyPermissions);//This adds Modify Employee Permissions to Management Menu Choices
+        
 //Feedback menu items
         bugReport = new JMenuItem();
         bugReport.setText("Bug Report");
@@ -254,6 +252,13 @@ public class TopMenuBar extends JMenuBar {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mutualFileUploadActionPerformed(evt);
+            }
+        });
+        
+                modifyPermissions.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifyPermissionsActionPerformed(evt);
             }
         });
 
@@ -598,7 +603,10 @@ public class TopMenuBar extends JMenuBar {
                     if (activeClerk.contentEquals(temp.substring(temp.indexOf(": ") + 2))) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: You cannot delete yourself.");
-                    } else if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to remove: " + temp, "WARNING",
+                    }else if (Integer.parseInt(field1.getText()) == 5 || Integer.parseInt(field1.getText()) == 10 || Integer.parseInt(field1.getText()) == 11 || Integer.parseInt(field1.getText()) == 12 || Integer.parseInt(field1.getText())== 14 || Integer.parseInt(field1.getText()) == 15){//Hard protect these employees.
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: This employee cannot be deleted.");
+                    }else if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to remove: " + temp, "WARNING",
                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         Database.removeEmployee(Integer.parseInt(field1.getText()));//Remove, its final.
                         JFrame message1 = new JFrame("");
@@ -890,6 +898,53 @@ public class TopMenuBar extends JMenuBar {
 
     }//end mutualFileUploadActionPerformed()
 
+        private void modifyPermissionsActionPerformed(java.awt.event.ActionEvent evt) {
+        JFrame textInputFrame = new JFrame("");
+        JTextField field1 = new JTextField();
+        JTextField field2 = new JTextField();
+        field1.addAncestorListener(new RequestFocusListener());
+        String masterList = Database.getEmployeesSortByPID();//Format PID : NAME \n for all employees in this one String.
+        Object[] message = {"Please select an employee # from this list to modify permissions on: \n" + masterList + "Enter Employee #", field1,"\nEnter New Permission Level: (1-4)\n",field2};
+        
+        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Modify Permissions Menu", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            if (!field1.getText().isEmpty()) {
+                if (!field2.getText().isEmpty()) {
+                if (masterList.contains(field1.getText()) && mf.validateInteger(field1.getText())) {
+                    int begin = masterList.indexOf(field1.getText());//This finds the string of employee being removed.
+                    String temp = masterList.substring(begin);
+                    temp = temp.substring(0, temp.indexOf("\n"));
+                    int clerkIndex = mf.employeeSelectionHeader.getText().indexOf("Active Clerk: ") + 14;
+                    String activeClerk = mf.employeeSelectionHeader.getText().substring(clerkIndex);
+                    System.out.println(activeClerk);
+                    System.out.println(temp.substring(temp.indexOf(": ") + 2));
+                    if (activeClerk.contentEquals(temp.substring(temp.indexOf(": ") + 2))) {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: You cannot update your own permissions.");
+                    }else if(Integer.parseInt(field2.getText())<1||Integer.parseInt(field2.getText())>4){
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Error: Must be 1-4 on permissions.");
+                    }else if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to update: " + temp, "WARNING",
+                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        Database.updateEmployeePermissionLevel(Integer.parseInt(field1.getText()),Integer.parseInt(field2.getText()));//Remove, its final.
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Employee: " + temp + " Permission updated!.");
+                    }
+                } else {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: Invalid Employee ID.");
+                }
+                }else{
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: Invalid Permission Level.");
+                }
+            }else{
+                JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: Invalid Employee ID.");
+            }
+        }
+    }//end EmployeeActionPerformed
+        
     private double round(double num) {//rounds to 2 decimal places.
         num = Math.round(num * 100.0) / 100.0;
         return num;
@@ -967,7 +1022,7 @@ public class TopMenuBar extends JMenuBar {
     //Other action events go here.
     public void updateVisible(int permission) { //this will eventually handle responsible menu items to show or not show.
         switch (permission) {
-            case 3:
+             case 4:
                 feedMenu.setVisible(true);//Menus visible
                 addMenu.setVisible(true);
                 remMenu.setVisible(true);
@@ -976,6 +1031,18 @@ public class TopMenuBar extends JMenuBar {
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(true);
                 dmeDataUpload.setVisible(true);
+                modifyPermissions.setVisible(true);
+                break;
+            case 3:
+                feedMenu.setVisible(true);//Menus visible
+                addMenu.setVisible(true);
+                remMenu.setVisible(true);
+                mgmtMenu.setVisible(true);
+                drawerReports.setVisible(false);
+                masterRptRecpt.setVisible(true);
+                rxDataUpload.setVisible(false);
+                dmeDataUpload.setVisible(true);
+                modifyPermissions.setVisible(false);
                 break;
             case 2:
                 feedMenu.setVisible(true);//Menus visible
@@ -985,12 +1052,14 @@ public class TopMenuBar extends JMenuBar {
                 rxDataUpload.setVisible(false);
                 dmeDataUpload.setVisible(false);
                 drawerReports.setVisible(false);
+                modifyPermissions.setVisible(false);
                 break;
             case 1:
                 addMenu.setVisible(false);
                 remMenu.setVisible(false);
                 mgmtMenu.setVisible(false);
                 feedMenu.setVisible(true);
+                
                 // masterRptRecpt.setVisible(false);
                 break;
             case 0:

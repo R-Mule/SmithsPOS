@@ -1037,7 +1037,8 @@ public class MainFrame extends javax.swing.JFrame {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mario1.wav");
                             }
                             employeeSelectionHeader.setText("Active Clerk: " + clerkName);
-                            checkForAdminButtonVisible();
+                            activeClerksPasscode=Integer.parseInt(field1.getText());
+                            checkForAdminButtonVisible(Integer.parseInt(field1.getText()));
                             clerkLogoutButton.setVisible(true);
                         }
                     }
@@ -1051,7 +1052,8 @@ public class MainFrame extends javax.swing.JFrame {
                 employeeSelectionHeader.setText("Active Clerk: NONE");
                 menuBar.setAllNotVisible();
                 clerkLogoutButton.setVisible(false);
-                checkForAdminButtonVisible();
+                activeClerksPasscode=-1;
+                checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });
@@ -2465,7 +2467,7 @@ public class MainFrame extends javax.swing.JFrame {
                 for (GuiRefundCartItem item : guiRefundItems) {
                     item.removeAllGUIData();
                 }
-                checkForAdminButtonVisible();
+                checkForAdminButtonVisible(activeClerksPasscode);
                 guiRefundItems.clear();
                 displayChangeDue = false;
                 refundOver();
@@ -2630,16 +2632,8 @@ public class MainFrame extends javax.swing.JFrame {
         textField.requestFocusInWindow();
     }//end updateCartScreen
  
-    public void checkForAdminButtonVisible() {
-        if (employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Andrew") || employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Hollie") || employeeSelectionHeader.getText().substring(14).contentEquals("Sutphin, Debbie")) {        
-            menuBar.updateVisible(3);//Admin is 3
-        } else if (employeeSelectionHeader.getText().substring(14).contentEquals("Wagle, Ricky")||employeeSelectionHeader.getText().substring(14).contentEquals("Smith, Haley") || employeeSelectionHeader.getText().substring(14).contentEquals("Booth, Sam") || employeeSelectionHeader.getText().substring(14).contentEquals("Broussard, Kayla")) {
-            menuBar.updateVisible(2);//Elevated is 2
-        }else if(employeeSelectionHeader.getText().substring(14).contentEquals("NONE")){
-            menuBar.updateVisible(0);
-        }else {
-            menuBar.updateVisible(1);//Minimum is 1
-        }
+    public void checkForAdminButtonVisible(int passCode) {
+        menuBar.updateVisible(Database.getEmployeePermissionByCode(passCode));
     }
 
     public void setData() {
@@ -2892,7 +2886,7 @@ public class MainFrame extends javax.swing.JFrame {
             activateDisplayButton.setVisible(true);
         }
         cancelRefundButton.setVisible(false);
-        checkForAdminButtonVisible();
+        checkForAdminButtonVisible(activeClerksPasscode);
     }
 
     public void voidCarts() {
@@ -3124,7 +3118,7 @@ public class MainFrame extends javax.swing.JFrame {
     String previousDate = "";
     JButton otcButton = new JButton("OTC");
     ImageIcon upsimg = new ImageIcon("C:/POS/SOFTWARE/ups.png");
-
+    int activeClerksPasscode = 0;
     JButton upsButton = new JButton(upsimg);
     JButton paperButton = new JButton("Paper");
     JButton voidButton = new JButton("Void");

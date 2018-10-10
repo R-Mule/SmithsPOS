@@ -109,6 +109,19 @@ public class Database {
         }//end catch
     }
 
+        public static void updateEmployeePermissionLevel(int employeeID,int permissionLevel) {
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("update `employees` set permissionLevel = "+permissionLevel+" where pid=" + employeeID + ";");
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }//end catch
+    }
+        
     public static String getEmployeesSortByPID() {
         try {
             String bigList = "";
@@ -119,9 +132,7 @@ public class Database {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from employees order by pid asc,empname;");
             while (rs.next()) {
-                if (rs.getInt(1) != 5 && rs.getInt(1) != 10 && rs.getInt(1) != 11 && rs.getInt(1) != 12 && rs.getInt(1) != 14 && rs.getInt(1) != 15) {//These employees CANNOT be deleted.
                     bigList += rs.getInt(1) + " : " + rs.getString(2) + "\n";
-                }
             }//end while
             con.close();
             return bigList;
@@ -247,6 +258,29 @@ public class Database {
         return null;
     }
 
+        public static int getEmployeePermissionByCode(int code) {
+
+        try {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select permissionLevel from employees where passcode = " + code);
+            while (rs.next()) {
+                //Statement stmt2 = con.createStatement();
+                //stmt2.executeUpdate("UPDATE `inventory` set price=" + price + " where mutID = '" + mutID + "';");
+                int temp = rs.getInt(1);
+                con.close();
+                return temp;
+            }//end while
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return -1;
+    }
+        
     public static void updateItemPrice(String mutID, double price) {//0 return means not found, otherwise returns mutID from database.
         try {
             Class.forName(driverPath);
