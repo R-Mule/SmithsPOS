@@ -289,7 +289,7 @@ public class DrawerReport implements Serializable {
                     int index = accountNameCharged.indexOf(paymentType[0].substring(11));
                     double amount = round(amountChargedToAccount.get(index) + item.getTotal());
                     amountChargedToAccount.set(index, amount);
-                    ArrayList items = itemsChargedToAccount.get(index);
+                    ArrayList<String> items = itemsChargedToAccount.get(index);
                     items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getTotal()));
                     System.out.println(index + "SIZE OF " + itemsChargedToAccount.size());
 

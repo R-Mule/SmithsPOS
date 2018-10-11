@@ -18,24 +18,22 @@ import java.util.Date;
  */
 public class CheckoutHandler {
 
-    private Database myDB;
     private String printerName; //= "EPSON TM-T20II Receipt";
     private String registerID;// = "D";
     private String remoteDrivePath;
-    private PoleDisplay display;
 
-    ConfigFileReader reader;
+    //ConfigFileReader reader;
 
-    public CheckoutHandler(Database myDB) {
-        reader = new ConfigFileReader();
-        printerName = reader.getPrinterName();
-        registerID = reader.getRegisterID();
-        remoteDrivePath = reader.getRemoteDrivePath();
-        this.myDB = myDB;
+    public CheckoutHandler() {
+        //reader = new ConfigFileReader();
+        printerName = ConfigFileReader.getPrinterName();
+        registerID = ConfigFileReader.getRegisterID();
+        remoteDrivePath = ConfigFileReader.getRemoteDrivePath();
         //LOAD REGISTER ID and PRINTER NAME from file.
 
     }
 
+    
     public String beginSplitTenderCheckout(Cart curCart, double cashAmt,double debitAmount, double credit1Amt, double check1Amt, double check2Amt, int check1Num, int check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame, String employeeCheckoutName) {
         Date date = new Date();
         ArrayList<String> creditInfo = new ArrayList<>();
@@ -49,7 +47,7 @@ public class CheckoutHandler {
         if (credit1Amt > 0) {
             mainFrame.setEnabled(false);
 
-            cdr.postRequest(reader.getCardReaderURL(), Double.toString(credit1Amt), "CCR1");
+            cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(credit1Amt), "CCR1");
             mainFrame.setEnabled(true);
 
             if (cdr.transTerminated()) {
@@ -67,7 +65,7 @@ public class CheckoutHandler {
         }else if(debitAmount>0){
             mainFrame.setEnabled(false);
 
-            cdr.postRequest(reader.getCardReaderURL(), Double.toString(debitAmount), "DB00");
+            cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(debitAmount), "DB00");
             mainFrame.setEnabled(true);
 
             if (cdr.transTerminated()) {
@@ -128,7 +126,7 @@ public class CheckoutHandler {
 
         //RX's are saved!
         printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, creditInfo);
-        myDB.storeReceipt(curCart, receiptNum);
+        Database.storeReceipt(curCart, receiptNum);
 
         mainFrame.voidCarts();
         //save Receipt to Database
@@ -154,7 +152,7 @@ public class CheckoutHandler {
 
         //RX's are saved!
         printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
-        myDB.storeReceipt(curCart, receiptNum);
+        Database.storeReceipt(curCart, receiptNum);
 
         mainFrame.voidCarts();
         //save Receipt to Database
@@ -176,7 +174,7 @@ public class CheckoutHandler {
             mainFrame.receiptNum = receiptNum;
         }
 
-        myDB.storeReceipt(curCart, receiptNum);
+        Database.storeReceipt(curCart, receiptNum);
         printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
         mainFrame.voidCarts();
     }
@@ -186,7 +184,7 @@ public class CheckoutHandler {
         ArrayList<String> creditInfo = new ArrayList<>();
 
         CardDataRequester cdr = new CardDataRequester();
-        cdr.postRequest(reader.getCardReaderURL(), Double.toString(amtPaid), "CCR1");
+        cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(amtPaid), "CCR1");
         mainFrame.setEnabled(true);
 
         if (cdr.transTerminated()) {
@@ -206,7 +204,7 @@ public class CheckoutHandler {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
-        myDB.storeReceipt(curCart, receiptNum);
+        Database.storeReceipt(curCart, receiptNum);
         creditInfo.add("3130031394051");//Merchant ID
         creditInfo.add(cdr.approvalCode);
         creditInfo.add(cdr.transID);
@@ -226,7 +224,7 @@ public class CheckoutHandler {
         ArrayList<String> creditInfo = new ArrayList<>();
 
         CardDataRequester cdr = new CardDataRequester();
-        cdr.postRequest(reader.getCardReaderURL(), Double.toString(amtPaid), "DB00");
+        cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(amtPaid), "DB00");
         mainFrame.setEnabled(true);
 
         if (cdr.transTerminated()) {
@@ -246,7 +244,7 @@ public class CheckoutHandler {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
-        myDB.storeReceipt(curCart, receiptNum);
+        Database.storeReceipt(curCart, receiptNum);
         creditInfo.add("3130031394051");//Merchant ID
         creditInfo.add(cdr.approvalCode);
         creditInfo.add(cdr.transID);
@@ -276,8 +274,8 @@ public class CheckoutHandler {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
-        myDB.updateChargeAccountBalance(accountName,curCart.getTotalPrice());
-        myDB.storeReceipt(curCart, receiptNum);
+        Database.updateChargeAccountBalance(accountName,curCart.getTotalPrice());
+        Database.storeReceipt(curCart, receiptNum);
         printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
         mainFrame.voidCarts();
 
@@ -332,9 +330,9 @@ public class CheckoutHandler {
             if (item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860) {
                 requires2Receipts = true;
                 if(item.getCategory()==853){
-                    myDB.updateChargeAccountBalance(item.getName(), item.getTotal()*-1);
+                    Database.updateChargeAccountBalance(item.getName(), item.getTotal()*-1);
                 }else if(item.getCategory()==854){
-                    myDB.updateDMEAccountBalance(item.getName(), item.getTotal()*-1);
+                    Database.updateDMEAccountBalance(item.getName(), item.getTotal()*-1);
                 }
             }
             String itemName = "";
@@ -481,7 +479,7 @@ public class CheckoutHandler {
         }
 
         myself.previousReceipt = receipt;
-        myDB.storeReceiptString(receiptNum, receipt);
+        Database.storeReceiptString(receiptNum, receipt);
         storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, false, employeeCheckoutName,myself);
 
     }
@@ -511,7 +509,7 @@ public class CheckoutHandler {
         ArrayList<String> creditInfo = new ArrayList<>();
 
         CardDataRequester cdr = new CardDataRequester();
-        cdr.postRequest(reader.getCardReaderURL(), Double.toString(refundCart.getTotalPrice()), "CCR9");
+        cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(refundCart.getTotalPrice()), "CCR9");
         myself.setEnabled(true);
 
         if (cdr.transTerminated()) {
@@ -523,7 +521,7 @@ public class CheckoutHandler {
         paymentAmt[0] = refundCart.getTotalPrice();
         paymentType[0] = String.format(cdr.cardType + " CARD REFUND:" + cdr.last4ofCard + ": ");
 
-        myDB.updateReceipt(refundCart, refundCart.receiptNum);
+        Database.updateReceipt(refundCart, refundCart.receiptNum);
 
                 creditInfo.add("3130031394051");//Merchant ID
         creditInfo.add(cdr.approvalCode);
@@ -563,7 +561,7 @@ public class CheckoutHandler {
                         }
                     }
                     if (!hasBeenAddedAlready) {
-                        RefundItem itemTemp = new RefundItem(myDB, item);
+                        RefundItem itemTemp = new RefundItem(item);
                         if (item.getID().length() > 6) {
                             itemTemp.setID(item.getID() + "F");//FINISHED!
                         } else {
@@ -600,7 +598,7 @@ public class CheckoutHandler {
                         }
                     }
                     if (!hasBeenAddedAlready) {
-                        RefundItem itemTemp = new RefundItem(myDB, item);
+                        RefundItem itemTemp = new RefundItem( item);
                         itemTemp.mutID = item.getID() + "T";//TAX REFUNDED!
                         itemTemp.quantity = item.quantityBeingRefunded;
 
@@ -619,7 +617,7 @@ public class CheckoutHandler {
         }
         if (!items2Del.isEmpty()) {
             System.out.println("Beginning Removal...");
-            myDB.removeReceiptByList(items2Del, refundCart.receiptNum);
+            Database.removeReceiptByList(items2Del, refundCart.receiptNum);
             for (RefundItem item : items2Del) {
                 System.out.println("Removing: " + item.getName());
                 refundCart.removeItem(item);
@@ -627,10 +625,10 @@ public class CheckoutHandler {
         }
         if (!items2Add.isEmpty()) {
             System.out.println("Beginning Store New Items...");
-            myDB.storeReceiptByList(items2Add, refundCart.receiptNum);
+            Database.storeReceiptByList(items2Add, refundCart.receiptNum);
         }
         System.out.println("Updating Existing Items...");
-        myDB.updateReceipt(refundCart, refundCart.receiptNum);
+        Database.updateReceipt(refundCart, refundCart.receiptNum);
         myself.voidCarts();
         myself.refundOver();
     }
@@ -783,10 +781,10 @@ public class CheckoutHandler {
         printerService.printBytes(printerName, kickDrawer);
         try {
 
-            File f = new File(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            File f = new File(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory()) {
                 // read object from file
-                FileInputStream fis = new FileInputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
@@ -799,7 +797,7 @@ public class CheckoutHandler {
             }
 
             // write object to file
-            FileOutputStream fos = new FileOutputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             dr.printReport();
             oos.writeObject(dr);
@@ -820,10 +818,10 @@ public class CheckoutHandler {
 
         try {
 
-            File f = new File(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            File f = new File(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory()) {
                 // read object from file
-                FileInputStream fis = new FileInputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
@@ -833,7 +831,7 @@ public class CheckoutHandler {
             }
 
             // write object to file
-            FileOutputStream fos = new FileOutputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             dr.printReport();
             oos.writeObject(dr);
@@ -859,10 +857,10 @@ public class CheckoutHandler {
 
         try {
             
-            File f = new File(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            File f = new File(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory()) {
                 // read object from file
-                FileInputStream fis = new FileInputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
@@ -884,7 +882,7 @@ public class CheckoutHandler {
             mainFrame.estimatedCheckTotal=dr.totalChecksAmt;
             
             // write object to file
-            FileOutputStream fos = new FileOutputStream(reader.getRegisterReportPath() + reader.getRegisterID() + ".posrf");
+            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             dr.printReport();
             oos.writeObject(dr);
@@ -894,10 +892,10 @@ public class CheckoutHandler {
         } catch (FileNotFoundException e) {
             try {
                 String emergencyDrivePath = "C:\\POS\\Emergency_Report_Saves\\";
-                File f = new File(emergencyDrivePath + reader.getRegisterID() + ".posrf");
+                File f = new File(emergencyDrivePath + ConfigFileReader.getRegisterID() + ".posrf");
                 if (f.exists() && !f.isDirectory()) {
                     // read object from file
-                    FileInputStream fis = new FileInputStream(emergencyDrivePath + reader.getRegisterID() + ".posrf");
+                    FileInputStream fis = new FileInputStream(emergencyDrivePath + ConfigFileReader.getRegisterID() + ".posrf");
                     ObjectInputStream ois = new ObjectInputStream(fis);
                     dr = (DrawerReport) ois.readObject();
                     ois.close();
@@ -919,7 +917,7 @@ public class CheckoutHandler {
                 mainFrame.estimatedCheckTotal=dr.totalChecksAmt;
                 
                 // write object to file
-                FileOutputStream fos = new FileOutputStream(emergencyDrivePath + reader.getRegisterID() + ".posrf");
+                FileOutputStream fos = new FileOutputStream(emergencyDrivePath + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 dr.printReport();
                 oos.writeObject(dr);
