@@ -476,7 +476,7 @@ public class GuiCartItem {
                                 item.rxNumber = rxNumber;
                                 item.fillDate = fillDate;
                                 item.insurance = insurance;
-                                item.itemPrice = Double.parseDouble(field3.getText());
+                                item.setPrice(Double.parseDouble(field3.getText()));
                                 item.itemCost = Double.parseDouble(field3.getText());
                                 item.itemName = rxNumber + " " + insurance + " " + fillDate;
                                 item.mutID = "X" + Integer.toString(rxNumber).substring(2, 7);

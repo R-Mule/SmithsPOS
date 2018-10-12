@@ -33,33 +33,34 @@ public class Cart {
         return items.isEmpty();
     }
 
-public void isEmpDiscountActive(boolean isActive){
-    isEmpDiscountActive=isActive;
-    updateTotal();
+    public void isEmpDiscountActive(boolean isActive) {
+        isEmpDiscountActive = isActive;
+        updateTotal();
 
-}
-
-public boolean containsItemByID(String mutID){
-    for(Item item : items){
-        if(item.mutID.contentEquals(mutID)){
-            System.out.println(item.mutID);
-            return true;
-        }
     }
-    return false;
-}
 
-public boolean containsAccountName(String accntName){
-    for(Item item : items){
-        if(item.itemName.contains(" ")&&(item.getCategory()==853||item.getCategory()==854)){
-        if(item.itemName.substring(0, item.itemName.indexOf(' ')).contentEquals(accntName)){
-            System.out.println(item.mutID);
-            return true;
+    public boolean containsItemByID(String mutID) {
+        for (Item item : items) {
+            if (item.mutID.contentEquals(mutID)) {
+                System.out.println(item.mutID);
+                return true;
+            }
         }
-        }
+        return false;
     }
-    return false;
-}
+
+    public boolean containsAccountName(String accntName) {
+        for (Item item : items) {
+            if (item.itemName.contains(" ") && (item.getCategory() == 853 || item.getCategory() == 854)) {
+                if (item.itemName.substring(0, item.itemName.indexOf(' ')).contentEquals(accntName)) {
+                    System.out.println(item.mutID);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void loadCart(String id) {
         ArrayList<Item> tempItems = Database.getTicketItemsFromDatabase(id);
         ArrayList<Item> itemsToAdd = new ArrayList<Item>();
@@ -100,7 +101,7 @@ public boolean containsAccountName(String accntName){
 
     public void storeCart(String id) {
         for (Item item : items) {
-            
+
             Database.storeItem(item, id);
         }
         items.clear();
@@ -212,7 +213,9 @@ public boolean containsAccountName(String accntName){
             totalPriceAfterTax = 0;
             amtOfTaxCharged = 0;
             for (Item temp : items) {
-                temp.setEmployeeDiscount(isEmpDiscountActive);
+                if (!temp.isRX() && temp.getCategory() != 853 && temp.getCategory() != 854) {//This fixed issue with price not editing right on RX....dummy.
+                    temp.setEmployeeDiscount(isEmpDiscountActive);
+                }
 
                 if (!temp.isPreCharged()) {
                     if (temp.isTaxable()) {
