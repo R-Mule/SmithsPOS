@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -974,6 +976,8 @@ public class TopMenuBar extends JMenuBar {
                 } catch (MessagingException e) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Mail server connection failed. Report not sent.");
+                } catch (Exception ex) {
+                    Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             } else {
@@ -1009,6 +1013,8 @@ public class TopMenuBar extends JMenuBar {
                 } catch (MessagingException e) {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Mail server connection failed. Report not sent.");
+                } catch (Exception ex) {
+                    Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             } else {
