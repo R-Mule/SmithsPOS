@@ -59,7 +59,7 @@ public class MainFrame extends javax.swing.JFrame {
         helpSP.setVisible(true);
 
         this.add(helpSP);
- 
+
         pharmacyName = ConfigFileReader.getPharmacyName();
         if (pharmacyName.contentEquals(superaid)) {//This only allows Holiday events for Super-Aid Pharmacy
             DateFormat dateFormat1 = new SimpleDateFormat("MMdd");//ddyyhhmmss");
@@ -140,7 +140,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 myText = myText.substring(0, 11);
                             }
 
-                            Item myItem = new Item( myText);
+                            Item myItem = new Item(myText);
 
                             if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
                                 curCart.addItem(myItem);
@@ -333,6 +333,19 @@ public class MainFrame extends javax.swing.JFrame {
         loadTicket.setLocation(1800, 300);
         loadTicket.setSize(100, 100);
         loadTicket.setBackground(new Color(255, 255, 0));
+
+        beginSplitTicketButton.setLocation(1700, 300);
+        beginSplitTicketButton.setSize(100, 100);
+        beginSplitTicketButton.setBackground(new Color(236, 132, 255));
+        beginSplitTicketButton.setVisible(true);
+        this.add(beginSplitTicketButton);
+
+        cancelSplitTicketButton.setLocation(1800, 300);
+        cancelSplitTicketButton.setSize(100, 100);
+        cancelSplitTicketButton.setBackground(new Color(255, 0, 0));
+        cancelSplitTicketButton.setVisible(false);
+        this.add(cancelSplitTicketButton);
+
         //this creates the lookupReceiptByRXButton
         lookupReceiptByRXButton.setLocation(1700, 400);
         lookupReceiptByRXButton.setSize(100, 100);
@@ -933,6 +946,13 @@ public class MainFrame extends javax.swing.JFrame {
         massPrechargeButton.setBackground(new Color(255, 0, 0));
         massPrechargeButton.setVisible(true);
         this.add(massPrechargeButton);
+        
+         //This creates the massSplitTicketButton
+        massSplitTicketButton.setLocation(1080, 65);
+        massSplitTicketButton.setSize(110, 20);
+        massSplitTicketButton.setBackground(new Color(255, 0, 0));
+        massSplitTicketButton.setVisible(false);
+        this.add(massSplitTicketButton);
 
         //This creates the activateDisplayButton 
         activateDisplayButton.setLocation(500, 890);
@@ -973,7 +993,7 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             });
         }
-     
+
         clerkLoginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -1037,7 +1057,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mario1.wav");
                             }
                             employeeSelectionHeader.setText("Active Clerk: " + clerkName);
-                            activeClerksPasscode=Integer.parseInt(field1.getText());
+                            activeClerksPasscode = Integer.parseInt(field1.getText());
                             checkForAdminButtonVisible(Integer.parseInt(field1.getText()));
                             clerkLogoutButton.setVisible(true);
                         }
@@ -1052,7 +1072,7 @@ public class MainFrame extends javax.swing.JFrame {
                 employeeSelectionHeader.setText("Active Clerk: NONE");
                 menuBar.setAllNotVisible();
                 clerkLogoutButton.setVisible(false);
-                activeClerksPasscode=-1;
+                activeClerksPasscode = -1;
                 checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
@@ -1069,11 +1089,11 @@ public class MainFrame extends javax.swing.JFrame {
                 activateDisplayButton.setVisible(false);
             }
         });
-       
+
         paperButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    Item myItem = new Item( "NEWSPAPER");
+                    Item myItem = new Item("NEWSPAPER");
 
                     if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
                         curCart.addItem(myItem);
@@ -1248,6 +1268,36 @@ public class MainFrame extends javax.swing.JFrame {
             }//end actionPerformed
         });//end massPrechargeAction
 
+                massSplitTicketButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                if (!curCart.isEmpty()) {
+                    if (isMassSplitting) {
+                        massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                        massSplitTicketButton.setText("Mass Off");
+                    } else {
+                        massSplitTicketButton.setBackground(new Color(0, 255, 0));
+                        massSplitTicketButton.setText("Mass On");
+                    }
+                    isMassSplitting = !isMassSplitting;
+                    for (Item item : curCart.getItems()) {
+                        
+                            item.isSetToSplitSave=isMassSplitting;
+                        
+                    }
+                    for (GuiCartItem tempItem : guiItems) {
+                            if (isMassSplitting) {
+                                tempItem.notSplitSavingButtonPressed(event);
+                            } else {
+                                tempItem.isSplitSavingButtonPressed(event);
+                            }
+                        
+                    }
+                    updateCartScreen();
+                }//end cartIsNotEmpty
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }//end actionPerformed
+        });//end massSplitTicketAction
+                
         AbstractAction rxButtonAA = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -1308,7 +1358,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         JOptionPane.showMessageDialog(message1, "Invalid Copay");
                                     } else {//else everything checks out! WE HAVE ALL GOOD DATA!!!
                                         double copay = Double.parseDouble(temp);
-                                        Item tempItem = new Item( rxNumber, fillDate, insurance, copay, false);
+                                        Item tempItem = new Item(rxNumber, fillDate, insurance, copay, false);
                                         if (!curCart.containsRX(tempItem.rxNumber, insurance, fillDate)) {
                                             curCart.addItem(tempItem);
                                             guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
@@ -1549,7 +1599,7 @@ public class MainFrame extends javax.swing.JFrame {
                             tempID = dateFormat.format(date);
                             System.out.println(tempID);
                             String upc = 'U' + tempID;
-                            Item tempItem = new Item( tempID, upc, "UPS Package", Double.parseDouble(field3.getText()), Double.parseDouble(field3.getText()), false, 860, 0, "", "", 1, false, 0, false);
+                            Item tempItem = new Item(tempID, upc, "UPS Package", Double.parseDouble(field3.getText()), Double.parseDouble(field3.getText()), false, 860, 0, "", "", 1, false, 0, false);
                             curCart.addItem(tempItem);
                             guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                             displayChangeDue = false;
@@ -2307,6 +2357,46 @@ public class MainFrame extends javax.swing.JFrame {
             }//end actionPerformed
 
         });//end dmePaymentButtonAction
+        beginSplitTicketButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                    if(curCart.getItems().size()>1){
+                    for (GuiCartItem item : guiItems) {//this hides all the items GUI options that shouldn't be active during this time, and SHOWS what should.
+                        item.splitTicketActivated();
+                    }
+                    splitTicketBeginHideContent();
+                    beginSplitTicketButton.setVisible(false);//Hide me, my cancel button will take my place.
+                    cancelSplitTicketButton.setVisible(true);
+                    }else{
+                        JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "You need at least two items to them into different tickets.");
+                    }
+                } else {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Select an employee first!");
+                }
+            }
+        });
+        cancelSplitTicketButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                    for (GuiCartItem item : guiItems) {
+                        item.splitTicketDeactivated();
+                    }
+                    for (Item item : curCart.getItems()) {
+                        item.isSetToSplitSave = false;
+                    }
+                    splitTicketEndShowContent();
+                    beginSplitTicketButton.setVisible(true);
+                    cancelSplitTicketButton.setVisible(false);//Hide me, my begin button will take my place.
+
+                } else {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Select an employee first!");
+                }
+            }
+        });
+
         paidOutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -2477,7 +2567,6 @@ public class MainFrame extends javax.swing.JFrame {
             }//end actionPerformed
         });//end cancelRefundAction
 
-
         activateDisplayButton.setVisible(true);
         this.add(activateDisplayButton);
         paperButton.setVisible(true);
@@ -2576,6 +2665,9 @@ public class MainFrame extends javax.swing.JFrame {
                 resaveTicket.setVisible(false);
                 isMassPreCharged = false;
                 massPrechargeButton.setBackground(new Color(255, 0, 0));
+                isMassSplitting = false;
+                massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                massSplitTicketButton.setText("Mass Off");
             }
         } else {
             discountHeader.setText("Qty to Refund: ");
@@ -2631,7 +2723,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         textField.requestFocusInWindow();
     }//end updateCartScreen
- 
+
     public void checkForAdminButtonVisible(int passCode) {
         menuBar.updateVisible(Database.getEmployeePermissionByCode(passCode));
     }
@@ -2838,6 +2930,7 @@ public class MainFrame extends javax.swing.JFrame {
             guiItems.add(new GuiCartItem(item, i, jPanel1, curCart, myself));
             i += 15;
         }
+
         displayChangeDue = false;
     }
 
@@ -2887,6 +2980,81 @@ public class MainFrame extends javax.swing.JFrame {
         }
         cancelRefundButton.setVisible(false);
         checkForAdminButtonVisible(activeClerksPasscode);
+    }
+
+    public void splitTicketBeginHideContent() {
+        //Hide everything. It matters.   (easiest way to stop people from clicking stuff they shouldn't when trying to split)
+        isSplitSavingActive = true;
+        rxButton.setVisible(false);
+        otcButton.setVisible(false);
+        arPaymentButton.setVisible(false);
+        splitTenderButton.setVisible(false);
+        chargeButton.setVisible(false);
+        voidButton.setVisible(false);
+        noSaleButton.setVisible(false);
+        loadTicket.setVisible(false);
+        //  createTicket.setVisible(false);//Show this guy. It should still be seen. We need to allow a save.
+        checkButton.setVisible(false);
+        paidOutButton.setVisible(false);
+        refundButton.setVisible(false);
+        lookupReceiptByRXButton.setVisible(false);
+        massDiscountButton.setVisible(false);
+        reprintReceiptButton.setVisible(false);
+        dmePaymentButton.setVisible(false);
+        paperButton.setVisible(false);
+        creditButton.setVisible(false);
+        debitButton.setVisible(false);
+        upsButton.setVisible(false);
+        massPrechargeButton.setVisible(false);
+        cashButton.setVisible(false);
+        creditButton.setVisible(false);
+        massSplitTicketButton.setVisible(true);
+
+        if (isMarchMadness) {
+            mmButton.setVisible(false);
+        }
+        //  if (!displayActive) {
+        //      activateDisplayButton.setVisible(true);
+        //  }
+        //cancelRefundButton.setVisible(false);//Not needed
+        // checkForAdminButtonVisible(activeClerksPasscode);
+    }
+
+    public void splitTicketEndShowContent() {
+        //Hide everything. It matters.   (easiest way to stop people from clicking stuff they shouldn't when trying to split)
+        isSplitSavingActive = false;
+        rxButton.setVisible(true);
+        otcButton.setVisible(true);
+        arPaymentButton.setVisible(true);
+        splitTenderButton.setVisible(true);
+        chargeButton.setVisible(true);
+        voidButton.setVisible(true);
+        noSaleButton.setVisible(true);
+        loadTicket.setVisible(true);
+        //  createTicket.setVisible(false);//Show this guy. It should still be seen. We need to allow a save.
+        checkButton.setVisible(true);
+        paidOutButton.setVisible(true);
+        refundButton.setVisible(true);
+        lookupReceiptByRXButton.setVisible(true);
+        massDiscountButton.setVisible(true);
+        reprintReceiptButton.setVisible(true);
+        dmePaymentButton.setVisible(true);
+        paperButton.setVisible(true);
+        creditButton.setVisible(true);
+        debitButton.setVisible(true);
+        upsButton.setVisible(true);
+        massPrechargeButton.setVisible(true);
+        cashButton.setVisible(true);
+        creditButton.setVisible(true);
+        massSplitTicketButton.setVisible(false);
+        if (isMarchMadness) {
+            mmButton.setVisible(true);
+        }
+        //if (!displayActive) {
+        //     activateDisplayButton.setVisible(true);
+        // }
+        //cancelRefundButton.setVisible(false);//Not needed
+        // checkForAdminButtonVisible(activeClerksPasscode);
     }
 
     public void voidCarts() {
@@ -2975,23 +3143,73 @@ public class MainFrame extends javax.swing.JFrame {
                     }
                 } else//end if EE Protocol
                 if (!eefound) {
-                    for (GuiCartItem item : guiItems) {
-                        item.removeAllGUIData();
+                    if (!isSplitSavingActive) {
+                        for (GuiCartItem item : guiItems) {
+                            item.removeAllGUIData();
+                        }
+                        guiItems.clear();
+                        if (curCart.isEmpDiscountActive) {
+                            curCart.isEmpDiscountActive(false);
+                            empList2.setSelectedIndex(0);
+                        }
+
+                        curCart.storeCart(id, false);
+                        resizeCartWindow();
+                        resaveTicket.setVisible(false);
+                        isMassPreCharged = false;
+                        massPrechargeButton.setBackground(new Color(255, 0, 0));
+                        isMassSplitting = false;
+                        massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                        massSplitTicketButton.setText("Mass Off");
+
+                        resetVars();
+                    } else {//Begin split ticket save logic
+
+                        if(curCart.containsItemToBeSplit()){
+                        ArrayList<GuiCartItem> itemsToRemove = new ArrayList<>();
+                        for (GuiCartItem item : guiItems) {
+                            if (item.item.isSetToSplitSave) {
+                                itemsToRemove.add(item);
+                                resizeCartWindow();
+                            } else {
+                                item.splitTicketDeactivated();//we need to bring it back to normal view.
+                            }
+                        }
+                        for (GuiCartItem toRemove : itemsToRemove) {
+                            guiItems.remove(toRemove);
+                            toRemove.removeAllGUIData();
+                        }
+                        curCart.storeCart(id, true);
+
+                        curCart.setRequiresRepaint(true);
+                        curCart.updateTotal();
+
+                        updateCartScreen();
+                        resizeCartWindow();
+                        resaveTicket.setVisible(false);
+                        if (curCart.isEmpty()) {
+                            isMassPreCharged = false;
+                            massPrechargeButton.setBackground(new Color(255, 0, 0));
+                            isMassSplitting = false;
+                            massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                            massSplitTicketButton.setText("Mass Off");
+                            resetVars();
+                            if (curCart.isEmpDiscountActive) {
+                                curCart.isEmpDiscountActive(false);
+                                empList2.setSelectedIndex(0);
+                            }
+                        }
+                        splitTicketEndShowContent();
+                        cancelSplitTicketButton.setVisible(false);
+                        beginSplitTicketButton.setVisible(true);
+                        }else{
+                            JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Cannot save a ticket with nothing set to save.");
+                        }
                     }
-                    guiItems.clear();
-                    if (curCart.isEmpDiscountActive) {
-                        curCart.isEmpDiscountActive(false);
-                        empList2.setSelectedIndex(0);
-                    }
-                    curCart.storeCart(id);
-                    resizeCartWindow();
-                    resaveTicket.setVisible(false);
-                    isMassPreCharged = false;
-                    massPrechargeButton.setBackground(new Color(255, 0, 0));
-                    resetVars();
                 }
 
-            } else {
+            } else if (!isSplitSavingActive) {
                 //if it does, send error message!
                 JFrame message2 = new JFrame("");
                 //JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Would you like me to load those?");
@@ -3009,7 +3227,10 @@ public class MainFrame extends javax.swing.JFrame {
                     }
                 }
 
-            }//end else already items in tickets
+            } else {//end else already items in tickets
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "There is already a ticket under that ID. Please cancel split ticket and open that ticket to continue.");
+            }
         }//end string null or empty part, didnt do an else, we just do nothing.
     }
 
@@ -3044,7 +3265,6 @@ public class MainFrame extends javax.swing.JFrame {
             frame.setVisible(true);
         }
     }
-
 
     public static void main(String args[]) {
         try {
@@ -3098,6 +3318,11 @@ public class MainFrame extends javax.swing.JFrame {
     JLabel itemQuantityHeader = new JLabel("Quantity: ", SwingConstants.RIGHT);
     String createTicketText = "Save\nTicket";
     JButton createTicket = new JButton("<html>" + createTicketText.replaceAll("\\n", "<br>") + "</html>");
+    String beginSplitTicketText = "Split\nTicket";
+    JButton beginSplitTicketButton = new JButton("<html>" + beginSplitTicketText.replaceAll("\\n", "<br>") + "</html>");
+    boolean isSplitSavingActive = false;
+    String cancelSplitTicketText = "Cancel\nSplit\nTicket";
+    JButton cancelSplitTicketButton = new JButton("<html>" + cancelSplitTicketText.replaceAll("\\n", "<br>") + "</html>");
     String loadedTicketID = "";
     String resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
     JButton resaveTicket = new JButton("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
@@ -3136,11 +3361,13 @@ public class MainFrame extends javax.swing.JFrame {
     JButton massDiscountButton = new JButton("");
     JButton massPrechargeButton = new JButton("");
     boolean isMassPreCharged = false;//always start out with mass precharged off
+    JButton massSplitTicketButton = new JButton("Mass Off");
+    boolean isMassSplitting = false;
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.1", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.2", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

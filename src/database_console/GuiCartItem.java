@@ -31,6 +31,8 @@ public class GuiCartItem {
     JButton editRXButton;
     JButton subQuantityButton;
     JButton discountButton;
+    JButton isSplitSavingButton;
+    JButton notSplitSavingButton;
 
     JLabel quantityLabel;//PORTED, sorta.
     JLabel nameLabel;
@@ -48,7 +50,11 @@ public class GuiCartItem {
 
     Item item;//corresponding item in cart that I belong to.
     Cart curCart;//the cart in which I am placed.
-    
+
+    public GuiCartItem() {//copy constructor
+
+    }
+
     public GuiCartItem(Item item, int baseY, JPanel frameGUI, Cart curCart, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         this.frame = frameGUI;
@@ -194,6 +200,24 @@ public class GuiCartItem {
         notTaxableButton.setLocation(875, -7 + baseY);
         frame.add(notTaxableButton);
 
+        isSplitSavingButton = new JButton("SAVING");
+        isSplitSavingButton.setVisible(false);
+        isSplitSavingButton.setSize(110, 15);
+        isSplitSavingButton.setName(item.getUPC());
+        isSplitSavingButton.setBackground(new Color(0, 255, 0));
+        isSplitSavingButton.setFont(new Font(isSplitSavingButton.getName(), Font.BOLD, 12));
+        isSplitSavingButton.setLocation(980, -7 + baseY);
+        frame.add(isSplitSavingButton);
+
+        notSplitSavingButton = new JButton("NOT SAVING");
+        notSplitSavingButton.setVisible(false);
+        notSplitSavingButton.setSize(110, 15);
+        notSplitSavingButton.setName(item.getUPC());
+        notSplitSavingButton.setBackground(new Color(255, 0, 0));
+        notSplitSavingButton.setFont(new Font(notSplitSavingButton.getName(), Font.BOLD, 12));
+        notSplitSavingButton.setLocation(980, -7 + baseY);
+        frame.add(notSplitSavingButton);
+
         //PRECHARGED FALSE
         prechargedFalseButton = new JButton("");
         prechargedFalseButton.setSize(15, 15);
@@ -239,6 +263,19 @@ public class GuiCartItem {
         } else {
             discountButton.setVisible(true);
         }
+
+        isSplitSavingButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                isSplitSavingButtonPressed(event);
+            }
+        });
+
+        notSplitSavingButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                notSplitSavingButtonPressed(event);
+            }
+        });
+
         //DISCOUNT BUTTON PRESSED
         discountButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -305,9 +342,10 @@ public class GuiCartItem {
             mainFrame.updateCartScreen();
         }
     }
+
     public void employeeSaleCancelled() {
         if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
-           // System.out.println("4");
+            // System.out.println("4");
             //item.setPrice(item.getPrice());
             curCart.updateTotal();
             taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
@@ -318,6 +356,7 @@ public class GuiCartItem {
             mainFrame.updateCartScreen();
         }
     }
+
     public void updateQuantityLabelAmount() {
         quantityLabel.setText(item.getQuantity() + "x");
         totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
@@ -390,6 +429,19 @@ public class GuiCartItem {
 
     public String getUPC() {
         return item.getUPC();
+    }
+
+    public void isSplitSavingButtonPressed(ActionEvent event) {
+        isSplitSavingButton.setVisible(false);
+        notSplitSavingButton.setVisible(true);
+        item.isSetToSplitSave = false;
+    }
+
+    public void notSplitSavingButtonPressed(ActionEvent event) {
+        isSplitSavingButton.setVisible(true);
+        notSplitSavingButton.setVisible(false);
+        item.isSetToSplitSave = true;
+
     }
 
     public void addItemButtonPressed(ActionEvent event) {//Since I know, I exist, just increase my quantity 1;
@@ -559,7 +611,7 @@ public class GuiCartItem {
                     }
                 }
 
-            } else if (item.mutID.contains("MMHA")&&mainFrame.isHalloween) {
+            } else if (item.mutID.contains("MMHA") && mainFrame.isHalloween) {
                 boolean one = false, two = false, five = false, six = false, seven = false, ten = false, eleven = false, twelve = true, thirteen = true, fourteen = true;
                 if (curCart.getItems().size() == 11) {
 
@@ -614,29 +666,21 @@ public class GuiCartItem {
                     }
                 }//end if
             }//end if EE Protocol
-            
-                removeAllGUIData();
-                curCart.removeItem(item);
-                mainFrame.resizeCartWindow();
-                curCart.setRequiresRepaint(true);
-                mainFrame.removeGuiCartItem(this);
 
-            }
+            removeAllGUIData();
+            curCart.removeItem(item);
+            mainFrame.resizeCartWindow();
+            curCart.setRequiresRepaint(true);
+            mainFrame.removeGuiCartItem(this);
 
-            curCart.updateTotal();
-            mainFrame.updateCartScreen();
-
-            //displayChangeDue = false;
-            //updateCartScreen();
         }
 
-    
+        curCart.updateTotal();
+        mainFrame.updateCartScreen();
 
-    
-
-    
-
-    
+        //displayChangeDue = false;
+        //updateCartScreen();
+    }
 
     public void notTaxableButtonPressed(ActionEvent event) {
 
@@ -707,9 +751,7 @@ public class GuiCartItem {
         return true;
     }
 
-    public void removeAllGUIData() {
-        mainFrame.resizeCartWindow();
-        taxableButton.setVisible(false);
+    public void splitTicketActivated() {
         taxableButton.setVisible(false);
         notTaxableButton.setVisible(false);
         prechargedTrueButton.setVisible(false);
@@ -717,7 +759,50 @@ public class GuiCartItem {
         addQuantityButton.setVisible(false);
         subQuantityButton.setVisible(false);
         discountButton.setVisible(false);
+        editRXButton.setVisible(false);
+        isSplitSavingButton.setVisible(false);
+        notSplitSavingButton.setVisible(true);
 
+    }
+
+    public void splitTicketDeactivated() {
+        if (item.isTaxable) {
+            taxableButton.setVisible(true);
+
+        } else if (item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860 && !item.isRX()) {
+            notTaxableButton.setVisible(true);
+        }
+        if (item.isPreCharged && item.isRX()) {
+            prechargedTrueButton.setVisible(true);
+        } else if (item.isRX()) {
+            prechargedFalseButton.setVisible(true);
+        }
+        if (item.isRX()) {
+            editRXButton.setVisible(true);
+        } else if (item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860) {//RA payments and UPS, they are not quantible or discountable.
+            addQuantityButton.setVisible(true);
+            discountButton.setVisible(true);
+        }
+
+        subQuantityButton.setVisible(true);
+        isSplitSavingButton.setVisible(false);
+        notSplitSavingButton.setVisible(false);
+
+    }
+
+    public void removeAllGUIData() {
+        mainFrame.resizeCartWindow();
+        taxableButton.setVisible(false);
+        notTaxableButton.setVisible(false);
+        prechargedTrueButton.setVisible(false);
+        prechargedFalseButton.setVisible(false);
+        addQuantityButton.setVisible(false);
+        subQuantityButton.setVisible(false);
+        discountButton.setVisible(false);
+        isSplitSavingButton.setVisible(false);
+        notSplitSavingButton.setVisible(false);
+        editRXButton.setVisible(false);
+        
         quantityLabel.setVisible(false);//PORTED, sorta.
         nameLabel.setVisible(false);
         pricePerItemLabel.setVisible(false);
@@ -727,7 +812,6 @@ public class GuiCartItem {
         percentOffItemLabel.setVisible(false);
         totalItemPriceLabel.setVisible(false);
 
-        editRXButton.setVisible(false);
     }
 
     public void reposition(int baseY) {
@@ -749,6 +833,8 @@ public class GuiCartItem {
         prechargedFalseButton.setLocation(50, -7 + baseY);
         prechargedTrueButton.setLocation(50, -7 + baseY);
         discountButton.setLocation(765, -7 + baseY);
+        notSplitSavingButton.setLocation(980, -7 + baseY);
+        isSplitSavingButton.setLocation(980, -7 + baseY);
 
     }
 }//end GuiCartItem
