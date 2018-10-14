@@ -99,12 +99,25 @@ public class Cart {
 
     }//end loadCart
 
-    public void storeCart(String id) {
+    public void storeCart(String id, boolean isSplitSaveTrue) {
+        ArrayList<Item> itemsToRemove = new ArrayList<>();
         for (Item item : items) {
-
-            Database.storeItem(item, id);
+            if (item.isSetToSplitSave && isSplitSaveTrue) {
+                Database.storeItem(item, id);
+                itemsToRemove.add(item);
+            } else if (!isSplitSaveTrue) {
+                Database.storeItem(item, id);
+            }
         }
-        items.clear();
+        if (!isSplitSaveTrue) {
+            items.clear();
+        } else {
+            for (Item item : itemsToRemove) {
+                this.removeItem(item);
+                items.remove(item);
+                
+            }
+        }
 
         updateTotal();
     }//end storeCart
@@ -118,6 +131,14 @@ public class Cart {
         updateTotal();
     }
 
+    public boolean containsItemToBeSplit(){
+        for(Item item :items){
+            if(item.isSetToSplitSave){
+                return true;
+            }
+        }
+        return false;
+    }
     public void removeItem(Item itemToRemove) {
         boolean toRemove = false;
         Item removeItem = null;

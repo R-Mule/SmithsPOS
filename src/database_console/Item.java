@@ -26,6 +26,7 @@ public class Item {
     protected boolean hasBeenRefunded=false;
     protected boolean hasTaxBeenRefunded=false;
     protected double employeePrice=itemPrice;
+    protected boolean isSetToSplitSave=false;
     
     Item( String UPCorID) {
         if (UPCorID.length() == 6) {
