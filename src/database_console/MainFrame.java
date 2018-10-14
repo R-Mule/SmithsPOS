@@ -133,43 +133,49 @@ public class MainFrame extends javax.swing.JFrame {
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (refundCart.isEmpty()) {
-                        String myText = textField.getText();
-                        try {
-                            if (myText.length() > 11) {
-                                myText = myText.substring(0, 11);
-                            }
+                    if (!isSplitSavingActive) {
+                        if (refundCart.isEmpty()) {
+                            String myText = textField.getText();
+                            try {
+                                if (myText.length() > 11) {
+                                    myText = myText.substring(0, 11);
+                                }
 
-                            Item myItem = new Item(myText);
+                                Item myItem = new Item(myText);
 
-                            if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
-                                curCart.addItem(myItem);
-                                boolean exisits = false;
-                                int index = 0;
-                                int loc = 0;
-                                for (GuiCartItem item : guiItems) {
+                                if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
+                                    curCart.addItem(myItem);
+                                    boolean exisits = false;
+                                    int index = 0;
+                                    int loc = 0;
+                                    for (GuiCartItem item : guiItems) {
 
-                                    if (item.getUPC().contentEquals(myItem.getUPC())) {
-                                        exisits = true;
-                                        loc = index;
+                                        if (item.getUPC().contentEquals(myItem.getUPC())) {
+                                            exisits = true;
+                                            loc = index;
+                                        }
+                                        index++;
                                     }
-                                    index++;
-                                }
-                                if (exisits) {
-                                    guiItems.get(loc).updateQuantityLabelAmount();
-                                } else {
-                                    guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
-                                }
+                                    if (exisits) {
+                                        guiItems.get(loc).updateQuantityLabelAmount();
+                                    } else {
+                                        guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                                    }
 
-                                displayChangeDue = false;
-                                updateCartScreen();
-                            }
+                                    displayChangeDue = false;
+                                    updateCartScreen();
+                                }
+                                textField.setText("");
+                            } catch (StringIndexOutOfBoundsException e) {
+                                textField.setText("");
+                            }//end catch
+                        } else {
                             textField.setText("");
-                        } catch (StringIndexOutOfBoundsException e) {
-                            textField.setText("");
-                        }//end catch
+                        }
                     } else {
                         textField.setText("");
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Cannot add item while Splitting Tickets!");
                     }
                 } else {
                     textField.setText("");
@@ -946,8 +952,8 @@ public class MainFrame extends javax.swing.JFrame {
         massPrechargeButton.setBackground(new Color(255, 0, 0));
         massPrechargeButton.setVisible(true);
         this.add(massPrechargeButton);
-        
-         //This creates the massSplitTicketButton
+
+        //This creates the massSplitTicketButton
         massSplitTicketButton.setLocation(1080, 65);
         massSplitTicketButton.setSize(110, 20);
         massSplitTicketButton.setBackground(new Color(255, 0, 0));
@@ -1268,7 +1274,7 @@ public class MainFrame extends javax.swing.JFrame {
             }//end actionPerformed
         });//end massPrechargeAction
 
-                massSplitTicketButton.addActionListener(new java.awt.event.ActionListener() {
+        massSplitTicketButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!curCart.isEmpty()) {
                     if (isMassSplitting) {
@@ -1280,24 +1286,24 @@ public class MainFrame extends javax.swing.JFrame {
                     }
                     isMassSplitting = !isMassSplitting;
                     for (Item item : curCart.getItems()) {
-                        
-                            item.isSetToSplitSave=isMassSplitting;
-                        
+
+                        item.isSetToSplitSave = isMassSplitting;
+
                     }
                     for (GuiCartItem tempItem : guiItems) {
-                            if (isMassSplitting) {
-                                tempItem.notSplitSavingButtonPressed(event);
-                            } else {
-                                tempItem.isSplitSavingButtonPressed(event);
-                            }
-                        
+                        if (isMassSplitting) {
+                            tempItem.notSplitSavingButtonPressed(event);
+                        } else {
+                            tempItem.isSplitSavingButtonPressed(event);
+                        }
+
                     }
                     updateCartScreen();
                 }//end cartIsNotEmpty
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
         });//end massSplitTicketAction
-                
+
         AbstractAction rxButtonAA = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -2360,16 +2366,16 @@ public class MainFrame extends javax.swing.JFrame {
         beginSplitTicketButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if(curCart.getItems().size()>1){
-                    for (GuiCartItem item : guiItems) {//this hides all the items GUI options that shouldn't be active during this time, and SHOWS what should.
-                        item.splitTicketActivated();
-                    }
-                    splitTicketBeginHideContent();
-                    beginSplitTicketButton.setVisible(false);//Hide me, my cancel button will take my place.
-                    cancelSplitTicketButton.setVisible(true);
-                    }else{
+                    if (curCart.getItems().size() > 1) {
+                        for (GuiCartItem item : guiItems) {//this hides all the items GUI options that shouldn't be active during this time, and SHOWS what should.
+                            item.splitTicketActivated();
+                        }
+                        splitTicketBeginHideContent();
+                        beginSplitTicketButton.setVisible(false);//Hide me, my cancel button will take my place.
+                        cancelSplitTicketButton.setVisible(true);
+                    } else {
                         JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "You need at least two items to them into different tickets.");
+                        JOptionPane.showMessageDialog(message1, "You need at least two items to them into different tickets.");
                     }
                 } else {
                     JFrame message1 = new JFrame("");
@@ -3165,46 +3171,46 @@ public class MainFrame extends javax.swing.JFrame {
                         resetVars();
                     } else {//Begin split ticket save logic
 
-                        if(curCart.containsItemToBeSplit()){
-                        ArrayList<GuiCartItem> itemsToRemove = new ArrayList<>();
-                        for (GuiCartItem item : guiItems) {
-                            if (item.item.isSetToSplitSave) {
-                                itemsToRemove.add(item);
-                                resizeCartWindow();
-                            } else {
-                                item.splitTicketDeactivated();//we need to bring it back to normal view.
+                        if (curCart.containsItemToBeSplit()) {
+                            ArrayList<GuiCartItem> itemsToRemove = new ArrayList<>();
+                            for (GuiCartItem item : guiItems) {
+                                if (item.item.isSetToSplitSave) {
+                                    itemsToRemove.add(item);
+                                    resizeCartWindow();
+                                } else {
+                                    item.splitTicketDeactivated();//we need to bring it back to normal view.
+                                }
                             }
-                        }
-                        for (GuiCartItem toRemove : itemsToRemove) {
-                            guiItems.remove(toRemove);
-                            toRemove.removeAllGUIData();
-                        }
-                        curCart.storeCart(id, true);
-
-                        curCart.setRequiresRepaint(true);
-                        curCart.updateTotal();
-
-                        updateCartScreen();
-                        resizeCartWindow();
-                        resaveTicket.setVisible(false);
-                        if (curCart.isEmpty()) {
-                            isMassPreCharged = false;
-                            massPrechargeButton.setBackground(new Color(255, 0, 0));
-                            isMassSplitting = false;
-                            massSplitTicketButton.setBackground(new Color(255, 0, 0));
-                            massSplitTicketButton.setText("Mass Off");
-                            resetVars();
-                            if (curCart.isEmpDiscountActive) {
-                                curCart.isEmpDiscountActive(false);
-                                empList2.setSelectedIndex(0);
+                            for (GuiCartItem toRemove : itemsToRemove) {
+                                guiItems.remove(toRemove);
+                                toRemove.removeAllGUIData();
                             }
-                        }
-                        splitTicketEndShowContent();
-                        cancelSplitTicketButton.setVisible(false);
-                        beginSplitTicketButton.setVisible(true);
-                        }else{
+                            curCart.storeCart(id, true);
+
+                            curCart.setRequiresRepaint(true);
+                            curCart.updateTotal();
+
+                            updateCartScreen();
+                            resizeCartWindow();
+                            resaveTicket.setVisible(false);
+                            if (curCart.isEmpty()) {
+                                isMassPreCharged = false;
+                                massPrechargeButton.setBackground(new Color(255, 0, 0));
+                                isMassSplitting = false;
+                                massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                                massSplitTicketButton.setText("Mass Off");
+                                resetVars();
+                                if (curCart.isEmpDiscountActive) {
+                                    curCart.isEmpDiscountActive(false);
+                                    empList2.setSelectedIndex(0);
+                                }
+                            }
+                            splitTicketEndShowContent();
+                            cancelSplitTicketButton.setVisible(false);
+                            beginSplitTicketButton.setVisible(true);
+                        } else {
                             JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Cannot save a ticket with nothing set to save.");
+                            JOptionPane.showMessageDialog(message1, "Cannot save a ticket with nothing set to save.");
                         }
                     }
                 }
