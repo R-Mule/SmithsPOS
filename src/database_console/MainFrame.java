@@ -336,13 +336,13 @@ public class MainFrame extends javax.swing.JFrame {
 
         beginSplitTicketButton.setLocation(1700, 300);
         beginSplitTicketButton.setSize(100, 100);
-        beginSplitTicketButton.setBackground(new Color(255, 255, 0));
+        beginSplitTicketButton.setBackground(new Color(236, 132, 255));
         beginSplitTicketButton.setVisible(true);
         this.add(beginSplitTicketButton);
 
         cancelSplitTicketButton.setLocation(1800, 300);
         cancelSplitTicketButton.setSize(100, 100);
-        cancelSplitTicketButton.setBackground(new Color(255, 255, 0));
+        cancelSplitTicketButton.setBackground(new Color(255, 0, 0));
         cancelSplitTicketButton.setVisible(false);
         this.add(cancelSplitTicketButton);
 
@@ -946,6 +946,13 @@ public class MainFrame extends javax.swing.JFrame {
         massPrechargeButton.setBackground(new Color(255, 0, 0));
         massPrechargeButton.setVisible(true);
         this.add(massPrechargeButton);
+        
+         //This creates the massSplitTicketButton
+        massSplitTicketButton.setLocation(1080, 65);
+        massSplitTicketButton.setSize(110, 20);
+        massSplitTicketButton.setBackground(new Color(255, 0, 0));
+        massSplitTicketButton.setVisible(false);
+        this.add(massSplitTicketButton);
 
         //This creates the activateDisplayButton 
         activateDisplayButton.setLocation(500, 890);
@@ -1261,6 +1268,36 @@ public class MainFrame extends javax.swing.JFrame {
             }//end actionPerformed
         });//end massPrechargeAction
 
+                massSplitTicketButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                if (!curCart.isEmpty()) {
+                    if (isMassSplitting) {
+                        massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                        massSplitTicketButton.setText("Mass Off");
+                    } else {
+                        massSplitTicketButton.setBackground(new Color(0, 255, 0));
+                        massSplitTicketButton.setText("Mass On");
+                    }
+                    isMassSplitting = !isMassSplitting;
+                    for (Item item : curCart.getItems()) {
+                        
+                            item.isSetToSplitSave=isMassSplitting;
+                        
+                    }
+                    for (GuiCartItem tempItem : guiItems) {
+                            if (isMassSplitting) {
+                                tempItem.notSplitSavingButtonPressed(event);
+                            } else {
+                                tempItem.isSplitSavingButtonPressed(event);
+                            }
+                        
+                    }
+                    updateCartScreen();
+                }//end cartIsNotEmpty
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }//end actionPerformed
+        });//end massSplitTicketAction
+                
         AbstractAction rxButtonAA = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE")) {
@@ -2628,6 +2665,9 @@ public class MainFrame extends javax.swing.JFrame {
                 resaveTicket.setVisible(false);
                 isMassPreCharged = false;
                 massPrechargeButton.setBackground(new Color(255, 0, 0));
+                isMassSplitting = false;
+                massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                massSplitTicketButton.setText("Mass Off");
             }
         } else {
             discountHeader.setText("Qty to Refund: ");
@@ -2968,6 +3008,7 @@ public class MainFrame extends javax.swing.JFrame {
         massPrechargeButton.setVisible(false);
         cashButton.setVisible(false);
         creditButton.setVisible(false);
+        massSplitTicketButton.setVisible(true);
 
         if (isMarchMadness) {
             mmButton.setVisible(false);
@@ -3005,7 +3046,7 @@ public class MainFrame extends javax.swing.JFrame {
         massPrechargeButton.setVisible(true);
         cashButton.setVisible(true);
         creditButton.setVisible(true);
-
+        massSplitTicketButton.setVisible(false);
         if (isMarchMadness) {
             mmButton.setVisible(true);
         }
@@ -3117,6 +3158,10 @@ public class MainFrame extends javax.swing.JFrame {
                         resaveTicket.setVisible(false);
                         isMassPreCharged = false;
                         massPrechargeButton.setBackground(new Color(255, 0, 0));
+                        isMassSplitting = false;
+                        massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                        massSplitTicketButton.setText("Mass Off");
+
                         resetVars();
                     } else {//Begin split ticket save logic
 
@@ -3145,6 +3190,9 @@ public class MainFrame extends javax.swing.JFrame {
                         if (curCart.isEmpty()) {
                             isMassPreCharged = false;
                             massPrechargeButton.setBackground(new Color(255, 0, 0));
+                            isMassSplitting = false;
+                            massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                            massSplitTicketButton.setText("Mass Off");
                             resetVars();
                             if (curCart.isEmpDiscountActive) {
                                 curCart.isEmpDiscountActive(false);
@@ -3313,6 +3361,8 @@ public class MainFrame extends javax.swing.JFrame {
     JButton massDiscountButton = new JButton("");
     JButton massPrechargeButton = new JButton("");
     boolean isMassPreCharged = false;//always start out with mass precharged off
+    JButton massSplitTicketButton = new JButton("Mass Off");
+    boolean isMassSplitting = false;
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
