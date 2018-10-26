@@ -189,49 +189,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         //HEADERS FOR ITEMS
         if (isHalloween) {
-            itemNameHeader.setForeground(Color.red);
-            employeeCheckoutHeader.setForeground(Color.red);
-            totalNumRXinCart.setForeground(Color.red);
-            itemNameHeader.setForeground(Color.red);
-            itemQuantityHeader.setForeground(Color.red);
-            itemPriceHeader.setForeground(Color.red);
-            versionHeader.setForeground(Color.red);
-            discountHeader.setForeground(Color.red);
-            itemSubTotalHeader.setForeground(Color.red);
-            estimatedCheckTotalLabel.setForeground(Color.red);
-            estimatedCashTotalLabel.setForeground(Color.red);
-            estimatedCoinTotalLabel.setForeground(Color.red);
-            employeeSelectionHeader.setForeground(Color.red);
-            quote.setForeground(Color.red);
-            subTotal.setForeground(Color.red);
-            totalTax.setForeground(Color.red);
-            totalPrice.setForeground(Color.red);
-            changeDue.setForeground(Color.red);
-            subTotalHeader.setForeground(Color.red);
-            itemTaxTotalHeader.setForeground(Color.red);
+            setGUITextColor(Color.RED);
         }
 
         if (isFourthOfJuly) {
-            itemNameHeader.setForeground(Color.WHITE);
-            employeeCheckoutHeader.setForeground(Color.WHITE);
-            totalNumRXinCart.setForeground(Color.WHITE);
-            itemNameHeader.setForeground(Color.WHITE);
-            itemQuantityHeader.setForeground(Color.WHITE);
-            itemPriceHeader.setForeground(Color.WHITE);
-            versionHeader.setForeground(Color.WHITE);
-            discountHeader.setForeground(Color.WHITE);
-            itemSubTotalHeader.setForeground(Color.WHITE);
-            estimatedCheckTotalLabel.setForeground(Color.WHITE);
-            estimatedCashTotalLabel.setForeground(Color.WHITE);
-            estimatedCoinTotalLabel.setForeground(Color.WHITE);
-            employeeSelectionHeader.setForeground(Color.WHITE);
-            quote.setForeground(Color.WHITE);
-            subTotal.setForeground(Color.WHITE);
-            totalTax.setForeground(Color.WHITE);
-            totalPrice.setForeground(Color.WHITE);
-            changeDue.setForeground(Color.WHITE);
-            subTotalHeader.setForeground(Color.WHITE);
-            itemTaxTotalHeader.setForeground(Color.WHITE);
+            setGUITextColor(Color.WHITE);
         }
         //TotalNumRXinCart
         totalNumRXinCart.setLocation(250, 780);
@@ -286,6 +248,12 @@ public class MainFrame extends javax.swing.JFrame {
         subTotalHeader.setSize(250, 50);
         subTotalHeader.setFont(new Font(subTotalHeader.getName(), Font.BOLD, 12));
         subTotalHeader.setVisible(true);
+
+        estimatedLunchTotalLabel.setLocation(1790, 870);
+        estimatedLunchTotalLabel.setSize(250, 50);
+        estimatedLunchTotalLabel.setFont(new Font(estimatedLunchTotalLabel.getName(), Font.BOLD, 12));
+        estimatedLunchTotalLabel.setVisible(true);
+        this.add(estimatedLunchTotalLabel);
 
         estimatedCheckTotalLabel.setLocation(1790, 885);
         estimatedCheckTotalLabel.setSize(250, 50);
@@ -2710,7 +2678,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
 
         this.add(changeDue);
-
+        estimatedLunchTotalLabel.setText(String.format("Lunch: $%.2f", estimatedLunchTotal));
         estimatedCheckTotalLabel.setText(String.format("Checks: $%.2f", estimatedCheckTotal));
         estimatedCashTotalLabel.setText(String.format("Cash: $%d", estimatedCashTotal));
         estimatedCoinTotalLabel.setText(String.format("Coin: $%.2f", estimatedCoinTotal));
@@ -3272,6 +3240,30 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
+    private void setGUITextColor(Color color) {
+        itemNameHeader.setForeground(color);
+        employeeCheckoutHeader.setForeground(color);
+        totalNumRXinCart.setForeground(color);
+        itemNameHeader.setForeground(color);
+        itemQuantityHeader.setForeground(color);
+        itemPriceHeader.setForeground(color);
+        versionHeader.setForeground(color);
+        discountHeader.setForeground(color);
+        itemSubTotalHeader.setForeground(color);
+        estimatedCheckTotalLabel.setForeground(color);
+        estimatedLunchTotalLabel.setForeground(color);
+        estimatedCashTotalLabel.setForeground(color);
+        estimatedCoinTotalLabel.setForeground(color);
+        employeeSelectionHeader.setForeground(color);
+        quote.setForeground(color);
+        subTotal.setForeground(color);
+        totalTax.setForeground(color);
+        totalPrice.setForeground(color);
+        changeDue.setForeground(color);
+        subTotalHeader.setForeground(color);
+        itemTaxTotalHeader.setForeground(color);
+    }
+
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -3373,16 +3365,18 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.2", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.3", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
     JButton splitTenderButton = new JButton("<html>" + st.replaceAll("\\n", "<br>") + "</html>");
     JButton arPaymentButton = new JButton("<html>" + ar.replaceAll("\\n", "<br>") + "</html>");
     String receipt = "Reprint\nReceipt";
+    protected double estimatedLunchTotal = 0;
     protected double estimatedCheckTotal = 0;
     protected double estimatedCoinTotal = 0;
     protected long estimatedCashTotal = 0;
+    JLabel estimatedLunchTotalLabel = new JLabel(String.format("Lunch: $%.2f", estimatedCheckTotal), SwingConstants.LEFT);
     JLabel estimatedCheckTotalLabel = new JLabel(String.format("Checks: $%.2f", estimatedCheckTotal), SwingConstants.LEFT);
     JLabel estimatedCashTotalLabel = new JLabel(String.format("Cash: $%d", estimatedCashTotal), SwingConstants.LEFT);
     JLabel estimatedCoinTotalLabel = new JLabel(String.format("Coin: $%.2f", estimatedCoinTotal), SwingConstants.LEFT);

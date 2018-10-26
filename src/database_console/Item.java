@@ -8,7 +8,7 @@ public class Item {
 
     protected String itemName = "";
     public double itemPrice = -1;
-    
+
     protected String mutID = "";
     protected double itemCost = 0;
     protected String itemUPC = "";
@@ -23,27 +23,28 @@ public class Item {
     protected boolean isRX = false;
     protected double percentageDisc = 0.0;
     protected boolean isPreCharged = false;
-    protected boolean hasBeenRefunded=false;
-    protected boolean hasTaxBeenRefunded=false;
-    protected double employeePrice=itemPrice;
-    protected boolean isSetToSplitSave=false;
-    
-    Item( String UPCorID) {
+    protected boolean hasBeenRefunded = false;
+    protected boolean hasTaxBeenRefunded = false;
+    protected double employeePrice = itemPrice;
+    protected boolean isSetToSplitSave = false;
+
+    Item(String UPCorID) {
         if (UPCorID.length() == 6) {
             mutID = UPCorID;
         } else {
             itemUPC = UPCorID;
         }
         setup();
-        employeePrice=itemPrice;
-       // setEmployeeDiscount(employeeDiscActive);
+        employeePrice = itemPrice;
+        // setEmployeeDiscount(employeeDiscActive);
     }
 
-    Item(){
-      //  setEmployeeDiscount(employeeDiscActive);
+    Item() {
+        //  setEmployeeDiscount(employeeDiscActive);
     }
 //THIS CONSTRUCTOR IS TO BE USED ONLY BY RX's
-    Item( int rxNumber, String fillDate, String insurance, double copay, boolean isPreCharged) {
+
+    Item(int rxNumber, String fillDate, String insurance, double copay, boolean isPreCharged) {
         this.rxNumber = rxNumber;
         this.fillDate = fillDate;
         this.insurance = insurance;
@@ -52,17 +53,17 @@ public class Item {
         this.itemCost = copay;
         this.itemName = rxNumber + " " + insurance + " " + fillDate;
         isRX = true;
-        this.mutID = "X"+Integer.toString(rxNumber).substring(2, 7);
+        this.mutID = "X" + Integer.toString(rxNumber).substring(2, 7);
         this.quantity = 1;
         this.category = 851;//USED FOR RX's
-        this.itemUPC = "X"+Integer.toString(rxNumber).substring(0, 5)+fillDate;
+        this.itemUPC = "X" + Integer.toString(rxNumber).substring(0, 5) + fillDate;
         this.isPreCharged = isPreCharged;
-        hasBeenRefunded=false;
-        hasTaxBeenRefunded=false;
-        employeePrice=itemPrice;
+        hasBeenRefunded = false;
+        hasTaxBeenRefunded = false;
+        employeePrice = itemPrice;
     }
 
-    Item( String mutID, String upc, String name, double price, double cost, boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged) {
+    Item(String mutID, String upc, String name, double price, double cost, boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged) {
         this.quantity = quantity;
         this.itemName = name;
         this.itemPrice = price;
@@ -77,25 +78,29 @@ public class Item {
         this.isRX = isRX;
         this.percentageDisc = percentageDisc;
         this.isPreCharged = isPreCharged;
-        hasBeenRefunded=false;
-        hasTaxBeenRefunded=false;
-        employeePrice=itemPrice;
-      //  setEmployeeDiscount(employeeDiscActive);
+        hasBeenRefunded = false;
+        hasTaxBeenRefunded = false;
+        employeePrice = itemPrice;
+        //  setEmployeeDiscount(employeeDiscActive);
 
     }
 
-    public boolean hasBeenRefunded(){
+    public boolean hasBeenRefunded() {
         return hasBeenRefunded;
     }
-    public boolean hasTaxBeenRefunded(){
+
+    public boolean hasTaxBeenRefunded() {
         return hasTaxBeenRefunded;
     }
-    public void setHasBeenRefunded(boolean hasBeenRefunded){
-        this.hasBeenRefunded=hasBeenRefunded;
+
+    public void setHasBeenRefunded(boolean hasBeenRefunded) {
+        this.hasBeenRefunded = hasBeenRefunded;
     }
-    public void setHasTaxBeenRefunded(boolean hasTaxBeenRefunded){
-        this.hasTaxBeenRefunded=hasTaxBeenRefunded;
+
+    public void setHasTaxBeenRefunded(boolean hasTaxBeenRefunded) {
+        this.hasTaxBeenRefunded = hasTaxBeenRefunded;
     }
+
     public boolean isPreCharged() {
         return isPreCharged;
     }
@@ -105,9 +110,9 @@ public class Item {
     }
 
     private void setup() {
-        if(!mutID.isEmpty()){
-        Database.checkDatabaseForItemByID(this);
-        }else{
+        if (!mutID.isEmpty()) {
+            Database.checkDatabaseForItemByID(this);
+        } else {
             Database.checkDatabaseForItemByUPC(this);
         }
     }
@@ -136,21 +141,20 @@ public class Item {
         return quantity;
     }
 
-    public void setEmployeeDiscount(boolean isActive){
-       // employeeDiscActive = isActive;
-        if(isActive&&employeePrice<=itemPrice){
+    public void setEmployeeDiscount(boolean isActive) {
+        // employeeDiscActive = isActive;
+        if (isActive && employeePrice <= itemPrice) {
             employeePrice = itemPrice;
             itemPrice = itemCost;
-        }else if(!isActive){
+        } else if (!isActive) {
             itemPrice = employeePrice;
         }
     }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-
-    
     public double getTotal() {
         double totalOnItem = 0;
         double itemP;
@@ -165,21 +169,21 @@ public class Item {
     }//end getTotal()
 
     double getPriceOfItemsBeforeTax() {
-        double total = round(round(itemPrice * quantity)-round(round(itemPrice * quantity) * percentageDisc));
+        double total = round(round(itemPrice * quantity) - round(round(itemPrice * quantity) * percentageDisc));
         return total;
     }//end priceOfItemsBeforeTax
 
-       double getPriceOfItemBeforeTax() {
-        double total = round(itemPrice -round(itemPrice  * percentageDisc));
+    double getPriceOfItemBeforeTax() {
+        double total = round(itemPrice - round(itemPrice * percentageDisc));
         return total;
     }//end priceOfItemsBeforeTax
-       
+
     double getTaxTotal() {
         double itemP = round(itemPrice * quantity) - round(round(itemPrice * quantity) * percentageDisc);
         if (isTaxable) {
             double taxTotal = round(itemP * taxRate);
             return taxTotal;
-            
+
         } else {
             return 0.00;
         }
@@ -195,7 +199,8 @@ public class Item {
     double getPrice() {//returns price
         return round(itemPrice);
     }
-    public void setPrice(double price){
+
+    public void setPrice(double price) {
         itemPrice = round(price);
     }
 
@@ -222,8 +227,6 @@ public class Item {
     public void setTaxable(boolean taxable) {
         isTaxable = taxable;
     }
-
- 
 
     public void setDiscountPercentage(double percentDisc) {
         this.percentageDisc = percentDisc;

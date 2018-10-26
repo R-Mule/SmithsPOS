@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class DrawerReport implements Serializable {
 
-    private static final long serialVersionUID = 7526472295622776147L;
+    private static final long serialVersionUID = 7526472295622776148L;
     private static final String HOLLIEFILENAME = "C:\\pos\\REPORTS\\HollieAccnt";
     private static final String DEBBIEFILENAME = "C:\\pos\\REPORTS\\DebbieAccnt";
     private static final String REPORTFILENAME = "C:\\pos\\REPORTS\\DailyReport";
@@ -38,7 +38,7 @@ public class DrawerReport implements Serializable {
 
     //lunch counter
     private ArrayList<String> lunchErrorLog = new ArrayList<>();
-    private double lunchTotalAmt = 0;
+    protected double lunchTotalAmt = 0;
     private double lunchTotalCash = 0;
     private double lunchTotalCredit = 0;
     private double lunchTotalDebit = 0;
@@ -621,7 +621,7 @@ public class DrawerReport implements Serializable {
 
             if (!lunchErrorLog.isEmpty()) {
                 for (String error : lunchErrorLog) {
-                    bw.write(error+"\n");
+                    bw.write(error + "\n");
                 }
                 bw.write("\n");
             }

@@ -125,7 +125,7 @@ public class TopMenuBar extends JMenuBar {
         modifyPermissions = new JMenuItem();
         modifyPermissions.setText("Modify Permissions");
         mgmtMenu.add(modifyPermissions);//This adds Modify Employee Permissions to Management Menu Choices
-        
+
 //Feedback menu items
         bugReport = new JMenuItem();
         bugReport.setText("Bug Report");
@@ -256,8 +256,8 @@ public class TopMenuBar extends JMenuBar {
                 mutualFileUploadActionPerformed(evt);
             }
         });
-        
-                modifyPermissions.addActionListener(new java.awt.event.ActionListener() {
+
+        modifyPermissions.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 modifyPermissionsActionPerformed(evt);
@@ -605,10 +605,10 @@ public class TopMenuBar extends JMenuBar {
                     if (activeClerk.contentEquals(temp.substring(temp.indexOf(": ") + 2))) {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: You cannot delete yourself.");
-                    }else if (Integer.parseInt(field1.getText()) == 5 || Integer.parseInt(field1.getText()) == 10 || Integer.parseInt(field1.getText()) == 11 || Integer.parseInt(field1.getText()) == 12 || Integer.parseInt(field1.getText())== 14 || Integer.parseInt(field1.getText()) == 15){//Hard protect these employees.
+                    } else if (Integer.parseInt(field1.getText()) == 5 || Integer.parseInt(field1.getText()) == 10 || Integer.parseInt(field1.getText()) == 11 || Integer.parseInt(field1.getText()) == 12 || Integer.parseInt(field1.getText()) == 14 || Integer.parseInt(field1.getText()) == 15) {//Hard protect these employees.
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Error: This employee cannot be deleted.");
-                    }else if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to remove: " + temp, "WARNING",
+                    } else if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to remove: " + temp, "WARNING",
                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         Database.removeEmployee(Integer.parseInt(field1.getText()));//Remove, its final.
                         JFrame message1 = new JFrame("");
@@ -885,7 +885,7 @@ public class TopMenuBar extends JMenuBar {
                     System.out.println("Total Items Added: " + totalAdded);
                     System.out.println("Total Items Processed: " + totalCntr);
                     JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "WHOOP THERE IT IS!\nTotal Items Updated: " + totalFound+"\nTotal Items Added: " + totalAdded+"\nTotal Items Processed: " + totalCntr);
+                    JOptionPane.showMessageDialog(message1, "WHOOP THERE IT IS!\nTotal Items Updated: " + totalFound + "\nTotal Items Added: " + totalAdded + "\nTotal Items Processed: " + totalCntr);
                     //progressFrame.setVisible(false);
                 } catch (FileNotFoundException e) {
                     System.out.println("The file could not be found or opened");
@@ -900,58 +900,57 @@ public class TopMenuBar extends JMenuBar {
 
     }//end mutualFileUploadActionPerformed()
 
-        private void modifyPermissionsActionPerformed(java.awt.event.ActionEvent evt) {
+    private void modifyPermissionsActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");
         JTextField field1 = new JTextField();
         JTextField field2 = new JTextField();
         field1.addAncestorListener(new RequestFocusListener());
         String masterList = Database.getEmployeesSortByPID();//Format PID : NAME \n for all employees in this one String.
-        Object[] message = {"Please select an employee # from this list to modify permissions on: \n" + masterList + "Enter Employee #", field1,"\nEnter New Permission Level: (1-4)\n",field2};
-        
+        Object[] message = {"Please select an employee # from this list to modify permissions on: \n" + masterList + "Enter Employee #", field1, "\nEnter New Permission Level: (1-4)\n", field2};
+
         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Modify Permissions Menu", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             if (!field1.getText().isEmpty()) {
                 if (!field2.getText().isEmpty()) {
-                if (masterList.contains(field1.getText()) && mf.validateInteger(field1.getText())) {
-                    int begin = masterList.indexOf(field1.getText());//This finds the string of employee being removed.
-                    String temp = masterList.substring(begin);
-                    temp = temp.substring(0, temp.indexOf("\n"));
-                    int clerkIndex = mf.employeeSelectionHeader.getText().indexOf("Active Clerk: ") + 14;
-                    String activeClerk = mf.employeeSelectionHeader.getText().substring(clerkIndex);
-                    System.out.println(activeClerk);
-                    System.out.println(temp.substring(temp.indexOf(": ") + 2));
-                    if (activeClerk.contentEquals(temp.substring(temp.indexOf(": ") + 2))) {
+                    if (masterList.contains(field1.getText()) && mf.validateInteger(field1.getText())) {
+                        int begin = masterList.indexOf(field1.getText());//This finds the string of employee being removed.
+                        String temp = masterList.substring(begin);
+                        temp = temp.substring(0, temp.indexOf("\n"));
+                        int clerkIndex = mf.employeeSelectionHeader.getText().indexOf("Active Clerk: ") + 14;
+                        String activeClerk = mf.employeeSelectionHeader.getText().substring(clerkIndex);
+                        System.out.println(activeClerk);
+                        System.out.println(temp.substring(temp.indexOf(": ") + 2));
+                        if (activeClerk.contentEquals(temp.substring(temp.indexOf(": ") + 2))) {
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Error: You cannot update your own permissions.");
+                        } else if (Integer.parseInt(field2.getText()) < 1 || Integer.parseInt(field2.getText()) > 4) {
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Error: Must be 1-4 on permissions.");
+                        } else if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to update: " + temp, "WARNING",
+                                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            Database.updateEmployeePermissionLevel(Integer.parseInt(field1.getText()), Integer.parseInt(field2.getText()));//Remove, its final.
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Employee: " + temp + " Permission updated!.");
+                        }
+                    } else {
                         JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Error: You cannot update your own permissions.");
-                    }else if(Integer.parseInt(field2.getText())<1||Integer.parseInt(field2.getText())>4){
-                        JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Error: Must be 1-4 on permissions.");
-                    }else if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to update: " + temp, "WARNING",
-                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        Database.updateEmployeePermissionLevel(Integer.parseInt(field1.getText()),Integer.parseInt(field2.getText()));//Remove, its final.
-                        JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Employee: " + temp + " Permission updated!.");
+                        JOptionPane.showMessageDialog(message1, "Error: Invalid Employee ID.");
                     }
                 } else {
                     JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Error: Invalid Employee ID.");
-                }
-                }else{
-                    JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Error: Invalid Permission Level.");
                 }
-            }else{
+            } else {
                 JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Error: Invalid Employee ID.");
+                JOptionPane.showMessageDialog(message1, "Error: Invalid Employee ID.");
             }
         }
     }//end EmployeeActionPerformed
-        
+
     private double round(double num) {//rounds to 2 decimal places.
         num = Math.round(num * 100.0) / 100.0;
         return num;
     }//end round
-
 
     private void bugReportActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");
@@ -1028,7 +1027,7 @@ public class TopMenuBar extends JMenuBar {
     //Other action events go here.
     public void updateVisible(int permission) { //this will eventually handle responsible menu items to show or not show.
         switch (permission) {
-             case 4:
+            case 4:
                 feedMenu.setVisible(true);//Menus visible
                 addMenu.setVisible(true);
                 remMenu.setVisible(true);
@@ -1065,7 +1064,7 @@ public class TopMenuBar extends JMenuBar {
                 remMenu.setVisible(false);
                 mgmtMenu.setVisible(false);
                 feedMenu.setVisible(true);
-                
+
                 // masterRptRecpt.setVisible(false);
                 break;
             case 0:

@@ -802,7 +802,7 @@ public class GuiCartItem {
         isSplitSavingButton.setVisible(false);
         notSplitSavingButton.setVisible(false);
         editRXButton.setVisible(false);
-        
+
         quantityLabel.setVisible(false);//PORTED, sorta.
         nameLabel.setVisible(false);
         pricePerItemLabel.setVisible(false);

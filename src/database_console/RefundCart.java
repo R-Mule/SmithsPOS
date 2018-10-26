@@ -1,4 +1,3 @@
-
 package database_console;
 
 import java.util.ArrayList;
@@ -9,18 +8,19 @@ import java.util.ArrayList;
  */
 public class RefundCart extends Cart {
 
-   protected String receiptNum;
+    protected String receiptNum;
     private ArrayList<RefundItem> refundItems = new ArrayList<RefundItem>();
-   // private boolean requiresRepaint=false;
+    // private boolean requiresRepaint=false;
 
     RefundCart() {
-    super();
+        super();
         updateTotal();
     }//end Cart ctor
 
-    public void setReceiptNum(String receiptNum){
-        this.receiptNum=receiptNum;
+    public void setReceiptNum(String receiptNum) {
+        this.receiptNum = receiptNum;
     }
+
     public boolean isEmpty() {
         return refundItems.isEmpty();
     }
@@ -33,8 +33,8 @@ public class RefundCart extends Cart {
                 boolean found = false;
                 for (RefundItem cartItem : refundItems) {
                     if (cartItem.isRX()) {
-                        if(cartItem.getID().contentEquals(item.getID())&&cartItem.getInsurance().contentEquals(item.getInsurance())){
-                            found=true;
+                        if (cartItem.getID().contentEquals(item.getID()) && cartItem.getInsurance().contentEquals(item.getInsurance())) {
+                            found = true;
                         }//end if
                     } else {
                         //System.out.println("HERE");
@@ -62,8 +62,6 @@ public class RefundCart extends Cart {
         updateTotal();//everything is loaded, lets update!
     }//end loadCart
 
-
-
     public ArrayList<RefundItem> getRefundItems() {
         return refundItems;
     }//end getCart()
@@ -73,7 +71,6 @@ public class RefundCart extends Cart {
         updateTotal();
     }
 
-    
     public void addItem(RefundItem itemToAdd) {
         boolean tooAdd = true;
         System.out.println(itemToAdd.getID());
@@ -112,10 +109,10 @@ public class RefundCart extends Cart {
             itemToAdd.setQuantity(1);
             //  System.out.println("HERE3");
         }
-        if(!tooAdd){
-            itemToAdd=null;
+        if (!tooAdd) {
+            itemToAdd = null;
         }
-        
+
         updateTotal();
 
     }//end addItem
@@ -124,7 +121,7 @@ public class RefundCart extends Cart {
     //    items.remove(itemToRemove);
     //    updateTotal();
     // }//end removeItem
-        @Override
+    @Override
     public double getTotalPrice() {
         return totalPriceAfterTax;
     }
@@ -141,49 +138,50 @@ public class RefundCart extends Cart {
 
     @Override
     public void updateTotal() {
-        if(refundItems!=null&&!refundItems.isEmpty()){
-        double taxableAmt = 0;
-        double nonTaxableAmt = 0;
-        totalPriceAfterTax = 0;
-        amtOfTaxCharged = 0;
-        for (RefundItem temp : refundItems) {
-            if(!temp.isPreCharged()&&!temp.hasBeenRefunded()&&temp.getCategory()!=853&&temp.getCategory()!=854&&temp.refundAllActive()){
-            if (temp.isTaxable()&&!temp.hasTaxBeenRefunded){
-                taxableAmt += temp.getPrice() * temp.quantityBeingRefunded-temp.getDiscountAmount();
-            } else {
-                nonTaxableAmt += temp.getPrice() * temp.quantityBeingRefunded-temp.getDiscountAmount();
-            }//end else
-            
-            }else if(temp.refundTaxOnly()){
-                amtOfTaxCharged+=temp.getTaxTotal();
-            }
-        }//end for
-        taxableAmt = round(taxableAmt);
-        nonTaxableAmt = round(nonTaxableAmt);
-        amtOfTaxCharged+= taxableAmt * taxRate;
-        amtOfTaxCharged = round(amtOfTaxCharged);
-        totalPriceBeforeTax = taxableAmt + nonTaxableAmt;
-        totalPriceBeforeTax = round(totalPriceBeforeTax);
-        totalPriceAfterTax += amtOfTaxCharged + totalPriceBeforeTax;
-        totalPriceAfterTax = round(totalPriceAfterTax);
-        }else{
-            totalPriceAfterTax=0;
-            totalPriceBeforeTax=0;
-            amtOfTaxCharged=0;
+        if (refundItems != null && !refundItems.isEmpty()) {
+            double taxableAmt = 0;
+            double nonTaxableAmt = 0;
+            totalPriceAfterTax = 0;
+            amtOfTaxCharged = 0;
+            for (RefundItem temp : refundItems) {
+                if (!temp.isPreCharged() && !temp.hasBeenRefunded() && temp.getCategory() != 853 && temp.getCategory() != 854 && temp.refundAllActive()) {
+                    if (temp.isTaxable() && !temp.hasTaxBeenRefunded) {
+                        taxableAmt += temp.getPrice() * temp.quantityBeingRefunded - temp.getDiscountAmount();
+                    } else {
+                        nonTaxableAmt += temp.getPrice() * temp.quantityBeingRefunded - temp.getDiscountAmount();
+                    }//end else
+
+                } else if (temp.refundTaxOnly()) {
+                    amtOfTaxCharged += temp.getTaxTotal();
+                }
+            }//end for
+            taxableAmt = round(taxableAmt);
+            nonTaxableAmt = round(nonTaxableAmt);
+            amtOfTaxCharged += taxableAmt * taxRate;
+            amtOfTaxCharged = round(amtOfTaxCharged);
+            totalPriceBeforeTax = taxableAmt + nonTaxableAmt;
+            totalPriceBeforeTax = round(totalPriceBeforeTax);
+            totalPriceAfterTax += amtOfTaxCharged + totalPriceBeforeTax;
+            totalPriceAfterTax = round(totalPriceAfterTax);
+        } else {
+            totalPriceAfterTax = 0;
+            totalPriceBeforeTax = 0;
+            amtOfTaxCharged = 0;
         }
         // System.out.println("Amount not taxable: $"+nonTaxableAmt+"\nAmount taxable: $"+taxableAmt+"\nTax Charged: $"+amtOfTaxCharged+"\nTotal: $"+totalPriceAfterTax);
     }//end updateTotal
 
     @Override
-    public int getTotalNumRX(){
-        int i=0;
-        for(RefundItem item :refundItems){
-            if(item.isRX()){
+    public int getTotalNumRX() {
+        int i = 0;
+        for (RefundItem item : refundItems) {
+            if (item.isRX()) {
                 i++;
             }
         }
         return i;
     }
+
     private double round(double num) {//rounds to 2 decimal places.
         num = Math.round(num * 100.0) / 100.0;
         return num;
@@ -199,9 +197,10 @@ public class RefundCart extends Cart {
         }
         updateTotal();
     }
-   @Override
-    public void setPrecharged(String itemName,boolean precharged){
-                for (RefundItem item : refundItems) {
+
+    @Override
+    public void setPrecharged(String itemName, boolean precharged) {
+        for (RefundItem item : refundItems) {
             if (item.getName().contentEquals(itemName)) {
                 item.setIsPreCharged(precharged);
                 //System.out.println("HERE");
@@ -209,59 +208,59 @@ public class RefundCart extends Cart {
         }
         updateTotal();
     }
-    
-    public boolean containsItemByID(String id){
-        for(RefundItem item :refundItems){
-            if(item.getID().contentEquals(id)){
+
+    public boolean containsItemByID(String id) {
+        for (RefundItem item : refundItems) {
+            if (item.getID().contentEquals(id)) {
                 return true;
             }
         }
         return false;
     }
-    
-    public void increaseQtyByID(String id, int qty2Add){
-        for(RefundItem item: refundItems){
-            if(item.getID().contentEquals(id)){
-                System.out.println("INCREASING: "+item.getID()+"with "+item.quantity+" BY "+qty2Add);
-                item.quantity+=qty2Add;
-                
+
+    public void increaseQtyByID(String id, int qty2Add) {
+        for (RefundItem item : refundItems) {
+            if (item.getID().contentEquals(id)) {
+                System.out.println("INCREASING: " + item.getID() + "with " + item.quantity + " BY " + qty2Add);
+                item.quantity += qty2Add;
+
             }
         }
     }
-    
-    
-   @Override
-    public double getDiscountTotal(){
-        double total=0;
-        for(RefundItem item:refundItems){
-            total+=item.getDiscountAmount();
+
+    @Override
+    public double getDiscountTotal() {
+        double total = 0;
+        for (RefundItem item : refundItems) {
+            total += item.getDiscountAmount();
         }
         return total;
     }
 
-   @Override
+    @Override
     void setMassDiscount(double discPer) {
-        for(RefundItem item: refundItems){
-            if(!item.isRX()&&item.getCategory()!=853&&item.getCategory()!=854)
-           item.setDiscountPercentage(discPer);
+        for (RefundItem item : refundItems) {
+            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
+                item.setDiscountPercentage(discPer);
+            }
         }
         updateTotal();
     }
-    
-    void setItemDiscount(String itemUPC,double percent){
-        for(RefundItem item:refundItems){
-            if(item.getUPC().contentEquals(itemUPC)){
+
+    void setItemDiscount(String itemUPC, double percent) {
+        for (RefundItem item : refundItems) {
+            if (item.getUPC().contentEquals(itemUPC)) {
                 item.setDiscountPercentage(percent);
             }
         }
     }
-    
-       public void setRequiresRepaint(boolean repaint){
+
+    public void setRequiresRepaint(boolean repaint) {
         requiresRepaint = repaint;
     }
-    
+
     @Override
-    public boolean getRequiresRepaint(){
+    public boolean getRequiresRepaint() {
         return requiresRepaint;
     }
 }

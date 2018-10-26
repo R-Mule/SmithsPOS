@@ -27,20 +27,20 @@ public class CardDataRequester {
     String approvalCode;
     String last4ofCard;
     String cardType;
-    String responseText="DECLINED";
+    String responseText = "DECLINED";
     String authAmtReq;
     String cardEntryMethod;
-    String AID="";
-    String TVR="";
-    String TSI="";
-    boolean transTerminate=false;
+    String AID = "";
+    String TVR = "";
+    String TSI = "";
+    boolean transTerminate = false;
 
     public CardDataRequester() {
 
     }
 
-    public void postRequest(String deviceURL, String amount,String tran_type) {
-        System.out.println("AMOUNT BEING REQUESTED: "+amount);
+    public void postRequest(String deviceURL, String amount, String tran_type) {
+        System.out.println("AMOUNT BEING REQUESTED: " + amount);
         try {
             URL url = new URL(deviceURL);
             Double d = Double.parseDouble(amount);
@@ -49,7 +49,7 @@ public class CardDataRequester {
             // specify that we will send output and accept input
             con.setDoInput(true);
             con.setDoOutput(true);
-           // con.setConnectTimeout(999999999);  // long timeout, but not infinite
+            // con.setConnectTimeout(999999999);  // long timeout, but not infinite
             //con.setReadTimeout(999999999);
             con.setUseCaches(false);
             con.setDefaultUseCaches(false);
@@ -88,78 +88,79 @@ public class CardDataRequester {
                 //String message = doc.getDocumentElement().getTextContent();
                 merchantID = "8788290392911";
                 responseCode = doc.getElementsByTagName("AUTH_RESP").item(0).getTextContent();
-                if(!responseCode.contentEquals("S0")){
-                cardType = doc.getElementsByTagName("AUTH_CARD_TYPE").item(0).getTextContent();
-                        switch (cardType) {
-                            case "R":
-                                cardType = "DISCOVER";
-                                break;
-                            case "S":
-                                cardType = "AMERICAN EXPRESS";
-                                break;
-                            case "M":
-                                cardType = "MASTERCARD";
-                                break;
-                            case "V":
-                                cardType = "VISA";
-                                break;
-                             case "O":
-                                cardType = "";//This is ALL Debit Cards
-                                break;
-                            default:
-                                cardType = "SPECIAL";
-                                break;
-                        }
-                approvalCodeHandler ach = new approvalCodeHandler(cardType, responseCode);
-                responseText = ach.getResponseText();
-                if (ach.isApproved()) {//this checks to make sure the trans is approved before we parse stuff that doesn't exisit.
-                    authAmt = doc.getElementsByTagName("AUTH_AMOUNT").item(0).getTextContent();
-                    authAmtReq = doc.getElementsByTagName("AUTH_AMOUNT_REQUESTED").item(0).getTextContent();
-                    if (Double.parseDouble(authAmt)==Double.parseDouble(authAmtReq)) {
-                        transID = doc.getElementsByTagName("AUTH_GUID").item(0).getTextContent();
-                        //gets here
-                        approvalCode = doc.getElementsByTagName("AUTH_CODE").item(0).getTextContent();
-                        last4ofCard = doc.getElementsByTagName("AUTH_MASKED_ACCOUNT_NBR").item(0).getTextContent();
-                        last4ofCard = last4ofCard.substring(last4ofCard.lastIndexOf('X'));
-                        //gets here too
-                        cardEntryMethod=doc.getElementsByTagName("CARD_ENT_METH").item(0).getTextContent();
-                        if(cardEntryMethod.contentEquals("G")){//TOOK THIS OUT ||cardEntryMethod.contentEquals("D")
-                            //and here
-                            AID=cardEntryMethod=doc.getElementsByTagName("SI_EMV_AID").item(0).getTextContent();
-                            TVR=cardEntryMethod=doc.getElementsByTagName("SI_EMV_TVR").item(0).getTextContent();
-                            TSI=cardEntryMethod=doc.getElementsByTagName("SI_EMV_TSI").item(0).getTextContent();
-                        }
-                        System.out.println(responseText);
+                if (!responseCode.contentEquals("S0")) {
+                    cardType = doc.getElementsByTagName("AUTH_CARD_TYPE").item(0).getTextContent();
+                    switch (cardType) {
+                        case "R":
+                            cardType = "DISCOVER";
+                            break;
+                        case "S":
+                            cardType = "AMERICAN EXPRESS";
+                            break;
+                        case "M":
+                            cardType = "MASTERCARD";
+                            break;
+                        case "V":
+                            cardType = "VISA";
+                            break;
+                        case "O":
+                            cardType = "";//This is ALL Debit Cards
+                            break;
+                        default:
+                            cardType = "SPECIAL";
+                            break;
+                    }
+                    approvalCodeHandler ach = new approvalCodeHandler(cardType, responseCode);
+                    responseText = ach.getResponseText();
+                    if (ach.isApproved()) {//this checks to make sure the trans is approved before we parse stuff that doesn't exisit.
+                        authAmt = doc.getElementsByTagName("AUTH_AMOUNT").item(0).getTextContent();
+                        authAmtReq = doc.getElementsByTagName("AUTH_AMOUNT_REQUESTED").item(0).getTextContent();
+                        if (Double.parseDouble(authAmt) == Double.parseDouble(authAmtReq)) {
+                            transID = doc.getElementsByTagName("AUTH_GUID").item(0).getTextContent();
+                            //gets here
+                            approvalCode = doc.getElementsByTagName("AUTH_CODE").item(0).getTextContent();
+                            last4ofCard = doc.getElementsByTagName("AUTH_MASKED_ACCOUNT_NBR").item(0).getTextContent();
+                            last4ofCard = last4ofCard.substring(last4ofCard.lastIndexOf('X'));
+                            //gets here too
+                            cardEntryMethod = doc.getElementsByTagName("CARD_ENT_METH").item(0).getTextContent();
+                            if (cardEntryMethod.contentEquals("G")) {//TOOK THIS OUT ||cardEntryMethod.contentEquals("D")
+                                //and here
+                                AID = cardEntryMethod = doc.getElementsByTagName("SI_EMV_AID").item(0).getTextContent();
+                                TVR = cardEntryMethod = doc.getElementsByTagName("SI_EMV_TVR").item(0).getTextContent();
+                                TSI = cardEntryMethod = doc.getElementsByTagName("SI_EMV_TSI").item(0).getTextContent();
+                            }
+                            System.out.println(responseText);
 
+                        } else {
+                            transTerminate = true;
+                            System.out.println("MUST BE AN ERROR!!");
+                        }
                     } else {
-                        transTerminate=true;
-                        System.out.println("MUST BE AN ERROR!!");
+                        transTerminate = true;
+                        System.out.println("TRANS DECLINED1??");
                     }
                 } else {
-                    transTerminate=true;
-                    System.out.println("TRANS DECLINED1??");
-                }
-                }else{
-                    transTerminate=true;
+                    transTerminate = true;
                     System.out.println("TRANS DECLINED2??");
                 }
             } catch (SAXException | IOException e) {
                 // handle SAXException
             }
             // handle IOException
-            
+
         } catch (ParserConfigurationException e1) {
             // handle ParserConfigurationException
         } catch (NullPointerException ex) {
-            transTerminate=true;
-            responseText="FAILED TO FIND AUTH RETRY";
+            transTerminate = true;
+            responseText = "FAILED TO FIND AUTH RETRY";
             System.out.println("TRANS DECLINED3??");
         }
     }
 
-    public boolean transTerminated(){
+    public boolean transTerminated() {
         return transTerminate;
     }
+
     public boolean hasReceivedData() {
         return hasReceivedData;
     }

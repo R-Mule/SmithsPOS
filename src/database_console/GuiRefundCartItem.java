@@ -213,26 +213,25 @@ public class GuiRefundCartItem extends GuiCartItem {
             }
         }
 
-        if(item.getCategory()==861&&!item.hasBeenRefunded){
-             if (item.quantityBeingRefunded != item.quantity) {
-                        item.quantityBeingRefunded=item.quantity;
-                        qtyToBeRefunded.setText(Integer.toString(item.quantityBeingRefunded));
-                        refundCart.updateTotal();
-                        mainFrame.updateCartScreen();
-                        taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
-                        if (item.isRX) {
-                            item.setPrice(Double.parseDouble(pricePerItemLabel.getText()));
-                        }
-                        totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
+        if (item.getCategory() == 861 && !item.hasBeenRefunded) {
+            if (item.quantityBeingRefunded != item.quantity) {
+                item.quantityBeingRefunded = item.quantity;
+                qtyToBeRefunded.setText(Integer.toString(item.quantityBeingRefunded));
+                refundCart.updateTotal();
+                mainFrame.updateCartScreen();
+                taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
+                if (item.isRX) {
+                    item.setPrice(Double.parseDouble(pricePerItemLabel.getText()));
+                }
+                totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
 
-        
-         refundInactiveButton.setVisible(false);
-        refundActiveButton.setVisible(true);
-        item.setRefundAllActive(true);
-        refundCart.updateTotal();
-        mainFrame.updateCartScreen();
-                    }
-             
+                refundInactiveButton.setVisible(false);
+                refundActiveButton.setVisible(true);
+                item.setRefundAllActive(true);
+                refundCart.updateTotal();
+                mainFrame.updateCartScreen();
+            }
+
         }
         mainFrame.resizeRefundCartWindow();
     }

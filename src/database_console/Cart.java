@@ -115,7 +115,7 @@ public class Cart {
             for (Item item : itemsToRemove) {
                 this.removeItem(item);
                 items.remove(item);
-                
+
             }
         }
 
@@ -131,14 +131,15 @@ public class Cart {
         updateTotal();
     }
 
-    public boolean containsItemToBeSplit(){
-        for(Item item :items){
-            if(item.isSetToSplitSave){
+    public boolean containsItemToBeSplit() {
+        for (Item item : items) {
+            if (item.isSetToSplitSave) {
                 return true;
             }
         }
         return false;
     }
+
     public void removeItem(Item itemToRemove) {
         boolean toRemove = false;
         Item removeItem = null;

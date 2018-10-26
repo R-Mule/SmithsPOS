@@ -119,7 +119,7 @@ public class CapSignature extends JDialog {//implements Runnable {
 
             clearButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                   // System.out.println(sigObj.getKeyReceipt());
+                    // System.out.println(sigObj.getKeyReceipt());
                     sigObj.clearTablet();
                 }
             });
@@ -130,8 +130,8 @@ public class CapSignature extends JDialog {//implements Runnable {
                         hasBeenClicked = true;
                         Document document = new Document();
                         if (!new File(remoteDrivePath).exists()) {
-                            
-                            System.out.println("EMERGENCY RX SAVE: couldnt find: "+remoteDrivePath);
+
+                            System.out.println("EMERGENCY RX SAVE: couldnt find: " + remoteDrivePath);
                             remoteDrivePath = emergencyDrivePath;
                         }
                         try {

@@ -26,13 +26,12 @@ public class ConfigFileReader {
     private static String pharmacyName;
     private static String mailPassword;
 
-    private ConfigFileReader()  //do not instantiate
+    private ConfigFileReader() //do not instantiate
     {
-        
+
     }
-    
-    public static void loadConfiguration() throws FileNotFoundException, IOException
-    {
+
+    public static void loadConfiguration() throws FileNotFoundException, IOException {
         try {
 
             BufferedReader in = new BufferedReader(new FileReader("C:\\POS\\Config.txt"));
@@ -42,9 +41,11 @@ public class ConfigFileReader {
             while ((line = in.readLine()) != null) {
                 String[] tokens = line.split(":", 2);   //limits the split to 2 array elements ie only the first occurance so it will keep any colons in the value portion
 
-                if(tokens.length < 2)   //not all data is there just move along
+                if (tokens.length < 2) //not all data is there just move along
+                {
                     continue;
-                System.out.println(tokens[0]+" "+ tokens[1]);
+                }
+                System.out.println(tokens[0] + " " + tokens[1]);
                 if (tokens[0].contains("Register ID")) {
                     registerID = tokens[1].trim();
                 } else if (tokens[0].contains("Printer Name")) {
@@ -61,15 +62,15 @@ public class ConfigFileReader {
                     Date date = new Date();
                     DateFormat dateFormat = new SimpleDateFormat("MMddyy");
                     registerReportPath = tokens[1].trim() + dateFormat.format(date);
-                }else if (tokens[0].contains("Display Com Port")) {
+                } else if (tokens[0].contains("Display Com Port")) {
                     displayComPort = tokens[1].trim();
-                   // System.out.println(displayComPort);
-                }else if(tokens[0].contains("Card Terminal Address")){
+                    // System.out.println(displayComPort);
+                } else if (tokens[0].contains("Card Terminal Address")) {
                     cardReaderURL = tokens[1].trim();
-                    
-                }else if(tokens[0].contains("Pharmacy Name")){
+
+                } else if (tokens[0].contains("Pharmacy Name")) {
                     pharmacyName = tokens[1].trim();
-                }else if(tokens[0].contains("Mail Password")){
+                } else if (tokens[0].contains("Mail Password")) {
                     mailPassword = tokens[1].trim();
                 }
 
@@ -82,19 +83,21 @@ public class ConfigFileReader {
             throw e;
             //System.out.println("Error reading the file");
         }
-        
+
     }
-    
-    public static String getPharmacyName(){
+
+    public static String getPharmacyName() {
         return pharmacyName;
     }
 
-    public static String getCardReaderURL(){
+    public static String getCardReaderURL() {
         return cardReaderURL;
     }
-    public static String getDisplayComPort(){
+
+    public static String getDisplayComPort() {
         return displayComPort;
     }
+
     public static String getRegisterReportPath() {
         return registerReportPath;
     }
@@ -122,6 +125,7 @@ public class ConfigFileReader {
     public static String getRemoteDrivePath() {
         return remoteDrivePath;
     }
+
     public static String getMailPassword() {
         return mailPassword;
     }

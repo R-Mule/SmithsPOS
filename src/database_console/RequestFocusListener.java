@@ -1,47 +1,46 @@
-
 package database_console;
 
 import javax.swing.*;
 import javax.swing.event.*;
 
-public class RequestFocusListener implements AncestorListener
-{
-	private boolean removeListener;
+public class RequestFocusListener implements AncestorListener {
 
-	/*
+    private boolean removeListener;
+
+    /*
 	 *  Convenience constructor. The listener is only used once and then it is
 	 *  removed from the component.
-	 */
-	public RequestFocusListener()
-	{
-		this(true);
-	}
+     */
+    public RequestFocusListener() {
+        this(true);
+    }
 
-	/*
+    /*
 	 *  Constructor that controls whether this listen can be used once or
 	 *  multiple times.
 	 *
 	 *  @param removeListener when true this listener is only invoked once
 	 *                        otherwise it can be invoked multiple times.
-	 */
-	public RequestFocusListener(boolean removeListener)
-	{
-		this.removeListener = removeListener;
-	}
+     */
+    public RequestFocusListener(boolean removeListener) {
+        this.removeListener = removeListener;
+    }
 
-	@Override
-	public void ancestorAdded(AncestorEvent e)
-	{
-		JComponent component = e.getComponent();
-		component.requestFocusInWindow();
+    @Override
+    public void ancestorAdded(AncestorEvent e) {
+        JComponent component = e.getComponent();
+        component.requestFocusInWindow();
 
-		if (removeListener)
-			component.removeAncestorListener( this );
-	}
+        if (removeListener) {
+            component.removeAncestorListener(this);
+        }
+    }
 
-	@Override
-	public void ancestorMoved(AncestorEvent e) {}
+    @Override
+    public void ancestorMoved(AncestorEvent e) {
+    }
 
-	@Override
-	public void ancestorRemoved(AncestorEvent e) {}
+    @Override
+    public void ancestorRemoved(AncestorEvent e) {
+    }
 }

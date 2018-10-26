@@ -8,7 +8,8 @@ public class approvalCodeHandler {
 
     private String responseText;
     private String code;
-    private boolean approved=false;
+    private boolean approved = false;
+
     approvalCodeHandler(String cardType, String code) {
         this.code = code;
         switch (cardType) {
@@ -29,17 +30,17 @@ public class approvalCodeHandler {
         }
     }
 
-    public boolean isApproved(){
+    public boolean isApproved() {
         return approved;
     }
-    
+
     private void discover() {
-        approved=false;
+        approved = false;
         System.out.println(code);
         switch (code) {
             case "00":
                 responseText = "APPROVED";
-                approved=true;
+                approved = true;
                 break;
             case "01":
                 responseText = "NEEDS TO CALL";
@@ -61,7 +62,7 @@ public class approvalCodeHandler {
                 break;
             case "10":
                 responseText = "APPROVED";
-                approved=true;
+                approved = true;
                 break;
             case "12":
                 responseText = "INVALID TRANS";
@@ -169,12 +170,12 @@ public class approvalCodeHandler {
     }
 
     private void masterCard() {
-        approved=false;
+        approved = false;
         System.out.println(code);
         switch (code) {
             case "00":
                 responseText = "APPROVED";
-                approved=true;
+                approved = true;
                 break;
             case "01":
                 responseText = "NEEDS TO CALL";
@@ -317,16 +318,16 @@ public class approvalCodeHandler {
     }
 
     private void americanExpress() {
-        approved=false;
+        approved = false;
         System.out.println(code);
         switch (code) {
             case "00":
                 responseText = "APPROVED";
-                approved=true;
+                approved = true;
                 break;
             case "01":
                 responseText = "APPROVED WITH ID";
-                approved=true;
+                approved = true;
                 break;
             case "05":
                 responseText = "DECLINED";
@@ -358,12 +359,12 @@ public class approvalCodeHandler {
     }
 
     private void visa() {
-        approved=false;
+        approved = false;
         System.out.println(code);
         switch (code) {
             case "00":
                 responseText = "APPROVED";
-                approved=true;
+                approved = true;
                 break;
             case "01":
                 responseText = "NEEDS TO CALL";
@@ -508,11 +509,11 @@ public class approvalCodeHandler {
     private void unknown() {
         System.out.println(code);
         System.out.println("SPECIAL CARD");
-        approved=false;
+        approved = false;
         switch (code) {
             case "00":
                 responseText = "APPROVED";
-                approved=true;
+                approved = true;
                 break;
             case "01":
                 responseText = "NEEDS TO CALL";
@@ -540,7 +541,7 @@ public class approvalCodeHandler {
                 break;
             case "10":
                 responseText = "APPROVAL FOR PARTIAL AMOUNT";
-                approved=true;
+                approved = true;
                 break;
             case "12":
                 responseText = "INVALID TRANS";

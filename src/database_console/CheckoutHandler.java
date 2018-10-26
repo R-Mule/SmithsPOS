@@ -23,7 +23,6 @@ public class CheckoutHandler {
     private String remoteDrivePath;
 
     //ConfigFileReader reader;
-
     public CheckoutHandler() {
         //reader = new ConfigFileReader();
         printerName = ConfigFileReader.getPrinterName();
@@ -33,8 +32,7 @@ public class CheckoutHandler {
 
     }
 
-    
-    public String beginSplitTenderCheckout(Cart curCart, double cashAmt,double debitAmount, double credit1Amt, double check1Amt, double check2Amt, int check1Num, int check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame, String employeeCheckoutName) {
+    public String beginSplitTenderCheckout(Cart curCart, double cashAmt, double debitAmount, double credit1Amt, double check1Amt, double check2Amt, int check1Num, int check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame, String employeeCheckoutName) {
         Date date = new Date();
         ArrayList<String> creditInfo = new ArrayList<>();
         CardDataRequester cdr = new CardDataRequester();
@@ -62,7 +60,7 @@ public class CheckoutHandler {
             creditInfo.add("CREDIT");
             amtCntr++;
 
-        }else if(debitAmount>0){
+        } else if (debitAmount > 0) {
             mainFrame.setEnabled(false);
 
             cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(debitAmount), "DB00");
@@ -81,8 +79,7 @@ public class CheckoutHandler {
             amtCntr++;
 
         }
-        
-        
+
         if (check1Amt > 0) {
             amtCntr++;
         }
@@ -103,7 +100,7 @@ public class CheckoutHandler {
             paymentType[cntr] = String.format(cdr.cardType + " CREDIT:" + cdr.last4ofCard + ": ");
             cntr++;
         }
-                if (debitAmount > 0) {
+        if (debitAmount > 0) {
             paymentAmt[cntr] = debitAmount;
             paymentType[cntr] = String.format(cdr.cardType + " DEBIT:" + cdr.last4ofCard + ": ");
             cntr++;
@@ -274,7 +271,7 @@ public class CheckoutHandler {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
-        Database.updateChargeAccountBalance(accountName,curCart.getTotalPrice());
+        Database.updateChargeAccountBalance(accountName, curCart.getTotalPrice());
         Database.storeReceipt(curCart, receiptNum);
         printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
         mainFrame.voidCarts();
@@ -313,8 +310,8 @@ public class CheckoutHandler {
         String displayDate;
         displayDate = dateFormat2.format(date);
         receipt += "           Smith's Super-Aid Pharmacy\n              247 Old Virginia Ave\n              Rich Creek, VA 24147\n            Main Line:(540) 726-2993\n           Office/DME: (540) 726-7331\nStore Hours: M-F 9:00AM-7:00PM Office closes @5\n             Sat: 9:00AM-2:00PM Office Closed\n             Sun: Closed\n\n";
-        String tempClerkName= "Clerk: "+clerkName.substring(clerkName.indexOf(" ")+1)+" "+  clerkName.substring(0,1)+".";
-        receipt += String.format("%-20s %24s\n", "Receipt Number",tempClerkName);
+        String tempClerkName = "Clerk: " + clerkName.substring(clerkName.indexOf(" ") + 1) + " " + clerkName.substring(0, 1) + ".";
+        receipt += String.format("%-20s %24s\n", "Receipt Number", tempClerkName);
         receipt += String.format("%-20s %25s\n\n", receiptNum, displayDate);
 
         String s = String.format("%-10s %15s %9s\n", "Qty@Price", "Item Name", "               Price");
@@ -329,10 +326,10 @@ public class CheckoutHandler {
             }
             if (item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860) {
                 requires2Receipts = true;
-                if(item.getCategory()==853){
-                    Database.updateChargeAccountBalance(item.getName(), item.getTotal()*-1);
-                }else if(item.getCategory()==854){
-                    Database.updateDMEAccountBalance(item.getName(), item.getTotal()*-1);
+                if (item.getCategory() == 853) {
+                    Database.updateChargeAccountBalance(item.getName(), item.getTotal() * -1);
+                } else if (item.getCategory() == 854) {
+                    Database.updateDMEAccountBalance(item.getName(), item.getTotal() * -1);
                 }
             }
             String itemName = "";
@@ -446,15 +443,15 @@ public class CheckoutHandler {
         receipt += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
         storeCopy += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                  ";
         receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                 ";
-        
-        if (isCreditSale||isDebitSale) {
-            storeCopy+="STORE COPY\n\n\n\n\n\n\n";
-            receipt+="CUSTOMER COPY\n\n\n\n\n\n\n";
+
+        if (isCreditSale || isDebitSale) {
+            storeCopy += "STORE COPY\n\n\n\n\n\n\n";
+            receipt += "CUSTOMER COPY\n\n\n\n\n\n\n";
             printerService.printString(printerName, storeCopy);
-            
+
         } else {
-            storeCopy+="\n\n\n\n\n\n\n";
-            receipt+="\n\n\n\n\n\n\n";
+            storeCopy += "\n\n\n\n\n\n\n";
+            receipt += "\n\n\n\n\n\n\n";
             printerService.printString(printerName, receipt);
         }
 
@@ -471,7 +468,7 @@ public class CheckoutHandler {
         if (requires2Receipts) {
             printerService.printString(printerName, receipt);
             printerService.printBytes(printerName, cutP);
-           /* if (!drawerHasBeenKicked) {
+            /* if (!drawerHasBeenKicked) {
                 printerService.printBytes(printerName, kickDrawer);
                 drawerHasBeenKicked = true;
             }*/
@@ -480,7 +477,7 @@ public class CheckoutHandler {
 
         myself.previousReceipt = receipt;
         Database.storeReceiptString(receiptNum, receipt);
-        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, false, employeeCheckoutName,myself);
+        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, false, employeeCheckoutName, myself);
 
     }
 
@@ -501,11 +498,11 @@ public class CheckoutHandler {
         paymentAmt[0] = refundCart.getTotalPrice();
         paymentType[0] = "CASH REFUND: ";
 
-        printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself,null);
+        printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself, null);
         handleRefundItems(refundCart, clerkName, guiRefundItems, myself);
     }
 
-   String beginRefundCardCheckout(RefundCart refundCart, String clerkName, ArrayList<GuiRefundCartItem> guiRefundItems, MainFrame myself) {
+    String beginRefundCardCheckout(RefundCart refundCart, String clerkName, ArrayList<GuiRefundCartItem> guiRefundItems, MainFrame myself) {
         ArrayList<String> creditInfo = new ArrayList<>();
 
         CardDataRequester cdr = new CardDataRequester();
@@ -515,7 +512,7 @@ public class CheckoutHandler {
         if (cdr.transTerminated()) {
             return cdr.responseText;
         }
-        
+
         double[] paymentAmt = new double[1];
         String[] paymentType = new String[1];
         paymentAmt[0] = refundCart.getTotalPrice();
@@ -523,17 +520,17 @@ public class CheckoutHandler {
 
         Database.updateReceipt(refundCart, refundCart.receiptNum);
 
-                creditInfo.add("3130031394051");//Merchant ID
+        creditInfo.add("3130031394051");//Merchant ID
         creditInfo.add(cdr.approvalCode);
         creditInfo.add(cdr.transID);
         creditInfo.add(cdr.AID);
         creditInfo.add(cdr.TVR);
         creditInfo.add(cdr.TSI);
         creditInfo.add("CREDIT");
-        
-        printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself,creditInfo);
+
+        printRefundReceipt(refundCart, clerkName, paymentType, paymentAmt, refundCart.receiptNum, myself, creditInfo);
         handleRefundItems(refundCart, clerkName, guiRefundItems, myself);
-        
+
         return "SMITHSAPPROVEDCODE";
     }
 
@@ -598,7 +595,7 @@ public class CheckoutHandler {
                         }
                     }
                     if (!hasBeenAddedAlready) {
-                        RefundItem itemTemp = new RefundItem( item);
+                        RefundItem itemTemp = new RefundItem(item);
                         itemTemp.mutID = item.getID() + "T";//TAX REFUNDED!
                         itemTemp.quantity = item.quantityBeingRefunded;
 
@@ -633,13 +630,13 @@ public class CheckoutHandler {
         myself.refundOver();
     }
 
-    public void printRefundReceipt(RefundCart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself,ArrayList<String> creditInfo) {
+    public void printRefundReceipt(RefundCart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, MainFrame myself, ArrayList<String> creditInfo) {
         PrinterService printerService = new PrinterService();
         boolean itemDiscounted = false;
         String receipt = "";
-        boolean isCreditSale=false;
-        boolean requires2Receipts=false;
-         for (int i = 0; i < paymentType.length; i++) {
+        boolean isCreditSale = false;
+        boolean requires2Receipts = false;
+        for (int i = 0; i < paymentType.length; i++) {
             if (paymentType[i].contains("CARD")) {
                 isCreditSale = true;
                 requires2Receipts = true;
@@ -650,8 +647,8 @@ public class CheckoutHandler {
         String displayDate;
         displayDate = dateFormat2.format(date);
         receipt += "           Smith's Super-Aid Pharmacy\n              247 Old Virginia Ave\n              Rich Creek, VA 24147\n            Main Line:(540) 726-2993\n           Office/DME: (540) 726-7331\nStore Hours: M-F 9:00AM-7:00PM Office closes @5\n             Sat: 9:00AM-2:00PM Office Closed\n             Sun: Closed\n\n";
-        String tempClerkName= "Clerk: "+clerkName.substring(clerkName.indexOf(" ")+1)+" "+  clerkName.substring(0,1)+".";
-        receipt += String.format("%-20s %24s\n", "Receipt Number",tempClerkName);
+        String tempClerkName = "Clerk: " + clerkName.substring(clerkName.indexOf(" ") + 1) + " " + clerkName.substring(0, 1) + ".";
+        receipt += String.format("%-20s %24s\n", "Receipt Number", tempClerkName);
         receipt += String.format("%-20s %25s\n\n", receiptNum, displayDate);
 
         String s = String.format("%-10s %15s %9s\n", "Qty@Price", "Item Name", "               Price");
@@ -707,7 +704,7 @@ public class CheckoutHandler {
         }
 
         String storeCopy = "";
-        if (isCreditSale ) {
+        if (isCreditSale) {
             storeCopy = receipt;
             if (isCreditSale) {
                 storeCopy += "\n\n\n\n      X___________________________________\n";
@@ -735,26 +732,24 @@ public class CheckoutHandler {
         receipt += "\n            STORE RETURN POLICY\nAny RX that leaves the building cannot be\nreturned. Any consumable item must be unopened. All other items are subject to inspection upon\nreturn and must be in good, unused condition.\nYou must have a copy of your receipt. Item must be returned within 30 days of purchase. All\nclearance item sales are final.\n\n";
         storeCopy += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                  ";
         receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                 ";
-        
+
         byte[] cutP = new byte[]{0x1d, 'V', 1};
         if (isCreditSale) {
-            storeCopy+="STORE COPY\n\n\n\n\n\n\n";
-            receipt+="CUSTOMER COPY\n\n\n\n\n\n\n";
+            storeCopy += "STORE COPY\n\n\n\n\n\n\n";
+            receipt += "CUSTOMER COPY\n\n\n\n\n\n\n";
             printerService.printString(printerName, storeCopy);
             printerService.printBytes(printerName, cutP);
-            
+
         } else {
-            storeCopy+="\n\n\n\n\n\n\n";
-            receipt+="\n\n\n\n\n\n\n";
+            storeCopy += "\n\n\n\n\n\n\n";
+            receipt += "\n\n\n\n\n\n\n";
             printerService.printString(printerName, receipt);
             printerService.printBytes(printerName, cutP);
         }
-        
 
         // cut that paper!
-        
         byte[] kickDrawer = new byte[]{27, 112, 48, 55, 121};
-        if(requires2Receipts){
+        if (requires2Receipts) {
             printerService.printString(printerName, receipt);
             printerService.printBytes(printerName, cutP);
         }
@@ -762,7 +757,7 @@ public class CheckoutHandler {
         myself.previousReceipt = receipt;
         myself.changeDue.setText("Change Due: $" + String.format("%.2f", total));
         myself.displayChangeDue = true;
-        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true, "NO",myself);
+        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true, "NO", myself);
     }
 
     public void reprintReceipt(String receipt) {
@@ -852,11 +847,11 @@ public class CheckoutHandler {
         }
     }
 
-    public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund, String employeeCheckoutName,MainFrame mainFrame) {
+    public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund, String employeeCheckoutName, MainFrame mainFrame) {
         DrawerReport dr = null;
 
         try {
-            
+
             File f = new File(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory()) {
                 // read object from file
@@ -876,11 +871,11 @@ public class CheckoutHandler {
                     dr = new DrawerReport((RefundCart) curCart, clerkName, paymentType, paymentAmt, isRefund);
                 }
             }
-            
-            mainFrame.estimatedCoinTotal=dr.totalCoinsAmt;
-            mainFrame.estimatedCashTotal=Math.round(dr.totalCashAmt);
-            mainFrame.estimatedCheckTotal=dr.totalChecksAmt;
-            
+
+            mainFrame.estimatedCoinTotal = dr.totalCoinsAmt;
+            mainFrame.estimatedCashTotal = Math.round(dr.totalCashAmt);
+            mainFrame.estimatedCheckTotal = dr.totalChecksAmt;
+            mainFrame.estimatedLunchTotal = dr.lunchTotalAmt;
             // write object to file
             FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -911,11 +906,11 @@ public class CheckoutHandler {
                         dr = new DrawerReport((RefundCart) curCart, clerkName, paymentType, paymentAmt, isRefund);
                     }
                 }
-                
-                mainFrame.estimatedCoinTotal=dr.totalCoinsAmt;
-                mainFrame.estimatedCashTotal=Math.round(dr.totalCashAmt);
-                mainFrame.estimatedCheckTotal=dr.totalChecksAmt;
-                
+
+                mainFrame.estimatedCoinTotal = dr.totalCoinsAmt;
+                mainFrame.estimatedCashTotal = Math.round(dr.totalCashAmt);
+                mainFrame.estimatedCheckTotal = dr.totalChecksAmt;
+                mainFrame.estimatedLunchTotal = dr.lunchTotalAmt;
                 // write object to file
                 FileOutputStream fos = new FileOutputStream(emergencyDrivePath + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
