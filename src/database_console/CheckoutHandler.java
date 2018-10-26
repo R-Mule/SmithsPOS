@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class CheckoutHandler {
 
@@ -39,16 +39,19 @@ public class CheckoutHandler {
         DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
         String receiptNum = dateFormat.format(date) + registerID;
         int amtCntr = 0;
-        if (cashAmt > 0) {
+        if (cashAmt > 0)
+        {
             amtCntr++;
         }
-        if (credit1Amt > 0) {
+        if (credit1Amt > 0)
+        {
             mainFrame.setEnabled(false);
 
             cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(credit1Amt), "CCR1");
             mainFrame.setEnabled(true);
 
-            if (cdr.transTerminated()) {
+            if (cdr.transTerminated())
+            {
                 return cdr.responseText;
             }
             creditInfo.add("3130031394051");//Merchant ID
@@ -60,13 +63,16 @@ public class CheckoutHandler {
             creditInfo.add("CREDIT");
             amtCntr++;
 
-        } else if (debitAmount > 0) {
+        }
+        else if (debitAmount > 0)
+        {
             mainFrame.setEnabled(false);
 
             cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(debitAmount), "DB00");
             mainFrame.setEnabled(true);
 
-            if (cdr.transTerminated()) {
+            if (cdr.transTerminated())
+            {
                 return cdr.responseText;
             }
             creditInfo.add("3130031394051");//Merchant ID
@@ -80,43 +86,51 @@ public class CheckoutHandler {
 
         }
 
-        if (check1Amt > 0) {
+        if (check1Amt > 0)
+        {
             amtCntr++;
         }
-        if (check2Amt > 0) {
+        if (check2Amt > 0)
+        {
             amtCntr++;
         }
 
         double[] paymentAmt = new double[amtCntr];
         String[] paymentType = new String[amtCntr];
         int cntr = 0;
-        if (cashAmt > 0) {
+        if (cashAmt > 0)
+        {
             paymentAmt[cntr] = cashAmt;
             paymentType[cntr] = "CASH: ";
             cntr++;
         }
-        if (credit1Amt > 0) {
+        if (credit1Amt > 0)
+        {
             paymentAmt[cntr] = credit1Amt;
             paymentType[cntr] = String.format(cdr.cardType + " CREDIT:" + cdr.last4ofCard + ": ");
             cntr++;
         }
-        if (debitAmount > 0) {
+        if (debitAmount > 0)
+        {
             paymentAmt[cntr] = debitAmount;
             paymentType[cntr] = String.format(cdr.cardType + " DEBIT:" + cdr.last4ofCard + ": ");
             cntr++;
         }
-        if (check1Amt > 0) {
+        if (check1Amt > 0)
+        {
             paymentAmt[cntr] = check1Amt;
             paymentType[cntr] = "CHECK#" + check1Num + ": ";
             cntr++;
         }
-        if (check2Amt > 0) {
+        if (check2Amt > 0)
+        {
             paymentAmt[cntr] = check2Amt;
             paymentType[cntr] = "CHECK#" + check2Num + ": ";
             cntr++;
         }
 
-        if (curCart.getTotalNumRX() > 0) {
+        if (curCart.getTotalNumRX() > 0)
+        {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
@@ -142,7 +156,8 @@ public class CheckoutHandler {
         paymentType[0] = "CASH: ";
         //STORE CART BEFORE SIGNOUT CHECK
 
-        if (curCart.getTotalNumRX() > 0) {
+        if (curCart.getTotalNumRX() > 0)
+        {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
@@ -166,7 +181,8 @@ public class CheckoutHandler {
 
         paymentAmt[0] = amtPaid;
         paymentType[0] = "CHECK#" + checkNum + ": ";
-        if (curCart.getTotalNumRX() > 0) {
+        if (curCart.getTotalNumRX() > 0)
+        {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
@@ -184,7 +200,8 @@ public class CheckoutHandler {
         cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(amtPaid), "CCR1");
         mainFrame.setEnabled(true);
 
-        if (cdr.transTerminated()) {
+        if (cdr.transTerminated())
+        {
             return cdr.responseText;
         }
 
@@ -197,7 +214,8 @@ public class CheckoutHandler {
         paymentAmt[0] = amtPaid;
         paymentType[0] = String.format(cdr.cardType + " CREDIT:" + cdr.last4ofCard + ": ");// + cardType + "%04d", cardNumber);
 
-        if (curCart.getTotalNumRX() > 0) {
+        if (curCart.getTotalNumRX() > 0)
+        {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
@@ -224,7 +242,8 @@ public class CheckoutHandler {
         cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(amtPaid), "DB00");
         mainFrame.setEnabled(true);
 
-        if (cdr.transTerminated()) {
+        if (cdr.transTerminated())
+        {
             return cdr.responseText;
         }
 
@@ -237,7 +256,8 @@ public class CheckoutHandler {
         paymentAmt[0] = amtPaid;
         paymentType[0] = String.format(cdr.cardType + " DEBIT:" + cdr.last4ofCard + ": ");// + cardType + "%04d", cardNumber);
 
-        if (curCart.getTotalNumRX() > 0) {
+        if (curCart.getTotalNumRX() > 0)
+        {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
@@ -267,7 +287,8 @@ public class CheckoutHandler {
         int spaceLoc = accountName.indexOf(" ");
         paymentType[0] = "CHARGED TO " + accountName.substring(0, spaceLoc) + ": ";
 
-        if (curCart.getTotalNumRX() > 0) {
+        if (curCart.getTotalNumRX() > 0)
+        {
             //rxSignout(curCart, mainFrame, receiptNum, clerkName, paymentAmt, paymentType, guiItems);
             mainFrame.receiptNum = receiptNum;
         }
@@ -288,15 +309,19 @@ public class CheckoutHandler {
         double prechargedTotal = 0;
 
         boolean isCashSale = false;
-        for (int i = 0; i < paymentType.length; i++) {
-            if (paymentType[i].contentEquals("CASH: ")) {
+        for (int i = 0; i < paymentType.length; i++)
+        {
+            if (paymentType[i].contentEquals("CASH: "))
+            {
                 isCashSale = true;
             }
-            if (paymentType[i].contains("CREDIT")) {
+            if (paymentType[i].contains("CREDIT"))
+            {
                 isCreditSale = true;
                 requires2Receipts = true;
             }
-            if (paymentType[i].contains("DEBIT")) {
+            if (paymentType[i].contains("DEBIT"))
+            {
                 isDebitSale = true;
                 requires2Receipts = true;
             }
@@ -319,16 +344,22 @@ public class CheckoutHandler {
         receipt += s + s1;
         //print some stuff
         ArrayList<Item> items = curCart.getItems();
-        for (Item item : items) {
+        for (Item item : items)
+        {
 
-            if (item.isRX() && item.isPreCharged()) {
+            if (item.isRX() && item.isPreCharged())
+            {
                 prechargedTotal += item.getPriceOfItemBeforeTax();
             }
-            if (item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860) {
+            if (item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860)
+            {
                 requires2Receipts = true;
-                if (item.getCategory() == 853) {
+                if (item.getCategory() == 853)
+                {
                     Database.updateChargeAccountBalance(item.getName(), item.getTotal() * -1);
-                } else if (item.getCategory() == 854) {
+                }
+                else if (item.getCategory() == 854)
+                {
                     Database.updateDMEAccountBalance(item.getName(), item.getTotal() * -1);
                 }
             }
@@ -336,46 +367,72 @@ public class CheckoutHandler {
             String quantity = Integer.toString(item.getQuantity()) + "@" + String.format("%.2f", round(item.getPrice()));
             Double price = round(item.getPrice() * item.getQuantity());
             Boolean isPreCharged = item.isPreCharged();
-            if (item.isRX()) {//IS RX SO WE MUST NOT USE QUANTITY
+            if (item.isRX())
+            {//IS RX SO WE MUST NOT USE QUANTITY
                 rxCntr++;
-                if (item.getName().length() > 35) {
+                if (item.getName().length() > 35)
+                {
                     itemName = item.getName().substring(0, 35);
-                } else {
+                }
+                else
+                {
                     itemName = item.getName();
                 }
-                if (!isPreCharged) {
+                if (!isPreCharged)
+                {
                     receipt += String.format("RX %-36s $%7.2f\n", itemName, price);
-                } else {
+                }
+                else
+                {
                     // itemName = itemName+"$"+item.getPriceOfItemBeforeTax(); This puts the price before precharged, not using it right now
                     receipt += String.format("RX %-36s $%7s\n", itemName, "PRECHG");
                 }
-            } else if (item.getCategory() == 853) {//item is an RA NO QUANTITY
-                if (item.getName().length() > 35) {
+            }
+            else if (item.getCategory() == 853)
+            {//item is an RA NO QUANTITY
+                if (item.getName().length() > 35)
+                {
                     itemName = item.getName().substring(0, 35);
-                } else {
+                }
+                else
+                {
                     itemName = item.getName();
                 }
                 receipt += String.format("AP %-36s $%7.2f\n", itemName, price);
-            } else if (item.getCategory() == 854) {//item is an DME Account Payment NO QUANTITY
-                if (item.getName().length() > 35) {
+            }
+            else if (item.getCategory() == 854)
+            {//item is an DME Account Payment NO QUANTITY
+                if (item.getName().length() > 35)
+                {
                     itemName = item.getName().substring(0, 35);
-                } else {
+                }
+                else
+                {
                     itemName = item.getName();
                 }
                 receipt += String.format("DP %-36s $%7.2f\n", itemName, price);
-            } else {//NORMAL ITEM
-                if (item.getName().length() > 27) {
+            }
+            else
+            {//NORMAL ITEM
+                if (item.getName().length() > 27)
+                {
                     itemName = item.getName().substring(0, 27);
-                } else {
+                }
+                else
+                {
                     itemName = item.getName();
                 }
-                if (!isPreCharged) {
+                if (!isPreCharged)
+                {
                     receipt += String.format("%10s %-28s $%7.2f\n", quantity, itemName, price);
-                } else {
+                }
+                else
+                {
                     receipt += String.format("%10s %-28s $%7s\n", quantity, itemName, "PRECHG");
                 }
             }
-            if (item.getDiscountPercentage() != 0) {//Then there is an active discount
+            if (item.getDiscountPercentage() != 0)
+            {//Then there is an active discount
                 itemDiscounted = true;
                 String percentAmt = Double.toString(item.getDiscountPercentage() * 100);
                 percentAmt = percentAmt.substring(0, percentAmt.indexOf('.'));
@@ -390,33 +447,40 @@ public class CheckoutHandler {
         Double total = curCart.getTotalPrice();
         Double totalDisc = curCart.getDiscountTotal();
         receipt += "\n";//this puts a line between last time and the first total column
-        if (itemDiscounted) {
+        if (itemDiscounted)
+        {
             receipt += String.format("%35s-$%8.2f\n", "TOTAL DISCOUNT AMOUNT: ", totalDisc);
         }
 
         receipt += String.format("%36s$%8.2f\n%36s$%8.2f\n%36s$%8.2f\n", "SUBTOTAL: ", subTotal, "TAX: ", taxTotal, "TOTAL: ", total);
         double changeDue = 0;
         double totalPaid = 0;
-        for (int i = 0; i < paymentType.length; i++) {
+        for (int i = 0; i < paymentType.length; i++)
+        {
             receipt += String.format("%36s$%8.2f\n", paymentType[i], paymentAmt[i]);
             totalPaid += paymentAmt[i];
         }
         changeDue = totalPaid - total;
         receipt += String.format("%37s%8.2f\n", "CHANGE DUE: $", changeDue);
-        if (prechargedTotal > 0) {
+        if (prechargedTotal > 0)
+        {
             receipt += String.format("%37s%8.2f\n", "TOTAL PRECHARGED: $", prechargedTotal);
         }
-        if (rxCntr > 0) {
+        if (rxCntr > 0)
+        {
             receipt += "\nTotal RX(s): " + rxCntr + "\n";
         }
-        if (!employeeCheckoutName.contentEquals("NO")) {
+        if (!employeeCheckoutName.contentEquals("NO"))
+        {
             receipt += "\nPurchasing Employee: " + employeeCheckoutName + "\n";
 
         }
         String storeCopy = "";
-        if (isCreditSale || isDebitSale) {
+        if (isCreditSale || isDebitSale)
+        {
             storeCopy = receipt;
-            if (isCreditSale) {
+            if (isCreditSale)
+            {
                 storeCopy += "\n\n\n\n      X___________________________________\n";
                 storeCopy += "               Customer Signature\n";
             }
@@ -427,7 +491,8 @@ public class CheckoutHandler {
             receipt += "Approval Code: " + creditInfo.get(1) + "\n";
             storeCopy += "Transaction ID: " + creditInfo.get(2) + "\n";
             receipt += "Transaction ID: " + creditInfo.get(2) + "\n";
-            if (!creditInfo.get(3).contentEquals("")) {
+            if (!creditInfo.get(3).contentEquals(""))
+            {
                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/apple.wav");// This is on CHIP READER SOUND!
                 storeCopy += "AID: " + creditInfo.get(3) + "\n";
                 receipt += "AID: " + creditInfo.get(3) + "\n";
@@ -444,28 +509,39 @@ public class CheckoutHandler {
         storeCopy += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                  ";
         receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                 ";
 
-        if (isCreditSale || isDebitSale) {
+        if (isCreditSale || isDebitSale)
+        {
             storeCopy += "STORE COPY\n\n\n\n\n\n\n";
             receipt += "CUSTOMER COPY\n\n\n\n\n\n\n";
             printerService.printString(printerName, storeCopy);
 
-        } else {
+        }
+        else
+        {
             storeCopy += "\n\n\n\n\n\n\n";
             receipt += "\n\n\n\n\n\n\n";
             printerService.printString(printerName, receipt);
         }
 
         // cut that paper!
-        byte[] cutP = new byte[]{0x1d, 'V', 1};
-        byte[] kickDrawer = new byte[]{27, 112, 48, 55, 121};
+        byte[] cutP = new byte[]
+        {
+            0x1d, 'V', 1
+        };
+        byte[] kickDrawer = new byte[]
+        {
+            27, 112, 48, 55, 121
+        };
         boolean drawerHasBeenKicked = false;
-        if (changeDue > 0 || (isCashSale && curCart.getTotalPrice() != 0)) {
+        if (changeDue > 0 || (isCashSale && curCart.getTotalPrice() != 0))
+        {
             printerService.printBytes(printerName, kickDrawer);
             drawerHasBeenKicked = true;
         }
 
         printerService.printBytes(printerName, cutP);
-        if (requires2Receipts) {
+        if (requires2Receipts)
+        {
             printerService.printString(printerName, receipt);
             printerService.printBytes(printerName, cutP);
             /* if (!drawerHasBeenKicked) {
@@ -483,7 +559,10 @@ public class CheckoutHandler {
 
     public void beginNoSaleCheckout(String employeeName) {
         PrinterService printerService = new PrinterService();
-        byte[] kickDrawer = new byte[]{27, 112, 48, 55, 121};
+        byte[] kickDrawer = new byte[]
+        {
+            27, 112, 48, 55, 121
+        };
         printerService.printBytes(printerName, kickDrawer);
     }
 
@@ -509,7 +588,8 @@ public class CheckoutHandler {
         cdr.postRequest(ConfigFileReader.getCardReaderURL(), Double.toString(refundCart.getTotalPrice()), "CCR9");
         myself.setEnabled(true);
 
-        if (cdr.transTerminated()) {
+        if (cdr.transTerminated())
+        {
             return cdr.responseText;
         }
 
@@ -537,31 +617,46 @@ public class CheckoutHandler {
     public void handleRefundItems(RefundCart refundCart, String clerkName, ArrayList<GuiRefundCartItem> guiRefundItems, MainFrame myself) {
         ArrayList<RefundItem> items2Add = new ArrayList<>();
         ArrayList<RefundItem> items2Del = new ArrayList<>();
-        for (RefundItem item : refundCart.getRefundItems()) {
-            if (item.refundAllActive()) {
-                if (refundCart.containsItemByID(item.getID() + "F") || refundCart.containsItemByID(item.getID() + "TF")) {
-                    if (item.getID().length() > 6) {
+        for (RefundItem item : refundCart.getRefundItems())
+        {
+            if (item.refundAllActive())
+            {
+                if (refundCart.containsItemByID(item.getID() + "F") || refundCart.containsItemByID(item.getID() + "TF"))
+                {
+                    if (item.getID().length() > 6)
+                    {
                         refundCart.increaseQtyByID(item.getID() + "F", item.quantityBeingRefunded);
-                    } else {
+                    }
+                    else
+                    {
                         refundCart.increaseQtyByID(item.getID() + "TF", item.quantityBeingRefunded);
                     }
                     item.quantity -= item.quantityBeingRefunded;
-                    if (item.quantity == 0) {
+                    if (item.quantity == 0)
+                    {
                         items2Del.add(item);
                     }
-                } else {
+                }
+                else
+                {
                     boolean hasBeenAddedAlready = false;
-                    for (RefundItem item2 : items2Add) {
-                        if (item2.getID().contentEquals(item.getID() + "F") || item2.getID().contentEquals(item.getID() + "TF")) {
+                    for (RefundItem item2 : items2Add)
+                    {
+                        if (item2.getID().contentEquals(item.getID() + "F") || item2.getID().contentEquals(item.getID() + "TF"))
+                        {
                             hasBeenAddedAlready = true;
                             item2.quantity += item.quantityBeingRefunded;
                         }
                     }
-                    if (!hasBeenAddedAlready) {
+                    if (!hasBeenAddedAlready)
+                    {
                         RefundItem itemTemp = new RefundItem(item);
-                        if (item.getID().length() > 6) {
+                        if (item.getID().length() > 6)
+                        {
                             itemTemp.setID(item.getID() + "F");//FINISHED!
-                        } else {
+                        }
+                        else
+                        {
                             itemTemp.setID(item.getID() + "TF");//FINISHED!
                         }
                         itemTemp.quantity = item.quantityBeingRefunded;
@@ -574,27 +669,37 @@ public class CheckoutHandler {
 
                     }
                     item.quantity -= item.quantityBeingRefunded;
-                    if (item.quantity == 0) {
+                    if (item.quantity == 0)
+                    {
                         items2Del.add(item);
                     }
                 }
-            } else if (item.refundTaxOnly() && !item.refundAllActive()) {
-                if (refundCart.containsItemByID(item.getID() + "T")) {
+            }
+            else if (item.refundTaxOnly() && !item.refundAllActive())
+            {
+                if (refundCart.containsItemByID(item.getID() + "T"))
+                {
                     refundCart.increaseQtyByID(item.getID() + "T", item.quantityBeingRefunded);
 
                     item.quantity -= item.quantityBeingRefunded;
-                    if (item.quantity == 0) {
+                    if (item.quantity == 0)
+                    {
                         items2Del.add(item);
                     }
-                } else {
+                }
+                else
+                {
                     boolean hasBeenAddedAlready = false;
-                    for (RefundItem item2 : items2Add) {
-                        if (item2.getID().contentEquals(item.getID() + "T")) {
+                    for (RefundItem item2 : items2Add)
+                    {
+                        if (item2.getID().contentEquals(item.getID() + "T"))
+                        {
                             hasBeenAddedAlready = true;
                             item2.quantity += item.quantityBeingRefunded;
                         }
                     }
-                    if (!hasBeenAddedAlready) {
+                    if (!hasBeenAddedAlready)
+                    {
                         RefundItem itemTemp = new RefundItem(item);
                         itemTemp.mutID = item.getID() + "T";//TAX REFUNDED!
                         itemTemp.quantity = item.quantityBeingRefunded;
@@ -606,21 +711,25 @@ public class CheckoutHandler {
                         items2Add.add(itemTemp);
                     }
                     item.quantity -= item.quantityBeingRefunded;
-                    if (item.quantity == 0) {
+                    if (item.quantity == 0)
+                    {
                         items2Del.add(item);
                     }
                 }
             }
         }
-        if (!items2Del.isEmpty()) {
+        if (!items2Del.isEmpty())
+        {
             System.out.println("Beginning Removal...");
             Database.removeReceiptByList(items2Del, refundCart.receiptNum);
-            for (RefundItem item : items2Del) {
+            for (RefundItem item : items2Del)
+            {
                 System.out.println("Removing: " + item.getName());
                 refundCart.removeItem(item);
             }
         }
-        if (!items2Add.isEmpty()) {
+        if (!items2Add.isEmpty())
+        {
             System.out.println("Beginning Store New Items...");
             Database.storeReceiptByList(items2Add, refundCart.receiptNum);
         }
@@ -636,8 +745,10 @@ public class CheckoutHandler {
         String receipt = "";
         boolean isCreditSale = false;
         boolean requires2Receipts = false;
-        for (int i = 0; i < paymentType.length; i++) {
-            if (paymentType[i].contains("CARD")) {
+        for (int i = 0; i < paymentType.length; i++)
+        {
+            if (paymentType[i].contains("CARD"))
+            {
                 isCreditSale = true;
                 requires2Receipts = true;
             }
@@ -656,30 +767,42 @@ public class CheckoutHandler {
         receipt += s + s1;
         //print some stuff
         ArrayList<RefundItem> items = curCart.getRefundItems();
-        for (RefundItem item : items) {
-            if (item.refundAllActive || item.refundTaxOnly) {
+        for (RefundItem item : items)
+        {
+            if (item.refundAllActive || item.refundTaxOnly)
+            {
                 String itemName = "";
                 String quantity = Integer.toString(item.quantityBeingRefunded) + "@" + String.format("%.2f", round(item.getPrice()));
                 Double price = round(item.getPrice() * item.quantityBeingRefunded);
-                if (item.refundAllActive) {
-                    if (item.getName().length() > 27) {
+                if (item.refundAllActive)
+                {
+                    if (item.getName().length() > 27)
+                    {
                         itemName = item.getName().substring(0, 27);
-                    } else {
+                    }
+                    else
+                    {
                         itemName = item.getName();
                     }
-                } else if (item.refundTaxOnly) {
+                }
+                else if (item.refundTaxOnly)
+                {
                     price = item.getTaxTotal();
-                    if (item.getName().length() > 24) {
+                    if (item.getName().length() > 24)
+                    {
                         itemName = item.getName().substring(0, 24) + " TR";
 
-                    } else {
+                    }
+                    else
+                    {
                         itemName = item.getName() + " TR";
                     }
                 }
                 receipt += String.format("%10s %-28s $%7.2f\n", quantity, itemName, price);
 
             }
-            if (item.getDiscountPercentage() != 0) {//Then there is an active discount
+            if (item.getDiscountPercentage() != 0)
+            {//Then there is an active discount
                 itemDiscounted = true;
                 String percentAmt = Double.toString(item.getDiscountPercentage() * 100);
                 percentAmt = percentAmt.substring(0, percentAmt.indexOf('.'));
@@ -694,19 +817,23 @@ public class CheckoutHandler {
         Double total = curCart.getTotalPrice();
         Double totalDisc = curCart.getDiscountTotal();
         receipt += "\n";//this puts a line between last time and the first total column
-        if (itemDiscounted) {
+        if (itemDiscounted)
+        {
             receipt += String.format("%35s-$%8.2f\n", "TOTAL DISCOUNT AMOUNT: ", totalDisc);
         }
 
         receipt += String.format("%36s$%8.2f\n%36s$%8.2f\n%36s$%8.2f\n", "SUBTOTAL REFUNDED: ", subTotal, "TAX REFUNDED: ", taxTotal, "TOTAL REFUNDED: ", total);
-        for (int i = 0; i < paymentType.length; i++) {
+        for (int i = 0; i < paymentType.length; i++)
+        {
             receipt += String.format("%36s$%8.2f\n", paymentType[i], paymentAmt[i]);
         }
 
         String storeCopy = "";
-        if (isCreditSale) {
+        if (isCreditSale)
+        {
             storeCopy = receipt;
-            if (isCreditSale) {
+            if (isCreditSale)
+            {
                 storeCopy += "\n\n\n\n      X___________________________________\n";
                 storeCopy += "               Customer Signature\n";
             }
@@ -717,7 +844,8 @@ public class CheckoutHandler {
             receipt += "Approval Code: " + creditInfo.get(1) + "\n";
             storeCopy += "Transaction ID: " + creditInfo.get(2) + "\n";
             receipt += "Transaction ID: " + creditInfo.get(2) + "\n";
-            if (!creditInfo.get(3).contentEquals("")) {
+            if (!creditInfo.get(3).contentEquals(""))
+            {
                 storeCopy += "AID: " + creditInfo.get(3) + "\n";
                 receipt += "AID: " + creditInfo.get(3) + "\n";
                 storeCopy += "TVR: " + creditInfo.get(4) + "\n";
@@ -733,14 +861,20 @@ public class CheckoutHandler {
         storeCopy += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                  ";
         receipt += "            Thanks for shopping at\n          Smith's Super-Aid Pharmacy\n       \"The professional pharmacy with\n           that hometown feeling!\"\n\n                 ";
 
-        byte[] cutP = new byte[]{0x1d, 'V', 1};
-        if (isCreditSale) {
+        byte[] cutP = new byte[]
+        {
+            0x1d, 'V', 1
+        };
+        if (isCreditSale)
+        {
             storeCopy += "STORE COPY\n\n\n\n\n\n\n";
             receipt += "CUSTOMER COPY\n\n\n\n\n\n\n";
             printerService.printString(printerName, storeCopy);
             printerService.printBytes(printerName, cutP);
 
-        } else {
+        }
+        else
+        {
             storeCopy += "\n\n\n\n\n\n\n";
             receipt += "\n\n\n\n\n\n\n";
             printerService.printString(printerName, receipt);
@@ -748,8 +882,12 @@ public class CheckoutHandler {
         }
 
         // cut that paper!
-        byte[] kickDrawer = new byte[]{27, 112, 48, 55, 121};
-        if (requires2Receipts) {
+        byte[] kickDrawer = new byte[]
+        {
+            27, 112, 48, 55, 121
+        };
+        if (requires2Receipts)
+        {
             printerService.printString(printerName, receipt);
             printerService.printBytes(printerName, cutP);
         }
@@ -765,19 +903,27 @@ public class CheckoutHandler {
         printerService.printString(printerName, receipt);
 
         // cut that paper!
-        byte[] cutP = new byte[]{0x1d, 'V', 1};
+        byte[] cutP = new byte[]
+        {
+            0x1d, 'V', 1
+        };
         printerService.printBytes(printerName, cutP);
     }
 
     public void beginPaidOut(String description, double amount) {
         DrawerReport dr = null;
         PrinterService printerService = new PrinterService();
-        byte[] kickDrawer = new byte[]{27, 112, 48, 55, 121};
+        byte[] kickDrawer = new byte[]
+        {
+            27, 112, 48, 55, 121
+        };
         printerService.printBytes(printerName, kickDrawer);
-        try {
+        try
+        {
 
             File f = new File(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
-            if (f.exists() && !f.isDirectory()) {
+            if (f.exists() && !f.isDirectory())
+            {
                 // read object from file
                 FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
@@ -786,7 +932,9 @@ public class CheckoutHandler {
 
                 dr.paidOut(description, amount);
 
-            } else {
+            }
+            else
+            {
                 dr = new DrawerReport(description, amount);
 
             }
@@ -799,11 +947,17 @@ public class CheckoutHandler {
             oos.close();
 
             //System.out.println("One:" + result.getOne() + ", Two:" + result.getTwo());
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e)
+        {
             e.printStackTrace();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e)
+        {
             e.printStackTrace();
         }
     }
@@ -811,17 +965,21 @@ public class CheckoutHandler {
     public void beginMasterRefund(double amount, String description) {
         DrawerReport dr = null;
 
-        try {
+        try
+        {
 
             File f = new File(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
-            if (f.exists() && !f.isDirectory()) {
+            if (f.exists() && !f.isDirectory())
+            {
                 // read object from file
                 FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
                 dr.masterRefund(amount, description);
-            } else {
+            }
+            else
+            {
                 dr = new DrawerReport(amount, description);
             }
 
@@ -832,16 +990,25 @@ public class CheckoutHandler {
             oos.writeObject(dr);
             oos.close();
             PrinterService printerService = new PrinterService();
-            byte[] kickDrawer = new byte[]{27, 112, 48, 55, 121};
+            byte[] kickDrawer = new byte[]
+            {
+                27, 112, 48, 55, 121
+            };
             printerService.printBytes(printerName, kickDrawer);
             //System.out.println("One:" + result.getOne() + ", Two:" + result.getTwo());
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e)
+        {
             System.out.println("JERE");
             e.printStackTrace();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             System.out.println("EERE");
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e)
+        {
             e.printStackTrace();
             System.out.println("JERsE");
         }
@@ -850,24 +1017,34 @@ public class CheckoutHandler {
     public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund, String employeeCheckoutName, MainFrame mainFrame) {
         DrawerReport dr = null;
 
-        try {
+        try
+        {
 
             File f = new File(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
-            if (f.exists() && !f.isDirectory()) {
+            if (f.exists() && !f.isDirectory())
+            {
                 // read object from file
                 FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
-                if (!isRefund) {
+                if (!isRefund)
+                {
                     dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName);
-                } else {
+                }
+                else
+                {
                     dr.refundUpdate((RefundCart) curCart, clerkName, paymentType, paymentAmt);
                 }
-            } else {
-                if (!isRefund) {
+            }
+            else
+            {
+                if (!isRefund)
+                {
                     dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName);
-                } else {
+                }
+                else
+                {
                     dr = new DrawerReport((RefundCart) curCart, clerkName, paymentType, paymentAmt, isRefund);
                 }
             }
@@ -884,25 +1061,37 @@ public class CheckoutHandler {
             oos.close();
 
             //System.out.println("One:" + result.getOne() + ", Two:" + result.getTwo());
-        } catch (FileNotFoundException e) {
-            try {
+        }
+        catch (FileNotFoundException e)
+        {
+            try
+            {
                 String emergencyDrivePath = "C:\\POS\\Emergency_Report_Saves\\";
                 File f = new File(emergencyDrivePath + ConfigFileReader.getRegisterID() + ".posrf");
-                if (f.exists() && !f.isDirectory()) {
+                if (f.exists() && !f.isDirectory())
+                {
                     // read object from file
                     FileInputStream fis = new FileInputStream(emergencyDrivePath + ConfigFileReader.getRegisterID() + ".posrf");
                     ObjectInputStream ois = new ObjectInputStream(fis);
                     dr = (DrawerReport) ois.readObject();
                     ois.close();
-                    if (!isRefund) {
+                    if (!isRefund)
+                    {
                         dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName);
-                    } else {
+                    }
+                    else
+                    {
                         dr.refundUpdate((RefundCart) curCart, clerkName, paymentType, paymentAmt);
                     }
-                } else {
-                    if (!isRefund) {
+                }
+                else
+                {
+                    if (!isRefund)
+                    {
                         dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName);
-                    } else {
+                    }
+                    else
+                    {
                         dr = new DrawerReport((RefundCart) curCart, clerkName, paymentType, paymentAmt, isRefund);
                     }
                 }
@@ -919,19 +1108,29 @@ public class CheckoutHandler {
                 oos.close();
                 System.out.println("JERE");
                 e.printStackTrace();
-            } catch (FileNotFoundException ex) {
+            }
+            catch (FileNotFoundException ex)
+            {
 
-            } catch (IOException exx) {
+            }
+            catch (IOException exx)
+            {
                 System.out.println("EERE");
                 e.printStackTrace();
-            } catch (ClassNotFoundException exxx) {
+            }
+            catch (ClassNotFoundException exxx)
+            {
                 e.printStackTrace();
                 System.out.println("JERsE");
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             System.out.println("EERE");
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e)
+        {
             e.printStackTrace();
             System.out.println("JERsE");
         }

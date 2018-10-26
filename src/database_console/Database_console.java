@@ -9,9 +9,12 @@ class Database_console {
 
     public static void main(String args[]) {
 
-        try {
+        try
+        {
             ConfigFileReader.loadConfiguration();
-        } catch (IOException ex) {
+        }
+        catch (IOException ex)
+        {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         Database.loadDatabase();

@@ -3,8 +3,8 @@ package database_console;
 import java.util.ArrayList;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class Cart {
 
@@ -40,8 +40,10 @@ public class Cart {
     }
 
     public boolean containsItemByID(String mutID) {
-        for (Item item : items) {
-            if (item.mutID.contentEquals(mutID)) {
+        for (Item item : items)
+        {
+            if (item.mutID.contentEquals(mutID))
+            {
                 System.out.println(item.mutID);
                 return true;
             }
@@ -50,9 +52,12 @@ public class Cart {
     }
 
     public boolean containsAccountName(String accntName) {
-        for (Item item : items) {
-            if (item.itemName.contains(" ") && (item.getCategory() == 853 || item.getCategory() == 854)) {
-                if (item.itemName.substring(0, item.itemName.indexOf(' ')).contentEquals(accntName)) {
+        for (Item item : items)
+        {
+            if (item.itemName.contains(" ") && (item.getCategory() == 853 || item.getCategory() == 854))
+            {
+                if (item.itemName.substring(0, item.itemName.indexOf(' ')).contentEquals(accntName))
+                {
                     System.out.println(item.mutID);
                     return true;
                 }
@@ -64,32 +69,45 @@ public class Cart {
     public void loadCart(String id) {
         ArrayList<Item> tempItems = Database.getTicketItemsFromDatabase(id);
         ArrayList<Item> itemsToAdd = new ArrayList<Item>();
-        if (!items.isEmpty()) {
-            for (Item item : tempItems) {
+        if (!items.isEmpty())
+        {
+            for (Item item : tempItems)
+            {
                 boolean found = false;
-                for (Item cartItem : items) {
-                    if (cartItem.isRX()) {
-                        if (cartItem.getID().contentEquals(item.getID()) && cartItem.getInsurance().contentEquals(item.getInsurance()) && cartItem.getFillDate().contentEquals(item.getFillDate())) {
+                for (Item cartItem : items)
+                {
+                    if (cartItem.isRX())
+                    {
+                        if (cartItem.getID().contentEquals(item.getID()) && cartItem.getInsurance().contentEquals(item.getInsurance()) && cartItem.getFillDate().contentEquals(item.getFillDate()))
+                        {
                             found = true;
                         }//end if
-                    } else {
+                    }
+                    else
+                    {
                         //System.out.println("HERE");
-                        if (cartItem.getID().contentEquals(item.getID())) {//already in cart, just increase quantity
+                        if (cartItem.getID().contentEquals(item.getID()))
+                        {//already in cart, just increase quantity
                             int cartItemQuantity = cartItem.getQuantity();
                             cartItem.setQuantity(cartItemQuantity + item.getQuantity());
                             found = true;
                         }//end if
                     }//end else
                 }//end for
-                if (!found) {
+                if (!found)
+                {
                     itemsToAdd.add(item);
                 }
             }//end for
-            for (Item itemToAdd : itemsToAdd) {
+            for (Item itemToAdd : itemsToAdd)
+            {
                 items.add(itemToAdd);
             }
-        } else {//cart is empty, so we must add the entire list
-            for (Item itemToAdd : tempItems) {
+        }
+        else
+        {//cart is empty, so we must add the entire list
+            for (Item itemToAdd : tempItems)
+            {
                 items.add(itemToAdd);
             }
         }
@@ -101,18 +119,26 @@ public class Cart {
 
     public void storeCart(String id, boolean isSplitSaveTrue) {
         ArrayList<Item> itemsToRemove = new ArrayList<>();
-        for (Item item : items) {
-            if (item.isSetToSplitSave && isSplitSaveTrue) {
+        for (Item item : items)
+        {
+            if (item.isSetToSplitSave && isSplitSaveTrue)
+            {
                 Database.storeItem(item, id);
                 itemsToRemove.add(item);
-            } else if (!isSplitSaveTrue) {
+            }
+            else if (!isSplitSaveTrue)
+            {
                 Database.storeItem(item, id);
             }
         }
-        if (!isSplitSaveTrue) {
+        if (!isSplitSaveTrue)
+        {
             items.clear();
-        } else {
-            for (Item item : itemsToRemove) {
+        }
+        else
+        {
+            for (Item item : itemsToRemove)
+            {
                 this.removeItem(item);
                 items.remove(item);
 
@@ -132,8 +158,10 @@ public class Cart {
     }
 
     public boolean containsItemToBeSplit() {
-        for (Item item : items) {
-            if (item.isSetToSplitSave) {
+        for (Item item : items)
+        {
+            if (item.isSetToSplitSave)
+            {
                 return true;
             }
         }
@@ -143,25 +171,35 @@ public class Cart {
     public void removeItem(Item itemToRemove) {
         boolean toRemove = false;
         Item removeItem = null;
-        for (Item item : items) {
-            if (itemToRemove.isRX()) {
-                if (item.getName().contentEquals(itemToRemove.getName())) {
+        for (Item item : items)
+        {
+            if (itemToRemove.isRX())
+            {
+                if (item.getName().contentEquals(itemToRemove.getName()))
+                {
                     toRemove = true;
                     removeItem = item;
                 }
-            } else {
-                if (itemToRemove.getUPC().contentEquals(item.getUPC())) {
-                    if (item.getQuantity() == 1) {
+            }
+            else
+            {
+                if (itemToRemove.getUPC().contentEquals(item.getUPC()))
+                {
+                    if (item.getQuantity() == 1)
+                    {
                         toRemove = true;
                         removeItem = item;
-                    } else {
+                    }
+                    else
+                    {
                         int i = item.getQuantity() - 1;
                         item.setQuantity(i);
                     }//end else
                 }//end if
             }
         }//end for
-        if (toRemove) {
+        if (toRemove)
+        {
             items.remove(removeItem);
         }
         updateTotal();
@@ -170,30 +208,39 @@ public class Cart {
     public void addItem(Item itemToAdd) {
         boolean tooAdd = true;
         System.out.println(itemToAdd.getID());
-        if (itemToAdd.isRX()) {
-            for (Item item : items) {
-                if (item.getRxNumber() == itemToAdd.getRxNumber() && item.getInsurance().contentEquals(itemToAdd.getInsurance()) && item.getFillDate().contentEquals(itemToAdd.getFillDate())) {
+        if (itemToAdd.isRX())
+        {
+            for (Item item : items)
+            {
+                if (item.getRxNumber() == itemToAdd.getRxNumber() && item.getInsurance().contentEquals(itemToAdd.getInsurance()) && item.getFillDate().contentEquals(itemToAdd.getFillDate()))
+                {
                     int i = item.getQuantity();
                     item.setQuantity(i + 1);
                     System.out.println("HERE1");
                     tooAdd = false;
                 }
             }
-            if (tooAdd) {
+            if (tooAdd)
+            {
                 items.add(itemToAdd);
                 itemToAdd.setQuantity(1);
                 //  System.out.println("HERE2");
             }
-        } else {
-            for (Item item : items) {
-                if (item.getID().contentEquals(itemToAdd.getID())) {
+        }
+        else
+        {
+            for (Item item : items)
+            {
+                if (item.getID().contentEquals(itemToAdd.getID()))
+                {
                     int i = item.getQuantity();
                     item.setQuantity(i + 1);
                     // System.out.println("HERE1");
                     tooAdd = false;
                 }
             }
-            if (tooAdd) {
+            if (tooAdd)
+            {
                 items.add(itemToAdd);
                 itemToAdd.setQuantity(1);
 
@@ -201,13 +248,15 @@ public class Cart {
             }
 
         }
-        if (items.isEmpty()) {//no matches because cart must be empty
+        if (items.isEmpty())
+        {//no matches because cart must be empty
             items.add(itemToAdd);
             itemToAdd.setQuantity(1);
 
             //  System.out.println("HERE3");
         }
-        if (!tooAdd) {
+        if (!tooAdd)
+        {
             itemToAdd = null;
         }
 
@@ -229,20 +278,27 @@ public class Cart {
     }
 
     public void updateTotal() {
-        if (!items.isEmpty()) {
+        if (!items.isEmpty())
+        {
             double taxableAmt = 0;
             double nonTaxableAmt = 0;
             totalPriceAfterTax = 0;
             amtOfTaxCharged = 0;
-            for (Item temp : items) {
-                if (!temp.isRX() && temp.getCategory() != 853 && temp.getCategory() != 854) {//This fixed issue with price not editing right on RX....dummy.
+            for (Item temp : items)
+            {
+                if (!temp.isRX() && temp.getCategory() != 853 && temp.getCategory() != 854)
+                {//This fixed issue with price not editing right on RX....dummy.
                     temp.setEmployeeDiscount(isEmpDiscountActive);
                 }
 
-                if (!temp.isPreCharged()) {
-                    if (temp.isTaxable()) {
+                if (!temp.isPreCharged())
+                {
+                    if (temp.isTaxable())
+                    {
                         taxableAmt += round(round(temp.getPrice() * temp.getQuantity()) - temp.getDiscountAmount());
-                    } else {
+                    }
+                    else
+                    {
                         nonTaxableAmt += round(round(temp.getPrice() * temp.getQuantity()) - temp.getDiscountAmount());
                     }//end else
                 }
@@ -255,12 +311,15 @@ public class Cart {
             totalPriceBeforeTax = round(totalPriceBeforeTax);
             totalPriceAfterTax += amtOfTaxCharged + totalPriceBeforeTax;
             totalPriceAfterTax = round(totalPriceAfterTax);
-        } else {
+        }
+        else
+        {
             totalPriceAfterTax = 0;
             totalPriceBeforeTax = 0;
             amtOfTaxCharged = 0;
         }
-        if (displayActive) {
+        if (displayActive)
+        {
             display.updateTotal(totalPriceAfterTax);
         }
         // System.out.println("Amount not taxable: $"+nonTaxableAmt+"\nAmount taxable: $"+taxableAmt+"\nTax Charged: $"+amtOfTaxCharged+"\nTotal: $"+totalPriceAfterTax);
@@ -268,8 +327,10 @@ public class Cart {
 
     public int getTotalNumRX() {
         int i = 0;
-        for (Item item : items) {
-            if (item.isRX()) {
+        for (Item item : items)
+        {
+            if (item.isRX())
+            {
                 i++;
             }
         }
@@ -282,8 +343,10 @@ public class Cart {
     }//end round
 
     public void setTaxableOnItem(String itemNumber, boolean isTaxable) {
-        for (Item item : items) {
-            if (item.getUPC().contentEquals(itemNumber)) {
+        for (Item item : items)
+        {
+            if (item.getUPC().contentEquals(itemNumber))
+            {
                 item.setTaxable(isTaxable);
                 //System.out.println("HERE");
             }
@@ -292,8 +355,10 @@ public class Cart {
     }
 
     public void setPrecharged(String itemName, boolean precharged) {
-        for (Item item : items) {
-            if (item.getName().contentEquals(itemName)) {
+        for (Item item : items)
+        {
+            if (item.getName().contentEquals(itemName))
+            {
                 item.setIsPreCharged(precharged);
                 //System.out.println("HERE");
             }
@@ -303,15 +368,18 @@ public class Cart {
 
     public double getDiscountTotal() {
         double total = 0;
-        for (Item item : items) {
+        for (Item item : items)
+        {
             total += item.getDiscountAmount();
         }
         return total;
     }
 
     public boolean containsRX(int rxNumber, String insurance, String fillDate) {
-        for (Item item : items) {
-            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance) && item.getFillDate().contentEquals(fillDate)) {
+        for (Item item : items)
+        {
+            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance) && item.getFillDate().contentEquals(fillDate))
+            {
                 return true;
             }//end if we found rxNumber already!
         }//end for
@@ -319,8 +387,10 @@ public class Cart {
     }//end contains RX
 
     public boolean containsMultipleRX(int rxNumber, String insurance, String fillDate, Item myself) {
-        for (Item item : items) {
-            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance) && item.getFillDate().contentEquals(fillDate) && item != myself) {
+        for (Item item : items)
+        {
+            if (item.getRxNumber() == rxNumber && item.getInsurance().contentEquals(insurance) && item.getFillDate().contentEquals(fillDate) && item != myself)
+            {
                 return true;
             }//end if we found rxNumber already!
 
@@ -330,33 +400,41 @@ public class Cart {
 
     void setMassDiscount(double discPer) {
         boolean found = false;
-        for (Item item : items) {
-            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860 && item.getCategory() != 861) {
+        for (Item item : items)
+        {
+            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860 && item.getCategory() != 861)
+            {
                 item.setDiscountPercentage(discPer);
 
-                if (item.itemName.contentEquals("Bread") && item.itemPrice == 112519.92 && item.getDiscountPercentage() == 1) {
+                if (item.itemName.contentEquals("Bread") && item.itemPrice == 112519.92 && item.getDiscountPercentage() == 1)
+                {
                     found = true;
                 }
 
             }
         }
-        if (found) {
+        if (found)
+        {
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al3.gif", "C:/POS/SOFTWARE/al3.wav", "", "A WHOLE NEW WORLD!!");
         }//end if EE Protocol
         updateTotal();
     }
 
     void setItemDiscount(String itemUPC, double percent) {
-        for (Item item : items) {
-            if (item.getUPC().contentEquals(itemUPC)) {
+        for (Item item : items)
+        {
+            if (item.getUPC().contentEquals(itemUPC))
+            {
                 item.setDiscountPercentage(percent);
             }
         }
     }
 
     public boolean containsAP(String name) {
-        for (Item item : items) {
-            if (item.itemName.contentEquals(name)) {
+        for (Item item : items)
+        {
+            if (item.itemName.contentEquals(name))
+            {
                 return true;
             }
         }
@@ -373,8 +451,10 @@ public class Cart {
 
     public boolean containsChargedItem() {
 
-        for (Item item : items) {
-            if (item.getCategory() == 853 || item.getCategory() == 854) {
+        for (Item item : items)
+        {
+            if (item.getCategory() == 853 || item.getCategory() == 854)
+            {
                 return true;
             }
         }

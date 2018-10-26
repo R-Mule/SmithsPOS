@@ -9,8 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class ConfigFileReader {
 
@@ -32,13 +32,15 @@ public class ConfigFileReader {
     }
 
     public static void loadConfiguration() throws FileNotFoundException, IOException {
-        try {
+        try
+        {
 
             BufferedReader in = new BufferedReader(new FileReader("C:\\POS\\Config.txt"));
 
             String line;
 
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null)
+            {
                 String[] tokens = line.split(":", 2);   //limits the split to 2 array elements ie only the first occurance so it will keep any colons in the value portion
 
                 if (tokens.length < 2) //not all data is there just move along
@@ -46,40 +48,65 @@ public class ConfigFileReader {
                     continue;
                 }
                 System.out.println(tokens[0] + " " + tokens[1]);
-                if (tokens[0].contains("Register ID")) {
+                if (tokens[0].contains("Register ID"))
+                {
                     registerID = tokens[1].trim();
-                } else if (tokens[0].contains("Printer Name")) {
+                }
+                else if (tokens[0].contains("Printer Name"))
+                {
                     printerName = tokens[1].trim();
-                } else if (tokens[0].contains("Database Hostname")) {
+                }
+                else if (tokens[0].contains("Database Hostname"))
+                {
                     hostName = tokens[1].trim();
-                } else if (tokens[0].contains("Database Username")) {
+                }
+                else if (tokens[0].contains("Database Username"))
+                {
                     userName = tokens[1].trim();
-                } else if (tokens[0].contains("Database Password")) {
+                }
+                else if (tokens[0].contains("Database Password"))
+                {
                     password = tokens[1].trim();
-                } else if (tokens[0].contains("Remote Drive Path")) {
+                }
+                else if (tokens[0].contains("Remote Drive Path"))
+                {
                     remoteDrivePath = tokens[1].trim();
-                } else if (tokens[0].contains("Register Report Path")) {
+                }
+                else if (tokens[0].contains("Register Report Path"))
+                {
                     Date date = new Date();
                     DateFormat dateFormat = new SimpleDateFormat("MMddyy");
                     registerReportPath = tokens[1].trim() + dateFormat.format(date);
-                } else if (tokens[0].contains("Display Com Port")) {
+                }
+                else if (tokens[0].contains("Display Com Port"))
+                {
                     displayComPort = tokens[1].trim();
                     // System.out.println(displayComPort);
-                } else if (tokens[0].contains("Card Terminal Address")) {
+                }
+                else if (tokens[0].contains("Card Terminal Address"))
+                {
                     cardReaderURL = tokens[1].trim();
 
-                } else if (tokens[0].contains("Pharmacy Name")) {
+                }
+                else if (tokens[0].contains("Pharmacy Name"))
+                {
                     pharmacyName = tokens[1].trim();
-                } else if (tokens[0].contains("Mail Password")) {
+                }
+                else if (tokens[0].contains("Mail Password"))
+                {
                     mailPassword = tokens[1].trim();
                 }
 
             }//end while
 
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e)
+        {
             throw e;
             //System.out.println("The file could not be found or opened");
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             throw e;
             //System.out.println("Error reading the file");
         }

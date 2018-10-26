@@ -20,8 +20,8 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class Database {
 
@@ -42,14 +42,16 @@ public class Database {
 
     public static boolean updateMutualInventory(String mutID, String upc, String name, double price, double cost, boolean taxable, int category) {//0 return means not found, otherwise returns mutID from database.
         boolean itemFound = false;
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
 //here sonoo is database name, root is username and password  
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from inventory where mutID = " + mutID);
-            while (rs.next()) {
+            while (rs.next())
+            {
                 itemFound = true;
                 Statement stmt2 = con.createStatement();
                 stmt2.executeUpdate("UPDATE `inventory` set upc = '" + upc + "',name='" + name + "',price=" + price + ",category=" + category + ",cost=" + cost + ",taxable=" + taxable + " where mutID = '" + mutID + "';");
@@ -57,73 +59,89 @@ public class Database {
                 // updatedCntr++;
                 // totalUpdated.setText("Total Updated: " + updatedCntr);
             }//end while
-            if (!itemFound) {
+            if (!itemFound)
+            {
                 stmt.executeUpdate("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '" + mutID + "','" + upc + "','" + name + "'," + price + "," + cost + ",false," + category + ");");
                 // addedCntr++;
                 // totalAdded.setText("Total Added: " + addedCntr);
             }
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return itemFound;
     }//end checkDatabaseForItem
 
     public static void removeItemFromInventory(String mutualID) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("DELETE FROM `inventory` where mutID='" + mutualID + "';");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
     }
 
     public static String addEmployee(String firstName, String lastName, int passCode) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("INSERT INTO `employees`(`pid`,`empname`,`passcode`,`wins`,`losses`) VALUES (NULL,'" + lastName + ", " + firstName + "','" + passCode + "',0,0)");//zeros are for wins and losses. for March Madness
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
         return "Employee: " + lastName + ", " + firstName + " added successfully with Passcode: " + passCode;
     }
 
     public static void removeEmployee(int employeeID) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("DELETE FROM `employees` where pid=" + employeeID + ";");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
     }
 
     public static void updateEmployeePermissionLevel(int employeeID, int permissionLevel) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("update `employees` set permissionLevel = " + permissionLevel + " where pid=" + employeeID + ";");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
     }
 
     public static String getEmployeesSortByPID() {
-        try {
+        try
+        {
             String bigList = "";
             // ArrayList<String> data = new ArrayList<>();
             Class.forName(driverPath);
@@ -131,98 +149,119 @@ public class Database {
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from employees order by pid asc,empname;");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 bigList += rs.getInt(1) + " : " + rs.getString(2) + "\n";
             }//end while
             con.close();
             return bigList;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return null;
     }
 
     public static boolean checkIfPasscodeExisits(int passCode) {
-        try {
+        try
+        {
             ArrayList<String> data = new ArrayList<>();
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select passcode from employees;");
-            while (rs.next()) {
-                if (rs.getInt(1) == passCode) {
+            while (rs.next())
+            {
+                if (rs.getInt(1) == passCode)
+                {
                     return true;
                 }
 
             }//end while
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return false;
     }
 
     public static ArrayList<String> getEmployeesAndWinLossMM() {
-        try {
+        try
+        {
             ArrayList<String> data = new ArrayList<>();
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from employees order by wins desc,losses,empname;");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 data.add(rs.getString(2) + " : " + rs.getInt(4) + " : " + rs.getInt(5));
 
             }//end while
             con.close();
             return data;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return null;
     }
 
     public static String getQuote() {
-        try {
+        try
+        {
             ArrayList<String> quotes = new ArrayList<>();
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from quotes;");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 quotes.add(rs.getString(2));
             }//end while
             int index = (int) (Math.random() * (quotes.size() - 1 - 0) + 0);
             con.close();
             return quotes.get(index);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return null;
     }
 
     public static String getReceiptString(String receiptNum) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from receiptsFull where receiptNum = '" + receiptNum + "';");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 String temp = rs.getString(3);
                 con.close();
                 return temp;
             }//end while       
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return null;
     }
 
     public static void storeReceiptString(String receiptNum, String receipt) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -230,20 +269,24 @@ public class Database {
             receipt = receipt.replaceAll("'", " ");
             stmt.executeUpdate("INSERT INTO `receiptsFull`(`pid`,`receiptNum`,`receipt`) VALUES (NULL,'" + receiptNum + "','" + receipt + "')");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
     }
 
     public static String getEmployeeNameByCode(int code) {
 
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from employees where passcode = " + code);
-            while (rs.next()) {
+            while (rs.next())
+            {
                 //Statement stmt2 = con.createStatement();
                 //stmt2.executeUpdate("UPDATE `inventory` set price=" + price + " where mutID = '" + mutID + "';");
                 String temp = rs.getString(2);
@@ -252,7 +295,9 @@ public class Database {
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return null;
@@ -260,13 +305,15 @@ public class Database {
 
     public static int getEmployeePermissionByCode(int code) {
 
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select permissionLevel from employees where passcode = " + code);
-            while (rs.next()) {
+            while (rs.next())
+            {
                 //Statement stmt2 = con.createStatement();
                 //stmt2.executeUpdate("UPDATE `inventory` set price=" + price + " where mutID = '" + mutID + "';");
                 int temp = rs.getInt(1);
@@ -275,39 +322,47 @@ public class Database {
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return -1;
     }
 
     public static void updateItemPrice(String mutID, double price) {//0 return means not found, otherwise returns mutID from database.
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from inventory where mutID = '" + mutID + "'");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 Statement stmt2 = con.createStatement();
                 stmt2.executeUpdate("UPDATE `inventory` set price=" + price + " where mutID = '" + mutID + "';");
                 System.out.println("FOUND!");
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
     }//end checkDatabaseForItem
 
     public static void checkDatabaseForItemByUPC(Item myItem) {//0 return means not found, otherwise returns mutID from database.
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from inventory where upc = '" + myItem.itemUPC + "'");
-            while (rs.next()) {
+            while (rs.next())
+            {
 //System.out.println(rs.getInt(1)+"  "+rs.getInt(2)+"  "+rs.getString(3)+"  "+rs.getString(4)+"  "+rs.getDouble(5));  
 ///if(rs.getString(3).contentEquals(myItem.itemUPC)){ THIS DOES NOT WORK!
                 myItem.mutID = rs.getString(2);
@@ -320,24 +375,30 @@ public class Database {
 //}//end if
             }//end while
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
     }//end checkDatabaseForItem
 
     public static void checkDatabaseForItemByID(Item myItem) {//0 return means not found, otherwise returns mutID from database.
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from inventory where mutID = '" + myItem.mutID + "'");
-            while (rs.next()) {
+            while (rs.next())
+            {
 
                 myItem.itemUPC = rs.getString(3);
-                if (myItem.itemUPC.length() < 11) {//LEADING ZEROS!
+                if (myItem.itemUPC.length() < 11)
+                {//LEADING ZEROS!
                     String leadingZeros = "";
-                    for (int i = 0; i < 11 - myItem.itemUPC.length(); i++) {
+                    for (int i = 0; i < 11 - myItem.itemUPC.length(); i++)
+                    {
                         leadingZeros += "0";
                     }
                     myItem.itemUPC = leadingZeros + myItem.itemUPC;
@@ -355,35 +416,53 @@ public class Database {
 //}//end if
             }//end while
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
     }//end checkDatabaseForItemByI
 
     public static boolean checkDatabaseForTicket(String id) {//returns true if ticket exists.
-        if (id.toUpperCase().contentEquals("WONDERLAND")) {
+        if (id.toUpperCase().contentEquals("WONDERLAND"))
+        {
             return true;
-        } else if (id.toUpperCase().contentEquals("STRANGER")) {
+        }
+        else if (id.toUpperCase().contentEquals("STRANGER"))
+        {
             return true;
-        } else if (id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?")) {
+        }
+        else if (id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?"))
+        {
             return true;
-        } else if (id.toUpperCase().contentEquals("WET BANDITS")) {
+        }
+        else if (id.toUpperCase().contentEquals("WET BANDITS"))
+        {
             return true;
-        } else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")) {
+        }
+        else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA"))
+        {
             return true;
-        } else if (id.toUpperCase().contentEquals("MICHAEL MYERS")) {
+        }
+        else if (id.toUpperCase().contentEquals("MICHAEL MYERS"))
+        {
             return true;
-        } else {
-            try {
+        }
+        else
+        {
+            try
+            {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery("select * from tickets where custId = '" + id + "'");
 
-                while (rs.next()) {
+                while (rs.next())
+                {
                     // System.out.println(rs.getString(2));
-                    if (rs.getString(2).contentEquals(id)) {
+                    if (rs.getString(2).contentEquals(id))
+                    {
                         con.close();
                         return true;
                     }
@@ -391,7 +470,9 @@ public class Database {
                 }//end while
 
                 con.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.out.println(e);
             }
 
@@ -401,7 +482,8 @@ public class Database {
 
     public static void storeItem(Item item, String id) {
 
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -411,7 +493,9 @@ public class Database {
 
             stmt.executeUpdate("INSERT INTO `tickets` (`pid`,`custId`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`) VALUES (NULL,'" + id + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.getCost() + "," + item.isTaxable() + "," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + ")");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
 
@@ -420,26 +504,32 @@ public class Database {
     public static String[] getAllTicketsNames() {
         ArrayList<String> ticketNames = new ArrayList<String>();
         String[] ticketNamesActual = null;
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from tickets order by custId");
             int i = 0;
-            while (rs.next()) {
-                if (!ticketNames.contains(rs.getString(2))) {
+            while (rs.next())
+            {
+                if (!ticketNames.contains(rs.getString(2)))
+                {
                     ticketNames.add(rs.getString(2));
                     i++;
                 }
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         ticketNamesActual = new String[ticketNames.size()];
-        for (int i = 0; i < ticketNames.size(); i++) {
+        for (int i = 0; i < ticketNames.size(); i++)
+        {
             ticketNamesActual[i] = ticketNames.get(i);
         }
         return ticketNamesActual;
@@ -447,25 +537,33 @@ public class Database {
 
     public static ArrayList<String> getAllTicketsNamesWithRxNumber(int rxNumber) {
         ArrayList<String> ticketNames = new ArrayList<>();
-        if (rxNumber == 0) {
+        if (rxNumber == 0)
+        {
             return ticketNames;
-        } else {
-            try {
+        }
+        else
+        {
+            try
+            {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery("select * from tickets  where rxnumber = " + rxNumber + " order by custId;");
                 int i = 0;
-                while (rs.next()) {
-                    if (!ticketNames.contains(rs.getString(2))) {
+                while (rs.next())
+                {
+                    if (!ticketNames.contains(rs.getString(2)))
+                    {
                         ticketNames.add(rs.getString(2));
                         i++;
                     }
                 }//end while
 
                 con.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.out.println(e);
             }
             return ticketNames;
@@ -474,30 +572,42 @@ public class Database {
 
     public static ArrayList<Item> getTicketItemsFromDatabase(String id) {
         ArrayList<Item> loadedItems = new ArrayList<>();
-        if (id.toUpperCase().contentEquals("WONDERLAND")) {
+        if (id.toUpperCase().contentEquals("WONDERLAND"))
+        {
             loadedItems.add(new Item("MATRED", "MATRED", "Red Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item("MATBLU", "MATBLU", "Blue Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
             return loadedItems;
-        } else if (id.toUpperCase().contentEquals("STRANGER")) {
-            for (int i = 1; i < 41; i++) {
+        }
+        else if (id.toUpperCase().contentEquals("STRANGER"))
+        {
+            for (int i = 1; i < 41; i++)
+            {
                 loadedItems.add(new Item("BATDIS" + i, "BATDIS" + i, "District", 0.07, 0.07, false, 852, 0, "", "", 1, false, 0, false));
             }
 
             return loadedItems;
-        } else if (id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?")) {
+        }
+        else if (id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?"))
+        {
             loadedItems.add(new Item("BATMON", "BATMON", "Mob Money", 0.36, 0.36, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item("BATPEN", "BATPEN", "Pencil", 8.47, 8.47, false, 852, 0, "", "", 1, false, 0, false));
 
             return loadedItems;
-        } else if (id.toUpperCase().contentEquals("WET BANDITS")) {
+        }
+        else if (id.toUpperCase().contentEquals("WET BANDITS"))
+        {
             loadedItems.add(new Item("HAPIZZA", "HAPIZZA", "Pizza Box", 11.1363636364, 11.1363636364, false, 852, 0, "", "", 1, false, 0, false));
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha1.gif", "C:/POS/SOFTWARE/ha1.wav", "What're you scared, Marv? Are you afraid? C'mon, get out here.", "");
             return loadedItems;
-        } else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA")) {
+        }
+        else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA"))
+        {
             loadedItems.add(new Item("HPSS2", "HPSS2", "Erised stra ehru oyt ube cafru oyt on wohsi", 1041.11, 1041.11, false, 852, 0, "", "", 1, false, 0, false));
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss2.gif", "C:/POS/SOFTWARE/hpss2.wav", "It does not do to dwell on dreams and forget to live.", "");
             return loadedItems;
-        } else if (id.toUpperCase().contentEquals("MICHAEL MYERS")) {
+        }
+        else if (id.toUpperCase().contentEquals("MICHAEL MYERS"))
+        {
             loadedItems.add(new Item("MMHA1", "MMHA1", "Loomis", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item("MMHA2", "MMHA2", "Laurie", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item("MMHA3", "MMHA3", "Annie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
@@ -516,17 +626,22 @@ public class Database {
 
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mmha1.gif", "C:/POS/SOFTWARE/mmha1.wav", "", "Was that the Boogeyman?");
             return loadedItems;
-        } else {
-            try {
+        }
+        else
+        {
+            try
+            {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery("select * from tickets where custId = '" + id + "'");
 
-                while (rs.next()) {
+                while (rs.next())
+                {
                     // System.out.println(rs.getString(2));
-                    if (rs.getString(2).contentEquals(id)) {
+                    if (rs.getString(2).contentEquals(id))
+                    {
                         //System.out.println("HERE!");
                         loadedItems.add(new Item(rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getDouble(7), rs.getBoolean(8), rs.getInt(9), rs.getInt(10), rs.getString(11), rs.getString(12), rs.getInt(13), rs.getBoolean(14), rs.getDouble(15), rs.getBoolean(16)));
                     }//end if
@@ -534,12 +649,15 @@ public class Database {
                 }//end while
 
                 con.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.out.println(e);
             }
 
             //REMEBER AFTER LOADED, REMOVE ALL THINGS WITH THAT ID TAG!
-            try {
+            try
+            {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
@@ -547,7 +665,9 @@ public class Database {
                 stmt.executeUpdate("DELETE from tickets where custId = '" + id + "'");
 
                 con.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.out.println(e);
             }
             return loadedItems;
@@ -556,7 +676,8 @@ public class Database {
     }//end getTicketFromDatabase
 
     public static void updateChargeAccountBalance(String accountName, double amtToUpdate) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -565,7 +686,8 @@ public class Database {
             accountName = accountName.substring(0, accountName.indexOf(" "));
             System.out.println(accountName);
             ResultSet rs = stmt.executeQuery("select * from chargeaccounts where accntname = '" + accountName + "';");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 Statement stmt2 = con.createStatement();
                 amtToUpdate += rs.getDouble(6);
                 stmt2.executeUpdate("UPDATE `chargeaccounts` set balance='" + amtToUpdate + "' where accntname = '" + accountName + "';");
@@ -574,13 +696,16 @@ public class Database {
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
     }
 
     public static void updateDMEAccountBalance(String accountName, double amtToUpdate) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -589,7 +714,8 @@ public class Database {
             accountName = accountName.substring(0, accountName.indexOf(" "));
             System.out.println(accountName);
             ResultSet rs = stmt.executeQuery("select * from dmeaccounts where pan = '" + accountName + "';");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 Statement stmt2 = con.createStatement();
                 amtToUpdate += rs.getDouble(6);
                 stmt2.executeUpdate("UPDATE `dmeaccounts` set balance='" + amtToUpdate + "' where pan = '" + accountName + "';");
@@ -598,22 +724,27 @@ public class Database {
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
     }
 
     public static boolean checkFrozenAccount(String accountName) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from chargeaccounts where accntname = '" + accountName + "'");
 
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2));
-                if (rs.getString(2).contentEquals(accountName) && rs.getBoolean(8)) {
+                if (rs.getString(2).contentEquals(accountName) && rs.getBoolean(8))
+                {
                     con.close();
                     return true;
                 }
@@ -621,7 +752,9 @@ public class Database {
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
 
@@ -637,7 +770,10 @@ public class Database {
         String unfound = "";
 
         //CSV file header
-        final String[] FILE_HEADER_MAPPING = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43"};
+        final String[] FILE_HEADER_MAPPING =
+        {
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43"
+        };
 
         //File attributes
         final String ACCOUNT_NAME = "35";
@@ -655,7 +791,8 @@ public class Database {
         //Create the CSVFormat object with the header mapping
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
 
-        try {
+        try
+        {
             //initialize FileReader object
             fileReader = new FileReader(path);
 
@@ -666,20 +803,25 @@ public class Database {
             List csvRecords = csvFileParser.getRecords();
 
             //Read the CSV file records starting from the second record to skip the header
-            for (int i = 0; i < csvRecords.size(); i++) {
+            for (int i = 0; i < csvRecords.size(); i++)
+            {
                 CSVRecord record = (CSVRecord) csvRecords.get(i);
                 //Create a new student object and fill his data
 
-                if (record.get(INSURANCE).trim().contentEquals("Patient Pay Claims")) {//Its a claim we care about
+                if (record.get(INSURANCE).trim().contentEquals("Patient Pay Claims"))
+                {//Its a claim we care about
                     double balance1 = Double.parseDouble(record.get(PATIENT_BALANCE1).substring(1));
                     double balance2 = Double.parseDouble(record.get(PATIENT_BALANCE2).substring(1));
                     double balance3 = Double.parseDouble(record.get(PATIENT_BALANCE3).substring(1));
                     double balance4 = Double.parseDouble(record.get(PATIENT_BALANCE4).substring(1));
                     double balance = balance1 + balance2 + balance3 + balance4;
-                    if (accounts.contains(record.get(ACCOUNT_NAME).trim())) {//if we have already added this account to be updated
+                    if (accounts.contains(record.get(ACCOUNT_NAME).trim()))
+                    {//if we have already added this account to be updated
                         int index = accounts.indexOf(record.get(ACCOUNT_NAME).trim());
                         balances.set(index, round(balance + balances.get(index)));
-                    } else {//add it to update
+                    }
+                    else
+                    {//add it to update
                         accounts.add(record.get(ACCOUNT_NAME).trim());
                         balances.add(round(balance));
                         firstNames.add(record.get(PATIENT_NAME).substring(0, record.get(PATIENT_NAME).indexOf(',')).trim());//These are inverted....
@@ -690,49 +832,65 @@ public class Database {
                 }//end if claims we care about
             }//end for all claims
 
-            for (String s : accounts) {
+            for (String s : accounts)
+            {
                 System.out.println("LAST: " + firstNames.get(accounts.indexOf(s)) + " FIRST " + lastNames.get(accounts.indexOf(s)) + " ACCOUNT: " + s + " BALANCE DUE: " + balances.get(accounts.indexOf(s)));
                 boolean itemFound = false;
-                try {
+                try
+                {
                     Class.forName(driverPath);
                     Connection con = DriverManager.getConnection(
                             host, userName, password);
 //here sonoo is database name, root is username and password  
                     Statement stmt = con.createStatement();
                     ResultSet rs = stmt.executeQuery("select * from dmeaccounts where pan = '" + s + "';");
-                    while (rs.next()) {
+                    while (rs.next())
+                    {
                         itemFound = true;
                         Statement stmt2 = con.createStatement();
                         stmt2.executeUpdate("UPDATE `dmeaccounts` set lastname = '" + lastNames.get(accounts.indexOf(s)) + "',firstname='" + firstNames.get(accounts.indexOf(s)) + "',balance=" + balances.get(accounts.indexOf(s)) + " where pan = '" + s + "';");
                         //System.out.println("FOUND ACCOUNT!");
 
                     }//end while
-                    if (!itemFound) {
+                    if (!itemFound)
+                    {
                         unfoundAccounts.add(s);
                         unfound += "\n " + s + " ";
                         // System.out.println("COULD NOT FIND: "+s);
                     }
                     con.close();
-                } catch (ClassNotFoundException | SQLException e) {
+                }
+                catch (ClassNotFoundException | SQLException e)
+                {
                     System.out.println(e);
                 }
             }//end for all accounts
-            if (!unfound.contentEquals("")) {//if not empty show popup
+            if (!unfound.contentEquals(""))
+            {//if not empty show popup
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Couldn't Find: " + unfound + "\n Maybe entered wrong or unadded?");
-            } else {
+            }
+            else
+            {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Successfully Loaded! No Errors!");
             }
 
-        } catch (HeadlessException | IOException | NumberFormatException e) {
+        }
+        catch (HeadlessException | IOException | NumberFormatException e)
+        {
             System.out.println("Error in CsvFileReader !!!");
             e.printStackTrace();
-        } finally {
-            try {
+        }
+        finally
+        {
+            try
+            {
                 fileReader.close();
                 csvFileParser.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 System.out.println("Error while closing fileReader/csvFileParser !!!");
                 e.printStackTrace();
             }
@@ -740,16 +898,20 @@ public class Database {
     }
 
     public static void loadARData(String path) {
-        try {
+        try
+        {
             BufferedReader in = new BufferedReader(new FileReader(path));
             String line;
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null)
+            {
                 String[] tokens = line.split(":");
 
-                if (line != null && !line.isEmpty() && !line.contains("*")) {
+                if (line != null && !line.isEmpty() && !line.contains("*"))
+                {
                     double realBal = 0;
                     line = line.trim();
-                    if (!line.isEmpty()) {
+                    if (!line.isEmpty())
+                    {
                         String uuid = line.substring(0, 12).replaceAll(" ", "");
                         String accntname = line.substring(12, 24).replaceAll(" ", "");
                         String lastname = line.substring(24, 43).replaceAll(" ", "");
@@ -758,16 +920,21 @@ public class Database {
                         String balance = line.substring(68, 87).replaceAll(" ", "");
                         String fro = line.substring(87).replaceAll(" ", "");
                         boolean frozen;
-                        if (fro.contentEquals("YES")) {
+                        if (fro.contentEquals("YES"))
+                        {
                             frozen = true;
-                        } else {
+                        }
+                        else
+                        {
                             frozen = false;
                         }
                         // uuid=uuid.replaceAll(" ","");
-                        if (firstname.isEmpty()) {
+                        if (firstname.isEmpty())
+                        {
                             firstname = "_";
                         }
-                        if (lastname.isEmpty()) {
+                        if (lastname.isEmpty())
+                        {
                             lastname = "_";
                         }
                         accntname = accntname.replaceAll(" ", "");
@@ -778,50 +945,64 @@ public class Database {
                         accntname = accntname.replaceAll("'", " ");
 
                         balance = balance.replaceAll(",", "");
-                        if (balance.charAt(balance.length() - 1) == '-') {
+                        if (balance.charAt(balance.length() - 1) == '-')
+                        {
                             realBal = Double.parseDouble(balance.substring(0, balance.indexOf('-')));
                             realBal = realBal * -1;
-                        } else {
+                        }
+                        else
+                        {
                             realBal = Double.parseDouble(balance.substring(0, balance.length()));
                         }
                         System.out.println(uuid + accntname + lastname + firstname + dob + balance + "      " + realBal);
 
                         boolean itemFound = false;
-                        if (accntname.isEmpty()) {
+                        if (accntname.isEmpty())
+                        {
                             accntname = "DELETED";
                         }
-                        try {
+                        try
+                        {
                             Class.forName(driverPath);
                             Connection con = DriverManager.getConnection(
                                     host, userName, password);
 //here sonoo is database name, root is username and password  
                             Statement stmt = con.createStatement();
                             ResultSet rs = stmt.executeQuery("select * from chargeaccounts where uuid = '" + uuid + "';");
-                            while (rs.next()) {
+                            while (rs.next())
+                            {
                                 itemFound = true;
                                 Statement stmt2 = con.createStatement();
                                 stmt2.executeUpdate("UPDATE `chargeaccounts` set lastname = '" + lastname + "',firstname='" + firstname + "',balance=" + realBal + ",dob='" + dob + "',accntname='" + accntname + "',frozen =  " + frozen + " where uuid = '" + uuid + "';");
                                 System.out.println("FOUND ACCOUNT!");
 
                             }//end while
-                            if (!itemFound) {
+                            if (!itemFound)
+                            {
                                 stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`balance`,`uuid`,`frozen`) VALUES (NULL, '" + accntname + "','" + lastname + "','" + firstname + "','" + dob + "'," + realBal + ",'" + uuid + "'," + frozen + ");");
                             }
                             con.close();
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e)
+                        {
                             System.out.println(e);
                         }
 
                     }//end if lines not empty
 
                 }//end if line is garbage
-                if (line.contains("*")) {
+                if (line.contains("*"))
+                {
                     break;
                 }
             }//end while next line
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e)
+        {
             System.out.println("The file could not be found or opened");
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             System.out.println("Error reading the file");
         }
     }
@@ -830,84 +1011,109 @@ public class Database {
         boolean oneBefore = false;
         String[] accounts = new String[270];
         String statement = "select * from chargeaccounts where ";
-        if (!accntName.isEmpty()) {
+        if (!accntName.isEmpty())
+        {
             statement += "accntname = '" + accntName + "'";
             oneBefore = true;
         }
-        if (!lastName.isEmpty()) {
-            if (oneBefore) {
+        if (!lastName.isEmpty())
+        {
+            if (oneBefore)
+            {
                 statement += "and lastname = '" + lastName + "'";
-            } else {
+            }
+            else
+            {
                 statement += "lastname = '" + lastName + "'";
                 oneBefore = true;
             }
         }
-        if (!firstName.isEmpty()) {
-            if (oneBefore) {
+        if (!firstName.isEmpty())
+        {
+            if (oneBefore)
+            {
                 statement += "and firstname = '" + firstName + "'";
-            } else {
+            }
+            else
+            {
                 statement += "firstname = '" + firstName + "'";
                 oneBefore = true;
             }
         }
-        if (!dob.isEmpty()) {
-            if (oneBefore) {
+        if (!dob.isEmpty())
+        {
+            if (oneBefore)
+            {
                 statement += "and dob = '" + dob + "'";
-            } else {
+            }
+            else
+            {
                 statement += "dob = '" + dob + "'";
                 oneBefore = true;
             }
         }
         int i = 0;
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(statement);
 
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4)+" "+rs.getString(5).substring(0, 2)+"-"+rs.getString(5).substring(2, 4)+"-"+rs.getString(5).substring(4, 6));
                 accounts[i] = rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6) + " Current Balance $" + String.format("%.2f", rs.getDouble(6));
                 i++;
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
         String[] accountsActual = new String[i];
-        for (int z = 0; z < i; z++) {
+        for (int z = 0; z < i; z++)
+        {
             accountsActual[z] = accounts[z];
         }
-        if (accountsActual.length == 0) {
+        if (accountsActual.length == 0)
+        {
             return null;
         }
         return accountsActual;
     }
 
     public static void removeDMEAccount(String accountName) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("DELETE FROM `dmeaccounts` where pan = '" + accountName + "';");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
     }
 
     public static void removeChargeAccount(String accountName) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("DELETE FROM `chargeaccounts` where accntName = '" + accountName + "';");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
     }
@@ -919,57 +1125,76 @@ public class Database {
         accntName = accntName.toUpperCase();
         lastName = lastName.toUpperCase();
         firstName = firstName.toUpperCase();
-        if (!accntName.isEmpty()) {
+        if (!accntName.isEmpty())
+        {
             statement += "pan = '" + accntName + "'";
             oneBefore = true;
         }
-        if (!lastName.isEmpty()) {
-            if (oneBefore) {
+        if (!lastName.isEmpty())
+        {
+            if (oneBefore)
+            {
                 statement += "and lastname = '" + lastName + "'";
-            } else {
+            }
+            else
+            {
                 statement += "lastname = '" + lastName + "'";
                 oneBefore = true;
             }
         }
-        if (!firstName.isEmpty()) {
-            if (oneBefore) {
+        if (!firstName.isEmpty())
+        {
+            if (oneBefore)
+            {
                 statement += "and firstname = '" + firstName + "'";
-            } else {
+            }
+            else
+            {
                 statement += "firstname = '" + firstName + "'";
                 oneBefore = true;
             }
         }
-        if (!dob.isEmpty()) {
-            if (oneBefore) {
+        if (!dob.isEmpty())
+        {
+            if (oneBefore)
+            {
                 statement += "and dob = '" + dob + "'";
-            } else {
+            }
+            else
+            {
                 statement += "dob = '" + dob + "'";
                 oneBefore = true;
             }
         }
         int i = 0;
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(statement);
 
-            while (rs.next()) {
+            while (rs.next())
+            {
                 System.out.println(rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6));
                 accounts[i] = rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6) + " Current Balance $" + String.format("%.2f", rs.getDouble(6));
                 i++;
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
         String[] accountsActual = new String[i];
-        for (int z = 0; z < i; z++) {
+        for (int z = 0; z < i; z++)
+        {
             accountsActual[z] = accounts[z];
         }
-        if (accountsActual.length == 0) {
+        if (accountsActual.length == 0)
+        {
             return null;
         }
         return accountsActual;
@@ -978,73 +1203,91 @@ public class Database {
     public static String[] getEmployeesFromDatabase() {
         String[] employees = new String[20];
         int cntr = 0;
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from employees order by empname;");
 
-            while (rs.next()) {
+            while (rs.next())
+            {
 
                 employees[cntr] = rs.getString(2);
                 cntr++;
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         String[] emp = new String[cntr];
-        for (int i = 0; i < cntr; i++) {
+        for (int i = 0; i < cntr; i++)
+        {
             emp[i] = employees[i];
         }
-        if (emp.length == 0) {
+        if (emp.length == 0)
+        {
             return null;
         }
         return emp;
     }//end getTicketFromDatabase
 
     public static void storeReceipt(Cart curCart, String receiptNum) {
-        for (Item item : curCart.getItems()) {
-            try {
+        for (Item item : curCart.getItems())
+        {
+            try
+            {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate("INSERT INTO `receipts`(`pid`,`receiptNum`,`mutID`,`upc`,`itemName`,`amtPaidBeforeTax`,`wasTaxed`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`,`hasBeenRefunded`,`hasTaxBeenRefunded`) VALUES (NULL,'" + receiptNum + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.isTaxable() + " ," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + "," + item.hasBeenRefunded() + "," + item.hasTaxBeenRefunded() + ")");
                 con.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.out.println(e);
             }//end catch
         }
     }
 
     public static void storeReceiptByList(ArrayList<RefundItem> items, String receiptNum) {
-        for (Item item : items) {
-            try {
+        for (Item item : items)
+        {
+            try
+            {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate("INSERT INTO `receipts`(`pid`,`receiptNum`,`mutID`,`upc`,`itemName`,`amtPaidBeforeTax`,`wasTaxed`,`category`,`rxNumber`,`insurance`,`filldate`,`quantity`,`isrx`,`percentagedisc`,`isprecharged`,`hasBeenRefunded`,`hasTaxBeenRefunded`) VALUES (NULL,'" + receiptNum + "','" + item.getID() + "','" + item.getUPC() + "','" + item.getName() + "'," + item.getPrice() + "," + item.isTaxable() + " ," + item.getCategory() + "," + item.getRxNumber() + ",'" + item.getInsurance() + "','" + item.getFillDate() + "'," + item.getQuantity() + "," + item.isRX() + "," + item.getDiscountPercentage() + "," + item.isPreCharged() + "," + item.hasBeenRefunded() + "," + item.hasTaxBeenRefunded() + ")");
                 con.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.out.println(e);
             }//end catch
         }
     }
 
     public static void removeReceiptByList(ArrayList<RefundItem> items2Del, String receiptNum) {
-        for (Item item : items2Del) {
-            try {
+        for (Item item : items2Del)
+        {
+            try
+            {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate("DELETE from receipts where receiptNum = '" + receiptNum + "' AND mutID = '" + item.getID() + "';");
                 con.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.out.println(e);
             }//end catch
         }
@@ -1052,16 +1295,19 @@ public class Database {
 
     public static ArrayList<RefundItem> loadReceipt(String receiptNum) {
         ArrayList<RefundItem> loadedItems = new ArrayList<RefundItem>();
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from receipts where receiptNum = '" + receiptNum + "'");
 
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2));
-                if (rs.getString(2).contentEquals(receiptNum)) {
+                if (rs.getString(2).contentEquals(receiptNum))
+                {
                     //System.out.println("HERE!,LOADING!!");
                     RefundItem temp = new RefundItem(receiptNum, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getBoolean(7), rs.getInt(8), rs.getInt(9), rs.getString(10), rs.getString(11), rs.getInt(12), rs.getBoolean(13), rs.getDouble(14), rs.getBoolean(15), rs.getBoolean(16), rs.getBoolean(17));
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasBeenRefunded());
@@ -1075,7 +1321,9 @@ public class Database {
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
 
@@ -1084,16 +1332,19 @@ public class Database {
 
     public static String[] lookupReceiptByRX(int rxNumber) {//this returns array of receipt#'s
         ArrayList<String> loadedItems = new ArrayList<String>();
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from receipts where rxNumber = '" + rxNumber + "'");
 
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2));
-                if (rs.getInt(9) == rxNumber) {
+                if (rs.getInt(9) == rxNumber)
+                {
                     loadedItems.add(rs.getString(2));
                     //loadedItems.add(new RefundItem(this, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getDouble(7), rs.getBoolean(8), rs.getInt(9), rs.getInt(10), rs.getString(11), rs.getString(12), rs.getInt(13), rs.getBoolean(14), rs.getDouble(15), rs.getBoolean(16),rs.getBoolean(17),rs.getBoolean(18)));
                 }//end if
@@ -1101,13 +1352,16 @@ public class Database {
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
 
         String[] rxs = new String[loadedItems.size()];
         int i = 0;
-        for (String rx : loadedItems) {
+        for (String rx : loadedItems)
+        {
             rxs[i] = rx;
             i++;
         }
@@ -1115,114 +1369,140 @@ public class Database {
     }
 
     public static void updateReceipt(RefundCart curCart, String receiptNum) {
-        for (RefundItem item : curCart.getRefundItems()) {
-            try {
+        for (RefundItem item : curCart.getRefundItems())
+        {
+            try
+            {
                 Class.forName(driverPath);
                 Connection con = DriverManager.getConnection(
                         host, userName, password);
-                if (item.quantity == 0) {
+                if (item.quantity == 0)
+                {
 
-                } else {
+                }
+                else
+                {
                     Statement stmt = con.createStatement();
                     System.out.println("UPDATE " + item.getName() + " :" + item.hasBeenRefunded());
                     System.out.println("UPDATE " + item.getName() + " :" + item.hasTaxBeenRefunded());
                     stmt.executeUpdate("UPDATE `receipts` set quantity = " + item.getQuantity() + ", hasBeenRefunded=" + item.hasBeenRefunded() + ", hasTaxBeenRefunded=" + item.hasTaxBeenRefunded() + " where receiptNum='" + item.receiptNum + "' AND upc = '" + item.getUPC() + "' AND mutID = '" + item.getID() + "'  ;");
                 }
                 con.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.out.println(e);
             }//end catch
         }
     }
 
     public static boolean doesItemExistByUPC(String upc) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from inventory where upc = '" + upc + "'");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2));
                 return true;//there was atleast one item with this UPC
 
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return false;
     }
 
     public static boolean doesItemExistByID(String mutID) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from inventory where mutID = '" + mutID + "'");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2));
                 return true;//there was atleast one item with this UPC
 
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return false;
     }
 
     public static void addItem(String mutID, String upc, String name, double price, double cost, boolean taxed, int category) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '" + mutID + "','" + upc + "','" + name + "'," + price + "," + cost + "," + taxed + "," + category + ");");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
     }
 
     public static boolean doesChargeAccountExisit(String accountName) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from chargeaccounts where accntname = '" + accountName + "'");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2));
                 return true;//there was atleast one item with this UPC
 
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return false;
     }
 
     public static boolean doesQS1UUIDExisit(String uuid) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from chargeaccounts where uuid = '" + uuid + "'");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2));
                 return true;//there was atleast one item with this UPC
 
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return false;
@@ -1230,33 +1510,40 @@ public class Database {
 
     public static void addChargeAccount(String accountName, String lastName, String firstName, String dob, String uuid) {
 
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`uuid`) VALUES (NULL, '" + accountName + "','" + lastName + "','" + firstName + "','" + dob + "','" + uuid + "');");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
     }
 
     public static boolean doesDMEAccountExisit(String accountName) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from dmeaccounts where pan = '" + accountName + "'");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2));
                 return true;//there was atleast one item with this UPC
 
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return false;
@@ -1264,41 +1551,49 @@ public class Database {
 
     public static void addDMEAccount(String accountName, String lastName, String firstName, String dob) {
 
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("INSERT INTO `dmeaccounts` (`pid`,`pan`,`firstname`,`lastname`,`dob`) VALUES (NULL, '" + accountName + "','" + firstName + "','" + lastName + "','" + dob + "');");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
     }
 
     public static String[] getInsurances() {
         ArrayList<String> loadedItems = new ArrayList<String>();
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from insurances order by insurance ASC;");
 
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2));
                 loadedItems.add(rs.getString(2));
 
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
 
         String[] insurances = new String[loadedItems.size()];
         int i = 0;
-        for (String ins : loadedItems) {
+        for (String ins : loadedItems)
+        {
             insurances[i] = ins;
             i++;
         }
@@ -1306,47 +1601,57 @@ public class Database {
     }
 
     public static boolean doesInsuranceExisit(String insurance) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from insurances where insurance = '" + insurance + "'");
-            while (rs.next()) {
+            while (rs.next())
+            {
                 // System.out.println(rs.getString(2));
                 return true;//there was atleast one item with this UPC
 
             }//end while
 
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }
         return false;
     }
 
     public static void addInsurance(String text) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("INSERT INTO `insurances` (`pid`,`insurance`) VALUES (NULL, '" + text + "');");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
     }
 
     public static void removeInsurance(String text) {
-        try {
+        try
+        {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("DELETE FROM `insurances` where insurance = '" + text + "';");
             con.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
         }//end catch
     }

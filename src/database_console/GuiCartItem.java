@@ -17,8 +17,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class GuiCartItem {
 
@@ -111,11 +111,14 @@ public class GuiCartItem {
         nameLabel.setVisible(true);
         frame.add(nameLabel);
 
-        if (item.isPreCharged()) {
+        if (item.isPreCharged())
+        {
             //TOTAL PRECHARGED
             totalItemPriceLabel = new JLabel(item.getID(), SwingConstants.RIGHT);
             totalItemPriceLabel.setText(String.format("%4s", "PCHG"));
-        } else {
+        }
+        else
+        {
             //TOTAL NORMAL (Not Precharged RX)
             totalItemPriceLabel = new JLabel(item.getID(), SwingConstants.RIGHT);
             totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
@@ -128,17 +131,23 @@ public class GuiCartItem {
         //ADD BUTTON
         addQuantityButton = new JButton("ADD");
         editRXButton = new JButton("Edit");
-        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860) {
+        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860)
+        {
             addQuantityButton.setVisible(false);
 
-        } else {
+        }
+        else
+        {
             addQuantityButton.setVisible(true);
 
         }
 
-        if (item.isRX()) {
+        if (item.isRX())
+        {
             editRXButton.setVisible(true);
-        } else {
+        }
+        else
+        {
             editRXButton.setVisible(false);
         }
         addQuantityButton.setSize(55, 15);
@@ -168,9 +177,12 @@ public class GuiCartItem {
 
         //ISTAXABLE BUTTON       
         taxableButton = new JButton("");
-        if (item.isTaxable()) {
+        if (item.isTaxable())
+        {
             taxableButton.setVisible(true);
-        } else {
+        }
+        else
+        {
             taxableButton.setVisible(false);
         }
         taxableButton.setSize(15, 15);
@@ -183,13 +195,19 @@ public class GuiCartItem {
         //NOT TAXABLE BUTTON
         notTaxableButton = new JButton("");
 
-        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 861) {//this HIDES tax buttons for RX because it is ALWAYS false
+        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 861)
+        {//this HIDES tax buttons for RX because it is ALWAYS false
             notTaxableButton.setVisible(false);
             notTaxableButton.setVisible(false);
-        } else {//this determines wether to show or hide them
-            if (item.isTaxable()) {
+        }
+        else
+        {//this determines wether to show or hide them
+            if (item.isTaxable())
+            {
                 notTaxableButton.setVisible(false);
-            } else {
+            }
+            else
+            {
                 notTaxableButton.setVisible(true);
             }
         }
@@ -246,21 +264,29 @@ public class GuiCartItem {
         frame.add(discountButton);
 
         //determine which precharged buttons should show
-        if (item.isRX() && item.isPreCharged()) {
+        if (item.isRX() && item.isPreCharged())
+        {
             prechargedFalseButton.setVisible(false);
             prechargedTrueButton.setVisible(true);
-        } else if (item.isRX() && !item.isPreCharged()) {
+        }
+        else if (item.isRX() && !item.isPreCharged())
+        {
             prechargedFalseButton.setVisible(true);
             prechargedTrueButton.setVisible(false);
-        } else {
+        }
+        else
+        {
             prechargedFalseButton.setVisible(false);
             prechargedTrueButton.setVisible(false);
         }
 
-        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 861) {//this HIDES discount buttons for RX &&RA because it is ALWAYS false
+        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 861)
+        {//this HIDES discount buttons for RX &&RA because it is ALWAYS false
             discountButton.setVisible(false);
             discountButton.setVisible(false);
-        } else {
+        }
+        else
+        {
             discountButton.setVisible(true);
         }
 
@@ -330,7 +356,8 @@ public class GuiCartItem {
     }//end ctor
 
     public void employeeSaleTriggered() {
-        if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
+        if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854)
+        {
             //System.out.println("1");
             //item.setPrice(item.getCost());
             curCart.updateTotal();
@@ -344,7 +371,8 @@ public class GuiCartItem {
     }
 
     public void employeeSaleCancelled() {
-        if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
+        if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854)
+        {
             // System.out.println("4");
             //item.setPrice(item.getPrice());
             curCart.updateTotal();
@@ -380,34 +408,46 @@ public class GuiCartItem {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 field1.setSelectionStart(0);
                 field1.setSelectionEnd(12);
-                if (!validateInteger(field1.getText())) {
+                if (!validateInteger(field1.getText()))
+                {
                     field1.setText("0");
                 }//end if
             }//end focusGained
         });
-        Object[] message = {
-            "Discount Percentage: %", field1};
+        Object[] message =
+        {
+            "Discount Percentage: %", field1
+        };
         field1.setText("0");
         field1.setSelectionStart(0);
         field1.setSelectionEnd(2);
 
         field1.addAncestorListener(new RequestFocusListener());
         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Item Discount Menu", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            if (!validateInteger(field1.getText())) {
+        if (option == JOptionPane.OK_OPTION)
+        {
+            if (!validateInteger(field1.getText()))
+            {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Improper discount percentage.");
-            } else {
+            }
+            else
+            {
                 double discPer = Double.parseDouble(field1.getText());
                 discPer /= 100;//move decimal 2 places to get percentage
                 //discPer = discPer;
-                if (discPer > 1 || discPer < 0) {
+                if (discPer > 1 || discPer < 0)
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Not a valid discount amount.");
-                } else {
+                }
+                else
+                {
                     //System.out.println(discPer);
-                    if (item.mutID.contentEquals("BATMON")) {
-                        if (curCart.getItems().size() == 2 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22") && discPer == .5) {
+                    if (item.mutID.contentEquals("BATMON"))
+                    {
+                        if (curCart.getItems().size() == 2 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22") && discPer == .5)
+                        {
                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/dk2.gif", "C:/POS/SOFTWARE/dk2.wav", "", "Because he's not a hero...");
                         }
                     }//end EE BATMAN
@@ -446,10 +486,12 @@ public class GuiCartItem {
 
     public void addItemButtonPressed(ActionEvent event) {//Since I know, I exist, just increase my quantity 1;
         int quantity = item.getQuantity();
-        if (item.getPrice() == 0.02 && item.itemName.contentEquals("Jango Fett") && quantity == 1) {
+        if (item.getPrice() == 0.02 && item.itemName.contentEquals("Jango Fett") && quantity == 1)
+        {
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw2.gif", "C:/POS/SOFTWARE/sw2.wav", "", "Always a pleasure to meet a Jedi.");
         }//end if EE Protocol
-        if (mainFrame.isChristmas && item.mutID.contentEquals("HAPIZZA") && item.quantity == 10) {//DREW 11.1363636364 x11 = 122.50
+        if (mainFrame.isChristmas && item.mutID.contentEquals("HAPIZZA") && item.quantity == 10)
+        {//DREW 11.1363636364 x11 = 122.50
             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha2.gif", "C:/POS/SOFTWARE/ha2.wav", "", "Keep the change, ya filthy animal!");
         }
         item.setQuantity(quantity + 1);
@@ -477,19 +519,23 @@ public class GuiCartItem {
         list.setBounds(100, 50, 50, 100);
         list.setVisibleRowCount(-1);
 
-        for (int i = 0; i < possibilities.length; i++) {
-            if (item.insurance.contentEquals(possibilities[i])) {
+        for (int i = 0; i < possibilities.length; i++)
+        {
+            if (item.insurance.contentEquals(possibilities[i]))
+            {
                 list.setSelectedIndex(i);
             }//end if
         }//end for
 
         JScrollPane listScroller = new JScrollPane(list);
         listScroller.setPreferredSize(new Dimension(250, 80));
-        Object[] message = {
+        Object[] message =
+        {
             "RX Number:", field1,
             "Copay:", field3,
             "Fill Date:", field2,
-            "Insurance:", list};
+            "Insurance:", list
+        };
 
         field1.setText(Integer.toString(item.rxNumber));
         field3.setText(Double.toString(item.itemPrice));
@@ -502,29 +548,41 @@ public class GuiCartItem {
         field1.setSelectionEnd(7);
         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "RX Information", JOptionPane.OK_CANCEL_OPTION);
 
-        if (option == JOptionPane.OK_OPTION) {
+        if (option == JOptionPane.OK_OPTION)
+        {
             int rxNumber;
             String fillDate;
             fillDate = field2.getText();
-            try {
+            try
+            {
                 String insurance = (String) list.getSelectedValue();
                 rxNumber = Integer.parseInt(field1.getText());
                 int length = (int) (Math.log10(rxNumber) + 1);
-                if (length != 7) {//invalid RXNumber
+                if (length != 7)
+                {//invalid RXNumber
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Invalid RX Number");
-                } else {
+                }
+                else
+                {
 
-                    if (!mainFrame.validateDate(fillDate)) {
+                    if (!mainFrame.validateDate(fillDate))
+                    {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Invalid Fill Date");
-                    } else {
+                    }
+                    else
+                    {
                         String temp = field3.getText();
-                        if (!mainFrame.validateDouble(temp)) {//check for copay
+                        if (!mainFrame.validateDouble(temp))
+                        {//check for copay
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Invalid Copay");
-                        } else {//else everything checks out! WE HAVE ALL GOOD DATA!!!
-                            if (!curCart.containsMultipleRX(Integer.parseInt(field1.getText()), insurance, fillDate, item)) {
+                        }
+                        else
+                        {//else everything checks out! WE HAVE ALL GOOD DATA!!!
+                            if (!curCart.containsMultipleRX(Integer.parseInt(field1.getText()), insurance, fillDate, item))
+                            {
                                 item.rxNumber = rxNumber;
                                 item.fillDate = fillDate;
                                 item.insurance = insurance;
@@ -537,22 +595,29 @@ public class GuiCartItem {
                                 nameLabel.setText(item.itemName);
                                 priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
                                 pricePerItemLabel.setText(String.format("%.2f", item.getPrice()));
-                                if (item.isPreCharged) {
+                                if (item.isPreCharged)
+                                {
                                     totalItemPriceLabel.setText(String.format("%4s", "PCHG"));
-                                } else {
+                                }
+                                else
+                                {
                                     totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
                                 }
                                 curCart.updateTotal();
                                 mainFrame.updateCartScreen();
 
-                            } else {
+                            }
+                            else
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "RX Already in Cart");
                             }
                         }
                     }//end else valid fillDate
                 }//end else valid RXNumber
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e)
+            {
                 //If number is not number for RX, print error msg.
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Invalid RX Number");
@@ -571,7 +636,8 @@ public class GuiCartItem {
     }
 
     public void removeItemButtonPressed(ActionEvent event) {
-        if (item.getQuantity() > 1) {
+        if (item.getQuantity() > 1)
+        {
             int q = item.getQuantity();
             item.setQuantity(q - 1);
             taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
@@ -579,45 +645,66 @@ public class GuiCartItem {
             quantityLabel.setText(item.getQuantity() + "x");
             totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
             discountLabel.setText(String.format("%.2f", item.getDiscountAmount()));
-        } else {
-            if (item.mutID.contentEquals("MATBLU")) {
+        }
+        else
+        {
+            if (item.mutID.contentEquals("MATBLU"))
+            {
                 boolean found = false;
-                for (Item item : curCart.getItems()) {
-                    if (item.mutID.contentEquals("MATRED")) {
+                for (Item item : curCart.getItems())
+                {
+                    if (item.mutID.contentEquals("MATRED"))
+                    {
                         found = true;
                     }
                 }
-                if (found) {
+                if (found)
+                {
                     EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx1.gif", "C:/POS/SOFTWARE/mx1.wav", "", "Wake up Neo.");
                 }
-            } else if (item.itemPrice == 0.51 && item.itemName.contentEquals("El Diablo")) {
+            }
+            else if (item.itemPrice == 0.51 && item.itemName.contentEquals("El Diablo"))
+            {
                 boolean found = false;
-                for (Item item : curCart.getItems()) {
-                    if (item.itemName.contentEquals("Magic Man") && item.itemPrice == 0.47) {
+                for (Item item : curCart.getItems())
+                {
+                    if (item.itemName.contentEquals("Magic Man") && item.itemPrice == 0.47)
+                    {
                         found = true;
                     }
                 }
-                if (found) {
+                if (found)
+                {
                     EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/tn2.gif", "C:/POS/SOFTWARE/tn2.wav", "", "From now on, it’s Magic Man and El Diablo.");
                 }
-            } else if (item.itemName.contentEquals("District")) {
+            }
+            else if (item.itemName.contentEquals("District"))
+            {
                 ArrayList<Item> items = new ArrayList<>();
                 items = curCart.getItems();
-                if (items.size() == 2) {
+                if (items.size() == 2)
+                {
                     Item item2 = items.get(0);
                     System.out.println(item2.mutID);
-                    if (item2.mutID.contentEquals("BATDIS22")) {
+                    if (item2.mutID.contentEquals("BATDIS22"))
+                    {
                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/dk1.gif", "C:/POS/SOFTWARE/dk1.wav", "", "Why So Serious?");
                     }
                 }
 
-            } else if (item.mutID.contains("MMHA") && mainFrame.isHalloween) {
+            }
+            else if (item.mutID.contains("MMHA") && mainFrame.isHalloween)
+            {
                 boolean one = false, two = false, five = false, six = false, seven = false, ten = false, eleven = false, twelve = true, thirteen = true, fourteen = true;
-                if (curCart.getItems().size() == 11) {
+                if (curCart.getItems().size() == 11)
+                {
 
-                    for (Item tempItem : curCart.getItems()) {
-                        if (!item.mutID.contentEquals(tempItem.mutID)) {
-                            switch (tempItem.mutID) {
+                    for (Item tempItem : curCart.getItems())
+                    {
+                        if (!item.mutID.contentEquals(tempItem.mutID))
+                        {
+                            switch (tempItem.mutID)
+                            {
 
                                 case "MMHA1":
                                     one = true;
@@ -661,7 +748,8 @@ public class GuiCartItem {
                             }//switch
                         }//end if not deleted item.
                     }//end for
-                    if (one && two && five && six && seven && ten && eleven && twelve && thirteen && fourteen) {
+                    if (one && two && five && six && seven && ten && eleven && twelve && thirteen && fourteen)
+                    {
                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mmha2.gif", "C:/POS/SOFTWARE/mmha2.wav", "", "HAPPY HALLOWEEN!");
                     }
                 }//end if
@@ -740,12 +828,16 @@ public class GuiCartItem {
     }
 
     private boolean validateInteger(String integer) {
-        try {
+        try
+        {
             int integ = Integer.parseInt(integer);
-            if (integ < 0) {
+            if (integ < 0)
+            {
                 return false;
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             return false;
         }//end catch
         return true;
@@ -766,20 +858,29 @@ public class GuiCartItem {
     }
 
     public void splitTicketDeactivated() {
-        if (item.isTaxable) {
+        if (item.isTaxable)
+        {
             taxableButton.setVisible(true);
 
-        } else if (item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860 && !item.isRX()) {
+        }
+        else if (item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860 && !item.isRX())
+        {
             notTaxableButton.setVisible(true);
         }
-        if (item.isPreCharged && item.isRX()) {
+        if (item.isPreCharged && item.isRX())
+        {
             prechargedTrueButton.setVisible(true);
-        } else if (item.isRX()) {
+        }
+        else if (item.isRX())
+        {
             prechargedFalseButton.setVisible(true);
         }
-        if (item.isRX()) {
+        if (item.isRX())
+        {
             editRXButton.setVisible(true);
-        } else if (item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860) {//RA payments and UPS, they are not quantible or discountable.
+        }
+        else if (item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860)
+        {//RA payments and UPS, they are not quantible or discountable.
             addQuantityButton.setVisible(true);
             discountButton.setVisible(true);
         }

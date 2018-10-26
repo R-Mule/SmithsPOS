@@ -3,8 +3,8 @@ package database_console;
 import java.io.Serializable;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class CategoryFinder implements Serializable {
 
@@ -16,7 +16,8 @@ public class CategoryFinder implements Serializable {
 
     public String getCategory(int catCode) {
         String category;
-        switch (catCode) {
+        switch (catCode)
+        {
             case 11:
                 category = "ANALGESIC,INTERNAL";
                 break;

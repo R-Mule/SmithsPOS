@@ -12,8 +12,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class GuiRefundCartItem extends GuiCartItem {
 
@@ -58,7 +58,8 @@ public class GuiRefundCartItem extends GuiCartItem {
         qtyToBeRefunded = new JLabel("0", SwingConstants.RIGHT);
         priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTaxWithMaxQtyRefund()));
 
-        if (item.hasBeenRefunded()) {
+        if (item.hasBeenRefunded())
+        {
 
             frameGUI.add(alreadyRefundedLabel);
             alreadyRefundedLabel.setLocation(980, -7 + baseY);
@@ -67,7 +68,9 @@ public class GuiRefundCartItem extends GuiCartItem {
             alreadyRefundedLabel.setBackground(new Color(255, 0, 0));
             alreadyRefundedLabel.setOpaque(true);
             alreadyRefundedLabel.setVisible(true);
-        } else if (item.getCategory() == 853 || item.getCategory() == 854) {//both DME and RX Account Payments
+        }
+        else if (item.getCategory() == 853 || item.getCategory() == 854)
+        {//both DME and RX Account Payments
 
             frameGUI.add(nonRefundableLabel);
             nonRefundableLabel.setLocation(980, -7 + baseY);
@@ -76,7 +79,9 @@ public class GuiRefundCartItem extends GuiCartItem {
             nonRefundableLabel.setBackground(new Color(255, 0, 0));
             nonRefundableLabel.setOpaque(true);
             nonRefundableLabel.setVisible(true);
-        } else {//its refundable!
+        }
+        else
+        {//its refundable!
             frameGUI.add(increaseRefundQtyButton);
             increaseRefundQtyButton.setLocation(750, -7 + baseY);
             increaseRefundQtyButton.setSize(15, 15);
@@ -85,13 +90,15 @@ public class GuiRefundCartItem extends GuiCartItem {
             increaseRefundQtyButton.setVisible(true);
             increaseRefundQtyButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    if (item.quantityBeingRefunded != item.quantity) {
+                    if (item.quantityBeingRefunded != item.quantity)
+                    {
                         item.quantityBeingRefunded++;
                         qtyToBeRefunded.setText(Integer.toString(item.quantityBeingRefunded));
                         refundCart.updateTotal();
                         mainFrame.updateCartScreen();
                         taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
-                        if (item.isRX) {
+                        if (item.isRX)
+                        {
                             item.setPrice(Double.parseDouble(pricePerItemLabel.getText()));
                         }
                         totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
@@ -114,20 +121,26 @@ public class GuiRefundCartItem extends GuiCartItem {
             decreaseRefundQtyButton.setVisible(true);
             decreaseRefundQtyButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    if (item.quantityBeingRefunded != 0) {
+                    if (item.quantityBeingRefunded != 0)
+                    {
                         item.quantityBeingRefunded--;
-                        if (item.quantityBeingRefunded == 0) {
-                            if (item.refundAllActive) {
+                        if (item.quantityBeingRefunded == 0)
+                        {
+                            if (item.refundAllActive)
+                            {
                                 refundActiveButton.setVisible(false);
                                 refundInactiveButton.setVisible(true);
                                 taxRefundedTrueButton.setVisible(false);
                                 taxRefundedFalseButton.setVisible(true);
                                 item.setRefundAllActive(false);
-                                if (item.isRX) {
+                                if (item.isRX)
+                                {
                                     item.setPrice(Double.parseDouble(priceOfItemsLabel.getText()));
                                     totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
                                 }
-                            } else if (item.refundTaxOnly) {
+                            }
+                            else if (item.refundTaxOnly)
+                            {
                                 item.setRefundTaxOnly(false);
                                 taxRefundedTrueButton.setVisible(false);
                                 taxRefundedFalseButton.setVisible(true);
@@ -170,7 +183,8 @@ public class GuiRefundCartItem extends GuiCartItem {
             });
 
             //its an OTC item, that may or may not have refundable tax
-            if (item.isTaxable && !item.hasTaxBeenRefunded()) {//tax not refunded yet, but its taxable
+            if (item.isTaxable && !item.hasTaxBeenRefunded())
+            {//tax not refunded yet, but its taxable
 
                 frameGUI.add(taxRefundedFalseButton);
                 taxRefundedFalseButton.setLocation(875, -7 + baseY);
@@ -194,15 +208,20 @@ public class GuiRefundCartItem extends GuiCartItem {
                 taxRefundedTrueButton.setVisible(false);
                 taxRefundedTrueButton.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        if (!refundActiveButton.isVisible()) {//if we are returning the item, WE HAVE, to return the tax.
+                        if (!refundActiveButton.isVisible())
+                        {//if we are returning the item, WE HAVE, to return the tax.
                             taxRefundedTruePressed();
                         }
                     }
                 });
 
-            } else if (!item.isTaxable) {//not taxable, no active tax buttons to show
+            }
+            else if (!item.isTaxable)
+            {//not taxable, no active tax buttons to show
                 //do nothing?
-            } else if (item.isTaxable && item.hasTaxBeenRefunded()) {//item is taxable, and it has ALREADY BEEN REFUNDED!
+            }
+            else if (item.isTaxable && item.hasTaxBeenRefunded())
+            {//item is taxable, and it has ALREADY BEEN REFUNDED!
                 frameGUI.add(taxAlreadyRefundedOnItemLabel);
                 taxAlreadyRefundedOnItemLabel.setLocation(875, -7 + baseY);
                 taxAlreadyRefundedOnItemLabel.setSize(50, 15);
@@ -213,14 +232,17 @@ public class GuiRefundCartItem extends GuiCartItem {
             }
         }
 
-        if (item.getCategory() == 861 && !item.hasBeenRefunded) {
-            if (item.quantityBeingRefunded != item.quantity) {
+        if (item.getCategory() == 861 && !item.hasBeenRefunded)
+        {
+            if (item.quantityBeingRefunded != item.quantity)
+            {
                 item.quantityBeingRefunded = item.quantity;
                 qtyToBeRefunded.setText(Integer.toString(item.quantityBeingRefunded));
                 refundCart.updateTotal();
                 mainFrame.updateCartScreen();
                 taxTotalLabel.setText(String.format("%.2f", item.getTaxTotal()));
-                if (item.isRX) {
+                if (item.isRX)
+                {
                     item.setPrice(Double.parseDouble(pricePerItemLabel.getText()));
                 }
                 totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
@@ -237,7 +259,8 @@ public class GuiRefundCartItem extends GuiCartItem {
     }
 
     public void taxRefundedFalsePressed() {
-        if (item.quantityBeingRefunded > 0) {
+        if (item.quantityBeingRefunded > 0)
+        {
             taxRefundedFalseButton.setVisible(false);
             taxRefundedTrueButton.setVisible(true);
             item.setRefundTaxOnly(true);
@@ -256,8 +279,10 @@ public class GuiRefundCartItem extends GuiCartItem {
 
     public void refundInactiveButtonPressed() {
 
-        if (item.quantityBeingRefunded > 0) {
-            if (item.isRX) {//BEGIN PARTIAL REFUND!
+        if (item.quantityBeingRefunded > 0)
+        {
+            if (item.isRX)
+            {//BEGIN PARTIAL REFUND!
                 JFrame textInputFrame = new JFrame("");
                 JTextField field2 = new JTextField();
 
@@ -265,25 +290,34 @@ public class GuiRefundCartItem extends GuiCartItem {
                     public void focusLost(java.awt.event.FocusEvent evt) {
                         field2.setSelectionStart(0);
                         field2.setSelectionEnd(12);
-                        if (!validateDouble(field2.getText())) {
+                        if (!validateDouble(field2.getText()))
+                        {
                             field2.setText(String.format("0"));
                         }//end if
                     }//end focusGained
                 });
-                Object[] message = {"Amount: $", field2};
+                Object[] message =
+                {
+                    "Amount: $", field2
+                };
                 field2.setText("0.00");
                 field2.setSelectionStart(0);
                 field2.setSelectionEnd(4);
                 field2.addAncestorListener(new RequestFocusListener());
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "RX Refund Menu", JOptionPane.OK_CANCEL_OPTION);
-                if (option == JOptionPane.OK_OPTION) {
-                    if (!validateDouble(field2.getText())) {
+                if (option == JOptionPane.OK_OPTION)
+                {
+                    if (!validateDouble(field2.getText()))
+                    {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Improper Refund Amount.");
-                    } else {
+                    }
+                    else
+                    {
                         double amtReceived = Double.parseDouble(field2.getText());
                         amtReceived = round(amtReceived);
-                        if (amtReceived > 0 && amtReceived <= item.getTotal()) {
+                        if (amtReceived > 0 && amtReceived <= item.getTotal())
+                        {
                             item.setPrice(amtReceived);
 
                             refundInactiveButton.setVisible(false);
@@ -291,13 +325,17 @@ public class GuiRefundCartItem extends GuiCartItem {
 
                             totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
                             item.setRefundAllActive(true);
-                        } else {
+                        }
+                        else
+                        {
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Refund must be greater than 0 and less than or equal to RX Total Price.");
                         }//end else not 0 or less
                     }//end else
                 }//end if  
-            } else {
+            }
+            else
+            {
                 refundInactiveButton.setVisible(false);
                 refundActiveButton.setVisible(true);
                 totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
@@ -314,7 +352,8 @@ public class GuiRefundCartItem extends GuiCartItem {
         // priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
         // pricePerItemLabel.setText(String.format("%.2f", item.getPrice()));
         // totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
-        if (item.isRX) {
+        if (item.isRX)
+        {
             item.setPrice(Double.parseDouble(priceOfItemsLabel.getText()));
             totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
         }
@@ -360,12 +399,16 @@ public class GuiRefundCartItem extends GuiCartItem {
     }
 
     private boolean validateDouble(String copay) {
-        try {
+        try
+        {
             double cpay = Double.parseDouble(copay);
-            if (cpay < 0) {
+            if (cpay < 0)
+            {
                 return false;
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             return false;
         }//end catch
         return true;

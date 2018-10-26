@@ -14,8 +14,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class CardDataRequester {
 
@@ -41,7 +41,8 @@ public class CardDataRequester {
 
     public void postRequest(String deviceURL, String amount, String tran_type) {
         System.out.println("AMOUNT BEING REQUESTED: " + amount);
-        try {
+        try
+        {
             URL url = new URL(deviceURL);
             Double d = Double.parseDouble(amount);
             amount = String.format("%.2f", d);
@@ -64,14 +65,17 @@ public class CardDataRequester {
             StringBuilder buf = new StringBuilder();
             char[] cbuf = new char[2048];
             int num;
-            while (-1 != (num = reader.read(cbuf))) {
+            while (-1 != (num = reader.read(cbuf)))
+            {
                 buf.append(cbuf, 0, num);
             }
             String result = buf.toString();
             System.err.println("\nResponse from server after POST:\n" + result);
             readXML(result);
             hasReceivedData = true;//ITS OVER! YA!
-        } catch (IOException | NumberFormatException t) {
+        }
+        catch (IOException | NumberFormatException t)
+        {
             t.printStackTrace(System.out);
         }
     }
@@ -79,18 +83,22 @@ public class CardDataRequester {
     public void readXML(String xml) {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = null;
-        try {
+        try
+        {
             db = dbf.newDocumentBuilder();
             InputSource is = new InputSource();
             is.setCharacterStream(new StringReader(xml));
-            try {
+            try
+            {
                 Document doc = db.parse(is);
                 //String message = doc.getDocumentElement().getTextContent();
                 merchantID = "8788290392911";
                 responseCode = doc.getElementsByTagName("AUTH_RESP").item(0).getTextContent();
-                if (!responseCode.contentEquals("S0")) {
+                if (!responseCode.contentEquals("S0"))
+                {
                     cardType = doc.getElementsByTagName("AUTH_CARD_TYPE").item(0).getTextContent();
-                    switch (cardType) {
+                    switch (cardType)
+                    {
                         case "R":
                             cardType = "DISCOVER";
                             break;
@@ -112,10 +120,12 @@ public class CardDataRequester {
                     }
                     approvalCodeHandler ach = new approvalCodeHandler(cardType, responseCode);
                     responseText = ach.getResponseText();
-                    if (ach.isApproved()) {//this checks to make sure the trans is approved before we parse stuff that doesn't exisit.
+                    if (ach.isApproved())
+                    {//this checks to make sure the trans is approved before we parse stuff that doesn't exisit.
                         authAmt = doc.getElementsByTagName("AUTH_AMOUNT").item(0).getTextContent();
                         authAmtReq = doc.getElementsByTagName("AUTH_AMOUNT_REQUESTED").item(0).getTextContent();
-                        if (Double.parseDouble(authAmt) == Double.parseDouble(authAmtReq)) {
+                        if (Double.parseDouble(authAmt) == Double.parseDouble(authAmtReq))
+                        {
                             transID = doc.getElementsByTagName("AUTH_GUID").item(0).getTextContent();
                             //gets here
                             approvalCode = doc.getElementsByTagName("AUTH_CODE").item(0).getTextContent();
@@ -123,7 +133,8 @@ public class CardDataRequester {
                             last4ofCard = last4ofCard.substring(last4ofCard.lastIndexOf('X'));
                             //gets here too
                             cardEntryMethod = doc.getElementsByTagName("CARD_ENT_METH").item(0).getTextContent();
-                            if (cardEntryMethod.contentEquals("G")) {//TOOK THIS OUT ||cardEntryMethod.contentEquals("D")
+                            if (cardEntryMethod.contentEquals("G"))
+                            {//TOOK THIS OUT ||cardEntryMethod.contentEquals("D")
                                 //and here
                                 AID = cardEntryMethod = doc.getElementsByTagName("SI_EMV_AID").item(0).getTextContent();
                                 TVR = cardEntryMethod = doc.getElementsByTagName("SI_EMV_TVR").item(0).getTextContent();
@@ -131,26 +142,38 @@ public class CardDataRequester {
                             }
                             System.out.println(responseText);
 
-                        } else {
+                        }
+                        else
+                        {
                             transTerminate = true;
                             System.out.println("MUST BE AN ERROR!!");
                         }
-                    } else {
+                    }
+                    else
+                    {
                         transTerminate = true;
                         System.out.println("TRANS DECLINED1??");
                     }
-                } else {
+                }
+                else
+                {
                     transTerminate = true;
                     System.out.println("TRANS DECLINED2??");
                 }
-            } catch (SAXException | IOException e) {
+            }
+            catch (SAXException | IOException e)
+            {
                 // handle SAXException
             }
             // handle IOException
 
-        } catch (ParserConfigurationException e1) {
+        }
+        catch (ParserConfigurationException e1)
+        {
             // handle ParserConfigurationException
-        } catch (NullPointerException ex) {
+        }
+        catch (NullPointerException ex)
+        {
             transTerminate = true;
             responseText = "FAILED TO FIND AUTH RETRY";
             System.out.println("TRANS DECLINED3??");

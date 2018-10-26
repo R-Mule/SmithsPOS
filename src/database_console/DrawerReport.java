@@ -7,8 +7,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class DrawerReport implements Serializable {
 
@@ -103,14 +103,16 @@ public class DrawerReport implements Serializable {
 
         String cash = Double.toString(totalCashAmt);
         boolean isNegative = false;
-        if (totalCashAmt < 0) {
+        if (totalCashAmt < 0)
+        {
             isNegative = true;
         }
         totalCashAmt = Double.parseDouble(cash.substring(0, cash.indexOf('.')));
         totalCoinsAmt = Double.parseDouble(cash.substring(cash.indexOf('.')));
         totalCoinsAmt = round(totalCoinsAmt);
         totalCashAmt = round(totalCashAmt);
-        if (isNegative) {
+        if (isNegative)
+        {
             totalCoinsAmt = round(totalCoinsAmt * -1);
         }
     }
@@ -123,38 +125,45 @@ public class DrawerReport implements Serializable {
 
         String cash = Double.toString(totalCashAmt);
         boolean isNegative = false;
-        if (totalCashAmt < 0) {
+        if (totalCashAmt < 0)
+        {
             isNegative = true;
         }
         totalCashAmt = Double.parseDouble(cash.substring(0, cash.indexOf('.')));
         totalCoinsAmt = Double.parseDouble(cash.substring(cash.indexOf('.')));
         totalCoinsAmt = round(totalCoinsAmt);
         totalCashAmt = round(totalCashAmt);
-        if (isNegative) {
+        if (isNegative)
+        {
             totalCoinsAmt = round(totalCoinsAmt * -1);
         }
 
     }
 
     public void refundUpdate(RefundCart curCart, String clerkName, String[] paymentType, double paymentAmt[]) {
-        if (paymentType[0].contains("CARD")) {
+        if (paymentType[0].contains("CARD"))
+        {
             totalCreditAmt -= curCart.getTotalPrice();
             totalRefundedCredit += curCart.getTotalPrice();
-        } else {//Cash\
+        }
+        else
+        {//Cash\
             totalRefundedCash = curCart.getTotalPrice();
             totalCashAmt += totalCoinsAmt;
             totalCashAmt -= curCart.getTotalPrice();
 
             String cash = Double.toString(totalCashAmt);
             boolean isNegative = false;
-            if (totalCashAmt < 0) {
+            if (totalCashAmt < 0)
+            {
                 isNegative = true;
             }
             totalCashAmt = Double.parseDouble(cash.substring(0, cash.indexOf('.')));
             totalCoinsAmt = Double.parseDouble(cash.substring(cash.indexOf('.')));
             totalCoinsAmt = round(totalCoinsAmt);
             totalCashAmt = round(totalCashAmt);
-            if (isNegative) {
+            if (isNegative)
+            {
                 totalCoinsAmt = round(totalCoinsAmt * -1);
             }
         }
@@ -165,127 +174,182 @@ public class DrawerReport implements Serializable {
     public void update(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName) {
 
         //UPDATE CLERK TRANSACTION COUNT!
-        if (employeeNames != null && !employeeNames.isEmpty() && employeeNames.contains(clerkName)) {
+        if (employeeNames != null && !employeeNames.isEmpty() && employeeNames.contains(clerkName))
+        {
             int index = employeeNames.indexOf(clerkName);
             int value = employeeTransactions.get(index) + 1;
             employeeTransactions.set(index, value);
-        } else {
+        }
+        else
+        {
             employeeNames.add(clerkName);
             employeeTransactions.add(1);
         }
         double totalPaid = 0;
-        for (int i = 0; i < paymentType.length; i++) {
+        for (int i = 0; i < paymentType.length; i++)
+        {
             totalPaid += paymentAmt[i];
         }
         double changeDue = totalPaid - curCart.getTotalPrice();
         //UPDATE AMOUNT RECEIVED BY TENDER TYPE
-        for (int i = 0; i < paymentType.length; i++) {
-            if (paymentType[i].contains("CASH")) {
+        for (int i = 0; i < paymentType.length; i++)
+        {
+            if (paymentType[i].contains("CASH"))
+            {
                 totalCashAmt += paymentAmt[i];
                 totalCashAmt += totalCoinsAmt;
                 String cash = Double.toString(totalCashAmt);
                 boolean isNegative = false;
-                if (totalCashAmt < 0) {
+                if (totalCashAmt < 0)
+                {
                     isNegative = true;
                 }
                 totalCashAmt = Double.parseDouble(cash.substring(0, cash.indexOf('.')));
                 totalCoinsAmt = Double.parseDouble(cash.substring(cash.indexOf('.')));
                 totalCoinsAmt = round(totalCoinsAmt);
                 totalCashAmt = round(totalCashAmt);
-                if (isNegative) {
+                if (isNegative)
+                {
                     totalCoinsAmt = round(totalCoinsAmt * -1);
                 }
 
-            } else if (paymentType[i].contains("CREDIT")) {
+            }
+            else if (paymentType[i].contains("CREDIT"))
+            {
                 totalCreditAmt += paymentAmt[i];
                 totalCreditAmt = round(totalCreditAmt);
-            } else if (paymentType[i].contains("DEBIT")) {
+            }
+            else if (paymentType[i].contains("DEBIT"))
+            {
                 totalDebitAmt += paymentAmt[i];
                 totalDebitAmt = round(totalDebitAmt);
-            } else if (paymentType[i].contains("CHECK")) {
+            }
+            else if (paymentType[i].contains("CHECK"))
+            {
                 totalChecksAmt += paymentAmt[i];
                 totalChecksAmt = round(totalChecksAmt);
-            } else if (paymentType[i].contains("CHARGED")) {
+            }
+            else if (paymentType[i].contains("CHARGED"))
+            {
                 totalChargesRXAmt += paymentAmt[i];
                 totalChargesRXAmt = round(totalChargesRXAmt);
             }
 
         }
-        if (changeDue > 0) {
+        if (changeDue > 0)
+        {
             totalCashAmt += totalCoinsAmt;
             totalCashAmt -= changeDue;
             String cash = Double.toString(totalCashAmt);
             boolean isNegative = false;
-            if (totalCashAmt < 0) {
+            if (totalCashAmt < 0)
+            {
                 isNegative = true;
             }
             totalCashAmt = Double.parseDouble(cash.substring(0, cash.indexOf('.')));
             totalCoinsAmt = Double.parseDouble(cash.substring(cash.indexOf('.')));
             totalCoinsAmt = round(totalCoinsAmt);
             totalCashAmt = round(totalCashAmt);
-            if (isNegative) {
+            if (isNegative)
+            {
                 totalCoinsAmt = round(totalCoinsAmt * -1);
             }
         }
 
         boolean charged = false;//This is used to add items to charge account arraylist
-        if (paymentType[0].contains("CHARGED")) {
+        if (paymentType[0].contains("CHARGED"))
+        {
             charged = true;
         }
-        for (Item item : curCart.getItems()) {
+        for (Item item : curCart.getItems())
+        {
             totalTaxCharged = round(totalTaxCharged + item.getTaxTotal());
-            if (item.getCategory() == 853) {//ACCOUNT PAYEMENT!
-                if (ARAccountName != null && !ARAccountName.isEmpty() && ARAccountName.contains(item.getName())) {//if account name isnt null, isnt empty, and contains the account already
+            if (item.getCategory() == 853)
+            {//ACCOUNT PAYEMENT!
+                if (ARAccountName != null && !ARAccountName.isEmpty() && ARAccountName.contains(item.getName()))
+                {//if account name isnt null, isnt empty, and contains the account already
                     int index = ARAccountName.indexOf(item.getName());
                     double amount = round(amountPaidToARAccount.get(index) + item.getTotal());
                     amountPaidToARAccount.set(index, amount);
-                } else {
+                }
+                else
+                {
                     ARAccountName.add(item.getName());
                     amountPaidToARAccount.add(item.getTotal());
                 }
                 totalARPayments = round(totalARPayments + item.getTotal());
-            } else if (item.getCategory() == 854) {//DME ACCOUNT PAYMENT!
-                if (DMEAccountName != null && !DMEAccountName.isEmpty() && DMEAccountName.contains(item.getName())) {//if account name isnt null, isnt empty, and contains the account already
+            }
+            else if (item.getCategory() == 854)
+            {//DME ACCOUNT PAYMENT!
+                if (DMEAccountName != null && !DMEAccountName.isEmpty() && DMEAccountName.contains(item.getName()))
+                {//if account name isnt null, isnt empty, and contains the account already
                     int index = DMEAccountName.indexOf(item.getName());
                     double amount = round(amountPaidToDMEAccount.get(index) + item.getTotal());
                     amountPaidToDMEAccount.set(index, amount);
-                } else {
+                }
+                else
+                {
                     DMEAccountName.add(item.getName());
                     amountPaidToDMEAccount.add(item.getTotal());
                 }
                 totalDMEPayments = round(totalDMEPayments + item.getTotal());
-            } else if (item.getCategory() == 855) {//NEWSPAPER
+            }
+            else if (item.getCategory() == 855)
+            {//NEWSPAPER
                 totalPaperSales += item.getPriceOfItemsBeforeTax();
-            } else if (item.isRX && !item.isPreCharged()) {//RX
+            }
+            else if (item.isRX && !item.isPreCharged())
+            {//RX
                 System.out.println("HERE2!");
                 totalRXCoppay += item.getPriceOfItemsBeforeTax();
-            } else if (item.isRX() && item.isPreCharged()) {
+            }
+            else if (item.isRX() && item.isPreCharged())
+            {
                 //DO NOTHING!
-            } else if (item.getCategory() == 856) {
+            }
+            else if (item.getCategory() == 856)
+            {
                 totalAmericanGreetings += item.getPriceOfItemsBeforeTax();
-            } else if (item.getCategory() == 860) {
+            }
+            else if (item.getCategory() == 860)
+            {
                 totalUPSSales += item.getPriceOfItemsBeforeTax();
 
-            } else if (item.getCategory() == 621 || item.getCategory() == 622 || item.getCategory() == 623 || item.getCategory() == 624 || item.getCategory() == 628 || item.getCategory() == 631 || item.getCategory() == 632 || item.getCategory() == 633 || item.getCategory() == 634 || item.getCategory() == 635 || item.getCategory() == 636 || item.getCategory() == 637 || item.getCategory() == 639 || item.getCategory() == 640 || item.getCategory() == 641 || item.getCategory() == 642 || item.getCategory() == 643) {//DME
-                if (item.isTaxable()) {
+            }
+            else if (item.getCategory() == 621 || item.getCategory() == 622 || item.getCategory() == 623 || item.getCategory() == 624 || item.getCategory() == 628 || item.getCategory() == 631 || item.getCategory() == 632 || item.getCategory() == 633 || item.getCategory() == 634 || item.getCategory() == 635 || item.getCategory() == 636 || item.getCategory() == 637 || item.getCategory() == 639 || item.getCategory() == 640 || item.getCategory() == 641 || item.getCategory() == 642 || item.getCategory() == 643)
+            {//DME
+                if (item.isTaxable())
+                {
                     dmeWithTax += item.getPriceOfItemsBeforeTax();
-                } else {
+                }
+                else
+                {
                     dmeWithoutTax += item.getPriceOfItemsBeforeTax();
                 }
-            } else if (item.itemName.toUpperCase().contentEquals("LUNCH")) {
-                if (employeeCheckoutName.contentEquals("NO")) {
+            }
+            else if (item.itemName.toUpperCase().contentEquals("LUNCH"))
+            {
+                if (employeeCheckoutName.contentEquals("NO"))
+                {
                     lunchErrorLog.add(clerkName + " Failed to enter Employee for Lunch in amount of: $" + item.getTotal());
                 }
-            } else {//MUST BE AN OTC CATEGORY!
-                if (item.isTaxable()) {
+            }
+            else
+            {//MUST BE AN OTC CATEGORY!
+                if (item.isTaxable())
+                {
                     otcTaxedTotal += item.getPriceOfItemsBeforeTax();
-                } else {
+                }
+                else
+                {
                     otcNonTaxedTotal += item.getPriceOfItemsBeforeTax();
                 }
             }
 
-            if (charged) {
-                if (accountNameCharged != null && accountNameCharged != null && accountNameCharged.contains(paymentType[0].substring(11)) && !item.isPreCharged) {
+            if (charged)
+            {
+                if (accountNameCharged != null && accountNameCharged != null && accountNameCharged.contains(paymentType[0].substring(11)) && !item.isPreCharged)
+                {
                     int index = accountNameCharged.indexOf(paymentType[0].substring(11));
                     double amount = round(amountChargedToAccount.get(index) + item.getTotal());
                     amountChargedToAccount.set(index, amount);
@@ -293,7 +357,9 @@ public class DrawerReport implements Serializable {
                     items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getTotal()));
                     System.out.println(index + "SIZE OF " + itemsChargedToAccount.size());
 
-                } else if (!item.isPreCharged) {
+                }
+                else if (!item.isPreCharged)
+                {
                     accountNameCharged.add(paymentType[0].substring(11));
                     amountChargedToAccount.add(round((item.getTotal())));
                     ArrayList<String> items = new ArrayList<String>();
@@ -304,29 +370,41 @@ public class DrawerReport implements Serializable {
                 }//end else not added yet
             }//end if Charged
 
-            if (!employeeCheckoutName.contentEquals("NO")) {
+            if (!employeeCheckoutName.contentEquals("NO"))
+            {
                 //lunch counter
-                if (!employeesWhoPaidForItems.contains(employeeCheckoutName)) {
+                if (!employeesWhoPaidForItems.contains(employeeCheckoutName))
+                {
                     employeesWhoPaidForItems.add(employeeCheckoutName);
                     ArrayList<String> tempItem = new ArrayList<>();
                     tempItem.add(item.getQuantity() + "x " + item.getName() + " " + item.getTotal());
                     itemsEmployeesBought.add(tempItem);
                     amtEmployeePaidForAllItems.add(item.getTotal());
-                } else {
+                }
+                else
+                {
                     int indexOfEmp = employeesWhoPaidForItems.indexOf(employeeCheckoutName);
                     itemsEmployeesBought.get(indexOfEmp).add(item.getQuantity() + "x " + item.getName() + " " + item.getTotal());
                     Double temp = item.getTotal() + amtEmployeePaidForAllItems.get(indexOfEmp);
                     amtEmployeePaidForAllItems.set(indexOfEmp, temp);
                 }
-                if (item.getName().toUpperCase().contentEquals("LUNCH")) {
+                if (item.getName().toUpperCase().contentEquals("LUNCH"))
+                {
                     lunchTotalAmt += item.getTotal();
-                    if (paymentType[0].contains("CASH")) {
+                    if (paymentType[0].contains("CASH"))
+                    {
                         lunchTotalCash += item.getTotal();
-                    } else if (paymentType[0].contains("CREDIT")) {
+                    }
+                    else if (paymentType[0].contains("CREDIT"))
+                    {
                         lunchTotalCredit += item.getTotal();
-                    } else if (paymentType[0].contains("DEBIT")) {
+                    }
+                    else if (paymentType[0].contains("DEBIT"))
+                    {
                         lunchTotalDebit += item.getTotal();
-                    } else if (paymentType[0].contains("CHECK")) {
+                    }
+                    else if (paymentType[0].contains("CHECK"))
+                    {
                         lunchTotalCheck += item.getTotal();
                     }
                 }
@@ -343,14 +421,16 @@ public class DrawerReport implements Serializable {
 
         String cash = Double.toString(totalCashAmt);
         boolean isNegative = false;
-        if (totalCashAmt < 0) {
+        if (totalCashAmt < 0)
+        {
             isNegative = true;
         }
         totalCashAmt = Double.parseDouble(cash.substring(0, cash.indexOf('.')));
         totalCoinsAmt = Double.parseDouble(cash.substring(cash.indexOf('.')));
         totalCoinsAmt = round(totalCoinsAmt);
         totalCashAmt = round(totalCashAmt);
-        if (isNegative) {
+        if (isNegative)
+        {
             totalCoinsAmt = round(totalCoinsAmt * -1);
         }
     }
@@ -367,7 +447,8 @@ public class DrawerReport implements Serializable {
     public void printReport() {
         System.out.println("EMPLOYEE TRANSACTIONS:");
         int index = 0;
-        for (String name : employeeNames) {
+        for (String name : employeeNames)
+        {
             System.out.println(name + " " + employeeTransactions.get(index));
             index++;
         }
@@ -386,14 +467,16 @@ public class DrawerReport implements Serializable {
 
         System.out.println("\nAR ACCOUNTS AND PAYMENTS");
         index = 0;
-        for (String name : ARAccountName) {
+        for (String name : ARAccountName)
+        {
             System.out.println(name + " " + amountPaidToARAccount.get(index));
             index++;
         }
 
         System.out.println("\nDME ACCOUNTS AND PAYMENTS");
         index = 0;
-        for (String name : DMEAccountName) {
+        for (String name : DMEAccountName)
+        {
             System.out.println(name + " " + amountPaidToDMEAccount.get(index));
             index++;
         }
@@ -401,11 +484,13 @@ public class DrawerReport implements Serializable {
         System.out.println("Charges");
 
         index = 0;
-        for (String s : accountNameCharged) {
+        for (String s : accountNameCharged)
+        {
             System.out.println("Account Name: " + s);
             System.out.println("Total Charged: " + amountChargedToAccount.get(index));
             ArrayList<String> temp = itemsChargedToAccount.get(index);
-            for (String item : temp) {
+            for (String item : temp)
+            {
                 System.out.println(item);
             }
             System.out.println();
@@ -414,7 +499,8 @@ public class DrawerReport implements Serializable {
 
         System.out.println("\nPAID OUTS:");
         index = 0;
-        for (String s : descriptionsPO) {
+        for (String s : descriptionsPO)
+        {
             System.out.println(s + "  " + amountsPO.get(index));
             index++;
         }
@@ -433,26 +519,32 @@ public class DrawerReport implements Serializable {
         System.out.print("Lunch Cash Total Collected: $" + lunchTotalCash + "\n");
         System.out.print("Lunch Credit Total Collected: $" + lunchTotalCredit + "\n");
         System.out.print("Total UPS Collected: " + totalUPSSales + "\n\n");
-        if (!masterRefundDescriptionAndAmt.isEmpty()) {
+        if (!masterRefundDescriptionAndAmt.isEmpty())
+        {
             System.out.print("\nMaster Refunds: \n");
-            for (String s : masterRefundDescriptionAndAmt) {
+            for (String s : masterRefundDescriptionAndAmt)
+            {
                 System.out.print(s + "\n");
             }
         }
         index = 0;
-        for (String s : employeesWhoPaidForItems) {
+        for (String s : employeesWhoPaidForItems)
+        {
             System.out.print("Employee Name: " + s + "\n");
             System.out.print("Total Paid: " + amtEmployeePaidForAllItems.get(index) + "\n");
             ArrayList<String> temp = itemsEmployeesBought.get(index);
-            for (String item : temp) {
+            for (String item : temp)
+            {
                 System.out.print(item + "\n");
             }
             System.out.print("\n");
             index++;
         }
 
-        if (!lunchErrorLog.isEmpty()) {
-            for (String error : lunchErrorLog) {
+        if (!lunchErrorLog.isEmpty())
+        {
+            for (String error : lunchErrorLog)
+            {
                 System.out.println(error);
             }
             System.out.println();
@@ -460,18 +552,22 @@ public class DrawerReport implements Serializable {
     }
 
     public void generateReport(String date) {
-        try {
-            if (!accountNameCharged.isEmpty() || !ARAccountName.isEmpty()) {
+        try
+        {
+            if (!accountNameCharged.isEmpty() || !ARAccountName.isEmpty())
+            {
                 fw = new FileWriter(HOLLIEFILENAME + date + ".txt");//Hollie's Accounts (RX)
                 bw = new BufferedWriter(fw);
                 bw.write("Charges: \n");
 
                 int index = 0;
-                for (String s : accountNameCharged) {
+                for (String s : accountNameCharged)
+                {
                     bw.write("Account Name: " + s + "\n");
                     bw.write("Total Charged: " + amountChargedToAccount.get(index) + "\n");
                     ArrayList<String> temp = itemsChargedToAccount.get(index);
-                    for (String item : temp) {
+                    for (String item : temp)
+                    {
                         bw.write(item + "\n");
                     }
                     bw.write("\n");
@@ -480,28 +576,38 @@ public class DrawerReport implements Serializable {
 
                 bw.write("\n Account Payments: \n");
                 index = 0;
-                for (String name : ARAccountName) {
+                for (String name : ARAccountName)
+                {
                     bw.write(name + " " + amountPaidToARAccount.get(index) + "\n");
                     index++;
                 }
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
 
             e.printStackTrace();
 
-        } finally {
+        }
+        finally
+        {
 
-            try {
+            try
+            {
 
-                if (bw != null) {
+                if (bw != null)
+                {
                     bw.close();
                 }
 
-                if (fw != null) {
+                if (fw != null)
+                {
                     fw.close();
                 }
 
-            } catch (IOException ex) {
+            }
+            catch (IOException ex)
+            {
 
                 ex.printStackTrace();
 
@@ -509,35 +615,47 @@ public class DrawerReport implements Serializable {
 
         }
 
-        try {
-            if (!DMEAccountName.isEmpty()) {
+        try
+        {
+            if (!DMEAccountName.isEmpty())
+            {
                 fw = new FileWriter(DEBBIEFILENAME + date + ".txt");//Debbie's Accounts (RX)
                 bw = new BufferedWriter(fw);
                 int index = 0;
                 bw.write("Account Payments: \n");
-                for (String name : DMEAccountName) {
+                for (String name : DMEAccountName)
+                {
                     bw.write(name + " " + amountPaidToDMEAccount.get(index) + "\n");
                     index++;
                 }
             }
 
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
 
             e.printStackTrace();
 
-        } finally {
+        }
+        finally
+        {
 
-            try {
+            try
+            {
 
-                if (bw != null) {
+                if (bw != null)
+                {
                     bw.close();
                 }
 
-                if (fw != null) {
+                if (fw != null)
+                {
                     fw.close();
                 }
 
-            } catch (IOException ex) {
+            }
+            catch (IOException ex)
+            {
 
                 ex.printStackTrace();
 
@@ -545,7 +663,8 @@ public class DrawerReport implements Serializable {
 
         }
 
-        try {
+        try
+        {
             fw = new FileWriter(REPORTFILENAME + date + ".txt");//Report for Hollie
             bw = new BufferedWriter(fw);
             bw.write(totalCoinsAmt + "\n");
@@ -562,7 +681,8 @@ public class DrawerReport implements Serializable {
             bw.write(totalChargesRXAmt + "\n");
 
             double total = 0;
-            for (double amt : amountsPO) {
+            for (double amt : amountsPO)
+            {
                 total += amt;
             }
             total = round(total);
@@ -580,23 +700,27 @@ public class DrawerReport implements Serializable {
             bw.write(totalAmericanGreetings + "\n");
             bw.write(totalUPSSales + "\n");
 
-            if (!masterRefundDescriptionAndAmt.isEmpty()) {
+            if (!masterRefundDescriptionAndAmt.isEmpty())
+            {
                 bw.write("\nMaster Refunds: \n");
-                for (String s : masterRefundDescriptionAndAmt) {
+                for (String s : masterRefundDescriptionAndAmt)
+                {
                     bw.write(s + "\n");
                 }
             }
 
             bw.write("\nEMPLOYEE TRANSACTIONS:\n");
             int index = 0;
-            for (String name : employeeNames) {
+            for (String name : employeeNames)
+            {
                 bw.write(name + "  " + employeeTransactions.get(index) + "\n");
                 index++;
             }
 
             bw.write("\nPAID OUTS:\n");
             index = 0;
-            for (String s : descriptionsPO) {
+            for (String s : descriptionsPO)
+            {
                 bw.write(s + "  " + amountsPO.get(index) + "\n");
                 index++;
             }
@@ -608,41 +732,54 @@ public class DrawerReport implements Serializable {
             bw.write("Lunch Credit Total Collected: $" + lunchTotalCredit + "\n\n");
 
             index = 0;
-            for (String s : employeesWhoPaidForItems) {
+            for (String s : employeesWhoPaidForItems)
+            {
                 bw.write("Employee Name: " + s + "\n");
                 bw.write("Total Paid: " + amtEmployeePaidForAllItems.get(index) + "\n");
                 ArrayList<String> temp = itemsEmployeesBought.get(index);
-                for (String item : temp) {
+                for (String item : temp)
+                {
                     bw.write(item + "\n");
                 }
                 bw.write("\n");
                 index++;
             }
 
-            if (!lunchErrorLog.isEmpty()) {
-                for (String error : lunchErrorLog) {
+            if (!lunchErrorLog.isEmpty())
+            {
+                for (String error : lunchErrorLog)
+                {
                     bw.write(error + "\n");
                 }
                 bw.write("\n");
             }
 
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
 
             e.printStackTrace();
 
-        } finally {
+        }
+        finally
+        {
 
-            try {
+            try
+            {
 
-                if (bw != null) {
+                if (bw != null)
+                {
                     bw.close();
                 }
 
-                if (fw != null) {
+                if (fw != null)
+                {
                     fw.close();
                 }
 
-            } catch (IOException ex) {
+            }
+            catch (IOException ex)
+            {
 
                 ex.printStackTrace();
 

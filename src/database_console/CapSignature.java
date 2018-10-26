@@ -1,7 +1,7 @@
 package database_console;
 
 /**
- * @author A.Smith
+ @author A.Smith
  */
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -90,7 +90,8 @@ public class CapSignature extends JDialog {//implements Runnable {
             printError(new Exception());
 
         }*/
-        try {
+        try
+        {
 
             ClassLoader cl = (com.topaz.sigplus.SigPlus.class).getClassLoader();
             sigObj = (SigPlus) Beans.instantiate(cl, "com.topaz.sigplus.SigPlus");
@@ -126,15 +127,18 @@ public class CapSignature extends JDialog {//implements Runnable {
 
             savePdfButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    if (!hasBeenClicked) {
+                    if (!hasBeenClicked)
+                    {
                         hasBeenClicked = true;
                         Document document = new Document();
-                        if (!new File(remoteDrivePath).exists()) {
+                        if (!new File(remoteDrivePath).exists())
+                        {
 
                             System.out.println("EMERGENCY RX SAVE: couldnt find: " + remoteDrivePath);
                             remoteDrivePath = emergencyDrivePath;
                         }
-                        try {
+                        try
+                        {
                             System.out.println(remoteDrivePath);
                             File theFile = new File(remoteDrivePath + receiptNumber.substring(0, 2) + receiptNumber.substring(4, 6));
                             theFile.mkdirs();
@@ -158,8 +162,10 @@ public class CapSignature extends JDialog {//implements Runnable {
                             img1.scalePercent(15);
                             Paragraph paragraph = new Paragraph();
                             paragraph.add("Fill Date          RX Number          Pickup Date         Clerk                  Insurance\n");
-                            for (Item item : curCart.getItems()) {
-                                if (item.isRX()) {
+                            for (Item item : curCart.getItems())
+                            {
+                                if (item.isRX())
+                                {
                                     String fillDate = item.getFillDate().substring(0, 2) + "/" + item.getFillDate().substring(2, 4) + "/" + item.getFillDate().substring(4, 6);
                                     String insurance = item.getInsurance().trim();
                                     DateFormat dateFormat = new SimpleDateFormat("MMddyy");
@@ -167,9 +173,12 @@ public class CapSignature extends JDialog {//implements Runnable {
                                     String pickupDate = dateFormat.format(date);
                                     String clerk = mf.employeeSelectionHeader.getText().substring(14);
                                     String line = "";
-                                    if (fillDate == null || pickupDate == null || clerk == null || insurance == null) {
+                                    if (fillDate == null || pickupDate == null || clerk == null || insurance == null)
+                                    {
                                         line = "NULL ERROR, REPORT TO DREW";
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         line = String.format("%-20s%-20s%-15s%-20s%-25s", fillDate, item.getRxNumber(), pickupDate, clerk, insurance);
                                     }
                                     paragraph.add(line);
@@ -177,19 +186,26 @@ public class CapSignature extends JDialog {//implements Runnable {
                                 }
                             }
                             paragraph.setAlignment(Element.ALIGN_LEFT);
-                            if (questions) {
+                            if (questions)
+                            {
                                 paragraph.add("Does Patient have medication questions? Yes\n");
-                            } else {
+                            }
+                            else
+                            {
                                 paragraph.add("Does Patient have medication questions? No\n");
                             }
                             document.add(paragraph);
                             document.add(img1);
                             hasBeenSaved = true;
                             setVisible(false);
-                        } catch (DocumentException de) {
+                        }
+                        catch (DocumentException de)
+                        {
                             printError(de);
 
-                        } catch (IOException ioe) {
+                        }
+                        catch (IOException ioe)
+                        {
                             printError(ioe);
                         }
 
@@ -201,9 +217,12 @@ public class CapSignature extends JDialog {//implements Runnable {
             connectionTablet.addItemListener(new ItemListener() {
                 public void itemStateChanged(ItemEvent e) {
 
-                    if (connectionTablet.getSelectedItem() != "SignatureGemLCD4X3") {
+                    if (connectionTablet.getSelectedItem() != "SignatureGemLCD4X3")
+                    {
                         sigObj.setTabletModel(connectionTablet.getSelectedItem());
-                    } else {
+                    }
+                    else
+                    {
                         sigObj.setTabletModel("SignatureGemLCD4X3New"); //properly set up LCD4X3
                     }
 
@@ -213,9 +232,12 @@ public class CapSignature extends JDialog {//implements Runnable {
             connectionChoice.addItemListener(new ItemListener() {
                 public void itemStateChanged(ItemEvent e) {
 
-                    if (connectionChoice.getSelectedItem() != "HSB") {
+                    if (connectionChoice.getSelectedItem() != "HSB")
+                    {
                         sigObj.setTabletComPort(connectionChoice.getSelectedItem());
-                    } else {
+                    }
+                    else
+                    {
                         sigObj.setTabletComPort("HID1"); //properly set up HSB tablet
                     }
 
@@ -244,7 +266,9 @@ public class CapSignature extends JDialog {//implements Runnable {
 
             this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             printError(e);
             return;
         }
@@ -260,20 +284,26 @@ public class CapSignature extends JDialog {//implements Runnable {
 
     Choice connectionChoice = new Choice();
     protected String[] connections
-            = {
-                "HSB"};
+            =
+            {
+                "HSB"
+            };
 
     Choice connectionTablet = new Choice();
     protected String[] tablets
-            = {
-                "SignatureGem1X5"};
+            =
+            {
+                "SignatureGem1X5"
+            };
 
     private void initConnection() {
-        for (int i = 0; i < connections.length; i++) {
+        for (int i = 0; i < connections.length; i++)
+        {
             connectionChoice.add(connections[i]);
         }
 
-        for (int i = 0; i < tablets.length; i++) {
+        for (int i = 0; i < tablets.length; i++)
+        {
             connectionTablet.add(tablets[i]);
         }
 
@@ -311,12 +341,15 @@ public class CapSignature extends JDialog {//implements Runnable {
 
     void printError(Exception e) {
         PrintStream out;
-        try {
+        try
+        {
             out = new PrintStream(new FileOutputStream("ERROR.txt"));
             System.setOut(out);
             System.err.println(e.getMessage());
             System.setErr(out);
-        } catch (FileNotFoundException ex) {
+        }
+        catch (FileNotFoundException ex)
+        {
             Logger.getLogger(CapSignature.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

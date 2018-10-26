@@ -1,8 +1,8 @@
 package database_console;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class Item {
 
@@ -29,9 +29,12 @@ public class Item {
     protected boolean isSetToSplitSave = false;
 
     Item(String UPCorID) {
-        if (UPCorID.length() == 6) {
+        if (UPCorID.length() == 6)
+        {
             mutID = UPCorID;
-        } else {
+        }
+        else
+        {
             itemUPC = UPCorID;
         }
         setup();
@@ -110,9 +113,12 @@ public class Item {
     }
 
     private void setup() {
-        if (!mutID.isEmpty()) {
+        if (!mutID.isEmpty())
+        {
             Database.checkDatabaseForItemByID(this);
-        } else {
+        }
+        else
+        {
             Database.checkDatabaseForItemByUPC(this);
         }
     }
@@ -143,10 +149,13 @@ public class Item {
 
     public void setEmployeeDiscount(boolean isActive) {
         // employeeDiscActive = isActive;
-        if (isActive && employeePrice <= itemPrice) {
+        if (isActive && employeePrice <= itemPrice)
+        {
             employeePrice = itemPrice;
             itemPrice = itemCost;
-        } else if (!isActive) {
+        }
+        else if (!isActive)
+        {
             itemPrice = employeePrice;
         }
     }
@@ -159,9 +168,12 @@ public class Item {
         double totalOnItem = 0;
         double itemP;
         itemP = round(itemPrice * quantity) - round(round(itemPrice * quantity) * percentageDisc);
-        if (isTaxable) {
+        if (isTaxable)
+        {
             totalOnItem = round(itemP + round(itemP * taxRate));
-        } else {
+        }
+        else
+        {
             totalOnItem = round(itemP);
         }
         return totalOnItem;
@@ -180,17 +192,21 @@ public class Item {
 
     double getTaxTotal() {
         double itemP = round(itemPrice * quantity) - round(round(itemPrice * quantity) * percentageDisc);
-        if (isTaxable) {
+        if (isTaxable)
+        {
             double taxTotal = round(itemP * taxRate);
             return taxTotal;
 
-        } else {
+        }
+        else
+        {
             return 0.00;
         }
     }//end getTaxTotal
 
     double getTaxAmtPerItem() {
-        if (isTaxable) {
+        if (isTaxable)
+        {
             return round(taxRate * itemPrice);
         }
         return 0;
@@ -247,12 +263,16 @@ public class Item {
     }//end round
 
     private boolean validateInteger(String integer) {
-        try {
+        try
+        {
             int integ = Integer.parseInt(integer);
-            if (integ < 0) {
+            if (integ < 0)
+            {
                 return false;
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             return false;
         }//end catch
         return true;

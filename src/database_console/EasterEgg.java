@@ -16,16 +16,18 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class EasterEgg {
 
     public EasterEgg(String imageFilePath, String audioFilePath, String specialText1, String specialText2) {
-        if (ConfigFileReader.getPharmacyName().contentEquals("Smiths Super Aid")) {
+        if (ConfigFileReader.getPharmacyName().contentEquals("Smiths Super Aid"))
+        {
             JFrame message1 = new JFrame("");
             ImageIcon icon = new ImageIcon(imageFilePath);
-            try {
+            try
+            {
                 File audioFile = new File(audioFilePath);
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
                 AudioFormat format = audioStream.getFormat();
@@ -38,7 +40,9 @@ public class EasterEgg {
                 JOptionPane.showMessageDialog(message1, specialText1, specialText2, 0, icon);
                 audioClip.stop();
 
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+            }
+            catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex)
+            {
                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
             //end try catch for audio
@@ -46,8 +50,10 @@ public class EasterEgg {
     }
 
     public EasterEgg(String audioFilePath) {
-        if (ConfigFileReader.getPharmacyName().contentEquals("Smiths Super Aid")) {
-            try {
+        if (ConfigFileReader.getPharmacyName().contentEquals("Smiths Super Aid"))
+        {
+            try
+            {
                 File audioFile = new File(audioFilePath);
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
                 AudioFormat format = audioStream.getFormat();
@@ -59,7 +65,9 @@ public class EasterEgg {
                 audioClip.start();
                 // audioClip.stop();
 
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+            }
+            catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex)
+            {
                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

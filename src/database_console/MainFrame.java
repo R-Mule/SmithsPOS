@@ -34,8 +34,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class MainFrame extends javax.swing.JFrame {
 
@@ -61,7 +61,8 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(helpSP);
 
         pharmacyName = ConfigFileReader.getPharmacyName();
-        if (pharmacyName.contentEquals(superaid)) {//This only allows Holiday events for Super-Aid Pharmacy
+        if (pharmacyName.contentEquals(superaid))
+        {//This only allows Holiday events for Super-Aid Pharmacy
             DateFormat dateFormat1 = new SimpleDateFormat("MMdd");//ddyyhhmmss");
             Date date1 = new Date();
             String month;
@@ -69,58 +70,94 @@ public class MainFrame extends javax.swing.JFrame {
             String dayTemp = month.substring(2);
             month = month.substring(0, 2);
             int day = Integer.parseInt(dayTemp);
-            if (month.contentEquals("03")) {//its march
+            if (month.contentEquals("03"))
+            {//its march
                 isMarchMadness = true;
-                if (day >= 1 && day < 18) {//18th is day after St Patricks Day 2018
+                if (day >= 1 && day < 18)
+                {//18th is day after St Patricks Day 2018
                     isSaintPatricksDay = true;
-                } else {
+                }
+                else
+                {
                     isEaster = true;
                 }
-            } else if (month.contentEquals("04")) {
-                if (day == 1) {
+            }
+            else if (month.contentEquals("04"))
+            {
+                if (day == 1)
+                {
                     isMarchMadness = true;
                     isEaster = true;
-                } else if (day < 3) {
+                }
+                else if (day < 3)
+                {
                     isMarchMadness = true;
-                } else {
+                }
+                else
+                {
                     isWeddingMonth = true;
                     quotesActive = false;//disable quotes, due to graphics
                 }
-            } else if (month.contentEquals("11")) {
+            }
+            else if (month.contentEquals("11"))
+            {
                 isThanksgiving = true;
-            } else if (month.contentEquals("10")) {
+            }
+            else if (month.contentEquals("10"))
+            {
                 isHalloween = true;
                 quotesActive = false;
-            } else if (month.contentEquals("12")) {
-                if (day <= 25) {
+            }
+            else if (month.contentEquals("12"))
+            {
+                if (day <= 25)
+                {
                     isChristmas = true;
                     quotesActive = false;
                 }
-            } else if (month.contentEquals("01")) {
-                if (day > 15) {
+            }
+            else if (month.contentEquals("01"))
+            {
+                if (day > 15)
+                {
                     isValentinesDay = true;
                     quotesActive = false;
                 }
-            } else if (month.contentEquals("02")) {
-                if (day < 15) {
+            }
+            else if (month.contentEquals("02"))
+            {
+                if (day < 15)
+                {
                     isValentinesDay = true;
                 }
-            } else if (month.contentEquals("06")) {
-                if (day > 15) {
+            }
+            else if (month.contentEquals("06"))
+            {
+                if (day > 15)
+                {
                     isFourthOfJuly = true;
                 }
-            } else if (month.contentEquals("07")) {
-                if (day <= 4) {
+            }
+            else if (month.contentEquals("07"))
+            {
+                if (day <= 4)
+                {
                     isFourthOfJuly = true;
-                } else {
+                }
+                else
+                {
                     isSummerTime = true;
 
                     quotesActive = false;
                 }
-            } else if (month.contentEquals("08")) {
+            }
+            else if (month.contentEquals("08"))
+            {
                 isSummerTime = true;
                 quotesActive = false;
-            } else if (month.contentEquals("09")) {
+            }
+            else if (month.contentEquals("09"))
+            {
                 isHalloween = true;
                 quotesActive = false;
                 //nothing right now, give them a month off :)
@@ -132,33 +169,44 @@ public class MainFrame extends javax.swing.JFrame {
         textField.setBounds(100, 800, 200, 20);
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!isSplitSavingActive) {
-                        if (refundCart.isEmpty()) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    if (!isSplitSavingActive)
+                    {
+                        if (refundCart.isEmpty())
+                        {
                             String myText = textField.getText();
-                            try {
-                                if (myText.length() > 11) {
+                            try
+                            {
+                                if (myText.length() > 11)
+                                {
                                     myText = myText.substring(0, 11);
                                 }
 
                                 Item myItem = new Item(myText);
 
-                                if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
+                                if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty())
+                                {//then we have a real item!
                                     curCart.addItem(myItem);
                                     boolean exisits = false;
                                     int index = 0;
                                     int loc = 0;
-                                    for (GuiCartItem item : guiItems) {
+                                    for (GuiCartItem item : guiItems)
+                                    {
 
-                                        if (item.getUPC().contentEquals(myItem.getUPC())) {
+                                        if (item.getUPC().contentEquals(myItem.getUPC()))
+                                        {
                                             exisits = true;
                                             loc = index;
                                         }
                                         index++;
                                     }
-                                    if (exisits) {
+                                    if (exisits)
+                                    {
                                         guiItems.get(loc).updateQuantityLabelAmount();
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                     }
 
@@ -166,18 +214,26 @@ public class MainFrame extends javax.swing.JFrame {
                                     updateCartScreen();
                                 }
                                 textField.setText("");
-                            } catch (StringIndexOutOfBoundsException e) {
+                            }
+                            catch (StringIndexOutOfBoundsException e)
+                            {
                                 textField.setText("");
                             }//end catch
-                        } else {
+                        }
+                        else
+                        {
                             textField.setText("");
                         }
-                    } else {
+                    }
+                    else
+                    {
                         textField.setText("");
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "Cannot add item while Splitting Tickets!");
                     }
-                } else {
+                }
+                else
+                {
                     textField.setText("");
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
@@ -188,11 +244,13 @@ public class MainFrame extends javax.swing.JFrame {
         this.setVisible(true);
 
         //HEADERS FOR ITEMS
-        if (isHalloween) {
+        if (isHalloween)
+        {
             setGUITextColor(Color.RED);
         }
 
-        if (isFourthOfJuly) {
+        if (isFourthOfJuly)
+        {
             setGUITextColor(Color.WHITE);
         }
         //TotalNumRXinCart
@@ -325,7 +383,8 @@ public class MainFrame extends javax.swing.JFrame {
         lookupReceiptByRXButton.setSize(100, 100);
         lookupReceiptByRXButton.setBackground(new Color(255, 200, 100));
 
-        if (quotesActive) {
+        if (quotesActive)
+        {
             quoteButton.setVisible(true);
             //this creates the quoteButton
             quoteButton.setLocation(10, 10);
@@ -334,24 +393,31 @@ public class MainFrame extends javax.swing.JFrame {
             quoteButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     String temp = Database.getQuote();
-                    while (!temp.contentEquals("") && temp.contentEquals(quote.getText())) {
+                    while (!temp.contentEquals("") && temp.contentEquals(quote.getText()))
+                    {
                         temp = Database.getQuote();
                     }
                     quote.setText(temp);
                     textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
                 }
             });
-        } else {
+        }
+        else
+        {
             quoteButton.setVisible(false);
         }
         this.add(quoteButton);
 
         resaveTicket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!curCart.isEmpty()) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    if (!curCart.isEmpty())
+                    {
                         saveTicket(loadedTicketID);
-                    } else {//CARTS EMPTY!
+                    }
+                    else
+                    {//CARTS EMPTY!
                         //notify nothing to save
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "There is nothing in the cart to save!");
@@ -359,7 +425,9 @@ public class MainFrame extends javax.swing.JFrame {
 
                     updateCartScreen();
 
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -370,8 +438,10 @@ public class MainFrame extends javax.swing.JFrame {
 
         createTicket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!curCart.isEmpty()) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    if (!curCart.isEmpty())
+                    {
                         JFrame textInputFrame = new JFrame("");
                         String id = JOptionPane.showInputDialog(
                                 textInputFrame,
@@ -380,7 +450,9 @@ public class MainFrame extends javax.swing.JFrame {
                                 JOptionPane.INFORMATION_MESSAGE
                         );
                         saveTicket(id);
-                    } else {//CARTS EMPTY!
+                    }
+                    else
+                    {//CARTS EMPTY!
                         //notify nothing to save
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "There is nothing in the cart to save!");
@@ -388,7 +460,9 @@ public class MainFrame extends javax.swing.JFrame {
 
                     updateCartScreen();
 
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -399,49 +473,68 @@ public class MainFrame extends javax.swing.JFrame {
 
         loadTicket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
                     //System.out.println("HELLO");
                     JFrame textInputFrame = new JFrame("");
                     JTextField field1 = new JTextField();
 
-                    Object[] message = {
-                        "Enter the customer account name to continue:", field1};
+                    Object[] message =
+                    {
+                        "Enter the customer account name to continue:", field1
+                    };
                     field1.setText("");
                     field1.addAncestorListener(new RequestFocusListener());
 
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Ticket Name", JOptionPane.OK_CANCEL_OPTION);
-                    if (option == JOptionPane.OK_OPTION) {
+                    if (option == JOptionPane.OK_OPTION)
+                    {
                         String id = field1.getText();
                         id = id.toUpperCase();
-                        if (id != null && !id.isEmpty() && Database.checkDatabaseForTicket(id)) {
+                        if (id != null && !id.isEmpty() && Database.checkDatabaseForTicket(id))
+                        {
                             boolean allowed = true;
-                            if (id.contentEquals("HOW ABOUT A MAGIC TRICK?")) {
-                                if (curCart.getItems().size() == 1 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22")) {
+                            if (id.contentEquals("HOW ABOUT A MAGIC TRICK?"))
+                            {
+                                if (curCart.getItems().size() == 1 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22"))
+                                {
                                     allowed = true;
-                                } else {
+                                }
+                                else
+                                {
                                     allowed = false;
                                 }
                             }
-                            if (id.contentEquals("WET BANDITS")) {
-                                if (!isChristmas) {
+                            if (id.contentEquals("WET BANDITS"))
+                            {
+                                if (!isChristmas)
+                                {
                                     allowed = false;
                                 }
                             }
-                            if (id.contentEquals("MICHAEL MYERS")) {
-                                if (!isHalloween) {
+                            if (id.contentEquals("MICHAEL MYERS"))
+                            {
+                                if (!isHalloween)
+                                {
                                     allowed = false;
                                 }
                             }
-                            if (id.contentEquals("WINGARDIUM LEVIOSA")) {
-                                for (Item item : curCart.getItems()) {
-                                    if (item.itemName.contentEquals("Platform") && item.itemPrice == 9.75) {
+                            if (id.contentEquals("WINGARDIUM LEVIOSA"))
+                            {
+                                for (Item item : curCart.getItems())
+                                {
+                                    if (item.itemName.contentEquals("Platform") && item.itemPrice == 9.75)
+                                    {
 
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         allowed = false;
                                     }
                                 }
                             }
-                            if (allowed) {
+                            if (allowed)
+                            {
                                 loadTicketWithId(id);
                                 loadedTicketID = id;
                                 resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
@@ -449,10 +542,13 @@ public class MainFrame extends javax.swing.JFrame {
                                 resaveTicket.setVisible(true);
                                 updateCartScreen();
                             }
-                        } else {//Load All Tickets into selectable GUI
+                        }
+                        else
+                        {//Load All Tickets into selectable GUI
                             //Sorry no such ticket found
                             String[] choices = Database.getAllTicketsNames();
-                            if (choices != null && choices.length > 0) {
+                            if (choices != null && choices.length > 0)
+                            {
 
                                 id = (String) JOptionPane.showInputDialog(null, "Couldn't find that ticket? Check these?...",
                                         "Choose Ticket", JOptionPane.QUESTION_MESSAGE, null, // Use
@@ -460,7 +556,8 @@ public class MainFrame extends javax.swing.JFrame {
                                         // icon
                                         choices, // Array of choices
                                         choices[0]); // Initial choice
-                                if (id != null) {
+                                if (id != null)
+                                {
                                     loadTicketWithId(id);
                                     loadedTicketID = id;
                                     resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
@@ -473,7 +570,9 @@ public class MainFrame extends javax.swing.JFrame {
 
                     }
 
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -487,21 +586,28 @@ public class MainFrame extends javax.swing.JFrame {
                 JFrame textInputFrame = new JFrame("");
                 JTextField field1 = new JTextField();
 
-                Object[] message = {
-                    "Enter RX Number to find filename:", field1};
+                Object[] message =
+                {
+                    "Enter RX Number to find filename:", field1
+                };
                 field1.setText("");
                 field1.addAncestorListener(new RequestFocusListener());
 
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter RX Number", JOptionPane.OK_CANCEL_OPTION);
-                if (option == JOptionPane.OK_OPTION) {
+                if (option == JOptionPane.OK_OPTION)
+                {
                     String id = field1.getText();
 
-                    if (id != null && !id.isEmpty() && validateInteger(id)) {
+                    if (id != null && !id.isEmpty() && validateInteger(id))
+                    {
                         int rxNumber = Integer.parseInt(id);
                         String[] choices = Database.lookupReceiptByRX(rxNumber);
-                        if (choices != null && choices.length > 0) {
-                            Object[] message2 = {
-                                "Here is what I found:", choices, choices[0]};
+                        if (choices != null && choices.length > 0)
+                        {
+                            Object[] message2 =
+                            {
+                                "Here is what I found:", choices, choices[0]
+                            };
 
                             id = (String) JOptionPane.showInputDialog(null, "Results",
                                     "Here is what I found:", JOptionPane.QUESTION_MESSAGE, null, // Use
@@ -509,18 +615,25 @@ public class MainFrame extends javax.swing.JFrame {
                                     // icon
                                     choices, // Array of choices
                                     choices[0]); // Initial choice
-                            if (Desktop.isDesktopSupported()) {
-                                try {
-                                    if (id != null && !id.isEmpty()) {
+                            if (Desktop.isDesktopSupported())
+                            {
+                                try
+                                {
+                                    if (id != null && !id.isEmpty())
+                                    {
                                         String path = ConfigFileReader.getRemoteDrivePath();
                                         File myFile = new File(path + id.substring(0, 2) + id.substring(4, 6) + "\\" + id + ".pdf");
                                         Desktop.getDesktop().open(myFile);
                                     }
-                                } catch (IOException ex) {
+                                }
+                                catch (IOException ex)
+                                {
                                     // no application registered for PDFs
                                 }
                             }
-                        } else {
+                        }
+                        else
+                        {
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "No data for that RX Number.");
                         }
@@ -558,13 +671,15 @@ public class MainFrame extends javax.swing.JFrame {
         //This creates the UPS Payment Button
         upsButton.setLocation(1800, 100);
         upsButton.setSize(100, 100);
-        if (isMarchMadness) {
+        if (isMarchMadness)
+        {
             mmButton.setSize(350, 100);
             mmButton.setLocation(1400, 900);
             mmButton.setVisible(true);
             this.add(mmButton);
         }
-        if (isEaster) {
+        if (isEaster)
+        {
             //EASTER UPDATE
             //EASTER
             ImageIcon easter1img = new ImageIcon("C:/POS/Software/Easter1.png");
@@ -581,7 +696,8 @@ public class MainFrame extends javax.swing.JFrame {
             e2imageLabel.setVisible(true);
             this.add(e2imageLabel);
         }
-        if (isFourthOfJuly) {
+        if (isFourthOfJuly)
+        {
             //Fourth
             //4th of July
             ImageIcon fourth1img = new ImageIcon("C:/POS/Software/4th1.png");
@@ -603,7 +719,8 @@ public class MainFrame extends javax.swing.JFrame {
             fourth3imageLabel.setVisible(true);
             this.add(fourth3imageLabel);
         }
-        if (isValentinesDay) {
+        if (isValentinesDay)
+        {
             ImageIcon fourth1img = new ImageIcon("C:/POS/Software/valentines1.png");
             JLabel fourth1imageLabel = new JLabel(fourth1img);
             ImageIcon fourth2img = new ImageIcon("C:/POS/Software/valentines2.png");
@@ -631,7 +748,8 @@ public class MainFrame extends javax.swing.JFrame {
             this.add(valentines4imageLabel);
         }
 
-        if (isHalloween) {
+        if (isHalloween)
+        {
             //Halloween
             ImageIcon halloween1img = new ImageIcon("C:/POS/Software/halloween1.png");
             JLabel halloween1imageLabel = new JLabel(halloween1img);
@@ -685,7 +803,8 @@ public class MainFrame extends javax.swing.JFrame {
             this.add(halloween8imageLabel);
         }
 
-        if (isChristmas) {
+        if (isChristmas)
+        {
             //Christmas
             ImageIcon christmas1img = new ImageIcon("C:/POS/Software/christmas1.png");
             JLabel christmas1imageLabel = new JLabel(christmas1img);
@@ -727,7 +846,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         }
 
-        if (isSummerTime) {
+        if (isSummerTime)
+        {
             //SUMMER!
             ImageIcon christmas1img = new ImageIcon("C:/POS/Software/beach1.png");
             JLabel christmas1imageLabel = new JLabel(christmas1img);
@@ -769,7 +889,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         }
 
-        if (isThanksgiving) {
+        if (isThanksgiving)
+        {
             ImageIcon thanksgiving1img = new ImageIcon("C:/POS/Software/thanksgiving1.png");
             JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
             ImageIcon thanksgiving2img = new ImageIcon("C:/POS/Software/thanksgiving2.png");
@@ -791,7 +912,8 @@ public class MainFrame extends javax.swing.JFrame {
             this.add(thanksgiving3imgLabel);
         }
 
-        if (isSaintPatricksDay) {
+        if (isSaintPatricksDay)
+        {
             ImageIcon thanksgiving1img = new ImageIcon("C:/POS/Software/saintpt1.png");
             JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
             ImageIcon thanksgiving2img = new ImageIcon("C:/POS/Software/saintpt2.png");
@@ -812,7 +934,8 @@ public class MainFrame extends javax.swing.JFrame {
             thanksgiving3imgLabel.setVisible(true);
             this.add(thanksgiving3imgLabel);
         }
-        if (isWeddingMonth) {
+        if (isWeddingMonth)
+        {
             //Christmas
             ImageIcon christmas1img = new ImageIcon("C:/POS/Software/wedding1.png");
             JLabel christmas1imageLabel = new JLabel(christmas1img);
@@ -948,14 +1071,16 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(clerkLogoutButton);
         this.add(clerkLoginButton);
 
-        if (isMarchMadness) {
+        if (isMarchMadness)
+        {
             mmButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     ArrayList<String> data = Database.getEmployeesAndWinLossMM();
                     System.out.println(data.get(0));
                     JFrame frame = new JFrame("");
                     String dataString = "Name : Wins : Losses\n";
-                    for (String temp : data) {
+                    for (String temp : data)
+                    {
                         dataString += temp + "\n";
                     }
 //custom title, no icon
@@ -974,60 +1099,82 @@ public class MainFrame extends javax.swing.JFrame {
 
                 JTextField field1 = new JTextField();
                 field1.addAncestorListener(new RequestFocusListener());
-                Object[] message = {
-                    "Enter Passcode:", field1};
+                Object[] message =
+                {
+                    "Enter Passcode:", field1
+                };
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Employee Login Menu", JOptionPane.OK_CANCEL_OPTION);
-                if (option == JOptionPane.OK_OPTION) {
-                    if (field1.getText().contentEquals("Prince Ali Ababwa")) {
+                if (option == JOptionPane.OK_OPTION)
+                {
+                    if (field1.getText().contentEquals("Prince Ali Ababwa"))
+                    {
                         boolean found = false;
-                        for (Item item : curCart.getItems()) {
-                            if (item.itemName.contentEquals("Bread") && item.itemPrice == 112519.92 && item.getDiscountPercentage() == 1) {
+                        for (Item item : curCart.getItems())
+                        {
+                            if (item.itemName.contentEquals("Bread") && item.itemPrice == 112519.92 && item.getDiscountPercentage() == 1)
+                            {
                                 found = true;
                             }
                         }
-                        if (found) {
+                        if (found)
+                        {
                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al2.gif", "C:/POS/SOFTWARE/al2.wav", "", "You ain't never had a friend like me!");
                         }
                     }//end if EE Protocol
-                    if (field1.getText().contentEquals("Please")) {//EE Protocol
+                    if (field1.getText().contentEquals("Please"))
+                    {//EE Protocol
 
                         ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/ssj.gif");
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "“I am the hope of the universe.\nI am the answer to all living things that cry out for peace.\nI am protector of the innocent.\nI am the light in the darkness. \nI am truth.\nAlly to good!\nNightmare to you!”", "", 0, icon);
 
-                    } else if (field1.getText().contentEquals("Kevin McCallister")) {
-                        for (Item item : curCart.getItems()) {
-                            if (item.mutID.contentEquals("HAPIZZA") && item.quantity == 11 && isChristmas) {
+                    }
+                    else if (field1.getText().contentEquals("Kevin McCallister"))
+                    {
+                        for (Item item : curCart.getItems())
+                        {
+                            if (item.mutID.contentEquals("HAPIZZA") && item.quantity == 11 && isChristmas)
+                            {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha3.gif", "C:/POS/SOFTWARE/ha3.wav", "", "Did anyone order me a plain cheese?");
                             }
                         }
 
-                    } else if (field1.getText().contentEquals("The One")) {//end EE Protocol
+                    }
+                    else if (field1.getText().contentEquals("The One"))
+                    {//end EE Protocol
                         boolean found1 = false;
                         boolean found2 = false;
                         boolean found3 = false;
                         int cntr = 0;
-                        for (Item item : curCart.getItems()) {
+                        for (Item item : curCart.getItems())
+                        {
                             cntr++;
-                            if (item.mutID.contentEquals("MATRED") && item.percentageDisc == 0.01) {
+                            if (item.mutID.contentEquals("MATRED") && item.percentageDisc == 0.01)
+                            {
                                 found1 = true;
                             }
-                            if (item.itemName.contentEquals("Man") && item.itemPrice == 20.03 && item.percentageDisc == 0.01) {
+                            if (item.itemName.contentEquals("Man") && item.itemPrice == 20.03 && item.percentageDisc == 0.01)
+                            {
                                 found2 = true;
                             }
-                            if (item.itemName.contentEquals("Because I choose to.") && item.itemPrice == 20.03 && item.percentageDisc == 0.01) {
+                            if (item.itemName.contentEquals("Because I choose to.") && item.itemPrice == 20.03 && item.percentageDisc == 0.01)
+                            {
                                 found3 = true;
                             }
                         }
-                        if (found1 && found2 && found3 && cntr == 3) {
+                        if (found1 && found2 && found3 && cntr == 3)
+                        {
                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx4.gif", "C:/POS/SOFTWARE/mx4.wav", "", "You're not human, are you?");
                         }
                     }
-                    if (!field1.getText().isEmpty() && validateInteger(field1.getText())) {
+                    if (!field1.getText().isEmpty() && validateInteger(field1.getText()))
+                    {
                         String clerkName = Database.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
-                        if (clerkName != null) {
+                        if (clerkName != null)
+                        {
                             menuBar.setAllVisible();
-                            if (isHalloween) {
+                            if (isHalloween)
+                            {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mario1.wav");
                             }
                             employeeSelectionHeader.setText("Active Clerk: " + clerkName);
@@ -1066,32 +1213,41 @@ public class MainFrame extends javax.swing.JFrame {
 
         paperButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
                     Item myItem = new Item("NEWSPAPER");
 
-                    if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty()) {//then we have a real item!
+                    if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty())
+                    {//then we have a real item!
                         curCart.addItem(myItem);
                         boolean exisits = false;
                         int index = 0;
                         int loc = 0;
-                        for (GuiCartItem item : guiItems) {
+                        for (GuiCartItem item : guiItems)
+                        {
 
-                            if (item.getUPC().contentEquals(myItem.getUPC())) {
+                            if (item.getUPC().contentEquals(myItem.getUPC()))
+                            {
                                 exisits = true;
                                 loc = index;
                             }
                             index++;
                         }
-                        if (exisits) {
+                        if (exisits)
+                        {
                             guiItems.get(loc).updateQuantityLabelAmount();
-                        } else {
+                        }
+                        else
+                        {
                             guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                         }
 
                         displayChangeDue = false;
                         updateCartScreen();
                     }
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -1101,25 +1257,32 @@ public class MainFrame extends javax.swing.JFrame {
 
         refundButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
                     //System.out.println("HELLO");
-                    if (curCart.isEmpty()) {
+                    if (curCart.isEmpty())
+                    {
                         JFrame textInputFrame = new JFrame("");
                         JTextField field1 = new JTextField();
 
-                        Object[] message = {
-                            "Enter receipt number:", field1};
+                        Object[] message =
+                        {
+                            "Enter receipt number:", field1
+                        };
                         field1.setText("");
                         field1.addAncestorListener(new RequestFocusListener());
 
                         int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Receipt Number", JOptionPane.OK_CANCEL_OPTION);
-                        if (option == JOptionPane.OK_OPTION) {
+                        if (option == JOptionPane.OK_OPTION)
+                        {
                             String receiptNum = field1.getText();
                             receiptNum = receiptNum.toUpperCase();
-                            if (receiptNum != null && !receiptNum.isEmpty()) {
+                            if (receiptNum != null && !receiptNum.isEmpty())
+                            {
                                 Database.loadReceipt(receiptNum);
                                 loadReceipt(receiptNum);
-                                if (!guiRefundItems.isEmpty()) {
+                                if (!guiRefundItems.isEmpty())
+                                {
                                     //Time to hide some buttons...
                                     dmePaymentButton.setVisible(false);
                                     rxButton.setVisible(false);
@@ -1143,20 +1306,25 @@ public class MainFrame extends javax.swing.JFrame {
                                     //creditButton.setVisible(false);
                                     debitButton.setVisible(false);
                                     upsButton.setVisible(false);
-                                    if (isMarchMadness) {
+                                    if (isMarchMadness)
+                                    {
                                         mmButton.setVisible(false);
                                     }
                                     menuBar.setAllNotVisible();//THIS HIDES MENU BAR DURING REFUND!!
                                     cancelRefundButton.setVisible(true);
                                     updateCartScreen();
                                 }
-                            } else {//Load All Tickets into selectable GUI
+                            }
+                            else
+                            {//Load All Tickets into selectable GUI
                                 //Sorry no such receipt found
                             }//end else
 
                         }
                     }
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -1167,41 +1335,53 @@ public class MainFrame extends javax.swing.JFrame {
 
         massDiscountButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!curCart.isEmpty()) {
+                if (!curCart.isEmpty())
+                {
                     JFrame textInputFrame = new JFrame("");
                     JTextField field1 = new JTextField();
                     field1.addFocusListener(new java.awt.event.FocusAdapter() {
                         public void focusLost(java.awt.event.FocusEvent evt) {
                             field1.setSelectionStart(0);
                             field1.setSelectionEnd(12);
-                            if (!validateInteger(field1.getText())) {
+                            if (!validateInteger(field1.getText()))
+                            {
                                 field1.setText("0");
                             }//end if
                         }//end focusGained
                     });
-                    Object[] message = {
-                        "Discount Percentage: %", field1};
+                    Object[] message =
+                    {
+                        "Discount Percentage: %", field1
+                    };
                     field1.setText("0");
                     field1.setSelectionStart(0);
                     field1.setSelectionEnd(2);
 
                     field1.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Mass Discount Menu", JOptionPane.OK_CANCEL_OPTION);
-                    if (option == JOptionPane.OK_OPTION) {
-                        if (!validateInteger(field1.getText())) {
+                    if (option == JOptionPane.OK_OPTION)
+                    {
+                        if (!validateInteger(field1.getText()))
+                        {
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Improper discount percentage.");
-                        } else {
+                        }
+                        else
+                        {
                             double discPer = Double.parseDouble(field1.getText());
                             discPer /= 100;//move decimal 2 places to get percentage
                             //discPer = discPer;
-                            if (discPer > 1 || discPer < 0) {
+                            if (discPer > 1 || discPer < 0)
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Not a valid discount amount.");
-                            } else {
+                            }
+                            else
+                            {
                                 System.out.println(discPer);
                                 curCart.setMassDiscount(discPer);
-                                for (GuiCartItem tempItem : guiItems) {
+                                for (GuiCartItem tempItem : guiItems)
+                                {
                                     tempItem.setMassDiscount();
                                 }
                                 updateCartScreen();
@@ -1215,23 +1395,34 @@ public class MainFrame extends javax.swing.JFrame {
 
         massPrechargeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!curCart.isEmpty()) {
-                    if (isMassPreCharged) {
+                if (!curCart.isEmpty())
+                {
+                    if (isMassPreCharged)
+                    {
                         massPrechargeButton.setBackground(new Color(255, 0, 0));
-                    } else {
+                    }
+                    else
+                    {
                         massPrechargeButton.setBackground(new Color(0, 255, 0));
                     }
                     isMassPreCharged = !isMassPreCharged;
-                    for (Item item : curCart.getItems()) {
-                        if (item.isRX) {
+                    for (Item item : curCart.getItems())
+                    {
+                        if (item.isRX)
+                        {
                             item.setIsPreCharged(isMassPreCharged);
                         }
                     }
-                    for (GuiCartItem tempItem : guiItems) {
-                        if (tempItem.item.isRX()) {
-                            if (isMassPreCharged) {
+                    for (GuiCartItem tempItem : guiItems)
+                    {
+                        if (tempItem.item.isRX())
+                        {
+                            if (isMassPreCharged)
+                            {
                                 tempItem.setPrechargedFalsePressed(event);
-                            } else {
+                            }
+                            else
+                            {
                                 tempItem.setPrechargedTruePressed(event);
                             }
                         }
@@ -1244,24 +1435,33 @@ public class MainFrame extends javax.swing.JFrame {
 
         massSplitTicketButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!curCart.isEmpty()) {
-                    if (isMassSplitting) {
+                if (!curCart.isEmpty())
+                {
+                    if (isMassSplitting)
+                    {
                         massSplitTicketButton.setBackground(new Color(255, 0, 0));
                         massSplitTicketButton.setText("Mass Off");
-                    } else {
+                    }
+                    else
+                    {
                         massSplitTicketButton.setBackground(new Color(0, 255, 0));
                         massSplitTicketButton.setText("Mass On");
                     }
                     isMassSplitting = !isMassSplitting;
-                    for (Item item : curCart.getItems()) {
+                    for (Item item : curCart.getItems())
+                    {
 
                         item.isSetToSplitSave = isMassSplitting;
 
                     }
-                    for (GuiCartItem tempItem : guiItems) {
-                        if (isMassSplitting) {
+                    for (GuiCartItem tempItem : guiItems)
+                    {
+                        if (isMassSplitting)
+                        {
                             tempItem.notSplitSavingButtonPressed(event);
-                        } else {
+                        }
+                        else
+                        {
                             tempItem.isSplitSavingButtonPressed(event);
                         }
 
@@ -1274,7 +1474,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         AbstractAction rxButtonAA = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
                     JFrame textInputFrame = new JFrame("");
                     JTextField field1 = new JTextField();
                     JTextField field2 = new JTextField();
@@ -1288,19 +1489,23 @@ public class MainFrame extends javax.swing.JFrame {
                     list.setBounds(100, 50, 50, 100);
                     list.setVisibleRowCount(-1);
 
-                    for (int i = 0; i < possibilities.length; i++) {
-                        if (previousInsurance.contentEquals(possibilities[i])) {
+                    for (int i = 0; i < possibilities.length; i++)
+                    {
+                        if (previousInsurance.contentEquals(possibilities[i]))
+                        {
                             list.setSelectedIndex(i);
                         }//end if
                     }//end for
 
                     JScrollPane listScroller = new JScrollPane(list);
                     listScroller.setPreferredSize(new Dimension(250, 80));
-                    Object[] message = {
+                    Object[] message =
+                    {
                         "RX Number:", field1,
                         "Copay:", field3,
                         "Fill Date:", field2,
-                        "Insurance:", list};
+                        "Insurance:", list
+                    };
                     field3.setText("0.00");
                     field2.setSelectionStart(0);
                     field2.setSelectionEnd(6);
@@ -1309,31 +1514,43 @@ public class MainFrame extends javax.swing.JFrame {
                     field1.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "RX Information", JOptionPane.OK_CANCEL_OPTION);
 
-                    if (option == JOptionPane.OK_OPTION) {
+                    if (option == JOptionPane.OK_OPTION)
+                    {
                         int rxNumber;
                         String fillDate;
                         fillDate = field2.getText();
-                        try {
+                        try
+                        {
                             String insurance = (String) list.getSelectedValue();
                             rxNumber = Integer.parseInt(field1.getText());
                             int length = (int) (Math.log10(rxNumber) + 1);
-                            if (!validateRX(length, rxNumber, insurance, fillDate)) {//invalid RXNumber
+                            if (!validateRX(length, rxNumber, insurance, fillDate))
+                            {//invalid RXNumber
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Invalid RX Number");
-                            } else {
+                            }
+                            else
+                            {
 
-                                if (!validateDate(fillDate)) {
+                                if (!validateDate(fillDate))
+                                {
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "Invalid Fill Date");
-                                } else {
+                                }
+                                else
+                                {
                                     String temp = field3.getText();
-                                    if (!validateDouble(temp)) {//check for copay
+                                    if (!validateDouble(temp))
+                                    {//check for copay
                                         JFrame message1 = new JFrame("");
                                         JOptionPane.showMessageDialog(message1, "Invalid Copay");
-                                    } else {//else everything checks out! WE HAVE ALL GOOD DATA!!!
+                                    }
+                                    else
+                                    {//else everything checks out! WE HAVE ALL GOOD DATA!!!
                                         double copay = Double.parseDouble(temp);
                                         Item tempItem = new Item(rxNumber, fillDate, insurance, copay, false);
-                                        if (!curCart.containsRX(tempItem.rxNumber, insurance, fillDate)) {
+                                        if (!curCart.containsRX(tempItem.rxNumber, insurance, fillDate))
+                                        {
                                             curCart.addItem(tempItem);
                                             guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                             totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
@@ -1341,10 +1558,13 @@ public class MainFrame extends javax.swing.JFrame {
                                             previousInsurance = insurance;
                                             previousDate = fillDate;
                                             ArrayList<String> ticketIDs = Database.getAllTicketsNamesWithRxNumber(rxNumber);
-                                            if (!ticketIDs.isEmpty()) {
+                                            if (!ticketIDs.isEmpty())
+                                            {
                                                 if (JOptionPane.showConfirmDialog(null, "There are already  ticket(s) with that RX Number. Would you like me to load those?", "WARNING",
-                                                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                                                    for (String id : ticketIDs) {
+                                                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                                                {
+                                                    for (String id : ticketIDs)
+                                                    {
                                                         loadedTicketID = id;
                                                         resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
                                                         resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
@@ -1352,7 +1572,9 @@ public class MainFrame extends javax.swing.JFrame {
                                                         loadTicketWithId(id);
                                                     }
                                                     updateCartScreen();
-                                                } else {
+                                                }
+                                                else
+                                                {
                                                     // no option
                                                 }
                                             }
@@ -1361,7 +1583,9 @@ public class MainFrame extends javax.swing.JFrame {
                                     }
                                 }//end else valid fillDate
                             }//end else valid RXNumber
-                        } catch (NumberFormatException e) {
+                        }
+                        catch (NumberFormatException e)
+                        {
                             //If number is not number for RX, print error msg.
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Invalid RX Number");
@@ -1370,7 +1594,9 @@ public class MainFrame extends javax.swing.JFrame {
                     }//end if
                     updateCartScreen();
 
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -1379,16 +1605,19 @@ public class MainFrame extends javax.swing.JFrame {
         };
         AbstractAction otcButtonAA = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
                     JFrame textInputFrame = new JFrame("");
                     JTextField field1 = new JTextField();
                     JTextField field2 = new JTextField();
                     JTextField field3 = new JTextField();
                     field2.setText(previousDate);
-                    Object[] message = {
+                    Object[] message =
+                    {
                         "Item Name:", field1,
                         "Cost:", field2,
-                        "Price:", field3};
+                        "Price:", field3
+                    };
                     field1.setText("");
                     field2.setText("0.00");
                     field3.setText("");
@@ -1396,20 +1625,30 @@ public class MainFrame extends javax.swing.JFrame {
                     field2.setSelectionEnd(4);
                     field1.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "OTC Item Information", JOptionPane.OK_CANCEL_OPTION);
-                    if (option == JOptionPane.OK_OPTION) {
-                        if (field1.getText().isEmpty()) {
+                    if (option == JOptionPane.OK_OPTION)
+                    {
+                        if (field1.getText().isEmpty())
+                        {
                             //must have some name
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Item must have a name.");
-                        } else {//item has a name
-                            if (!validateDouble(field2.getText())) {//check cost
+                        }
+                        else
+                        {//item has a name
+                            if (!validateDouble(field2.getText()))
+                            {//check cost
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Cost is invalid.");
-                            } else {//cost is good
-                                if (!validateDouble(field3.getText())) {//check price
+                            }
+                            else
+                            {//cost is good
+                                if (!validateDouble(field3.getText()))
+                                {//check price
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "Price is invalid.");
-                                } else {//price is good
+                                }
+                                else
+                                {//price is good
                                     // randomItemCntr++;
                                     DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
                                     Date date = new Date();
@@ -1417,118 +1656,168 @@ public class MainFrame extends javax.swing.JFrame {
                                     tempID = dateFormat.format(date);
                                     System.out.println(tempID);
                                     String upc = 'T' + tempID;
-                                    if (Double.parseDouble(field3.getText()) > 9000 && field1.getText().contentEquals("Son Goku")) {//EE Protocol
+                                    if (Double.parseDouble(field3.getText()) > 9000 && field1.getText().contentEquals("Son Goku"))
+                                    {//EE Protocol
                                         JFrame message1 = new JFrame("");
                                         ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/over9000.jpg");
                                         JOptionPane.showMessageDialog(message1, "", "", 0, icon);
-                                    } else if (field1.getText().contentEquals("I show not your face but your hearts desire") && Double.parseDouble(field3.getText()) == 1114.01) {
+                                    }
+                                    else if (field1.getText().contentEquals("I show not your face but your hearts desire") && Double.parseDouble(field3.getText()) == 1114.01)
+                                    {
                                         boolean part1 = false;
                                         boolean part2 = false;
-                                        for (Item item : curCart.getItems()) {
-                                            if (item.mutID.contentEquals("HPSS2")) {
+                                        for (Item item : curCart.getItems())
+                                        {
+                                            if (item.mutID.contentEquals("HPSS2"))
+                                            {
                                                 part1 = true;
-                                            } else if (item.itemName.contentEquals("Platform") && item.itemPrice == 9.75) {
+                                            }
+                                            else if (item.itemName.contentEquals("Platform") && item.itemPrice == 9.75)
+                                            {
                                                 part2 = true;
                                             }
 
                                         }
-                                        if (part1 && part2) {
+                                        if (part1 && part2)
+                                        {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss3.gif", "C:/POS/SOFTWARE/hpss3.wav", "", "One can never have enough socks.");
                                         }
 
-                                    } else if (field1.getText().contentEquals("Platform") && Double.parseDouble(field3.getText()) == 9.75) {
+                                    }
+                                    else if (field1.getText().contentEquals("Platform") && Double.parseDouble(field3.getText()) == 9.75)
+                                    {
                                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss1.gif", "C:/POS/SOFTWARE/hpss1.wav", "", "Alas! Earwax!");
 
-                                    } else if (field1.getText().contentEquals("Guest") && Double.parseDouble(field3.getText()) == 20.17) {
+                                    }
+                                    else if (field1.getText().contentEquals("Guest") && Double.parseDouble(field3.getText()) == 20.17)
+                                    {
                                         boolean part1 = false;
                                         boolean part2 = false;
-                                        for (Item item : curCart.getItems()) {
-                                            if (item.itemName.contentEquals("Be") && item.getPriceOfItemsBeforeTax() == 0.03) {
+                                        for (Item item : curCart.getItems())
+                                        {
+                                            if (item.itemName.contentEquals("Be") && item.getPriceOfItemsBeforeTax() == 0.03)
+                                            {
                                                 part1 = true;
-                                            } else if (item.itemName.contentEquals("Our") && item.getPriceOfItemBeforeTax() == 0.17) {
+                                            }
+                                            else if (item.itemName.contentEquals("Our") && item.getPriceOfItemBeforeTax() == 0.17)
+                                            {
                                                 part2 = true;
                                             }
                                         }
-                                        if (part1 && part2) {
+                                        if (part1 && part2)
+                                        {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/bnb.gif", "C:/POS/SOFTWARE/BOG.wav", "", "Try the gray stuff, it's delicious!");
                                         }//end if BNB Protocol
                                     }//end EE protocol
-                                    else if (field1.getText().contentEquals("Man") && Double.parseDouble(field3.getText()) == 20.03) {
+                                    else if (field1.getText().contentEquals("Man") && Double.parseDouble(field3.getText()) == 20.03)
+                                    {
 
                                         boolean found1 = false;
                                         int cntr = 0;
-                                        for (Item item : curCart.getItems()) {
+                                        for (Item item : curCart.getItems())
+                                        {
                                             cntr++;
-                                            if (item.mutID.contentEquals("MATRED")) {
+                                            if (item.mutID.contentEquals("MATRED"))
+                                            {
                                                 found1 = true;
                                             }
                                         }
-                                        if (found1 && cntr == 1) {
+                                        if (found1 && cntr == 1)
+                                        {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx2.gif", "C:/POS/SOFTWARE/mx2.wav", "Why do you persist?", "");
 
                                         }
 
-                                    } else if (field1.getText().contentEquals("A Dark Knight") && Double.parseDouble(field3.getText()) == 20.08) {
-                                        if (curCart.getItems().size() == 2 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22") && curCart.getItems().get(1).mutID.contentEquals("BATMON") && curCart.getItems().get(1).getDiscountPercentage() == .5) {
+                                    }
+                                    else if (field1.getText().contentEquals("A Dark Knight") && Double.parseDouble(field3.getText()) == 20.08)
+                                    {
+                                        if (curCart.getItems().size() == 2 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22") && curCart.getItems().get(1).mutID.contentEquals("BATMON") && curCart.getItems().get(1).getDiscountPercentage() == .5)
+                                        {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/dk3.gif", "C:/POS/SOFTWARE/dk3.wav", "Accomplice? I'm going to tell them the whole thing was your idea.", "");
                                         }
-                                    } else if (field1.getText().contentEquals("Because I choose to.") && Double.parseDouble(field3.getText()) == 20.03) {
+                                    }
+                                    else if (field1.getText().contentEquals("Because I choose to.") && Double.parseDouble(field3.getText()) == 20.03)
+                                    {
 
                                         boolean found1 = false;
                                         boolean found2 = false;
                                         int cntr = 0;
-                                        for (Item item : curCart.getItems()) {
+                                        for (Item item : curCart.getItems())
+                                        {
                                             cntr++;
-                                            if (item.mutID.contentEquals("MATRED")) {
+                                            if (item.mutID.contentEquals("MATRED"))
+                                            {
                                                 found1 = true;
                                             }
-                                            if (item.itemName.contentEquals("Man") && item.itemPrice == 20.03) {
+                                            if (item.itemName.contentEquals("Man") && item.itemPrice == 20.03)
+                                            {
                                                 found2 = true;
                                             }
                                         }
-                                        if (found1 && found2 && cntr == 2) {
+                                        if (found1 && found2 && cntr == 2)
+                                        {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx3.gif", "C:/POS/SOFTWARE/mx3.wav", "", "Who are you?");
                                         }
 
-                                    } else if (isHalloween && Double.parseDouble(field3.getText()) == 3.00 && field1.getText().contentEquals("Come Little Children")) {
+                                    }
+                                    else if (isHalloween && Double.parseDouble(field3.getText()) == 3.00 && field1.getText().contentEquals("Come Little Children"))
+                                    {
                                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hp1.gif", "C:/POS/SOFTWARE/hp1.wav", "", "Just one item to go!");
 
-                                    } else if (Double.parseDouble(field3.getText()) == 16.93 && field1.getText().contentEquals("I Put A Spell On You")) {
+                                    }
+                                    else if (Double.parseDouble(field3.getText()) == 16.93 && field1.getText().contentEquals("I Put A Spell On You"))
+                                    {
                                         boolean found = false;
-                                        for (Item item : curCart.getItems()) {
-                                            if (item.itemName.contentEquals("Come Little Children") && item.itemPrice == 3.00) {
+                                        for (Item item : curCart.getItems())
+                                        {
+                                            if (item.itemName.contentEquals("Come Little Children") && item.itemPrice == 3.00)
+                                            {
                                                 found = true;
                                             }
                                         }
-                                        if (found) {
+                                        if (found)
+                                        {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hp2.gif", "C:/POS/SOFTWARE/hp2.wav", "", "Max likes your yabbos!");
                                         }
                                     }//end if EE Protocol
-                                    else if (Double.parseDouble(field3.getText()) == 112519.92 && field1.getText().contentEquals("Bread")) {
+                                    else if (Double.parseDouble(field3.getText()) == 112519.92 && field1.getText().contentEquals("Bread"))
+                                    {
                                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al1.gif", "C:/POS/SOFTWARE/al1.wav", "", "Ring bells! Bang the drums!!");
 
-                                    } else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Witch")) {
+                                    }
+                                    else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Witch"))
+                                    {
                                         boolean found = false;
-                                        for (Item item : curCart.getItems()) {
-                                            if (item.itemName.contentEquals("Duck") && item.itemPrice == 19.75) {
+                                        for (Item item : curCart.getItems())
+                                        {
+                                            if (item.itemName.contentEquals("Duck") && item.itemPrice == 19.75)
+                                            {
                                                 found = true;
                                             }
                                         }
-                                        if (found) {
+                                        if (found)
+                                        {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mp1.gif", "C:/POS/SOFTWARE/mp1.wav", "", "She turned me into a newt!!");
                                         }
-                                    } else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Duck")) {
+                                    }
+                                    else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Duck"))
+                                    {
                                         boolean found = false;
-                                        for (Item item : curCart.getItems()) {
-                                            if (item.itemName.contentEquals("Witch") && item.itemPrice == 19.75) {
+                                        for (Item item : curCart.getItems())
+                                        {
+                                            if (item.itemName.contentEquals("Witch") && item.itemPrice == 19.75)
+                                            {
                                                 found = true;
                                             }
                                         }
-                                        if (found) {
+                                        if (found)
+                                        {
                                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mp1.gif", "C:/POS/SOFTWARE/mp1.wav", "", "She turned me into a newt!!");
                                         }
 
-                                    } else if (Double.parseDouble(field3.getText()) == 0.02 && field1.getText().contentEquals("Jango Fett")) {
+                                    }
+                                    else if (Double.parseDouble(field3.getText()) == 0.02 && field1.getText().contentEquals("Jango Fett"))
+                                    {
                                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw1.gif", "C:/POS/SOFTWARE/sw1.wav", "I'm just a simple man, trying to make my way in the universe.", "");
                                     }//end if EE Protocol
 
@@ -1542,7 +1831,9 @@ public class MainFrame extends javax.swing.JFrame {
                     }//end if
                     updateCartScreen();
 
-                } else {//No employee Selected!
+                }
+                else
+                {//No employee Selected!
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -1553,19 +1844,26 @@ public class MainFrame extends javax.swing.JFrame {
         upsButton.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
                     JFrame textInputFrame = new JFrame("");
                     JTextField field3 = new JTextField();
-                    Object[] message = {
-                        "Amount:", field3};
+                    Object[] message =
+                    {
+                        "Amount:", field3
+                    };
                     field3.setText("");
                     field3.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "UPS Package Information", JOptionPane.OK_CANCEL_OPTION);
-                    if (option == JOptionPane.OK_OPTION) {
-                        if (!validateDouble(field3.getText())) {//check price
+                    if (option == JOptionPane.OK_OPTION)
+                    {
+                        if (!validateDouble(field3.getText()))
+                        {//check price
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Amount is invalid.");
-                        } else {//price is good
+                        }
+                        else
+                        {//price is good
                             // randomItemCntr++;
                             DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
                             Date date = new Date();
@@ -1583,7 +1881,9 @@ public class MainFrame extends javax.swing.JFrame {
 
                     updateCartScreen();
 
-                } else {//No employee Selected!
+                }
+                else
+                {//No employee Selected!
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -1594,10 +1894,13 @@ public class MainFrame extends javax.swing.JFrame {
 
         noSaleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
                     checkout.beginNoSaleCheckout((String) employeeSelectionHeader.getText().substring(14));
 
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -1606,13 +1909,19 @@ public class MainFrame extends javax.swing.JFrame {
         });//end NoSaleAction
         splitTenderButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
-                        if (!curCart.isEmpty()) {
-                            if (curCart.getTotalPrice() < 0) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString()))
+                    {
+                        if (!curCart.isEmpty())
+                        {
+                            if (curCart.getTotalPrice() < 0)
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
-                            } else {
+                            }
+                            else
+                            {
                                 JLabel splitTenderTotal = new JLabel("Total: $", SwingConstants.RIGHT);
                                 JLabel splitTenderRemaining = new JLabel("Remaining: $", SwingConstants.RIGHT);
                                 JFrame textInputFrame = new JFrame("");
@@ -1632,10 +1941,13 @@ public class MainFrame extends javax.swing.JFrame {
 
                                     public void focusLost(java.awt.event.FocusEvent evt) {
                                         //this will be called on tab i.e when the field looses focus
-                                        if (validateDouble(field1.getText())) {
+                                        if (validateDouble(field1.getText()))
+                                        {
                                             double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
                                             splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             field1.setText("0.00");
                                         }//end else
                                     }//end focusLost
@@ -1649,10 +1961,13 @@ public class MainFrame extends javax.swing.JFrame {
 
                                     public void focusLost(java.awt.event.FocusEvent evt) {
                                         //this will be called on tab i.e when the field looses focus
-                                        if (validateDouble(field2.getText())) {
+                                        if (validateDouble(field2.getText()))
+                                        {
                                             double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
                                             splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             field2.setText("0.00");
                                         }//end else
                                     }//end focusLost
@@ -1666,9 +1981,12 @@ public class MainFrame extends javax.swing.JFrame {
 
                                     public void focusLost(java.awt.event.FocusEvent evt) {
                                         //this will be called on tab i.e when the field looses focus
-                                        if (validateInteger(field3.getText())) {
+                                        if (validateInteger(field3.getText()))
+                                        {
                                             //do nothing? its a valid check number
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             field3.setText("0");
                                         }//end else
                                     }//end focusLost
@@ -1682,10 +2000,13 @@ public class MainFrame extends javax.swing.JFrame {
 
                                     public void focusLost(java.awt.event.FocusEvent evt) {
                                         //this will be called on tab i.e when the field looses focus
-                                        if (validateDouble(field4.getText())) {
+                                        if (validateDouble(field4.getText()))
+                                        {
                                             double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
                                             splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             field4.setText("0.00");
                                         }//end else
                                     }//end focusLost
@@ -1699,9 +2020,12 @@ public class MainFrame extends javax.swing.JFrame {
 
                                     public void focusLost(java.awt.event.FocusEvent evt) {
                                         //this will be called on tab i.e when the field looses focus
-                                        if (validateInteger(field5.getText())) {
+                                        if (validateInteger(field5.getText()))
+                                        {
                                             //do nothing? its a valid check number
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             field5.setText("0");
                                         }//end else
                                     }//end focusLost
@@ -1715,10 +2039,13 @@ public class MainFrame extends javax.swing.JFrame {
 
                                     public void focusLost(java.awt.event.FocusEvent evt) {
                                         //this will be called on tab i.e when the field looses focus
-                                        if (validateDouble(field6.getText())) {
+                                        if (validateDouble(field6.getText()))
+                                        {
                                             double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
                                             splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             field6.setText("0.00");
                                         }//end else
                                     }//end focusLost
@@ -1731,10 +2058,13 @@ public class MainFrame extends javax.swing.JFrame {
 
                                     public void focusLost(java.awt.event.FocusEvent evt) {
                                         //this will be called on tab i.e when the field looses focus
-                                        if (validateDouble(field7.getText())) {
+                                        if (validateDouble(field7.getText()))
+                                        {
                                             double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
                                             splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             field7.setText("0.00");
                                         }//end else
                                     }//end focusLost
@@ -1743,7 +2073,8 @@ public class MainFrame extends javax.swing.JFrame {
                                 splitTenderTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
                                 splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", curCart.getTotalPrice()));
                                 field2.setText(previousDate);
-                                Object[] message = {
+                                Object[] message =
+                                {
                                     "Cash:", field1,
                                     "Check 1:", field2,
                                     "Check 1#:", field3,
@@ -1751,7 +2082,8 @@ public class MainFrame extends javax.swing.JFrame {
                                     "Check 2#:", field5,
                                     "Credit 1:", field6,
                                     "Debit 1:", field7,
-                                    splitTenderRemaining, splitTenderTotal};
+                                    splitTenderRemaining, splitTenderTotal
+                                };
                                 field1.setText("0.00");
                                 field2.setText("0.00");
                                 field3.setText("0");
@@ -1776,41 +2108,58 @@ public class MainFrame extends javax.swing.JFrame {
 
                                 field1.addAncestorListener(new RequestFocusListener());
                                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Split Tender Menu", JOptionPane.OK_CANCEL_OPTION);
-                                if (option == JOptionPane.OK_OPTION) {
-                                    if (!validateDouble(field4.getText()) || !validateDouble(field7.getText()) || !validateDouble(field2.getText()) || !validateDouble(field1.getText()) || !validateDouble(field6.getText()) || !validateDouble(field6.getText()) || !validateInteger(field3.getText()) || !validateInteger(field5.getText())) {
+                                if (option == JOptionPane.OK_OPTION)
+                                {
+                                    if (!validateDouble(field4.getText()) || !validateDouble(field7.getText()) || !validateDouble(field2.getText()) || !validateDouble(field1.getText()) || !validateDouble(field6.getText()) || !validateDouble(field6.getText()) || !validateInteger(field3.getText()) || !validateInteger(field5.getText()))
+                                    {
                                         JFrame message1 = new JFrame("");
                                         JOptionPane.showMessageDialog(message1, "Improper text in fields.");
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         double remaining = Double.parseDouble(field7.getText()) + Double.parseDouble(field6.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field1.getText());
                                         remaining = round(remaining);
                                         // System.out.println(remaining);
                                         // System.out.println(curCart.getTotalPrice());
-                                        if (remaining < curCart.getTotalPrice()) {
+                                        if (remaining < curCart.getTotalPrice())
+                                        {
                                             //must have some name
                                             JFrame message1 = new JFrame("");
                                             JOptionPane.showMessageDialog(message1, "Totals do not match.");
 
-                                        } else {
-                                            if (Double.parseDouble(field7.getText()) > 0 && Double.parseDouble(field6.getText()) > 0) {
+                                        }
+                                        else
+                                        {
+                                            if (Double.parseDouble(field7.getText()) > 0 && Double.parseDouble(field6.getText()) > 0)
+                                            {
                                                 JFrame message2 = new JFrame("");
                                                 JOptionPane.showMessageDialog(message2, "You can only use either credit or debit, not both!");
-                                            } else if (curCart.getTotalPrice() < Double.parseDouble(field7.getText())) {
+                                            }
+                                            else if (curCart.getTotalPrice() < Double.parseDouble(field7.getText()))
+                                            {
                                                 JFrame message2 = new JFrame("");
                                                 JOptionPane.showMessageDialog(message2, "Debit Card amount MUST be LESS THAN the TOTAL amount of the Cart!");
-                                            } else if (curCart.getTotalPrice() < Double.parseDouble(field6.getText())) {
+                                            }
+                                            else if (curCart.getTotalPrice() < Double.parseDouble(field6.getText()))
+                                            {
                                                 JFrame message2 = new JFrame("");
                                                 JOptionPane.showMessageDialog(message2, "Credit Card amount MUST be LESS THAN the TOTAL amount of the Cart!");
-                                            } else {
+                                            }
+                                            else
+                                            {
                                                 double amtReceived = Double.parseDouble(field7.getText()) + Double.parseDouble(field1.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field6.getText());
                                                 amtReceived = round(amtReceived);
                                                 double change = amtReceived - curCart.getTotalPrice();
                                                 change = round(change);
                                                 changeDue.setText("Change Due: $" + String.format("%.2f", change));
                                                 String goodCheckout = checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field5.getText()), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
-                                                if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
+                                                if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                                {
                                                     changeDue.setText("Change Due: $" + String.format("%.2f", change));
                                                     displayChangeDue = true;
-                                                } else {
+                                                }
+                                                else
+                                                {
                                                     JFrame message1 = new JFrame("");
                                                     JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
                                                 }
@@ -1821,11 +2170,15 @@ public class MainFrame extends javax.swing.JFrame {
                                 }//end if
                             }//end check for negative amount
                         }//end if isNotEmpty
-                    } else {
+                    }
+                    else
+                    {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
                     }
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -1844,9 +2197,12 @@ public class MainFrame extends javax.swing.JFrame {
 
         cashButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
-                        if (!curCart.isEmpty()) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString()))
+                    {
+                        if (!curCart.isEmpty())
+                        {
                             JFrame textInputFrame = new JFrame("");
                             JLabel cashTotal = new JLabel("Total: $", SwingConstants.RIGHT);
                             JTextField field1 = new JTextField();
@@ -1854,35 +2210,48 @@ public class MainFrame extends javax.swing.JFrame {
                                 public void focusLost(java.awt.event.FocusEvent evt) {
                                     field1.setSelectionStart(0);
                                     field1.setSelectionEnd(12);
-                                    if (!validateDouble(field1.getText())) {
+                                    if (!validateDouble(field1.getText()))
+                                    {
                                         field1.setText(String.format("%.2f", curCart.getTotalPrice()));
                                     }//end if
                                 }//end focusGained
                             });
                             cashTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
-                            Object[] message = {
-                                "Cash Amount:", field1, cashTotal};
+                            Object[] message =
+                            {
+                                "Cash Amount:", field1, cashTotal
+                            };
                             field1.setText(String.format("%.2f", curCart.getTotalPrice()));
                             field1.setSelectionStart(0);
                             field1.setSelectionEnd(8);
 
-                            if (curCart.getTotalPrice() < 0) {
+                            if (curCart.getTotalPrice() < 0)
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
-                            } else {
+                            }
+                            else
+                            {
                                 field1.addAncestorListener(new RequestFocusListener());
                                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Cash Amount", JOptionPane.OK_CANCEL_OPTION);
-                                if (option == JOptionPane.OK_OPTION) {
-                                    if (!validateDouble(field1.getText())) {
+                                if (option == JOptionPane.OK_OPTION)
+                                {
+                                    if (!validateDouble(field1.getText()))
+                                    {
                                         JFrame message1 = new JFrame("");
                                         JOptionPane.showMessageDialog(message1, "Improper cash value.");
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         double amtReceived = Double.parseDouble(field1.getText());
                                         amtReceived = round(amtReceived);
-                                        if (amtReceived < curCart.getTotalPrice()) {
+                                        if (amtReceived < curCart.getTotalPrice())
+                                        {
                                             JFrame message1 = new JFrame("");
                                             JOptionPane.showMessageDialog(message1, "Not enough cash.");
-                                        } else {
+                                        }
+                                        else
+                                        {
 
                                             double change = amtReceived - curCart.getTotalPrice();
                                             change = round(change);
@@ -1895,37 +2264,52 @@ public class MainFrame extends javax.swing.JFrame {
                                     }//end else
                                 }//end if
                             }
-                        } else if (!refundCart.isEmpty()) {
-                            if (refundCart.getTotalPrice() < 0) {
+                        }
+                        else if (!refundCart.isEmpty())
+                        {
+                            if (refundCart.getTotalPrice() < 0)
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
-                            } else {
+                            }
+                            else
+                            {
                                 boolean isItemToRefund = false;
                                 boolean isCartConditionsMet = true;
-                                for (RefundItem item : refundCart.getRefundItems()) {
-                                    if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
+                                for (RefundItem item : refundCart.getRefundItems())
+                                {
+                                    if (item.isRefundAllActive() || item.isRefundTaxOnlyActive())
+                                    {
                                         isItemToRefund = true;
                                     }
-                                    if (item.quantityBeingRefunded > 0 && !item.isRefundAllActive() && !item.isRefundTaxOnlyActive()) {
+                                    if (item.quantityBeingRefunded > 0 && !item.isRefundAllActive() && !item.isRefundTaxOnlyActive())
+                                    {
                                         //Houston we have a problem.
                                         isCartConditionsMet = false;
                                     }
 
                                 }
-                                if (isItemToRefund && isCartConditionsMet) {
+                                if (isItemToRefund && isCartConditionsMet)
+                                {
                                     checkout.beginRefundCashCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
 
-                                } else if (isCartConditionsMet) {
+                                }
+                                else if (isCartConditionsMet)
+                                {
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "An item in the cart is set to have quantity refunded, but no type of refund is selected.. Please set Quantity to refund to zero for that item or add a refund case.");
                                 }
                             }
                         }
-                    } else {
+                    }
+                    else
+                    {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
                     }
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -1938,13 +2322,19 @@ public class MainFrame extends javax.swing.JFrame {
 
         checkButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
-                        if (!curCart.isEmpty()) {
-                            if (curCart.getTotalPrice() < 0) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString()))
+                    {
+                        if (!curCart.isEmpty())
+                        {
+                            if (curCart.getTotalPrice() < 0)
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
-                            } else {
+                            }
+                            else
+                            {
                                 JFrame textInputFrame = new JFrame("");
                                 JLabel checkTotal = new JLabel("Total: $", SwingConstants.RIGHT);
                                 JTextField field1 = new JTextField();
@@ -1953,7 +2343,8 @@ public class MainFrame extends javax.swing.JFrame {
                                     public void focusLost(java.awt.event.FocusEvent evt) {
                                         field1.setSelectionStart(0);
                                         field1.setSelectionEnd(12);
-                                        if (!validateDouble(field1.getText())) {
+                                        if (!validateDouble(field1.getText()))
+                                        {
                                             field1.setText(String.format("%.2f", curCart.getTotalPrice()));
                                         }//end if
                                     }//end focusGained
@@ -1962,14 +2353,17 @@ public class MainFrame extends javax.swing.JFrame {
                                     public void focusLost(java.awt.event.FocusEvent evt) {
                                         field2.setSelectionStart(0);
                                         field2.setSelectionEnd(12);
-                                        if (!validateInteger(field2.getText())) {
+                                        if (!validateInteger(field2.getText()))
+                                        {
                                             field2.setText(String.format("0"));
                                         }//end if
                                     }//end focusGained
                                 });
                                 checkTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
-                                Object[] message = {
-                                    "Check Amount:", field1, "Check #", field2, checkTotal};
+                                Object[] message =
+                                {
+                                    "Check Amount:", field1, "Check #", field2, checkTotal
+                                };
                                 field1.setText(String.format("%.2f", curCart.getTotalPrice()));
                                 field1.setSelectionStart(0);
                                 field1.setSelectionEnd(8);
@@ -1979,17 +2373,24 @@ public class MainFrame extends javax.swing.JFrame {
 
                                 field1.addAncestorListener(new RequestFocusListener());
                                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Check Value", JOptionPane.OK_CANCEL_OPTION);
-                                if (option == JOptionPane.OK_OPTION) {
-                                    if (!validateDouble(field1.getText())) {
+                                if (option == JOptionPane.OK_OPTION)
+                                {
+                                    if (!validateDouble(field1.getText()))
+                                    {
                                         JFrame message1 = new JFrame("");
                                         JOptionPane.showMessageDialog(message1, "Improper check value.");
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         double amtReceived = Double.parseDouble(field1.getText());
                                         amtReceived = round(amtReceived);
-                                        if (amtReceived < curCart.getTotalPrice()) {
+                                        if (amtReceived < curCart.getTotalPrice())
+                                        {
                                             JFrame message1 = new JFrame("");
                                             JOptionPane.showMessageDialog(message1, "Check value to small.");
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             double change = amtReceived - curCart.getTotalPrice();
                                             change = round(change);
                                             changeDue.setText("Change Due: $" + String.format("%.2f", change));
@@ -2001,11 +2402,15 @@ public class MainFrame extends javax.swing.JFrame {
                                 }//end if  
                             }//end check for negative balance
                         }//end if isNotEmpty
-                    } else {
+                    }
+                    else
+                    {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
                     }
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -2015,41 +2420,61 @@ public class MainFrame extends javax.swing.JFrame {
 
         creditButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
-                        if (!curCart.isEmpty()) {
-                            if (curCart.getTotalPrice() < 0) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString()))
+                    {
+                        if (!curCart.isEmpty())
+                        {
+                            if (curCart.getTotalPrice() < 0)
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
-                            } else {
+                            }
+                            else
+                            {
                                 changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
                                 displayChangeDue = true;
                                 String goodCheckout = checkout.beginCreditCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
-                                if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
+                                if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                {
                                     displayChangeDue = true;
-                                } else {
+                                }
+                                else
+                                {
                                     displayChangeDue = false;
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
                                 }
                                 updateCartScreen();
                             }
-                        } else if (!refundCart.isEmpty()) {
-                            if (refundCart.getTotalPrice() < 0) {
+                        }
+                        else if (!refundCart.isEmpty())
+                        {
+                            if (refundCart.getTotalPrice() < 0)
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
-                            } else {
+                            }
+                            else
+                            {
                                 boolean isItemToRefund = false;
-                                for (RefundItem item : refundCart.getRefundItems()) {
-                                    if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
+                                for (RefundItem item : refundCart.getRefundItems())
+                                {
+                                    if (item.isRefundAllActive() || item.isRefundTaxOnlyActive())
+                                    {
                                         isItemToRefund = true;
                                     }
                                 }
-                                if (isItemToRefund) {
+                                if (isItemToRefund)
+                                {
                                     String goodCheckout = checkout.beginRefundCardCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
-                                    if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
+                                    if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                    {
                                         displayChangeDue = true;
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         displayChangeDue = false;
                                         JFrame message1 = new JFrame("");
                                         JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
@@ -2057,11 +2482,15 @@ public class MainFrame extends javax.swing.JFrame {
                                 }
                             }
                         }//end cartIsNotEmpty
-                    } else {
+                    }
+                    else
+                    {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
                     }
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -2071,43 +2500,61 @@ public class MainFrame extends javax.swing.JFrame {
 
         debitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
-                        if (!curCart.isEmpty()) {
-                            if (curCart.getTotalPrice() < 0) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString()))
+                    {
+                        if (!curCart.isEmpty())
+                        {
+                            if (curCart.getTotalPrice() < 0)
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
-                            } else {
+                            }
+                            else
+                            {
                                 changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
                                 displayChangeDue = true;
                                 String goodCheckout = checkout.beginDebitCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
-                                if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE")) {
+                                if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                {
                                     displayChangeDue = true;
-                                } else {
+                                }
+                                else
+                                {
                                     displayChangeDue = false;
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
                                 }
                                 updateCartScreen();
                             }
-                        } else if (!refundCart.isEmpty()) {
+                        }
+                        else if (!refundCart.isEmpty())
+                        {
                             boolean isItemToRefund = false;
-                            for (RefundItem item : refundCart.getRefundItems()) {
-                                if (item.isRefundAllActive() || item.isRefundTaxOnlyActive()) {
+                            for (RefundItem item : refundCart.getRefundItems())
+                            {
+                                if (item.isRefundAllActive() || item.isRefundTaxOnlyActive())
+                                {
                                     isItemToRefund = true;
                                 }
                             }
-                            if (isItemToRefund) {
+                            if (isItemToRefund)
+                            {
                                 checkout.beginRefundCardCheckout(refundCart, employeeSelectionHeader.getText().substring(14), guiRefundItems, myself);
 
                             }
 
                         }//end cartIsNotEmpty
-                    } else {
+                    }
+                    else
+                    {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
                     }
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -2118,7 +2565,8 @@ public class MainFrame extends javax.swing.JFrame {
         reprintReceiptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 displayChangeDue = false;
-                if (!previousReceipt.contentEquals("EMPTY")) {
+                if (!previousReceipt.contentEquals("EMPTY"))
+                {
                     checkout.reprintReceipt(previousReceipt);
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
@@ -2128,7 +2576,8 @@ public class MainFrame extends javax.swing.JFrame {
         //ARPayment Button Listener
         arPaymentButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
 
                     JFrame textInputFrame = new JFrame("");
                     JFrame textInputFrame2 = new JFrame("");
@@ -2137,13 +2586,17 @@ public class MainFrame extends javax.swing.JFrame {
                     JTextField field3 = new JTextField();
                     JTextField field4 = new JTextField();
                     JTextField field5 = new JTextField();
-                    Object[] message = {
+                    Object[] message =
+                    {
                         "Account Name:", field1,
                         "Last Name:", field2,
                         "First Name:", field3,
-                        "DOB: ex: 022411", field4};
-                    Object[] message2 = {
-                        "Amount To Pay:", field5};
+                        "DOB: ex: 022411", field4
+                    };
+                    Object[] message2 =
+                    {
+                        "Amount To Pay:", field5
+                    };
                     field1.setText("");
                     field2.setText("");
                     field3.setText("");
@@ -2152,19 +2605,32 @@ public class MainFrame extends javax.swing.JFrame {
                     String accountName = "";
                     field1.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
-                    if (option == JOptionPane.OK_OPTION) {
-                        if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty()) {
+                    if (option == JOptionPane.OK_OPTION)
+                    {
+                        if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty())
+                        {
                             //do nothing, they clicked OK with everything blank
-                        } else {
-                            if (field1.getText().contentEquals("BTITUDE")) {
+                        }
+                        else
+                        {
+                            if (field1.getText().contentEquals("BTITUDE"))
+                            {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/bat.gif", "C:/POS/SOFTWARE/batman.wav", "", "You think muscles are big, you haven't seen my brain!");
-                            } else if (field1.getText().contentEquals("Prince") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Anduin") && field4.getText().contentEquals("091318")) {
+                            }
+                            else if (field1.getText().contentEquals("Prince") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Anduin") && field4.getText().contentEquals("091318"))
+                            {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/as1.gif", "C:/POS/SOFTWARE/as1.wav", "", "Sometimes we must fight for what we believe in.");
-                            } else if (field1.getText().contentEquals("Princess") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Kieryn") && field4.getText().contentEquals("022411")) {
+                            }
+                            else if (field1.getText().contentEquals("Princess") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Kieryn") && field4.getText().contentEquals("022411"))
+                            {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ks1.gif", "C:/POS/SOFTWARE/ks1.wav", "", "Sometimes our strengths lie beneath the surface.");
-                            } else if (field1.getText().contentEquals("Apollo") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Andrew") && field4.getText().contentEquals("111789")) {
+                            }
+                            else if (field1.getText().contentEquals("Apollo") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Andrew") && field4.getText().contentEquals("111789"))
+                            {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/fly1.gif", "C:/POS/SOFTWARE/fly1.wav", "When you run the marathon, you run against the distance, not against the other runners and not against the time.\n You are all the loves of my life and I do this all for you.", "");
-                            } else if (field1.getText().contentEquals("Starbuck") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Hollie") && field4.getText().contentEquals("030986")) {
+                            }
+                            else if (field1.getText().contentEquals("Starbuck") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Hollie") && field4.getText().contentEquals("030986"))
+                            {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/wwa.gif", "C:/POS/SOFTWARE/wwa.wav", "I would grant all your wishes \n"
                                         + "If you promised me a thousand kisses \n"
                                         + "I will never, love another, like you\n"
@@ -2192,23 +2658,29 @@ public class MainFrame extends javax.swing.JFrame {
                                         + "And fate choose me and you.", "");
                             }
                             String[] choices = Database.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
-                            if (choices != null) {
+                            if (choices != null)
+                            {
                                 accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
                                         "Choose AR Account", JOptionPane.QUESTION_MESSAGE, null, // Use
                                         // default
                                         // icon
                                         choices, // Array of choices
                                         choices[0]); // Initial choice
-                                if (accountName != null) {
+                                if (accountName != null)
+                                {
                                     accountName = accountName.substring(0, accountName.indexOf("Current"));
                                     field5.addAncestorListener(new RequestFocusListener());
                                     int option2 = JOptionPane.showConfirmDialog(textInputFrame2, message2, "Enter Amount To Pay", JOptionPane.OK_CANCEL_OPTION);
-                                    if (option2 == JOptionPane.OK_OPTION) {
+                                    if (option2 == JOptionPane.OK_OPTION)
+                                    {
                                         String temp = field5.getText();
-                                        if (!validateDouble(temp)) {
+                                        if (!validateDouble(temp))
+                                        {
                                             JFrame message1 = new JFrame("");
                                             JOptionPane.showMessageDialog(message1, "Not a valid amount.");
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             double price = Double.parseDouble(temp);
                                             DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
                                             Date date = new Date();
@@ -2216,12 +2688,15 @@ public class MainFrame extends javax.swing.JFrame {
                                             tempID = dateFormat.format(date);
                                             // System.out.println(tempID);
                                             String upc = "A" + tempID;
-                                            if (!curCart.containsAP(accountName)) {
+                                            if (!curCart.containsAP(accountName))
+                                            {
                                                 Item tempItem = new Item(tempID, upc, accountName, price, price, false, 853, 0, "", "", 1, false, 0, false);
                                                 curCart.addItem(tempItem);
                                                 guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                                 displayChangeDue = false;
-                                            } else {
+                                            }
+                                            else
+                                            {
                                                 JFrame message1 = new JFrame("");
                                                 JOptionPane.showMessageDialog(message1, "Already an account payment for that account in cart.");
                                             }
@@ -2229,7 +2704,9 @@ public class MainFrame extends javax.swing.JFrame {
                                     }//end if
                                     updateCartScreen();
                                 }//end if accountname not null
-                            } else {
+                            }
+                            else
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "No such account found.");
                             }//end else
@@ -2237,7 +2714,9 @@ public class MainFrame extends javax.swing.JFrame {
                         }//end else
                     }//end if OK_OPTION
 
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -2250,7 +2729,8 @@ public class MainFrame extends javax.swing.JFrame {
         //DME Payment Button Listener
         dmePaymentButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
                     JFrame textInputFrame = new JFrame("");
                     JFrame textInputFrame2 = new JFrame("");
                     JTextField field1 = new JTextField();
@@ -2258,13 +2738,17 @@ public class MainFrame extends javax.swing.JFrame {
                     JTextField field3 = new JTextField();
                     JTextField field4 = new JTextField();
                     JTextField field5 = new JTextField();
-                    Object[] message = {
+                    Object[] message =
+                    {
                         "Account Name:", field1,
                         "Last Name:", field3,
                         "First Name:", field2,
-                        "DOB: ex: 102718", field4};
-                    Object[] message2 = {
-                        "Amount To Pay:", field5};
+                        "DOB: ex: 102718", field4
+                    };
+                    Object[] message2 =
+                    {
+                        "Amount To Pay:", field5
+                    };
                     field1.setText("");
                     field2.setText("");
                     field3.setText("");
@@ -2273,27 +2757,37 @@ public class MainFrame extends javax.swing.JFrame {
                     String accountName = "";
                     field1.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
-                    if (option == JOptionPane.OK_OPTION) {
-                        if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty()) {
+                    if (option == JOptionPane.OK_OPTION)
+                    {
+                        if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty())
+                        {
                             //do nothing, they clicked OK with everything blank
-                        } else {
+                        }
+                        else
+                        {
                             String[] choices = Database.getDMEList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
-                            if (choices != null) {
+                            if (choices != null)
+                            {
                                 accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
                                         "Choose DME Account", JOptionPane.QUESTION_MESSAGE, null, // Use
                                         // default
                                         // icon
                                         choices, // Array of choices
                                         choices[0]); // Initial choice
-                                if (accountName != null) {
+                                if (accountName != null)
+                                {
                                     field5.addAncestorListener(new RequestFocusListener());
                                     int option2 = JOptionPane.showConfirmDialog(textInputFrame2, message2, "Enter Amount To Pay", JOptionPane.OK_CANCEL_OPTION);
-                                    if (option2 == JOptionPane.OK_OPTION) {
+                                    if (option2 == JOptionPane.OK_OPTION)
+                                    {
                                         String temp = field5.getText();
-                                        if (!validateDouble(temp)) {
+                                        if (!validateDouble(temp))
+                                        {
                                             JFrame message1 = new JFrame("");
                                             JOptionPane.showMessageDialog(message1, "Not a valid amount.");
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             double price = Double.parseDouble(temp);
                                             DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
                                             Date date = new Date();
@@ -2302,12 +2796,15 @@ public class MainFrame extends javax.swing.JFrame {
                                             // System.out.println(tempID);
                                             String upc = "D" + tempID;
                                             //boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity,boolean isRX)
-                                            if (!curCart.containsAP(accountName)) {
+                                            if (!curCart.containsAP(accountName))
+                                            {
                                                 Item tempItem = new Item(tempID, upc, accountName.substring(0, accountName.indexOf("Current Bal") - 1), price, price, false, 854, 0, "", "", 1, false, 0, false);
                                                 curCart.addItem(tempItem);
                                                 guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                                 displayChangeDue = false;
-                                            } else {
+                                            }
+                                            else
+                                            {
                                                 JFrame message1 = new JFrame("");
                                                 JOptionPane.showMessageDialog(message1, "Already an account payment for that account in cart.");
                                             }
@@ -2315,7 +2812,9 @@ public class MainFrame extends javax.swing.JFrame {
                                     }//end if
                                     updateCartScreen();
                                 }//end if accountname not null
-                            } else {
+                            }
+                            else
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "No such account found.");
                             }//end else
@@ -2323,7 +2822,9 @@ public class MainFrame extends javax.swing.JFrame {
                         }//end else
                     }//end if OK_OPTION
 
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -2333,19 +2834,26 @@ public class MainFrame extends javax.swing.JFrame {
         });//end dmePaymentButtonAction
         beginSplitTicketButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (curCart.getItems().size() > 1) {
-                        for (GuiCartItem item : guiItems) {//this hides all the items GUI options that shouldn't be active during this time, and SHOWS what should.
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    if (curCart.getItems().size() > 1)
+                    {
+                        for (GuiCartItem item : guiItems)
+                        {//this hides all the items GUI options that shouldn't be active during this time, and SHOWS what should.
                             item.splitTicketActivated();
                         }
                         splitTicketBeginHideContent();
                         beginSplitTicketButton.setVisible(false);//Hide me, my cancel button will take my place.
                         cancelSplitTicketButton.setVisible(true);
-                    } else {
+                    }
+                    else
+                    {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "You need at least two items to them into different tickets.");
                     }
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -2353,18 +2861,23 @@ public class MainFrame extends javax.swing.JFrame {
         });
         cancelSplitTicketButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    for (GuiCartItem item : guiItems) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    for (GuiCartItem item : guiItems)
+                    {
                         item.splitTicketDeactivated();
                     }
-                    for (Item item : curCart.getItems()) {
+                    for (Item item : curCart.getItems())
+                    {
                         item.isSetToSplitSave = false;
                     }
                     splitTicketEndShowContent();
                     beginSplitTicketButton.setVisible(true);
                     cancelSplitTicketButton.setVisible(false);//Hide me, my begin button will take my place.
 
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -2373,7 +2886,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         paidOutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
                     JFrame textInputFrame = new JFrame("");
                     JTextField field1 = new JTextField();
                     JTextField field2 = new JTextField();
@@ -2381,7 +2895,8 @@ public class MainFrame extends javax.swing.JFrame {
                         public void focusLost(java.awt.event.FocusEvent evt) {
                             field1.setSelectionStart(0);
                             field1.setSelectionEnd(15);
-                            if (field1.getText().isEmpty()) {
+                            if (field1.getText().isEmpty())
+                            {
                                 field1.setText("Description");
                             }//end if
                         }//end focusGained
@@ -2390,13 +2905,16 @@ public class MainFrame extends javax.swing.JFrame {
                         public void focusLost(java.awt.event.FocusEvent evt) {
                             field2.setSelectionStart(0);
                             field2.setSelectionEnd(12);
-                            if (!validateDouble(field2.getText())) {
+                            if (!validateDouble(field2.getText()))
+                            {
                                 field2.setText(String.format("0"));
                             }//end if
                         }//end focusGained
                     });
-                    Object[] message = {
-                        "Description:", field1, "Amount: $", field2};
+                    Object[] message =
+                    {
+                        "Description:", field1, "Amount: $", field2
+                    };
                     field1.setText(String.format("Description"));
                     field1.setSelectionStart(0);
                     field1.setSelectionEnd(15);
@@ -2406,26 +2924,39 @@ public class MainFrame extends javax.swing.JFrame {
 
                     field1.addAncestorListener(new RequestFocusListener());
                     int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Paid Out Menu", JOptionPane.OK_CANCEL_OPTION);
-                    if (option == JOptionPane.OK_OPTION) {
-                        if (!validateDouble(field2.getText())) {
+                    if (option == JOptionPane.OK_OPTION)
+                    {
+                        if (!validateDouble(field2.getText()))
+                        {
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Improper paid out value.");
-                        } else {
+                        }
+                        else
+                        {
                             double amtReceived = Double.parseDouble(field2.getText());
                             amtReceived = round(amtReceived);
-                            if (amtReceived <= 0) {
+                            if (amtReceived <= 0)
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Paid out must be greater than 0.");
-                            } else {
-                                if (field1.getText().isEmpty()) {
+                            }
+                            else
+                            {
+                                if (field1.getText().isEmpty())
+                                {
                                     JFrame message1 = new JFrame("");
                                     JOptionPane.showMessageDialog(message1, "Paid out must have description.");
-                                } else {
-                                    Object[] message2 = {
-                                        "Are you sure?\nDescription: " + field1.getText(), "Amount: $ " + field2.getText()};
+                                }
+                                else
+                                {
+                                    Object[] message2 =
+                                    {
+                                        "Are you sure?\nDescription: " + field1.getText(), "Amount: $ " + field2.getText()
+                                    };
 
                                     int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Paid Out Menu", JOptionPane.OK_CANCEL_OPTION);
-                                    if (option2 == JOptionPane.OK_OPTION) {
+                                    if (option2 == JOptionPane.OK_OPTION)
+                                    {
                                         checkout.beginPaidOut(field1.getText().replaceAll("'", " "), Double.parseDouble(field2.getText()));
                                         JFrame message1 = new JFrame("");
                                         JOptionPane.showMessageDialog(message1, "Success!");
@@ -2439,7 +2970,9 @@ public class MainFrame extends javax.swing.JFrame {
                         }//end else
                     }//end if  
 
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -2451,23 +2984,31 @@ public class MainFrame extends javax.swing.JFrame {
         //ARPayment Button Listener
         chargeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if (!employeeSelectionHeader.getText().contains("NONE")) {
-                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString())) {
-                        if (!curCart.isEmpty() && !curCart.containsChargedItem()) {
-                            if (curCart.getTotalPrice() < 0) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    if (!employeeSelectionHeader.getText().substring(14).contentEquals(empList2.getSelectedItem().toString()))
+                    {
+                        if (!curCart.isEmpty() && !curCart.containsChargedItem())
+                        {
+                            if (curCart.getTotalPrice() < 0)
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
-                            } else {
+                            }
+                            else
+                            {
                                 JFrame textInputFrame = new JFrame("");
                                 JTextField field1 = new JTextField();
                                 JTextField field2 = new JTextField();
                                 JTextField field3 = new JTextField();
                                 JTextField field4 = new JTextField();
-                                Object[] message = {
+                                Object[] message =
+                                {
                                     "Account Name:", field1,
                                     "Last Name:", field2,
                                     "First Name:", field3,
-                                    "DOB:", field4};
+                                    "DOB:", field4
+                                };
                                 field1.setText("");
                                 field2.setText("");
                                 field3.setText("");
@@ -2475,31 +3016,42 @@ public class MainFrame extends javax.swing.JFrame {
                                 String accountName = "";
                                 field1.addAncestorListener(new RequestFocusListener());
                                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
-                                if (option == JOptionPane.OK_OPTION) {
-                                    if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty()) {
+                                if (option == JOptionPane.OK_OPTION)
+                                {
+                                    if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty())
+                                    {
                                         //do nothing, they clicked OK with everything blank
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         String[] choices = Database.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
-                                        for (int i = 0; i < choices.length; i++) {//this removes current from the display when they are charging TO account
+                                        for (int i = 0; i < choices.length; i++)
+                                        {//this removes current from the display when they are charging TO account
                                             choices[i] = choices[i].substring(0, choices[i].indexOf("Current"));
                                         }
-                                        if (choices != null) {
+                                        if (choices != null)
+                                        {
                                             accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
                                                     "Choose AR Account", JOptionPane.QUESTION_MESSAGE, null, // Use
                                                     // default
                                                     // icon
                                                     choices, // Array of choices
                                                     choices[0]); // Initial choice
-                                            if (Database.checkFrozenAccount(accountName.substring(0, accountName.indexOf(" ")))) {
+                                            if (Database.checkFrozenAccount(accountName.substring(0, accountName.indexOf(" "))))
+                                            {
                                                 JFrame message1 = new JFrame("");
                                                 JOptionPane.showMessageDialog(message1, "This account has been FROZEN. Please speak to Hollie. Customer CANNOT charge!");
-                                            } else if (accountName != null) {
+                                            }
+                                            else if (accountName != null)
+                                            {
                                                 changeDue.setText("Change Due: $0.00");
                                                 displayChangeDue = true;
                                                 checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
                                                 updateCartScreen();
                                             }//end if accountname not null
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             JFrame message1 = new JFrame("");
                                             JOptionPane.showMessageDialog(message1, "No such account found.");
                                         }//end else
@@ -2507,17 +3059,24 @@ public class MainFrame extends javax.swing.JFrame {
                                     }//end else
                                 }//end if OK_OPTION
                             }//end if negative amount in cart
-                        } else {
-                            if (curCart.containsChargedItem()) {
+                        }
+                        else
+                        {
+                            if (curCart.containsChargedItem())
+                            {
                                 JFrame message1 = new JFrame("");
                                 JOptionPane.showMessageDialog(message1, "Please remove account payments before charging.");
                             }
                         }
-                    } else {
+                    }
+                    else
+                    {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "You cannot check out yourself!");
                     }
-                } else {
+                }
+                else
+                {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
@@ -2528,7 +3087,8 @@ public class MainFrame extends javax.swing.JFrame {
         cancelRefundButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 refundCart.voidCart();
-                for (GuiRefundCartItem item : guiRefundItems) {
+                for (GuiRefundCartItem item : guiRefundItems)
+                {
                     item.removeAllGUIData();
                 }
                 checkForAdminButtonVisible(activeClerksPasscode);
@@ -2610,7 +3170,8 @@ public class MainFrame extends javax.swing.JFrame {
         this.setVisible(true);
         jPanel1.setVisible(true);
 
-        if (refundCart.isEmpty()) {
+        if (refundCart.isEmpty())
+        {
             discountHeader.setText("Discount: ");
             subTotal.setText(String.format("Subtotal: $%.2f", curCart.getSubTotal()));
             subTotal.setLocation(750, 800);
@@ -2635,7 +3196,8 @@ public class MainFrame extends javax.swing.JFrame {
             changeDue.setFont(new Font(subTotal.getName(), Font.BOLD, 30));
             totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
 
-            if (curCart.isEmpty()) {
+            if (curCart.isEmpty())
+            {
                 resaveTicket.setVisible(false);
                 isMassPreCharged = false;
                 massPrechargeButton.setBackground(new Color(255, 0, 0));
@@ -2643,7 +3205,9 @@ public class MainFrame extends javax.swing.JFrame {
                 massSplitTicketButton.setBackground(new Color(255, 0, 0));
                 massSplitTicketButton.setText("Mass Off");
             }
-        } else {
+        }
+        else
+        {
             discountHeader.setText("Qty to Refund: ");
             subTotal.setText(String.format("Subtotal: $%.2f", refundCart.getSubTotal()));
             subTotal.setLocation(750, 800);
@@ -2668,12 +3232,16 @@ public class MainFrame extends javax.swing.JFrame {
             changeDue.setFont(new Font(subTotal.getName(), Font.BOLD, 30));
         }
 
-        if (displayChangeDue) {
+        if (displayChangeDue)
+        {
             changeDue.setVisible(true);
-            if (displayActive) {
+            if (displayActive)
+            {
                 display.printLines("****THANK YOU!****", String.format("Change: $%.2f", Double.parseDouble(changeDue.getText().substring(changeDue.getText().indexOf('$') + 1))));
             }
-        } else {
+        }
+        else
+        {
             changeDue.setVisible(false);
         }
 
@@ -2683,9 +3251,11 @@ public class MainFrame extends javax.swing.JFrame {
         estimatedCashTotalLabel.setText(String.format("Cash: $%d", estimatedCashTotal));
         estimatedCoinTotalLabel.setText(String.format("Coin: $%.2f", estimatedCoinTotal));
 
-        if (curCart.getRequiresRepaint()) {
+        if (curCart.getRequiresRepaint())
+        {
             int y = 15;
-            for (GuiCartItem item : guiItems) {
+            for (GuiCartItem item : guiItems)
+            {
                 item.reposition(y);
                 y += 15;
             }
@@ -2706,27 +3276,45 @@ public class MainFrame extends javax.swing.JFrame {
         this.setTitle("Smith's Super-Aid POS - Developed by: Andrew & Hollie Smith");
         menuBar = new TopMenuBar(this);//Hollie's Menu Bar!
         this.setJMenuBar(menuBar);
-        if (isHalloween) {
+        if (isHalloween)
+        {
             getContentPane().setBackground(Color.BLACK);
-        } else if (isThanksgiving) {
+        }
+        else if (isThanksgiving)
+        {
             getContentPane().setBackground(new Color(158, 104, 42));
-        } else if (isEaster) {
+        }
+        else if (isEaster)
+        {
             getContentPane().setBackground(new Color(224, 205, 255));
-        } else if (isChristmas) {
+        }
+        else if (isChristmas)
+        {
             getContentPane().setBackground(new Color(203, 203, 203));
-        } else if (isFourthOfJuly) {
+        }
+        else if (isFourthOfJuly)
+        {
             getContentPane().setBackground(new Color(30, 45, 96));
-        } else if (isValentinesDay) {
+        }
+        else if (isValentinesDay)
+        {
             getContentPane().setBackground(new Color(228, 131, 151));
-        } else if (isSaintPatricksDay) {
+        }
+        else if (isSaintPatricksDay)
+        {
             getContentPane().setBackground(new Color(96, 168, 48));
-        } else if (isSummerTime) {
+        }
+        else if (isSummerTime)
+        {
             getContentPane().setBackground(new Color(219, 209, 180));
-        } else if (isWeddingMonth) {
+        }
+        else if (isWeddingMonth)
+        {
             getContentPane().setBackground(new Color(192, 192, 192));
         }
         checkout = new CheckoutHandler();
-        if (quotesActive) {
+        if (quotesActive)
+        {
             quote.setText(Database.getQuote());
             this.add(quote);
             quote.setVisible(true);
@@ -2739,7 +3327,8 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(employeeSelectionHeader);
         String[] empStrings2 = new String[employeeStrings.length + 1];
         empStrings2[0] = "NO";
-        for (int i = 1; i < employeeStrings.length + 1; i++) {
+        for (int i = 1; i < employeeStrings.length + 1; i++)
+        {
             empStrings2[i] = employeeStrings[i - 1];
         }
         empList2 = new JComboBox<String>(empStrings2);
@@ -2750,7 +3339,8 @@ public class MainFrame extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent event) {
                 String employeeToCheckout = (String) empList2.getSelectedItem();
                 System.out.println(employeeToCheckout);
-                if (!employeeToCheckout.contentEquals("NO")) {
+                if (!employeeToCheckout.contentEquals("NO"))
+                {
                     curCart.isEmpDiscountActive(true);
                     /*
                     for(Item item : curCart.getItems()){
@@ -2760,11 +3350,14 @@ public class MainFrame extends javax.swing.JFrame {
                     }*/
                     //curCart.updateTotal();
                     updateCartScreen();
-                    for (GuiCartItem item : guiItems) {
+                    for (GuiCartItem item : guiItems)
+                    {
                         item.employeeSaleTriggered();
                     }
 
-                } else {
+                }
+                else
+                {
                     curCart.isEmpDiscountActive(false);
                     /* for(Item item : curCart.getItems()){
                         if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
@@ -2772,7 +3365,8 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                     }*/
                     //curCart.updateTotal();
-                    for (GuiCartItem item : guiItems) {
+                    for (GuiCartItem item : guiItems)
+                    {
 
                         item.employeeSaleCancelled();
                     }
@@ -2814,37 +3408,47 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if (displayActive) {
+        if (displayActive)
+        {
             display.close();
         }
     }//GEN-LAST:event_formWindowClosing
 
     protected boolean validateRX(int length, int rxNumber, String insurance, String fillDate) {
-        if (length == 7 && !curCart.containsRX(rxNumber, insurance, fillDate)) {
+        if (length == 7 && !curCart.containsRX(rxNumber, insurance, fillDate))
+        {
             return true;
         }
         return false;
     }
 
     protected boolean validateDouble(String copay) {
-        try {
+        try
+        {
             double cpay = Double.parseDouble(copay);
-            if (cpay < 0) {
+            if (cpay < 0)
+            {
                 return false;
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             return false;
         }//end catch
         return true;
     }
 
     protected boolean validateInteger(String integer) {
-        try {
+        try
+        {
             int integ = Integer.parseInt(integer);
-            if (integ < 0) {
+            if (integ < 0)
+            {
                 return false;
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             return false;
         }//end catch
         return true;
@@ -2852,27 +3456,34 @@ public class MainFrame extends javax.swing.JFrame {
 
     protected boolean validateDate(String fillDate) {
         String subString1, subString2, subString3;
-        if (fillDate.length() != 6) {
+        if (fillDate.length() != 6)
+        {
             return false;
         }//end if not right length
         subString1 = fillDate.substring(0, 2);
         subString2 = fillDate.substring(2, 4);
         subString3 = fillDate.substring(4, 6);
-        try {
+        try
+        {
             int month = Integer.parseInt(subString1);
             int day = Integer.parseInt(subString2);
             int year = Integer.parseInt(subString3);
 
-            if (month < 1 || month > 12) {
+            if (month < 1 || month > 12)
+            {
                 return false;
             }
-            if (day < 1 || day > 31) {
+            if (day < 1 || day > 31)
+            {
                 return false;
             }
-            if (year < 0 || year > 99) {
+            if (year < 0 || year > 99)
+            {
                 return false;
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             return false;
         }//end catch
         return true;
@@ -2896,11 +3507,13 @@ public class MainFrame extends javax.swing.JFrame {
         //if it does, lets load it!
         curCart.loadCart(id);
         int i = 15;
-        for (GuiCartItem item : guiItems) {
+        for (GuiCartItem item : guiItems)
+        {
             item.removeAllGUIData();
         }
         guiItems.clear();
-        for (Item item : curCart.getItems()) {
+        for (Item item : curCart.getItems())
+        {
             guiItems.add(new GuiCartItem(item, i, jPanel1, curCart, myself));
             i += 15;
         }
@@ -2913,7 +3526,8 @@ public class MainFrame extends javax.swing.JFrame {
         refundCart.loadRefundCart(receiptNum);
         int i = 15;
 
-        for (RefundItem item : refundCart.getRefundItems()) {
+        for (RefundItem item : refundCart.getRefundItems())
+        {
             guiRefundItems.add(new GuiRefundCartItem(item, i, jPanel1, refundCart, myself));
             i += 15;
             refundCart.setReceiptNum(item.getReceiptNum());
@@ -2946,10 +3560,12 @@ public class MainFrame extends javax.swing.JFrame {
         upsButton.setVisible(true);
         massPrechargeButton.setVisible(true);
 
-        if (isMarchMadness) {
+        if (isMarchMadness)
+        {
             mmButton.setVisible(true);
         }
-        if (!displayActive) {
+        if (!displayActive)
+        {
             activateDisplayButton.setVisible(true);
         }
         cancelRefundButton.setVisible(false);
@@ -2984,7 +3600,8 @@ public class MainFrame extends javax.swing.JFrame {
         creditButton.setVisible(false);
         massSplitTicketButton.setVisible(true);
 
-        if (isMarchMadness) {
+        if (isMarchMadness)
+        {
             mmButton.setVisible(false);
         }
         //  if (!displayActive) {
@@ -3021,7 +3638,8 @@ public class MainFrame extends javax.swing.JFrame {
         cashButton.setVisible(true);
         creditButton.setVisible(true);
         massSplitTicketButton.setVisible(false);
-        if (isMarchMadness) {
+        if (isMarchMadness)
+        {
             mmButton.setVisible(true);
         }
         //if (!displayActive) {
@@ -3033,7 +3651,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     public void voidCarts() {
 
-        if (!receiptNum.isEmpty()) {
+        if (!receiptNum.isEmpty())
+        {
             updateCartScreen();
             rxSignout();
             receiptNum = "";
@@ -3045,10 +3664,12 @@ public class MainFrame extends javax.swing.JFrame {
         DateFormat dateFormat = new SimpleDateFormat("MMddyy");
         Date date = new Date();
         previousDate = dateFormat.format(date);
-        for (GuiCartItem item : guiItems) {
+        for (GuiCartItem item : guiItems)
+        {
             item.removeAllGUIData();
         }
-        for (GuiRefundCartItem item : guiRefundItems) {
+        for (GuiRefundCartItem item : guiRefundItems)
+        {
             item.removeAllGUIData();
         }
         guiItems.clear();
@@ -3059,70 +3680,97 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void saveTicket(String id) {
-        if (id != null && !id.isEmpty()) {
+        if (id != null && !id.isEmpty())
+        {
             id = id.toUpperCase();
-            if (!Database.checkDatabaseForTicket(id)) {//check ID to see if it exists in database
+            if (!Database.checkDatabaseForTicket(id))
+            {//check ID to see if it exists in database
                 //if it doesnt, lets create it!
                 boolean eefound = false;
-                if (id.toUpperCase().contentEquals("DENNIS NEDRY")) {//EE Protocol
+                if (id.toUpperCase().contentEquals("DENNIS NEDRY"))
+                {//EE Protocol
                     boolean itemFound = false;
-                    for (Item item : curCart.getItems()) {
-                        if (item.mutID.contentEquals("012849")) {
+                    for (Item item : curCart.getItems())
+                    {
+                        if (item.mutID.contentEquals("012849"))
+                        {
                             itemFound = true;
                             eefound = true;
                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/jp2.gif", "C:/POS/SOFTWARE/jp2.wav", "", "Life finds a way!");
                         }//end if
                     }//end for all items
-                    if (!itemFound) {
+                    if (!itemFound)
+                    {
                         eefound = true;
                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/jp1.gif", "C:/POS/SOFTWARE/jp1.wav", " \nIt would seem the Park, I mean CART is missing something...\n", "Ah Ah Ah, you did't say the magic word!");
                     }//not found!
 
-                } else if (id.toUpperCase().contentEquals("ANTHONY EDWARD STARK")) {//EE Protocol
+                }
+                else if (id.toUpperCase().contentEquals("ANTHONY EDWARD STARK"))
+                {//EE Protocol
                     boolean itemFound = false;
-                    for (Item item : curCart.getItems()) {
-                        if (item.itemName.contentEquals("Mark") && item.itemPrice == 0.42) {
+                    for (Item item : curCart.getItems())
+                    {
+                        if (item.itemName.contentEquals("Mark") && item.itemPrice == 0.42)
+                        {
                             itemFound = true;
                             eefound = true;
                             EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/im2.gif", "C:/POS/SOFTWARE/im2.wav", "", "I AM IRONMAN");
                         }
                     }
-                    if (!itemFound) {
+                    if (!itemFound)
+                    {
                         eefound = true;
                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/im1.gif", "C:/POS/SOFTWARE/im1.wav", "", "Jarvis: Greetings sir!");
                     }//not found!
 
-                } else if (id.toUpperCase().contentEquals("SIFO-DYAS")) {
-                    for (Item item : curCart.getItems()) {
-                        if (item.getPrice() == 0.02 && item.itemName.contentEquals("Jango Fett") && item.getQuantity() == 2) {
+                }
+                else if (id.toUpperCase().contentEquals("SIFO-DYAS"))
+                {
+                    for (Item item : curCart.getItems())
+                    {
+                        if (item.getPrice() == 0.02 && item.itemName.contentEquals("Jango Fett") && item.getQuantity() == 2)
+                        {
                             eefound = true;
                         }
                     }
-                    if (eefound) {
+                    if (eefound)
+                    {
                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw3.gif", "C:/POS/SOFTWARE/sw3.wav", "", "Negotiations with a lightsaber.");
                     }
-                } else if (isHalloween && id.toUpperCase().contentEquals("THACKERY BINX")) {
+                }
+                else if (isHalloween && id.toUpperCase().contentEquals("THACKERY BINX"))
+                {
                     boolean found1 = false;
                     boolean found2 = false;
-                    for (Item item : curCart.getItems()) {
-                        if (item.itemName.contentEquals("Come Little Children") && item.itemPrice == 3.00) {
+                    for (Item item : curCart.getItems())
+                    {
+                        if (item.itemName.contentEquals("Come Little Children") && item.itemPrice == 3.00)
+                        {
                             found1 = true;
                         }
-                        if (item.itemName.contentEquals("I Put A Spell On You") && item.itemPrice == 16.93) {
+                        if (item.itemName.contentEquals("I Put A Spell On You") && item.itemPrice == 16.93)
+                        {
                             found2 = true;
                         }
                     }
-                    if (found1 && found2) {
+                    if (found1 && found2)
+                    {
                         EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hp3.gif", "C:/POS/SOFTWARE/hp3.wav", "", "Okay then, let's go!");
                     }
-                } else//end if EE Protocol
-                if (!eefound) {
-                    if (!isSplitSavingActive) {
-                        for (GuiCartItem item : guiItems) {
+                }
+                else//end if EE Protocol
+                if (!eefound)
+                {
+                    if (!isSplitSavingActive)
+                    {
+                        for (GuiCartItem item : guiItems)
+                        {
                             item.removeAllGUIData();
                         }
                         guiItems.clear();
-                        if (curCart.isEmpDiscountActive) {
+                        if (curCart.isEmpDiscountActive)
+                        {
                             curCart.isEmpDiscountActive(false);
                             empList2.setSelectedIndex(0);
                         }
@@ -3137,19 +3785,27 @@ public class MainFrame extends javax.swing.JFrame {
                         massSplitTicketButton.setText("Mass Off");
 
                         resetVars();
-                    } else {//Begin split ticket save logic
+                    }
+                    else
+                    {//Begin split ticket save logic
 
-                        if (curCart.containsItemToBeSplit()) {
+                        if (curCart.containsItemToBeSplit())
+                        {
                             ArrayList<GuiCartItem> itemsToRemove = new ArrayList<>();
-                            for (GuiCartItem item : guiItems) {
-                                if (item.item.isSetToSplitSave) {
+                            for (GuiCartItem item : guiItems)
+                            {
+                                if (item.item.isSetToSplitSave)
+                                {
                                     itemsToRemove.add(item);
                                     resizeCartWindow();
-                                } else {
+                                }
+                                else
+                                {
                                     item.splitTicketDeactivated();//we need to bring it back to normal view.
                                 }
                             }
-                            for (GuiCartItem toRemove : itemsToRemove) {
+                            for (GuiCartItem toRemove : itemsToRemove)
+                            {
                                 guiItems.remove(toRemove);
                                 toRemove.removeAllGUIData();
                             }
@@ -3161,14 +3817,16 @@ public class MainFrame extends javax.swing.JFrame {
                             updateCartScreen();
                             resizeCartWindow();
                             resaveTicket.setVisible(false);
-                            if (curCart.isEmpty()) {
+                            if (curCart.isEmpty())
+                            {
                                 isMassPreCharged = false;
                                 massPrechargeButton.setBackground(new Color(255, 0, 0));
                                 isMassSplitting = false;
                                 massSplitTicketButton.setBackground(new Color(255, 0, 0));
                                 massSplitTicketButton.setText("Mass Off");
                                 resetVars();
-                                if (curCart.isEmpDiscountActive) {
+                                if (curCart.isEmpDiscountActive)
+                                {
                                     curCart.isEmpDiscountActive(false);
                                     empList2.setSelectedIndex(0);
                                 }
@@ -3176,32 +3834,42 @@ public class MainFrame extends javax.swing.JFrame {
                             splitTicketEndShowContent();
                             cancelSplitTicketButton.setVisible(false);
                             beginSplitTicketButton.setVisible(true);
-                        } else {
+                        }
+                        else
+                        {
                             JFrame message1 = new JFrame("");
                             JOptionPane.showMessageDialog(message1, "Cannot save a ticket with nothing set to save.");
                         }
                     }
                 }
 
-            } else if (!isSplitSavingActive) {
+            }
+            else if (!isSplitSavingActive)
+            {
                 //if it does, send error message!
                 JFrame message2 = new JFrame("");
                 //JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Would you like me to load those?");
-                if (!id.toUpperCase().contentEquals("WONDERLAND") && !id.toUpperCase().contentEquals("STRANGER") && !id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?") && !id.toUpperCase().contentEquals("WET BANDITS") && !id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA") && !id.toUpperCase().contentEquals("MICHAEL MYERS")) {
+                if (!id.toUpperCase().contentEquals("WONDERLAND") && !id.toUpperCase().contentEquals("STRANGER") && !id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?") && !id.toUpperCase().contentEquals("WET BANDITS") && !id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA") && !id.toUpperCase().contentEquals("MICHAEL MYERS"))
+                {
                     if (JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING",
-                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                    {
                         loadTicketWithId(id);
                         loadedTicketID = id;
                         resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
                         resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
                         resaveTicket.setVisible(true);
                         updateCartScreen();
-                    } else {
+                    }
+                    else
+                    {
                         // no option
                     }
                 }
 
-            } else {//end else already items in tickets
+            }
+            else
+            {//end else already items in tickets
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "There is already a ticket under that ID. Please cancel split ticket and open that ticket to continue.");
             }
@@ -3221,7 +3889,8 @@ public class MainFrame extends javax.swing.JFrame {
     public void rxSignout() {
         int reply = JOptionPane.showConfirmDialog(null, "Does patient have questions about medications?", "Medication Questions", JOptionPane.YES_NO_OPTION);
         boolean questions = false;
-        if (reply == JOptionPane.YES_OPTION) {
+        if (reply == JOptionPane.YES_OPTION)
+        {
             questions = true;
         }
 
@@ -3232,7 +3901,8 @@ public class MainFrame extends javax.swing.JFrame {
         frame.begin(questions);
         frame.setVisible(true);
 
-        while (!frame.hasBeenSaved) {
+        while (!frame.hasBeenSaved)
+        {
             //frame = new CapSignature(this, curCart, checkout.reader.getRemoteDrivePath(), receiptNum);
             frame = new CapSignature(this, curCart, ConfigFileReader.getRemoteDrivePath(), receiptNum);
             frame.begin(questions);
@@ -3265,20 +3935,31 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public static void main(String args[]) {
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+        try
+        {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
+        }
+        catch (ClassNotFoundException ex)
+        {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
+        }
+        catch (InstantiationException ex)
+        {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
+        }
+        catch (IllegalAccessException ex)
+        {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        }
+        catch (javax.swing.UnsupportedLookAndFeelException ex)
+        {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>

@@ -29,7 +29,8 @@ public class PrinterService implements Printable {
                 flavor, pras);
 
         List<String> printerList = new ArrayList<String>();
-        for (PrintService printerService : printServices) {
+        for (PrintService printerService : printServices)
+        {
             printerList.add(printerService.getName());
         }
 
@@ -39,7 +40,8 @@ public class PrinterService implements Printable {
     @Override
     public int print(Graphics g, PageFormat pf, int page)
             throws PrinterException {
-        if (page > 0) {
+        if (page > 0)
+        {
             /* We have only one page, and 'page' is zero-based */
             return NO_SUCH_PAGE;
         }
@@ -59,7 +61,8 @@ public class PrinterService implements Printable {
     }
 
     public void printString(String printerName, String text) {
-        if (!printerName.isEmpty()) {
+        if (!printerName.isEmpty())
+        {
             // find the printService of name printerName
             DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
 
@@ -71,7 +74,8 @@ public class PrinterService implements Printable {
 
             DocPrintJob job = service.createPrintJob();
 
-            try {
+            try
+            {
 
                 byte[] bytes;
 
@@ -82,7 +86,9 @@ public class PrinterService implements Printable {
 
                 job.print(doc, null);
 
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -91,7 +97,8 @@ public class PrinterService implements Printable {
     }
 
     public void printBytes(String printerName, byte[] bytes) {
-        if (!printerName.isEmpty()) {
+        if (!printerName.isEmpty())
+        {
             DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
             PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 
@@ -101,13 +108,16 @@ public class PrinterService implements Printable {
 
             DocPrintJob job = service.createPrintJob();
 
-            try {
+            try
+            {
 
                 Doc doc = new SimpleDoc(bytes, flavor, null);
 
                 job.print(doc, null);
 
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
         }
@@ -115,8 +125,10 @@ public class PrinterService implements Printable {
 
     private PrintService findPrintService(String printerName,
             PrintService[] services) {
-        for (PrintService service : services) {
-            if (service.getName().equalsIgnoreCase(printerName)) {
+        for (PrintService service : services)
+        {
+            if (service.getName().equalsIgnoreCase(printerName))
+            {
                 return service;
             }
         }
