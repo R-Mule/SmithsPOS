@@ -90,14 +90,14 @@ public class Database {
         }//end catch
     }
 
-    public static String addEmployee(String firstName, String lastName, int passCode) {
+    public static String addEmployee(String firstName, String lastName, int passCode, String rfid) {
         try
         {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("INSERT INTO `employees`(`pid`,`empname`,`passcode`,`wins`,`losses`) VALUES (NULL,'" + lastName + ", " + firstName + "','" + passCode + "',0,0)");//zeros are for wins and losses. for March Madness
+            stmt.executeUpdate("INSERT INTO `employees`(`pid`,`empname`,`passcode`,`wins`,`losses`,`emprfid`) VALUES (NULL,'" + lastName + ", " + firstName + "','" + passCode + "',0,0,'"+rfid+"')");//zeros are for wins and losses. for March Madness
             con.close();
         }
         catch (Exception e)

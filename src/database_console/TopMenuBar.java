@@ -393,8 +393,9 @@ public class TopMenuBar extends JMenuBar {
         JTextField field1 = new JTextField();
         JTextField field2 = new JTextField();
         JTextField field3 = new JTextField();
+        JTextField field4 = new JTextField();
         Object[] message = {
-            "First Name: ex. Anduin", field1, "Last Name: ex. Smith", field2, "Passcode: (1-99)", field3};
+            "First Name: ex. Anduin", field1, "Last Name: ex. Smith", field2, "Passcode: (1-99)", field3, "Employee RFID: ###,#####", field4};
         do {
             tryAgain = false;
             field1.addAncestorListener(new RequestFocusListener());
@@ -414,11 +415,16 @@ public class TopMenuBar extends JMenuBar {
                     tryAgain = true;
                 } else if (!field1.getText().matches("[A-Z]{1}[a-z]+?")) {//Requires Capital first letter of name, and then all lower case at least 1 lower case unknown more.
                     JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "First Name must have capital first letter and rest all lowercase.");//prompt try again?
+                    JOptionPane.showMessageDialog(message1, "First Name must have capital first letter and rest all lowercase. Ex: Abcde");//prompt try again?
                     tryAgain = true;
                 } else if (!field2.getText().matches("[A-Z]{1}[a-z]+?")) {//Same as above, name Validation.
                     JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Last Name must have capital first letter and rest all lowercase.");//prompt try again?
+                    JOptionPane.showMessageDialog(message1, "Last Name must have capital first letter and rest all lowercase. Ex: Abcde");//prompt try again?
+                    tryAgain = true;
+                }
+                else if (!field4.getText().matches("[0-9][0-9][0-9],[0-9][0-9][0-9][0-9][0-9]")) {//Same as above, name Validation. ###,#####
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Employee RFID Must be in format: ###,#####");//prompt try again?
                     tryAgain = true;
                 }
                 if (tryAgain) {
@@ -429,11 +435,11 @@ public class TopMenuBar extends JMenuBar {
                 } else {
 
                     Object[] message2 = {
-                        "Are you sure?\nFirst Name: " + field1.getText(), "Last Name: " + field2.getText(), "Passcode: " + field3.getText()};
+                        "Are you sure?\nFirst Name: " + field1.getText(), "Last Name: " + field2.getText(), "Passcode: " + field3.getText(), "RFID #: " + field4.getText() };
 
                     int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add New Employee Menu", JOptionPane.OK_CANCEL_OPTION);
                     if (option2 == JOptionPane.OK_OPTION) {
-                        String result = Database.addEmployee(field1.getText(), field2.getText(), Integer.parseInt(field3.getText()));
+                        String result = Database.addEmployee(field1.getText(), field2.getText(), Integer.parseInt(field3.getText()),field4.getText());
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, result);
                     }
@@ -1041,6 +1047,8 @@ public class TopMenuBar extends JMenuBar {
             case 3:
                 feedMenu.setVisible(true);//Menus visible
                 addMenu.setVisible(true);
+                addEmployee.setVisible(false);//Removed since RFID added.
+                remEmployee.setVisible(false);
                 remMenu.setVisible(true);
                 mgmtMenu.setVisible(true);
                 drawerReports.setVisible(false);
@@ -1053,6 +1061,8 @@ public class TopMenuBar extends JMenuBar {
                 feedMenu.setVisible(true);//Menus visible
                 addMenu.setVisible(true);
                 remMenu.setVisible(true);
+                addEmployee.setVisible(false);//Removed since RFID added.
+                remEmployee.setVisible(false);
                 mgmtMenu.setVisible(true);
                 rxDataUpload.setVisible(false);
                 dmeDataUpload.setVisible(false);
