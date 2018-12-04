@@ -31,6 +31,9 @@ public class DrawerReport implements Serializable {
     protected double totalCreditAmt = 0;//UPDATED
     protected double totalDebitAmt = 0;
 
+    protected double totalPayCheckPayments = 0;//This is used to record money that was deducted from employee checks for tabs
+    protected double lunchChargedAmt = 0;
+
     //Total Refunded Today
     private double totalRefundedCash = 0;//UPDATED
     private double totalRefundedCredit = 0;//UPDATED
@@ -82,9 +85,9 @@ public class DrawerReport implements Serializable {
     private double totalPaperSales = 0;//UPDATED
     private double totalUPSSales = 0;//UPDATED
 
-    DrawerReport(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName) {
+    DrawerReport(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName, boolean isPayCheckReceipt) {
         //FIRST TIME REPORT IS MADE. DEFAULT VALUE TIME!
-        update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName);
+        update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt);
     }//end DrawerReportCtor
 
     DrawerReport(RefundCart curCart, String clerkName, String[] paymentType, double[] paymentAmt, boolean isRefund) {
@@ -171,7 +174,7 @@ public class DrawerReport implements Serializable {
         totalTaxCharged -= curCart.getTax();
     }
 
-    public void update(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName) {
+    public void update(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName, boolean isPayCheckReceipt) {
 
         //UPDATE CLERK TRANSACTION COUNT!
         if (employeeNames != null && !employeeNames.isEmpty() && employeeNames.contains(clerkName))
@@ -185,19 +188,68 @@ public class DrawerReport implements Serializable {
             employeeNames.add(clerkName);
             employeeTransactions.add(1);
         }
-        double totalPaid = 0;
-        for (int i = 0; i < paymentType.length; i++)
+        if (isPayCheckReceipt)
         {
-            totalPaid += paymentAmt[i];
+            totalPayCheckPayments += paymentAmt[0];
         }
-        double changeDue = totalPaid - curCart.getTotalPrice();
-        //UPDATE AMOUNT RECEIVED BY TENDER TYPE
-        for (int i = 0; i < paymentType.length; i++)
+        else
         {
-            if (paymentType[i].contains("CASH"))
+
+            double totalPaid = 0;
+            for (int i = 0; i < paymentType.length; i++)
             {
-                totalCashAmt += paymentAmt[i];
+                totalPaid += paymentAmt[i];
+            }
+            double changeDue = totalPaid - curCart.getTotalPrice();
+            //UPDATE AMOUNT RECEIVED BY TENDER TYPE
+            for (int i = 0; i < paymentType.length; i++)
+            {
+                if (paymentType[i].contains("CASH"))
+                {
+                    totalCashAmt += paymentAmt[i];
+                    totalCashAmt += totalCoinsAmt;
+                    String cash = Double.toString(totalCashAmt);
+                    boolean isNegative = false;
+                    if (totalCashAmt < 0)
+                    {
+                        isNegative = true;
+                    }
+                    totalCashAmt = Double.parseDouble(cash.substring(0, cash.indexOf('.')));
+                    totalCoinsAmt = Double.parseDouble(cash.substring(cash.indexOf('.')));
+                    totalCoinsAmt = round(totalCoinsAmt);
+                    totalCashAmt = round(totalCashAmt);
+                    if (isNegative)
+                    {
+                        totalCoinsAmt = round(totalCoinsAmt * -1);
+                    }
+
+                }
+                else if (paymentType[i].contains("CREDIT"))
+                {
+                    totalCreditAmt += paymentAmt[i];
+                    totalCreditAmt = round(totalCreditAmt);
+                }
+                else if (paymentType[i].contains("DEBIT"))
+                {
+                    totalDebitAmt += paymentAmt[i];
+                    totalDebitAmt = round(totalDebitAmt);
+                }
+                else if (paymentType[i].contains("CHECK"))
+                {
+                    totalChecksAmt += paymentAmt[i];
+                    totalChecksAmt = round(totalChecksAmt);
+                }
+                else if (paymentType[i].contains("CHARGED"))
+                {
+                    totalChargesRXAmt += paymentAmt[i];
+                    totalChargesRXAmt = round(totalChargesRXAmt);
+                }
+
+            }
+            if (changeDue > 0)
+            {
                 totalCashAmt += totalCoinsAmt;
+                totalCashAmt -= changeDue;
                 String cash = Double.toString(totalCashAmt);
                 boolean isNegative = false;
                 if (totalCashAmt < 0)
@@ -212,205 +264,166 @@ public class DrawerReport implements Serializable {
                 {
                     totalCoinsAmt = round(totalCoinsAmt * -1);
                 }
-
-            }
-            else if (paymentType[i].contains("CREDIT"))
-            {
-                totalCreditAmt += paymentAmt[i];
-                totalCreditAmt = round(totalCreditAmt);
-            }
-            else if (paymentType[i].contains("DEBIT"))
-            {
-                totalDebitAmt += paymentAmt[i];
-                totalDebitAmt = round(totalDebitAmt);
-            }
-            else if (paymentType[i].contains("CHECK"))
-            {
-                totalChecksAmt += paymentAmt[i];
-                totalChecksAmt = round(totalChecksAmt);
-            }
-            else if (paymentType[i].contains("CHARGED"))
-            {
-                totalChargesRXAmt += paymentAmt[i];
-                totalChargesRXAmt = round(totalChargesRXAmt);
             }
 
-        }
-        if (changeDue > 0)
-        {
-            totalCashAmt += totalCoinsAmt;
-            totalCashAmt -= changeDue;
-            String cash = Double.toString(totalCashAmt);
-            boolean isNegative = false;
-            if (totalCashAmt < 0)
+            boolean charged = false;//This is used to add items to charge account arraylist
+            if (paymentType[0].contains("CHARGED"))
             {
-                isNegative = true;
+                charged = true;
             }
-            totalCashAmt = Double.parseDouble(cash.substring(0, cash.indexOf('.')));
-            totalCoinsAmt = Double.parseDouble(cash.substring(cash.indexOf('.')));
-            totalCoinsAmt = round(totalCoinsAmt);
-            totalCashAmt = round(totalCashAmt);
-            if (isNegative)
+            for (Item item : curCart.getItems())
             {
-                totalCoinsAmt = round(totalCoinsAmt * -1);
-            }
-        }
-
-        boolean charged = false;//This is used to add items to charge account arraylist
-        if (paymentType[0].contains("CHARGED"))
-        {
-            charged = true;
-        }
-        for (Item item : curCart.getItems())
-        {
-            totalTaxCharged = round(totalTaxCharged + item.getTaxTotal());
-            if (item.getCategory() == 853)
-            {//ACCOUNT PAYEMENT!
-                if (ARAccountName != null && !ARAccountName.isEmpty() && ARAccountName.contains(item.getName()))
-                {//if account name isnt null, isnt empty, and contains the account already
-                    int index = ARAccountName.indexOf(item.getName());
-                    double amount = round(amountPaidToARAccount.get(index) + item.getTotal());
-                    amountPaidToARAccount.set(index, amount);
-                }
-                else
-                {
-                    ARAccountName.add(item.getName());
-                    amountPaidToARAccount.add(item.getTotal());
-                }
-                totalARPayments = round(totalARPayments + item.getTotal());
-            }
-            else if (item.getCategory() == 854)
-            {//DME ACCOUNT PAYMENT!
-                if (DMEAccountName != null && !DMEAccountName.isEmpty() && DMEAccountName.contains(item.getName()))
-                {//if account name isnt null, isnt empty, and contains the account already
-                    int index = DMEAccountName.indexOf(item.getName());
-                    double amount = round(amountPaidToDMEAccount.get(index) + item.getTotal());
-                    amountPaidToDMEAccount.set(index, amount);
-                }
-                else
-                {
-                    DMEAccountName.add(item.getName());
-                    amountPaidToDMEAccount.add(item.getTotal());
-                }
-                totalDMEPayments = round(totalDMEPayments + item.getTotal());
-            }
-            else if (item.getCategory() == 855)
-            {//NEWSPAPER
-                totalPaperSales += item.getPriceOfItemsBeforeTax();
-            }
-            else if (item.isRX && !item.isPreCharged())
-            {//RX
-                System.out.println("HERE2!");
-                totalRXCoppay += item.getPriceOfItemsBeforeTax();
-            }
-            else if (item.isRX() && item.isPreCharged())
-            {
-                //DO NOTHING!
-            }
-            else if (item.getCategory() == 856)
-            {
-                totalAmericanGreetings += item.getPriceOfItemsBeforeTax();
-            }
-            else if (item.getCategory() == 860)
-            {
-                totalUPSSales += item.getPriceOfItemsBeforeTax();
-
-            }
-            else if (item.getCategory() == 621 || item.getCategory() == 622 || item.getCategory() == 623 || item.getCategory() == 624 || item.getCategory() == 628 || item.getCategory() == 631 || item.getCategory() == 632 || item.getCategory() == 633 || item.getCategory() == 634 || item.getCategory() == 635 || item.getCategory() == 636 || item.getCategory() == 637 || item.getCategory() == 639 || item.getCategory() == 640 || item.getCategory() == 641 || item.getCategory() == 642 || item.getCategory() == 643)
-            {//DME
-                if (item.isTaxable())
-                {
-                    dmeWithTax += item.getPriceOfItemsBeforeTax();
-                }
-                else
-                {
-                    dmeWithoutTax += item.getPriceOfItemsBeforeTax();
-                }
-            }
-            else if (item.itemName.toUpperCase().contentEquals("LUNCH"))
-            {
-                if (employeeCheckoutName.contentEquals("NO"))
-                {
-                    lunchErrorLog.add(clerkName + " Failed to enter Employee for Lunch in amount of: $" + item.getTotal());
-                }
-            }
-            else
-            {//MUST BE AN OTC CATEGORY!
-                if (item.isTaxable())
-                {
-                    otcTaxedTotal += item.getPriceOfItemsBeforeTax();
-                }
-                else
-                {
-                    otcNonTaxedTotal += item.getPriceOfItemsBeforeTax();
-                }
-            }
-
-            if (charged)
-            {
-                if (accountNameCharged != null && accountNameCharged != null && accountNameCharged.contains(paymentType[0].substring(11)) && !item.isPreCharged)
-                {
-                    int index = accountNameCharged.indexOf(paymentType[0].substring(11));
-                    double amount = round(amountChargedToAccount.get(index) + item.getTotal());
-                    amountChargedToAccount.set(index, amount);
-                    ArrayList<String> items = itemsChargedToAccount.get(index);
-                    items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getTotal()));
-                    System.out.println(index + "SIZE OF " + itemsChargedToAccount.size());
-
-                }
-                else if (!item.isPreCharged)
-                {
-                    accountNameCharged.add(paymentType[0].substring(11));
-                    amountChargedToAccount.add(round((item.getTotal())));
-                    ArrayList<String> items = new ArrayList<String>();
-                    items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getTotal()));
-
-                    itemsChargedToAccount.add(items);
-                    System.out.println("SIZE OF " + itemsChargedToAccount.size());
-                }//end else not added yet
-            }//end if Charged
-
-            if (!employeeCheckoutName.contentEquals("NO"))
-            {
-                //lunch counter
-                if (!employeesWhoPaidForItems.contains(employeeCheckoutName))
-                {
-                    employeesWhoPaidForItems.add(employeeCheckoutName);
-                    ArrayList<String> tempItem = new ArrayList<>();
-                    tempItem.add(item.getQuantity() + "x " + item.getName() + " " + item.getTotal());
-                    itemsEmployeesBought.add(tempItem);
-                    amtEmployeePaidForAllItems.add(item.getTotal());
-                }
-                else
-                {
-                    int indexOfEmp = employeesWhoPaidForItems.indexOf(employeeCheckoutName);
-                    itemsEmployeesBought.get(indexOfEmp).add(item.getQuantity() + "x " + item.getName() + " " + item.getTotal());
-                    Double temp = item.getTotal() + amtEmployeePaidForAllItems.get(indexOfEmp);
-                    amtEmployeePaidForAllItems.set(indexOfEmp, temp);
-                }
-                if (item.getName().toUpperCase().contentEquals("LUNCH"))
-                {
-                    lunchTotalAmt += item.getTotal();
-                    if (paymentType[0].contains("CASH"))
-                    {
-                        lunchTotalCash += item.getTotal();
+                totalTaxCharged = round(totalTaxCharged + item.getTaxTotal());
+                if (item.getCategory() == 853)
+                {//ACCOUNT PAYEMENT!
+                    if (ARAccountName != null && !ARAccountName.isEmpty() && ARAccountName.contains(item.getName()))
+                    {//if account name isnt null, isnt empty, and contains the account already
+                        int index = ARAccountName.indexOf(item.getName());
+                        double amount = round(amountPaidToARAccount.get(index) + item.getTotal());
+                        amountPaidToARAccount.set(index, amount);
                     }
-                    else if (paymentType[0].contains("CREDIT"))
+                    else
                     {
-                        lunchTotalCredit += item.getTotal();
+                        ARAccountName.add(item.getName());
+                        amountPaidToARAccount.add(item.getTotal());
                     }
-                    else if (paymentType[0].contains("DEBIT"))
-                    {
-                        lunchTotalDebit += item.getTotal();
+                    totalARPayments = round(totalARPayments + item.getTotal());
+                }
+                else if (item.getCategory() == 854)
+                {//DME ACCOUNT PAYMENT!
+                    if (DMEAccountName != null && !DMEAccountName.isEmpty() && DMEAccountName.contains(item.getName()))
+                    {//if account name isnt null, isnt empty, and contains the account already
+                        int index = DMEAccountName.indexOf(item.getName());
+                        double amount = round(amountPaidToDMEAccount.get(index) + item.getTotal());
+                        amountPaidToDMEAccount.set(index, amount);
                     }
-                    else if (paymentType[0].contains("CHECK"))
+                    else
                     {
-                        lunchTotalCheck += item.getTotal();
+                        DMEAccountName.add(item.getName());
+                        amountPaidToDMEAccount.add(item.getTotal());
+                    }
+                    totalDMEPayments = round(totalDMEPayments + item.getTotal());
+                }
+                else if (item.getCategory() == 855)
+                {//NEWSPAPER
+                    totalPaperSales += item.getPriceOfItemsBeforeTax();
+                }
+                else if (item.isRX && !item.isPreCharged())
+                {//RX
+                    System.out.println("HERE2!");
+                    totalRXCoppay += item.getPriceOfItemsBeforeTax();
+                }
+                else if (item.isRX() && item.isPreCharged())
+                {
+                    //DO NOTHING!
+                }
+                else if (item.getCategory() == 856)
+                {
+                    totalAmericanGreetings += item.getPriceOfItemsBeforeTax();
+                }
+                else if (item.getCategory() == 860)
+                {
+                    totalUPSSales += item.getPriceOfItemsBeforeTax();
+
+                }
+                else if (item.getCategory() == 621 || item.getCategory() == 622 || item.getCategory() == 623 || item.getCategory() == 624 || item.getCategory() == 628 || item.getCategory() == 631 || item.getCategory() == 632 || item.getCategory() == 633 || item.getCategory() == 634 || item.getCategory() == 635 || item.getCategory() == 636 || item.getCategory() == 637 || item.getCategory() == 639 || item.getCategory() == 640 || item.getCategory() == 641 || item.getCategory() == 642 || item.getCategory() == 643)
+                {//DME
+                    if (item.isTaxable())
+                    {
+                        dmeWithTax += item.getPriceOfItemsBeforeTax();
+                    }
+                    else
+                    {
+                        dmeWithoutTax += item.getPriceOfItemsBeforeTax();
                     }
                 }
-            }
-        }//end for all items
+                else if (item.itemName.toUpperCase().contentEquals("LUNCH"))
+                {
+                    if (employeeCheckoutName.contentEquals("NO"))
+                    {
+                        lunchErrorLog.add(clerkName + " Failed to enter Employee for Lunch in amount of: $" + item.getTotal());
+                    }
+                }
+                else
+                {//MUST BE AN OTC CATEGORY!
+                    if (item.isTaxable())
+                    {
+                        otcTaxedTotal += item.getPriceOfItemsBeforeTax();
+                    }
+                    else
+                    {
+                        otcNonTaxedTotal += item.getPriceOfItemsBeforeTax();
+                    }
+                }
 
+                if (charged)
+                {
+                    if (accountNameCharged != null && accountNameCharged != null && accountNameCharged.contains(paymentType[0].substring(11)) && !item.isPreCharged)
+                    {
+                        int index = accountNameCharged.indexOf(paymentType[0].substring(11));
+                        double amount = round(amountChargedToAccount.get(index) + item.getTotal());
+                        amountChargedToAccount.set(index, amount);
+                        ArrayList<String> items = itemsChargedToAccount.get(index);
+                        items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getTotal()));
+                        System.out.println(index + "SIZE OF " + itemsChargedToAccount.size());
+
+                    }
+                    else if (!item.isPreCharged)
+                    {
+                        accountNameCharged.add(paymentType[0].substring(11));
+                        amountChargedToAccount.add(round((item.getTotal())));
+                        ArrayList<String> items = new ArrayList<String>();
+                        items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getTotal()));
+
+                        itemsChargedToAccount.add(items);
+                        System.out.println("SIZE OF " + itemsChargedToAccount.size());
+                    }//end else not added yet
+                }//end if Charged
+
+                if (!employeeCheckoutName.contentEquals("NO"))
+                {
+                    //lunch counter
+                    if (!employeesWhoPaidForItems.contains(employeeCheckoutName))
+                    {
+                        employeesWhoPaidForItems.add(employeeCheckoutName);
+                        ArrayList<String> tempItem = new ArrayList<>();
+                        tempItem.add(item.getQuantity() + "x " + item.getName() + " " + item.getTotal());
+                        itemsEmployeesBought.add(tempItem);
+                        amtEmployeePaidForAllItems.add(item.getTotal());
+                    }
+                    else
+                    {
+                        int indexOfEmp = employeesWhoPaidForItems.indexOf(employeeCheckoutName);
+                        itemsEmployeesBought.get(indexOfEmp).add(item.getQuantity() + "x " + item.getName() + " " + item.getTotal());
+                        Double temp = item.getTotal() + amtEmployeePaidForAllItems.get(indexOfEmp);
+                        amtEmployeePaidForAllItems.set(indexOfEmp, temp);
+                    }
+                    if (item.getName().toUpperCase().contentEquals("LUNCH"))
+                    {
+                        lunchTotalAmt += item.getTotal();
+                        if (paymentType[0].contains("CASH"))
+                        {
+                            lunchTotalCash += item.getTotal();
+                        }
+                        else if (paymentType[0].contains("CREDIT"))
+                        {
+                            lunchTotalCredit += item.getTotal();
+                        }
+                        else if (paymentType[0].contains("DEBIT"))
+                        {
+                            lunchTotalDebit += item.getTotal();
+                        }
+                        else if (paymentType[0].contains("CHECK"))
+                        {
+                            lunchTotalCheck += item.getTotal();
+                        }else if(paymentType[0].contains("CHARGED TO")){
+                            lunchChargedAmt += item.getTotal();
+
+                        }
+                    }
+                }
+            }//end for all items
+        }//end else not paycheckReceipt
     }//end update()
 
     public void paidOut(String description, double amount) {
@@ -518,7 +531,9 @@ public class DrawerReport implements Serializable {
         System.out.print("Lunch Check Total Collected: $" + lunchTotalCheck + "\n");
         System.out.print("Lunch Cash Total Collected: $" + lunchTotalCash + "\n");
         System.out.print("Lunch Credit Total Collected: $" + lunchTotalCredit + "\n");
-        System.out.print("Total UPS Collected: " + totalUPSSales + "\n\n");
+        System.out.print("Total UPS Collected: " + totalUPSSales + "\n");
+        System.out.print("Total Employee Checks Paid With: " + totalPayCheckPayments + "\n");
+        System.out.print("Total Employee Lunches Charged: " + lunchChargedAmt+ "\n\n");
         if (!masterRefundDescriptionAndAmt.isEmpty())
         {
             System.out.print("\nMaster Refunds: \n");
@@ -699,6 +714,8 @@ public class DrawerReport implements Serializable {
             bw.write(totalPaperSales + "\n");
             bw.write(totalAmericanGreetings + "\n");
             bw.write(totalUPSSales + "\n");
+            bw.write(totalPayCheckPayments + "\n");
+            bw.write(lunchChargedAmt + "\n");
 
             if (!masterRefundDescriptionAndAmt.isEmpty())
             {

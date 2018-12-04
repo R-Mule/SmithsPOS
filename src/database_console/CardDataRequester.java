@@ -56,10 +56,11 @@ public class CardDataRequester {
             con.setDefaultUseCaches(false);
             // tell the web server what we are sending
             con.setRequestProperty("Content-Type", "text/xml");
-            OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-            writer.write("<DETAIL><TRAN_TYPE>" + tran_type + "</TRAN_TYPE><AMOUNT>" + amount + "</AMOUNT></DETAIL>");
-            writer.flush();
-            writer.close();
+            try (OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream()))
+            {
+                writer.write("<DETAIL><TRAN_TYPE>" + tran_type + "</TRAN_TYPE><AMOUNT>" + amount + "</AMOUNT></DETAIL>");
+                writer.flush();
+            }
             // reading the response
             InputStreamReader reader = new InputStreamReader(con.getInputStream());
             StringBuilder buf = new StringBuilder();
@@ -76,6 +77,8 @@ public class CardDataRequester {
         }
         catch (IOException | NumberFormatException t)
         {
+            responseText = "CARD Error code: 1. Please report error to manager, then try again.";
+            transTerminate = true;
             t.printStackTrace(System.out);
         }
     }
@@ -145,24 +148,29 @@ public class CardDataRequester {
                         }
                         else
                         {
+                            responseText = "CARD Error code: 2. Please report error to manager, then try again.";
                             transTerminate = true;
                             System.out.println("MUST BE AN ERROR!!");
                         }
                     }
                     else
                     {
+                        responseText = "CARD Error code: 3. Please report error to manager, then try again.";
                         transTerminate = true;
                         System.out.println("TRANS DECLINED1??");
                     }
                 }
                 else
                 {
+                    responseText = "CARD Error code: 4. Please report error to manager, then try again.";
                     transTerminate = true;
                     System.out.println("TRANS DECLINED2??");
                 }
             }
             catch (SAXException | IOException e)
             {
+                responseText = "CARD Error code: 5. Please report error to manager, then try again.";
+                transTerminate = true;
                 // handle SAXException
             }
             // handle IOException
@@ -170,12 +178,15 @@ public class CardDataRequester {
         }
         catch (ParserConfigurationException e1)
         {
+            responseText = "CARD Error code: 6. Please report error to manager, then try again.";
+            transTerminate = true;
             // handle ParserConfigurationException
         }
         catch (NullPointerException ex)
         {
+            
             transTerminate = true;
-            responseText = "FAILED TO FIND AUTH RETRY";
+            responseText = "FAILED TO FIND AUTH RETRY Error code: 7";
             System.out.println("TRANS DECLINED3??");
         }
     }

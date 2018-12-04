@@ -4,9 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
 
@@ -74,9 +71,7 @@ public class ConfigFileReader {
                 }
                 else if (tokens[0].contains("Register Report Path"))
                 {
-                    Date date = new Date();
-                    DateFormat dateFormat = new SimpleDateFormat("MMddyy");
-                    registerReportPath = tokens[1].trim() + dateFormat.format(date);
+                    registerReportPath = tokens[1].trim();
                 }
                 else if (tokens[0].contains("Display Com Port"))
                 {

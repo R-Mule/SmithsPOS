@@ -1915,6 +1915,13 @@ public class MainFrame extends javax.swing.JFrame {
                     {
                         if (!curCart.isEmpty())
                         {
+                            if (!checkLunchSplitTender())
+                            {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Split Tender with \"LUNCH\" not allowed.");
+                            }
+                            else
+                            {
                             if (curCart.getTotalPrice() < 0)
                             {
                                 JFrame message1 = new JFrame("");
@@ -2152,7 +2159,7 @@ public class MainFrame extends javax.swing.JFrame {
                                                 double change = amtReceived - curCart.getTotalPrice();
                                                 change = round(change);
                                                 changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                                String goodCheckout = checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), Integer.parseInt(field3.getText()), Integer.parseInt(field5.getText()), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
+                                                String goodCheckout = checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), field3.getText(), field5.getText(), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
                                                 if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
                                                 {
                                                     changeDue.setText("Change Due: $" + String.format("%.2f", change));
@@ -2169,6 +2176,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     }//end else
                                 }//end if
                             }//end check for negative amount
+                            }//end checkSplitTenderLunch()
                         }//end if isNotEmpty
                     }
                     else
@@ -2203,66 +2211,75 @@ public class MainFrame extends javax.swing.JFrame {
                     {
                         if (!curCart.isEmpty())
                         {
-                            JFrame textInputFrame = new JFrame("");
-                            JLabel cashTotal = new JLabel("Total: $", SwingConstants.RIGHT);
-                            JTextField field1 = new JTextField();
-                            field1.addFocusListener(new java.awt.event.FocusAdapter() {
-                                public void focusLost(java.awt.event.FocusEvent evt) {
-                                    field1.setSelectionStart(0);
-                                    field1.setSelectionEnd(12);
-                                    if (!validateDouble(field1.getText()))
-                                    {
-                                        field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                                    }//end if
-                                }//end focusGained
-                            });
-                            cashTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
-                            Object[] message =
-                            {
-                                "Cash Amount:", field1, cashTotal
-                            };
-                            field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                            field1.setSelectionStart(0);
-                            field1.setSelectionEnd(8);
-
-                            if (curCart.getTotalPrice() < 0)
+                            if (!checkLunch())
                             {
                                 JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                                JOptionPane.showMessageDialog(message1, "Cannot checkout \"LUNCH\" without employee selected.");
                             }
                             else
                             {
-                                field1.addAncestorListener(new RequestFocusListener());
-                                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Cash Amount", JOptionPane.OK_CANCEL_OPTION);
-                                if (option == JOptionPane.OK_OPTION)
+
+                                JFrame textInputFrame = new JFrame("");
+                                JLabel cashTotal = new JLabel("Total: $", SwingConstants.RIGHT);
+                                JTextField field1 = new JTextField();
+                                field1.addFocusListener(new java.awt.event.FocusAdapter() {
+                                    public void focusLost(java.awt.event.FocusEvent evt) {
+                                        field1.setSelectionStart(0);
+                                        field1.setSelectionEnd(12);
+                                        if (!validateDouble(field1.getText()))
+                                        {
+                                            field1.setText(String.format("%.2f", curCart.getTotalPrice()));
+                                        }//end if
+                                    }//end focusGained
+                                });
+                                cashTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
+                                Object[] message =
                                 {
-                                    if (!validateDouble(field1.getText()))
+                                    "Cash Amount:", field1, cashTotal
+                                };
+                                field1.setText(String.format("%.2f", curCart.getTotalPrice()));
+                                field1.setSelectionStart(0);
+                                field1.setSelectionEnd(8);
+
+                                if (curCart.getTotalPrice() < 0)
+                                {
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                                }
+                                else
+                                {
+                                    field1.addAncestorListener(new RequestFocusListener());
+                                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Cash Amount", JOptionPane.OK_CANCEL_OPTION);
+                                    if (option == JOptionPane.OK_OPTION)
                                     {
-                                        JFrame message1 = new JFrame("");
-                                        JOptionPane.showMessageDialog(message1, "Improper cash value.");
-                                    }
-                                    else
-                                    {
-                                        double amtReceived = Double.parseDouble(field1.getText());
-                                        amtReceived = round(amtReceived);
-                                        if (amtReceived < curCart.getTotalPrice())
+                                        if (!validateDouble(field1.getText()))
                                         {
                                             JFrame message1 = new JFrame("");
-                                            JOptionPane.showMessageDialog(message1, "Not enough cash.");
+                                            JOptionPane.showMessageDialog(message1, "Improper cash value.");
                                         }
                                         else
                                         {
+                                            double amtReceived = Double.parseDouble(field1.getText());
+                                            amtReceived = round(amtReceived);
+                                            if (amtReceived < curCart.getTotalPrice())
+                                            {
+                                                JFrame message1 = new JFrame("");
+                                                JOptionPane.showMessageDialog(message1, "Not enough cash.");
+                                            }
+                                            else
+                                            {
 
-                                            double change = amtReceived - curCart.getTotalPrice();
-                                            change = round(change);
-                                            changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                            displayChangeDue = true;
-                                            checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
-                                            updateCartScreen();
+                                                double change = amtReceived - curCart.getTotalPrice();
+                                                change = round(change);
+                                                changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                                displayChangeDue = true;
+                                                checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
+                                                updateCartScreen();
 
+                                            }//end else
                                         }//end else
-                                    }//end else
-                                }//end if
+                                    }//end if
+                                }
                             }
                         }
                         else if (!refundCart.isEmpty())
@@ -2328,79 +2345,112 @@ public class MainFrame extends javax.swing.JFrame {
                     {
                         if (!curCart.isEmpty())
                         {
-                            if (curCart.getTotalPrice() < 0)
+                            if (!checkLunch())
                             {
                                 JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                                JOptionPane.showMessageDialog(message1, "Cannot checkout \"LUNCH\" without employee selected.");
                             }
                             else
                             {
-                                JFrame textInputFrame = new JFrame("");
-                                JLabel checkTotal = new JLabel("Total: $", SwingConstants.RIGHT);
-                                JTextField field1 = new JTextField();
-                                JTextField field2 = new JTextField();
-                                field1.addFocusListener(new java.awt.event.FocusAdapter() {
-                                    public void focusLost(java.awt.event.FocusEvent evt) {
-                                        field1.setSelectionStart(0);
-                                        field1.setSelectionEnd(12);
+                                if (curCart.getTotalPrice() < 0)
+                                {
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                                }
+                                else
+                                {
+                                    JFrame textInputFrame = new JFrame("");
+                                    JLabel checkTotal = new JLabel("Total: $", SwingConstants.RIGHT);
+                                    JTextField field1 = new JTextField();
+                                    JTextField field2 = new JTextField();
+                                    field1.addFocusListener(new java.awt.event.FocusAdapter() {
+                                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                            field1.setSelectionStart(0);
+                                            field1.setSelectionEnd(12);
+                                            if (!validateDouble(field1.getText()))
+                                            {
+                                                field1.setText(String.format("%.2f", curCart.getTotalPrice()));
+                                            }//end if
+                                        }//end focusGained
+                                    });
+                                    field2.addFocusListener(new java.awt.event.FocusAdapter() {
+                                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                            field2.setSelectionStart(0);
+                                            field2.setSelectionEnd(12);
+                                            if (field2.getText().isEmpty())
+                                            {
+                                                field2.setText(String.format("0"));
+                                            }//end if
+                                        }//end focusGained
+                                    });
+                                    checkTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
+                                    Object[] message =
+                                    {
+                                        "Check Amount:", field1, "Check #", field2, checkTotal
+                                    };
+                                    field1.setText(String.format("%.2f", curCart.getTotalPrice()));
+                                    field1.setSelectionStart(0);
+                                    field1.setSelectionEnd(8);
+                                    field2.setText("0");
+                                    field2.setSelectionStart(0);
+                                    field2.setSelectionEnd(2);
+
+                                    field1.addAncestorListener(new RequestFocusListener());
+                                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Check Value", JOptionPane.OK_CANCEL_OPTION);
+                                    if (option == JOptionPane.OK_OPTION)
+                                    {
                                         if (!validateDouble(field1.getText()))
                                         {
-                                            field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                                        }//end if
-                                    }//end focusGained
-                                });
-                                field2.addFocusListener(new java.awt.event.FocusAdapter() {
-                                    public void focusLost(java.awt.event.FocusEvent evt) {
-                                        field2.setSelectionStart(0);
-                                        field2.setSelectionEnd(12);
-                                        if (!validateInteger(field2.getText()))
-                                        {
-                                            field2.setText(String.format("0"));
-                                        }//end if
-                                    }//end focusGained
-                                });
-                                checkTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
-                                Object[] message =
-                                {
-                                    "Check Amount:", field1, "Check #", field2, checkTotal
-                                };
-                                field1.setText(String.format("%.2f", curCart.getTotalPrice()));
-                                field1.setSelectionStart(0);
-                                field1.setSelectionEnd(8);
-                                field2.setText("0");
-                                field2.setSelectionStart(0);
-                                field2.setSelectionEnd(2);
-
-                                field1.addAncestorListener(new RequestFocusListener());
-                                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Check Value", JOptionPane.OK_CANCEL_OPTION);
-                                if (option == JOptionPane.OK_OPTION)
-                                {
-                                    if (!validateDouble(field1.getText()))
-                                    {
-                                        JFrame message1 = new JFrame("");
-                                        JOptionPane.showMessageDialog(message1, "Improper check value.");
-                                    }
-                                    else
-                                    {
-                                        double amtReceived = Double.parseDouble(field1.getText());
-                                        amtReceived = round(amtReceived);
-                                        if (amtReceived < curCart.getTotalPrice())
-                                        {
                                             JFrame message1 = new JFrame("");
-                                            JOptionPane.showMessageDialog(message1, "Check value to small.");
+                                            JOptionPane.showMessageDialog(message1, "Improper check value.");
                                         }
                                         else
                                         {
-                                            double change = amtReceived - curCart.getTotalPrice();
-                                            change = round(change);
-                                            changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                            displayChangeDue = true;
-                                            checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), Integer.parseInt(field2.getText()), myself, guiItems, (String) empList2.getSelectedItem());
-                                            updateCartScreen();
+                                            double amtReceived = Double.parseDouble(field1.getText());
+                                            amtReceived = round(amtReceived);
+                                            if (amtReceived < curCart.getTotalPrice())
+                                            {
+                                                JFrame message1 = new JFrame("");
+                                                JOptionPane.showMessageDialog(message1, "Check value to small.");
+                                            }
+                                            else
+                                            {
+                                                double change = amtReceived - curCart.getTotalPrice();
+                                                change = round(change);
+                                                changeDue.setText("Change Due: $" + String.format("%.2f", change));
+
+                                                if (field2.getText().toUpperCase().contains("PAYCHECK"))
+                                                {
+                                                    if (employeeSelectionHeader.getText().contains("Smith, Hollie"))
+                                                    {
+                                                        if (curCart.getTotalPrice() == amtReceived)
+                                                        {
+                                                            checkout.beginStoreCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), field2.getText(), myself, guiItems, (String) empList2.getSelectedItem());
+                                                            displayChangeDue = true;
+                                                        }
+                                                        else
+                                                        {
+                                                            JFrame message1 = new JFrame("");
+                                                            JOptionPane.showMessageDialog(message1, "When using PAYCHECK option you MUST match the amount paid to the total due.");
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        JFrame message1 = new JFrame("");
+                                                        JOptionPane.showMessageDialog(message1, "Only the Store Manager can use PAYCHECK inside Check # Field.");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), field2.getText(), myself, guiItems, (String) empList2.getSelectedItem());
+                                                    displayChangeDue = true;
+                                                }
+                                                updateCartScreen();
+                                            }//end else
                                         }//end else
-                                    }//end else
-                                }//end if  
-                            }//end check for negative balance
+                                    }//end if  
+                                }//end check for negative balance
+                            }//end check for LUNCH
                         }//end if isNotEmpty
                     }
                     else
@@ -2426,27 +2476,35 @@ public class MainFrame extends javax.swing.JFrame {
                     {
                         if (!curCart.isEmpty())
                         {
-                            if (curCart.getTotalPrice() < 0)
+                            if (!checkLunch())
                             {
                                 JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                                JOptionPane.showMessageDialog(message1, "Cannot checkout \"LUNCH\" without employee selected.");
                             }
                             else
                             {
-                                changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
-                                displayChangeDue = true;
-                                String goodCheckout = checkout.beginCreditCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
-                                if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                if (curCart.getTotalPrice() < 0)
                                 {
-                                    displayChangeDue = true;
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
                                 }
                                 else
                                 {
-                                    displayChangeDue = false;
-                                    JFrame message1 = new JFrame("");
-                                    JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
+                                    changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
+                                    displayChangeDue = true;
+                                    String goodCheckout = checkout.beginCreditCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
+                                    if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                    {
+                                        displayChangeDue = true;
+                                    }
+                                    else
+                                    {
+                                        displayChangeDue = false;
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
+                                    }
+                                    updateCartScreen();
                                 }
-                                updateCartScreen();
                             }
                         }
                         else if (!refundCart.isEmpty())
@@ -2506,27 +2564,35 @@ public class MainFrame extends javax.swing.JFrame {
                     {
                         if (!curCart.isEmpty())
                         {
-                            if (curCart.getTotalPrice() < 0)
+                            if (!checkLunch())
                             {
                                 JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                                JOptionPane.showMessageDialog(message1, "Cannot checkout \"LUNCH\" without employee selected.");
                             }
                             else
                             {
-                                changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
-                                displayChangeDue = true;
-                                String goodCheckout = checkout.beginDebitCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
-                                if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                if (curCart.getTotalPrice() < 0)
                                 {
-                                    displayChangeDue = true;
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
                                 }
                                 else
                                 {
-                                    displayChangeDue = false;
-                                    JFrame message1 = new JFrame("");
-                                    JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
+                                    changeDue.setText("Change Due: $" + String.format("%.2f", 0.00));
+                                    displayChangeDue = true;
+                                    String goodCheckout = checkout.beginDebitCheckout(curCart, curCart.getTotalPrice(), employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
+                                    if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                    {
+                                        displayChangeDue = true;
+                                    }
+                                    else
+                                    {
+                                        displayChangeDue = false;
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
+                                    }
+                                    updateCartScreen();
                                 }
-                                updateCartScreen();
                             }
                         }
                         else if (!refundCart.isEmpty())
@@ -2990,75 +3056,83 @@ public class MainFrame extends javax.swing.JFrame {
                     {
                         if (!curCart.isEmpty() && !curCart.containsChargedItem())
                         {
-                            if (curCart.getTotalPrice() < 0)
+                            if (!checkLunch())
                             {
                                 JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                                JOptionPane.showMessageDialog(message1, "Cannot checkout \"LUNCH\" without employee selected.");
                             }
                             else
                             {
-                                JFrame textInputFrame = new JFrame("");
-                                JTextField field1 = new JTextField();
-                                JTextField field2 = new JTextField();
-                                JTextField field3 = new JTextField();
-                                JTextField field4 = new JTextField();
-                                Object[] message =
+                                if (curCart.getTotalPrice() < 0)
                                 {
-                                    "Account Name:", field1,
-                                    "Last Name:", field2,
-                                    "First Name:", field3,
-                                    "DOB: ex. 091318", field4
-                                };
-                                field1.setText("");
-                                field2.setText("");
-                                field3.setText("");
-                                field4.setText("");
-                                String accountName = "";
-                                field1.addAncestorListener(new RequestFocusListener());
-                                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
-                                if (option == JOptionPane.OK_OPTION)
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                                }
+                                else
                                 {
-                                    if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty())
+                                    JFrame textInputFrame = new JFrame("");
+                                    JTextField field1 = new JTextField();
+                                    JTextField field2 = new JTextField();
+                                    JTextField field3 = new JTextField();
+                                    JTextField field4 = new JTextField();
+                                    Object[] message =
                                     {
-                                        //do nothing, they clicked OK with everything blank
-                                    }
-                                    else
+                                        "Account Name:", field1,
+                                        "Last Name:", field2,
+                                        "First Name:", field3,
+                                        "DOB: ex. 091318", field4
+                                    };
+                                    field1.setText("");
+                                    field2.setText("");
+                                    field3.setText("");
+                                    field4.setText("");
+                                    String accountName = "";
+                                    field1.addAncestorListener(new RequestFocusListener());
+                                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
+                                    if (option == JOptionPane.OK_OPTION)
                                     {
-                                        String[] choices = Database.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
-                                        for (int i = 0; i < choices.length; i++)
-                                        {//this removes current from the display when they are charging TO account
-                                            choices[i] = choices[i].substring(0, choices[i].indexOf("Current"));
-                                        }
-                                        if (choices != null)
+                                        if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty())
                                         {
-                                            accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                                                    "Choose AR Account", JOptionPane.QUESTION_MESSAGE, null, // Use
-                                                    // default
-                                                    // icon
-                                                    choices, // Array of choices
-                                                    choices[0]); // Initial choice
-                                            if (accountName != null && Database.checkFrozenAccount(accountName.substring(0, accountName.indexOf(" "))))
-                                            {
-                                                JFrame message1 = new JFrame("");
-                                                JOptionPane.showMessageDialog(message1, "This account has been FROZEN. Please speak to Hollie. Customer CANNOT charge!");
-                                            }
-                                            else if (accountName != null)
-                                            {
-                                                changeDue.setText("Change Due: $0.00");
-                                                displayChangeDue = true;
-                                                checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
-                                                updateCartScreen();
-                                            }//end if accountname not null
+                                            //do nothing, they clicked OK with everything blank
                                         }
                                         else
                                         {
-                                            JFrame message1 = new JFrame("");
-                                            JOptionPane.showMessageDialog(message1, "No such account found.");
-                                        }//end else
+                                            String[] choices = Database.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
+                                            for (int i = 0; i < choices.length; i++)
+                                            {//this removes current from the display when they are charging TO account
+                                                choices[i] = choices[i].substring(0, choices[i].indexOf("Current"));
+                                            }
+                                            if (choices != null)
+                                            {
+                                                accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
+                                                        "Choose AR Account", JOptionPane.QUESTION_MESSAGE, null, // Use
+                                                        // default
+                                                        // icon
+                                                        choices, // Array of choices
+                                                        choices[0]); // Initial choice
+                                                if (accountName != null && Database.checkFrozenAccount(accountName.substring(0, accountName.indexOf(" "))))
+                                                {
+                                                    JFrame message1 = new JFrame("");
+                                                    JOptionPane.showMessageDialog(message1, "This account has been FROZEN. Please speak to Hollie. Customer CANNOT charge!");
+                                                }
+                                                else if (accountName != null)
+                                                {
+                                                    changeDue.setText("Change Due: $0.00");
+                                                    displayChangeDue = true;
+                                                    checkout.beginChargeCheckout(curCart, accountName, employeeSelectionHeader.getText().substring(14), myself, guiItems, (String) empList2.getSelectedItem());
+                                                    updateCartScreen();
+                                                }//end if accountname not null
+                                            }
+                                            else
+                                            {
+                                                JFrame message1 = new JFrame("");
+                                                JOptionPane.showMessageDialog(message1, "No such account found.");
+                                            }//end else
 
-                                    }//end else
-                                }//end if OK_OPTION
-                            }//end if negative amount in cart
+                                        }//end else
+                                    }//end if OK_OPTION
+                                }//end if negative amount in cart
+                            }//end else checkLunch()
                         }
                         else
                         {
@@ -3886,6 +3960,31 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new Dimension(1120, extra));
     }
 
+    private boolean checkLunch() {
+        boolean valid = true;
+        for (Item item : curCart.getItems())
+        {
+            if (item.getName().toUpperCase().contains("LUNCH") && empList2.getSelectedItem().toString().contains("NO"))
+            {
+                valid = false;
+            }
+        }
+
+        return valid;
+    }
+    private boolean checkLunchSplitTender(){
+               boolean valid = true;
+        for (Item item : curCart.getItems())
+        {
+            if (item.getName().toUpperCase().contains("LUNCH"))
+            {
+                valid = false;
+            }
+        }
+
+        return valid;
+    }
+
     public void rxSignout() {
         int reply = JOptionPane.showConfirmDialog(null, "Does patient have questions about medications?", "Medication Questions", JOptionPane.YES_NO_OPTION);
         boolean questions = false;
@@ -4046,7 +4145,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.6", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.8", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
