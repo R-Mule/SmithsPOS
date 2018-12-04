@@ -162,7 +162,7 @@ public class CardDataRequester {
                 }
                 else
                 {
-                    responseText = "CARD Error code: 4. Please report error to manager, then try again.";
+                    responseText = "CARD Error code: 4. Most likely a timeout issue.";
                     transTerminate = true;
                     System.out.println("TRANS DECLINED2??");
                 }
