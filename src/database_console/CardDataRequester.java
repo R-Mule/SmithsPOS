@@ -162,7 +162,7 @@ public class CardDataRequester {
                 }
                 else
                 {
-                    responseText = "CARD Error code: 4. Most likely a timeout issue.";
+                    responseText = "CARD Error code: 4. Most likely a timeout issue.\n (Card was not swiped or inserted soon enough after button was pressed)";
                     transTerminate = true;
                     System.out.println("TRANS DECLINED2??");
                 }
