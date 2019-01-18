@@ -76,6 +76,10 @@ public class MainFrame extends javax.swing.JFrame {
                 if (day >= 1 && day < 18)
                 {//18th is day after St Patricks Day 2018
                     isSaintPatricksDay = true;
+                    if(day == 9)
+                    {
+                        isHolliesBirthday = true;
+                    }
                 }
                 else
                 {
@@ -93,7 +97,7 @@ public class MainFrame extends javax.swing.JFrame {
                 {
                     isMarchMadness = true;
                 }
-                else
+                else if (day == 28)
                 {
                     isWeddingMonth = true;
                     quotesActive = false;//disable quotes, due to graphics
@@ -129,6 +133,9 @@ public class MainFrame extends javax.swing.JFrame {
                 if (day < 15)
                 {
                     isValentinesDay = true;
+                }
+                if(day == 14){
+                    isReallyValentinesDay = true;
                 }
             }
             else if (month.contentEquals("06"))
@@ -1106,6 +1113,7 @@ public class MainFrame extends javax.swing.JFrame {
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Employee Login Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION)
                 {
+                    
                     if (field1.getText().contentEquals("Prince Ali Ababwa"))
                     {
                         boolean found = false;
@@ -1181,6 +1189,14 @@ public class MainFrame extends javax.swing.JFrame {
                             activeClerksPasscode = Integer.parseInt(field1.getText());
                             checkForAdminButtonVisible(Integer.parseInt(field1.getText()));
                             clerkLogoutButton.setVisible(true);
+                            if(clerkName.contentEquals("Smith, Hollie") && isHolliesBirthday)//It is Hollie's Birthday!
+                            {
+                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/birthday.gif", "C:/POS/SOFTWARE/birthday.wav", "", "Happy Birthday Love!");
+                            }
+                            if(clerkName.contentEquals("Smith, Hollie") && isWeddingMonth)//wedding month is now our anniversary only
+                            {
+                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/weddingphoto.jpg", "C:/POS/SOFTWARE/weddingthankyou.wav", "", "Happy Anniversay Babe!");
+                            }
                         }
                     }
 
@@ -4178,10 +4194,13 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isThanksgiving = false;
     boolean isChristmas = false;
     boolean isValentinesDay = false;
+    boolean isReallyValentinesDay = false;//used for Hollie <3
+    boolean isHolliesBirthday = false;
     boolean isSaintPatricksDay = false;
     boolean isSummerTime = false;
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
+    
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";
     ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");
