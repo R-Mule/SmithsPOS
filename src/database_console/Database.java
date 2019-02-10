@@ -10,6 +10,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
@@ -97,7 +100,7 @@ public class Database {
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("INSERT INTO `employees`(`pid`,`empname`,`passcode`,`wins`,`losses`,`emprfid`) VALUES (NULL,'" + lastName + ", " + firstName + "','" + passCode + "',0,0,'"+rfid+"')");//zeros are for wins and losses. for March Madness
+            stmt.executeUpdate("INSERT INTO `employees`(`pid`,`empname`,`passcode`,`wins`,`losses`,`emprfid`) VALUES (NULL,'" + lastName + ", " + firstName + "','" + passCode + "',0,0,'" + rfid + "')");//zeros are for wins and losses. for March Madness
             con.close();
         }
         catch (Exception e)
@@ -152,6 +155,30 @@ public class Database {
             while (rs.next())
             {
                 bigList += rs.getInt(1) + " : " + rs.getString(2) + "\n";
+            }//end while
+            con.close();
+            return bigList;
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    public static ArrayList<String> getEmployeesSortByScore() {
+        try
+        {
+            ArrayList<String> bigList = new ArrayList<>();
+
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from employees order by currentscore desc;");
+            while (rs.next())
+            {
+                bigList.add(rs.getInt(1) + "#" + rs.getString(2) + " : " + rs.getLong(8));
             }//end while
             con.close();
             return bigList;
@@ -1654,6 +1681,173 @@ public class Database {
         {
             System.out.println(e);
         }//end catch
+    }
+
+    public static void insertEggLockout(LocalDate date, int employeePasscode) {
+        try
+        {
+            DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("UPDATE `employees` set currentLockout = '" + sdf.format(date) + "' where passcode = " + employeePasscode + ";");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+
+    public static boolean isLockoutLifted(int employeePasscode) {
+        try
+        {
+            boolean lockOutGone = true;
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select currentlockout from employees where passcode = '" + employeePasscode + "';");
+
+            while (rs.next())
+            {
+                LocalDateTime temp = rs.getTimestamp(1).toLocalDateTime();
+                if (temp != null && LocalDate.now().isEqual(temp.toLocalDate()))
+                {
+                    lockOutGone = false;
+                }
+            }//end while
+
+            con.close();
+            return lockOutGone;
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public static int getEggLevelByPasscode(int passcode) {
+        int currentLevel = 0;
+        try
+        {
+
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select EggLevel from employees where passcode = '" + passcode + "';");
+
+            while (rs.next())
+            {
+                currentLevel = rs.getInt(1);
+
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return currentLevel;
+    }
+
+    public static int getEggLevelByPID(int pid) {
+        int currentLevel = 0;
+        try
+        {
+
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select EggLevel from employees where pid = '" + pid + "';");
+
+            while (rs.next())
+            {
+                currentLevel = rs.getInt(1);
+
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return currentLevel;
+    }
+
+    public static void setCurrentLevelByPasscode(int employeePasscode, int eggLevel) {
+        try
+        {
+
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("UPDATE `employees` set eggLevel = " + eggLevel + " where passcode = " + employeePasscode + ";");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+
+    public static void updateScore(int employeePasscode, int scoreToAdd) {
+        try
+        {
+
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select currentScore from employees where passcode = " + employeePasscode + ";");
+
+            while (rs.next())
+            { 
+                scoreToAdd+=rs.getInt(1);
+                Statement stmt2 = con.createStatement();
+                stmt2.executeUpdate("UPDATE `employees` set currentScore = " + scoreToAdd + " where passcode = " + employeePasscode + ";");
+            }
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+
+    public static int getNumberOfEmployeesWhoClearedGateSelfIncluded(int gate) {
+        int currentLevel = 0;
+        try
+        {
+
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select EggLevel from employees;");
+
+            while (rs.next())
+            {
+                if (rs.getInt(1) >= gate)
+                {
+                    currentLevel++;
+                }
+
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return currentLevel;
     }
 
     private static double round(double num) {//rounds to 2 decimal places.

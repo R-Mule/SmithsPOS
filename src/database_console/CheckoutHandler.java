@@ -191,7 +191,8 @@ public class CheckoutHandler {
         printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
         mainFrame.voidCarts();
     }
-        public void beginStoreCheckCheckout(Cart curCart, double amtPaid, String clerkName, String checkNum, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems, String employeeCheckoutName) {
+
+    public void beginStoreCheckCheckout(Cart curCart, double amtPaid, String clerkName, String checkNum, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems, String employeeCheckoutName) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
         String receiptNum = dateFormat.format(date) + registerID;
@@ -210,7 +211,6 @@ public class CheckoutHandler {
         printReceipt(curCart, clerkName, paymentType, paymentAmt, receiptNum, mainFrame, employeeCheckoutName, null);
         mainFrame.voidCarts();
     }
-        
 
     public String beginCreditCheckout(Cart curCart, double amtPaid, String clerkName, MainFrame mainFrame, ArrayList<GuiCartItem> guiItems, String employeeCheckoutName) {
         mainFrame.setEnabled(false);
@@ -327,7 +327,7 @@ public class CheckoutHandler {
         boolean isDebitSale = false;
         boolean requires2Receipts = false;
         boolean isPayCheckReceipt = false;
-        
+
         double prechargedTotal = 0;
 
         boolean isCashSale = false;
@@ -580,7 +580,7 @@ public class CheckoutHandler {
 
         myself.previousReceipt = receipt;
         Database.storeReceiptString(receiptNum, receipt);
-        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, false, employeeCheckoutName, myself,isPayCheckReceipt);
+        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, false, employeeCheckoutName, myself, isPayCheckReceipt);
 
     }
 
@@ -922,7 +922,7 @@ public class CheckoutHandler {
         myself.previousReceipt = receipt;
         myself.changeDue.setText("Change Due: $" + String.format("%.2f", total));
         myself.displayChangeDue = true;
-        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true, "NO", myself,false);
+        storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true, "NO", myself, false);
     }
 
     public void reprintReceipt(String receipt) {
@@ -955,7 +955,7 @@ public class CheckoutHandler {
             if (f.exists() && !f.isDirectory())
             {
                 // read object from file
-                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath()+todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
+                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
@@ -970,7 +970,7 @@ public class CheckoutHandler {
             }
 
             // write object to file
-            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() +todaysDate+ ConfigFileReader.getRegisterID() + ".posrf");
+            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             dr.printReport();
             oos.writeObject(dr);
@@ -1000,11 +1000,11 @@ public class CheckoutHandler {
         try
         {
 
-            File f = new File(ConfigFileReader.getRegisterReportPath()+todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
+            File f = new File(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory())
             {
                 // read object from file
-                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath()+todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
+                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
@@ -1016,7 +1016,7 @@ public class CheckoutHandler {
             }
 
             // write object to file
-            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath()+todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
+            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             dr.printReport();
             oos.writeObject(dr);
@@ -1046,7 +1046,7 @@ public class CheckoutHandler {
         }
     }
 
-    public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund, String employeeCheckoutName, MainFrame mainFrame,boolean isPayCheckReceipt) {
+    public void storeReceiptData(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String receiptNum, boolean isRefund, String employeeCheckoutName, MainFrame mainFrame, boolean isPayCheckReceipt) {
         DrawerReport dr = null;
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MMddyy");
@@ -1054,18 +1054,18 @@ public class CheckoutHandler {
         try
         {
 
-            File f = new File(ConfigFileReader.getRegisterReportPath() +todaysDate+ ConfigFileReader.getRegisterID() + ".posrf");
+            File f = new File(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory())
             {
                 // read object from file
-                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath()+todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
+                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dr = (DrawerReport) ois.readObject();
                 ois.close();
                 if (!isRefund)
                 {
-                    
-                    dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName,isPayCheckReceipt);
+
+                    dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt);
                 }
                 else
                 {
@@ -1076,7 +1076,7 @@ public class CheckoutHandler {
             {
                 if (!isRefund)
                 {
-                    dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName,isPayCheckReceipt);
+                    dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt);
                 }
                 else
                 {
@@ -1089,7 +1089,7 @@ public class CheckoutHandler {
             mainFrame.estimatedCheckTotal = dr.totalChecksAmt;
             mainFrame.estimatedLunchTotal = dr.lunchTotalAmt;
             // write object to file
-            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath()+todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
+            FileOutputStream fos = new FileOutputStream(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             dr.printReport();
             oos.writeObject(dr);
@@ -1112,7 +1112,7 @@ public class CheckoutHandler {
                     ois.close();
                     if (!isRefund)
                     {
-                        dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName,isPayCheckReceipt);
+                        dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt);
                     }
                     else
                     {
@@ -1123,7 +1123,7 @@ public class CheckoutHandler {
                 {
                     if (!isRefund)
                     {
-                        dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName,isPayCheckReceipt);
+                        dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt);
                     }
                     else
                     {

@@ -76,7 +76,7 @@ public class MainFrame extends javax.swing.JFrame {
                 if (day >= 1 && day < 18)
                 {//18th is day after St Patricks Day 2018
                     isSaintPatricksDay = true;
-                    if(day == 9)
+                    if (day == 9)
                     {
                         isHolliesBirthday = true;
                     }
@@ -134,7 +134,8 @@ public class MainFrame extends javax.swing.JFrame {
                 {
                     isValentinesDay = true;
                 }
-                if(day == 14){
+                if (day == 14)
+                {
                     isReallyValentinesDay = true;
                 }
             }
@@ -174,6 +175,7 @@ public class MainFrame extends javax.swing.JFrame {
         Date date = new Date();
         previousDate = dateFormat.format(date);
         textField.setBounds(100, 800, 200, 20);
+        textField.addKeyListener(rp1);
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
@@ -1113,7 +1115,7 @@ public class MainFrame extends javax.swing.JFrame {
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Employee Login Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION)
                 {
-                    
+
                     if (field1.getText().contentEquals("Prince Ali Ababwa"))
                     {
                         boolean found = false;
@@ -1180,6 +1182,7 @@ public class MainFrame extends javax.swing.JFrame {
                         String clerkName = Database.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
                         if (clerkName != null)
                         {
+
                             menuBar.setAllVisible();
                             if (isHalloween)
                             {
@@ -1189,14 +1192,16 @@ public class MainFrame extends javax.swing.JFrame {
                             activeClerksPasscode = Integer.parseInt(field1.getText());
                             checkForAdminButtonVisible(Integer.parseInt(field1.getText()));
                             clerkLogoutButton.setVisible(true);
-                            if(clerkName.contentEquals("Smith, Hollie") && isHolliesBirthday)//It is Hollie's Birthday!
+                            if (clerkName.contentEquals("Smith, Hollie") && isHolliesBirthday)//It is Hollie's Birthday!
                             {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/birthday.gif", "C:/POS/SOFTWARE/birthday.wav", "", "Happy Birthday Love!");
                             }
-                            if(clerkName.contentEquals("Smith, Hollie") && isWeddingMonth)//wedding month is now our anniversary only
+                            if (clerkName.contentEquals("Smith, Hollie") && isWeddingMonth)//wedding month is now our anniversary only
                             {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/weddingphoto.jpg", "C:/POS/SOFTWARE/weddingthankyou.wav", "", "Happy Anniversay Babe!");
                             }
+
+                            rp1.reload();
                         }
                     }
 
@@ -1212,12 +1217,18 @@ public class MainFrame extends javax.swing.JFrame {
                 activeClerksPasscode = -1;
                 checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+                rp1.exit();
             }
         });
 
         activateDisplayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 display = new PoleDisplay(/*reader*/);
+                if (!display.successfulStart())
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "The Pole Display could not be successfully started! Error: Smith_2 \nContact Hollie.");
+                }
                 curCart.setDisplay(display);
                 refundCart.setDisplay(display);
                 curCart.updateTotal();
@@ -1938,260 +1949,260 @@ public class MainFrame extends javax.swing.JFrame {
                             }
                             else
                             {
-                            if (curCart.getTotalPrice() < 0)
-                            {
-                                JFrame message1 = new JFrame("");
-                                JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
-                            }
-                            else
-                            {
-                                JLabel splitTenderTotal = new JLabel("Total: $", SwingConstants.RIGHT);
-                                JLabel splitTenderRemaining = new JLabel("Remaining: $", SwingConstants.RIGHT);
-                                JFrame textInputFrame = new JFrame("");
-                                JTextField field1 = new JTextField();
-                                JTextField field2 = new JTextField();
-                                JTextField field3 = new JTextField();
-                                JTextField field4 = new JTextField();
-                                JTextField field5 = new JTextField();
-                                JTextField field6 = new JTextField();
-                                JTextField field7 = new JTextField();
-
-                                field1.addFocusListener(new java.awt.event.FocusAdapter() {
-                                    public void focusGained(java.awt.event.FocusEvent evt) {
-                                        field1.setSelectionStart(0);
-                                        field1.setSelectionEnd(12);
-                                    }//end focusGained
-
-                                    public void focusLost(java.awt.event.FocusEvent evt) {
-                                        //this will be called on tab i.e when the field looses focus
-                                        if (validateDouble(field1.getText()))
-                                        {
-                                            double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
-                                            splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                        }
-                                        else
-                                        {
-                                            field1.setText("0.00");
-                                        }//end else
-                                    }//end focusLost
-                                });//end field1Listener
-
-                                field2.addFocusListener(new java.awt.event.FocusAdapter() {
-                                    public void focusGained(java.awt.event.FocusEvent evt) {
-                                        field2.setSelectionStart(0);
-                                        field2.setSelectionEnd(12);
-                                    }//end focusGained
-
-                                    public void focusLost(java.awt.event.FocusEvent evt) {
-                                        //this will be called on tab i.e when the field looses focus
-                                        if (validateDouble(field2.getText()))
-                                        {
-                                            double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
-                                            splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                        }
-                                        else
-                                        {
-                                            field2.setText("0.00");
-                                        }//end else
-                                    }//end focusLost
-                                });//end field2Listener
-
-                                field3.addFocusListener(new java.awt.event.FocusAdapter() {
-                                    public void focusGained(java.awt.event.FocusEvent evt) {
-                                        field3.setSelectionStart(0);
-                                        field3.setSelectionEnd(12);
-                                    }//end focusGained
-
-                                    public void focusLost(java.awt.event.FocusEvent evt) {
-                                        //this will be called on tab i.e when the field looses focus
-                                        if (validateInteger(field3.getText()))
-                                        {
-                                            //do nothing? its a valid check number
-                                        }
-                                        else
-                                        {
-                                            field3.setText("0");
-                                        }//end else
-                                    }//end focusLost
-                                });//end field3Listener
-
-                                field4.addFocusListener(new java.awt.event.FocusAdapter() {
-                                    public void focusGained(java.awt.event.FocusEvent evt) {
-                                        field4.setSelectionStart(0);
-                                        field4.setSelectionEnd(12);
-                                    }//end focusGained
-
-                                    public void focusLost(java.awt.event.FocusEvent evt) {
-                                        //this will be called on tab i.e when the field looses focus
-                                        if (validateDouble(field4.getText()))
-                                        {
-                                            double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
-                                            splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                        }
-                                        else
-                                        {
-                                            field4.setText("0.00");
-                                        }//end else
-                                    }//end focusLost
-                                });//end field4Listener
-
-                                field5.addFocusListener(new java.awt.event.FocusAdapter() {
-                                    public void focusGained(java.awt.event.FocusEvent evt) {
-                                        field5.setSelectionStart(0);
-                                        field5.setSelectionEnd(12);
-                                    }//end focusGained
-
-                                    public void focusLost(java.awt.event.FocusEvent evt) {
-                                        //this will be called on tab i.e when the field looses focus
-                                        if (validateInteger(field5.getText()))
-                                        {
-                                            //do nothing? its a valid check number
-                                        }
-                                        else
-                                        {
-                                            field5.setText("0");
-                                        }//end else
-                                    }//end focusLost
-                                });//end field5Listener
-
-                                field6.addFocusListener(new java.awt.event.FocusAdapter() {
-                                    public void focusGained(java.awt.event.FocusEvent evt) {
-                                        field6.setSelectionStart(0);
-                                        field6.setSelectionEnd(12);
-                                    }//end focusGained
-
-                                    public void focusLost(java.awt.event.FocusEvent evt) {
-                                        //this will be called on tab i.e when the field looses focus
-                                        if (validateDouble(field6.getText()))
-                                        {
-                                            double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
-                                            splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                        }
-                                        else
-                                        {
-                                            field6.setText("0.00");
-                                        }//end else
-                                    }//end focusLost
-                                });//end field6Listener
-                                field7.addFocusListener(new java.awt.event.FocusAdapter() {
-                                    public void focusGained(java.awt.event.FocusEvent evt) {
-                                        field7.setSelectionStart(0);
-                                        field7.setSelectionEnd(12);
-                                    }//end focusGained
-
-                                    public void focusLost(java.awt.event.FocusEvent evt) {
-                                        //this will be called on tab i.e when the field looses focus
-                                        if (validateDouble(field7.getText()))
-                                        {
-                                            double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
-                                            splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
-                                        }
-                                        else
-                                        {
-                                            field7.setText("0.00");
-                                        }//end else
-                                    }//end focusLost
-                                });//end field7Listener
-
-                                splitTenderTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
-                                splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", curCart.getTotalPrice()));
-                                field2.setText(previousDate);
-                                Object[] message =
+                                if (curCart.getTotalPrice() < 0)
                                 {
-                                    "Cash:", field1,
-                                    "Check 1:", field2,
-                                    "Check 1#:", field3,
-                                    "Check 2:", field4,
-                                    "Check 2#:", field5,
-                                    "Credit 1:", field6,
-                                    "Debit 1:", field7,
-                                    splitTenderRemaining, splitTenderTotal
-                                };
-                                field1.setText("0.00");
-                                field2.setText("0.00");
-                                field3.setText("0");
-                                field4.setText("0.00");
-                                field5.setText("0");
-                                field6.setText("0.00");
-                                field7.setText("0.00");
-                                field1.setSelectionStart(0);
-                                field1.setSelectionEnd(4);
-                                field2.setSelectionStart(0);
-                                field2.setSelectionEnd(4);
-                                field3.setSelectionStart(0);
-                                field3.setSelectionEnd(4);
-                                field4.setSelectionStart(0);
-                                field4.setSelectionEnd(4);
-                                field5.setSelectionStart(0);
-                                field5.setSelectionEnd(4);
-                                field6.setSelectionStart(0);
-                                field6.setSelectionEnd(4);
-                                field7.setSelectionStart(0);
-                                field7.setSelectionEnd(4);
-
-                                field1.addAncestorListener(new RequestFocusListener());
-                                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Split Tender Menu", JOptionPane.OK_CANCEL_OPTION);
-                                if (option == JOptionPane.OK_OPTION)
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Cannot have negative checkout amount.");
+                                }
+                                else
                                 {
-                                    if (!validateDouble(field4.getText()) || !validateDouble(field7.getText()) || !validateDouble(field2.getText()) || !validateDouble(field1.getText()) || !validateDouble(field6.getText()) || !validateDouble(field6.getText()) || !validateInteger(field3.getText()) || !validateInteger(field5.getText()))
-                                    {
-                                        JFrame message1 = new JFrame("");
-                                        JOptionPane.showMessageDialog(message1, "Improper text in fields.");
-                                    }
-                                    else
-                                    {
-                                        double remaining = Double.parseDouble(field7.getText()) + Double.parseDouble(field6.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field1.getText());
-                                        remaining = round(remaining);
-                                        // System.out.println(remaining);
-                                        // System.out.println(curCart.getTotalPrice());
-                                        if (remaining < curCart.getTotalPrice())
-                                        {
-                                            //must have some name
-                                            JFrame message1 = new JFrame("");
-                                            JOptionPane.showMessageDialog(message1, "Totals do not match.");
+                                    JLabel splitTenderTotal = new JLabel("Total: $", SwingConstants.RIGHT);
+                                    JLabel splitTenderRemaining = new JLabel("Remaining: $", SwingConstants.RIGHT);
+                                    JFrame textInputFrame = new JFrame("");
+                                    JTextField field1 = new JTextField();
+                                    JTextField field2 = new JTextField();
+                                    JTextField field3 = new JTextField();
+                                    JTextField field4 = new JTextField();
+                                    JTextField field5 = new JTextField();
+                                    JTextField field6 = new JTextField();
+                                    JTextField field7 = new JTextField();
 
-                                        }
-                                        else
-                                        {
-                                            if (Double.parseDouble(field7.getText()) > 0 && Double.parseDouble(field6.getText()) > 0)
+                                    field1.addFocusListener(new java.awt.event.FocusAdapter() {
+                                        public void focusGained(java.awt.event.FocusEvent evt) {
+                                            field1.setSelectionStart(0);
+                                            field1.setSelectionEnd(12);
+                                        }//end focusGained
+
+                                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                            //this will be called on tab i.e when the field looses focus
+                                            if (validateDouble(field1.getText()))
                                             {
-                                                JFrame message2 = new JFrame("");
-                                                JOptionPane.showMessageDialog(message2, "You can only use either credit or debit, not both!");
-                                            }
-                                            else if (curCart.getTotalPrice() < Double.parseDouble(field7.getText()))
-                                            {
-                                                JFrame message2 = new JFrame("");
-                                                JOptionPane.showMessageDialog(message2, "Debit Card amount MUST be LESS THAN the TOTAL amount of the Cart!");
-                                            }
-                                            else if (curCart.getTotalPrice() < Double.parseDouble(field6.getText()))
-                                            {
-                                                JFrame message2 = new JFrame("");
-                                                JOptionPane.showMessageDialog(message2, "Credit Card amount MUST be LESS THAN the TOTAL amount of the Cart!");
+                                                double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
+                                                splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
                                             }
                                             else
                                             {
-                                                double amtReceived = Double.parseDouble(field7.getText()) + Double.parseDouble(field1.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field6.getText());
-                                                amtReceived = round(amtReceived);
-                                                double change = amtReceived - curCart.getTotalPrice();
-                                                change = round(change);
-                                                changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                                String goodCheckout = checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), field3.getText(), field5.getText(), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
-                                                if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                                field1.setText("0.00");
+                                            }//end else
+                                        }//end focusLost
+                                    });//end field1Listener
+
+                                    field2.addFocusListener(new java.awt.event.FocusAdapter() {
+                                        public void focusGained(java.awt.event.FocusEvent evt) {
+                                            field2.setSelectionStart(0);
+                                            field2.setSelectionEnd(12);
+                                        }//end focusGained
+
+                                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                            //this will be called on tab i.e when the field looses focus
+                                            if (validateDouble(field2.getText()))
+                                            {
+                                                double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
+                                                splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
+                                            }
+                                            else
+                                            {
+                                                field2.setText("0.00");
+                                            }//end else
+                                        }//end focusLost
+                                    });//end field2Listener
+
+                                    field3.addFocusListener(new java.awt.event.FocusAdapter() {
+                                        public void focusGained(java.awt.event.FocusEvent evt) {
+                                            field3.setSelectionStart(0);
+                                            field3.setSelectionEnd(12);
+                                        }//end focusGained
+
+                                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                            //this will be called on tab i.e when the field looses focus
+                                            if (validateInteger(field3.getText()))
+                                            {
+                                                //do nothing? its a valid check number
+                                            }
+                                            else
+                                            {
+                                                field3.setText("0");
+                                            }//end else
+                                        }//end focusLost
+                                    });//end field3Listener
+
+                                    field4.addFocusListener(new java.awt.event.FocusAdapter() {
+                                        public void focusGained(java.awt.event.FocusEvent evt) {
+                                            field4.setSelectionStart(0);
+                                            field4.setSelectionEnd(12);
+                                        }//end focusGained
+
+                                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                            //this will be called on tab i.e when the field looses focus
+                                            if (validateDouble(field4.getText()))
+                                            {
+                                                double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
+                                                splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
+                                            }
+                                            else
+                                            {
+                                                field4.setText("0.00");
+                                            }//end else
+                                        }//end focusLost
+                                    });//end field4Listener
+
+                                    field5.addFocusListener(new java.awt.event.FocusAdapter() {
+                                        public void focusGained(java.awt.event.FocusEvent evt) {
+                                            field5.setSelectionStart(0);
+                                            field5.setSelectionEnd(12);
+                                        }//end focusGained
+
+                                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                            //this will be called on tab i.e when the field looses focus
+                                            if (validateInteger(field5.getText()))
+                                            {
+                                                //do nothing? its a valid check number
+                                            }
+                                            else
+                                            {
+                                                field5.setText("0");
+                                            }//end else
+                                        }//end focusLost
+                                    });//end field5Listener
+
+                                    field6.addFocusListener(new java.awt.event.FocusAdapter() {
+                                        public void focusGained(java.awt.event.FocusEvent evt) {
+                                            field6.setSelectionStart(0);
+                                            field6.setSelectionEnd(12);
+                                        }//end focusGained
+
+                                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                            //this will be called on tab i.e when the field looses focus
+                                            if (validateDouble(field6.getText()))
+                                            {
+                                                double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
+                                                splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
+                                            }
+                                            else
+                                            {
+                                                field6.setText("0.00");
+                                            }//end else
+                                        }//end focusLost
+                                    });//end field6Listener
+                                    field7.addFocusListener(new java.awt.event.FocusAdapter() {
+                                        public void focusGained(java.awt.event.FocusEvent evt) {
+                                            field7.setSelectionStart(0);
+                                            field7.setSelectionEnd(12);
+                                        }//end focusGained
+
+                                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                            //this will be called on tab i.e when the field looses focus
+                                            if (validateDouble(field7.getText()))
+                                            {
+                                                double remaining = curCart.getTotalPrice() - Double.parseDouble(field7.getText()) - Double.parseDouble(field1.getText()) - Double.parseDouble(field2.getText()) - Double.parseDouble(field4.getText()) - Double.parseDouble(field6.getText());
+                                                splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", remaining));
+                                            }
+                                            else
+                                            {
+                                                field7.setText("0.00");
+                                            }//end else
+                                        }//end focusLost
+                                    });//end field7Listener
+
+                                    splitTenderTotal.setText("Total: $ " + String.format("%.2f", curCart.getTotalPrice()));
+                                    splitTenderRemaining.setText("Remaining: $" + String.format("%.2f", curCart.getTotalPrice()));
+                                    field2.setText(previousDate);
+                                    Object[] message =
+                                    {
+                                        "Cash:", field1,
+                                        "Check 1:", field2,
+                                        "Check 1#:", field3,
+                                        "Check 2:", field4,
+                                        "Check 2#:", field5,
+                                        "Credit 1:", field6,
+                                        "Debit 1:", field7,
+                                        splitTenderRemaining, splitTenderTotal
+                                    };
+                                    field1.setText("0.00");
+                                    field2.setText("0.00");
+                                    field3.setText("0");
+                                    field4.setText("0.00");
+                                    field5.setText("0");
+                                    field6.setText("0.00");
+                                    field7.setText("0.00");
+                                    field1.setSelectionStart(0);
+                                    field1.setSelectionEnd(4);
+                                    field2.setSelectionStart(0);
+                                    field2.setSelectionEnd(4);
+                                    field3.setSelectionStart(0);
+                                    field3.setSelectionEnd(4);
+                                    field4.setSelectionStart(0);
+                                    field4.setSelectionEnd(4);
+                                    field5.setSelectionStart(0);
+                                    field5.setSelectionEnd(4);
+                                    field6.setSelectionStart(0);
+                                    field6.setSelectionEnd(4);
+                                    field7.setSelectionStart(0);
+                                    field7.setSelectionEnd(4);
+
+                                    field1.addAncestorListener(new RequestFocusListener());
+                                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Split Tender Menu", JOptionPane.OK_CANCEL_OPTION);
+                                    if (option == JOptionPane.OK_OPTION)
+                                    {
+                                        if (!validateDouble(field4.getText()) || !validateDouble(field7.getText()) || !validateDouble(field2.getText()) || !validateDouble(field1.getText()) || !validateDouble(field6.getText()) || !validateDouble(field6.getText()) || !validateInteger(field3.getText()) || !validateInteger(field5.getText()))
+                                        {
+                                            JFrame message1 = new JFrame("");
+                                            JOptionPane.showMessageDialog(message1, "Improper text in fields.");
+                                        }
+                                        else
+                                        {
+                                            double remaining = Double.parseDouble(field7.getText()) + Double.parseDouble(field6.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field1.getText());
+                                            remaining = round(remaining);
+                                            // System.out.println(remaining);
+                                            // System.out.println(curCart.getTotalPrice());
+                                            if (remaining < curCart.getTotalPrice())
+                                            {
+                                                //must have some name
+                                                JFrame message1 = new JFrame("");
+                                                JOptionPane.showMessageDialog(message1, "Totals do not match.");
+
+                                            }
+                                            else
+                                            {
+                                                if (Double.parseDouble(field7.getText()) > 0 && Double.parseDouble(field6.getText()) > 0)
                                                 {
-                                                    changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                                    displayChangeDue = true;
+                                                    JFrame message2 = new JFrame("");
+                                                    JOptionPane.showMessageDialog(message2, "You can only use either credit or debit, not both!");
+                                                }
+                                                else if (curCart.getTotalPrice() < Double.parseDouble(field7.getText()))
+                                                {
+                                                    JFrame message2 = new JFrame("");
+                                                    JOptionPane.showMessageDialog(message2, "Debit Card amount MUST be LESS THAN the TOTAL amount of the Cart!");
+                                                }
+                                                else if (curCart.getTotalPrice() < Double.parseDouble(field6.getText()))
+                                                {
+                                                    JFrame message2 = new JFrame("");
+                                                    JOptionPane.showMessageDialog(message2, "Credit Card amount MUST be LESS THAN the TOTAL amount of the Cart!");
                                                 }
                                                 else
                                                 {
-                                                    JFrame message1 = new JFrame("");
-                                                    JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
-                                                }
-                                                updateCartScreen();
-                                            }//end else
-                                        }
-                                    }//end else
-                                }//end if
-                            }//end check for negative amount
+                                                    double amtReceived = Double.parseDouble(field7.getText()) + Double.parseDouble(field1.getText()) + Double.parseDouble(field2.getText()) + Double.parseDouble(field4.getText()) + Double.parseDouble(field6.getText());
+                                                    amtReceived = round(amtReceived);
+                                                    double change = amtReceived - curCart.getTotalPrice();
+                                                    change = round(change);
+                                                    changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                                    String goodCheckout = checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), field3.getText(), field5.getText(), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
+                                                    if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                                    {
+                                                        changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                                        displayChangeDue = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        JFrame message1 = new JFrame("");
+                                                        JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
+                                                    }
+                                                    updateCartScreen();
+                                                }//end else
+                                            }
+                                        }//end else
+                                    }//end if
+                                }//end check for negative amount
                             }//end checkSplitTenderLunch()
                         }//end if isNotEmpty
                     }
@@ -3988,8 +3999,9 @@ public class MainFrame extends javax.swing.JFrame {
 
         return valid;
     }
-    private boolean checkLunchSplitTender(){
-               boolean valid = true;
+
+    private boolean checkLunchSplitTender() {
+        boolean valid = true;
         for (Item item : curCart.getItems())
         {
             if (item.getName().toUpperCase().contains("LUNCH"))
@@ -4200,7 +4212,8 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isSummerTime = false;
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
-    
+
+    ReadyPlayerOne rp1 = new ReadyPlayerOne(this);
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";
     ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");

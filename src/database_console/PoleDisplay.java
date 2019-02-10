@@ -19,12 +19,17 @@ import java.util.logging.Logger;
 
 public class PoleDisplay {
 
+    boolean displayStarted = true;
     Enumeration portList;
     CommPortIdentifier portId;
     SerialPort serialPort;
     OutputStream outputStream;
     boolean outputBufferEmptyFlag = false;
     //ConfigFileReader reader;
+
+    public boolean successfulStart() {
+        return displayStarted;
+    }
 
     @SuppressWarnings("SleepWhileInLoop")
     public void StartDisplay() {
@@ -107,24 +112,29 @@ public class PoleDisplay {
 
         if (!portFound)
         {
+
+            displayStarted = false;
             // System.out.println("port " + defaultPort + " not found.");
             //System.out.println(reader.getDisplayComPort());
         }
     }
 
     public void ClearDisplay() {
-        try
+        if (displayStarted)
         {
-            //outputStream.write(ESCPOS.SELECT_DISPLAY);
-            outputStream.write(ESCPOS.VISOR_CLEAR);
-            outputStream.write(ESCPOS.HIDE_CURSOR);
-            //outputStream.write(ESCPOS.VISOR_HOME);
-            //outputStream.flush();
-        }
-        catch (IOException e)
-        {
-            printError(e);
-            //System.out.println("HERE");
+            try
+            {
+                //outputStream.write(ESCPOS.SELECT_DISPLAY);
+                outputStream.write(ESCPOS.VISOR_CLEAR);
+                outputStream.write(ESCPOS.HIDE_CURSOR);
+                //outputStream.write(ESCPOS.VISOR_HOME);
+                //outputStream.flush();
+            }
+            catch (IOException e)
+            {
+                printError(e);
+                //System.out.println("HERE");
+            }
         }
     }
 
@@ -140,19 +150,25 @@ public class PoleDisplay {
     }
 
     public void close() {
-        serialPort.close();
+        if (displayStarted)
+        {
+            serialPort.close();
+        }
         //System.exit(1);
 
     }
 
     public void writeMode() {
-        try
+        if (displayStarted)
         {
-            outputStream.write(ESCPOS.SEND40);
-        }
-        catch (IOException i)
-        {
-            printError(i);
+            try
+            {
+                outputStream.write(ESCPOS.SEND40);
+            }
+            catch (IOException i)
+            {
+                printError(i);
+            }
         }
     }
 
@@ -180,36 +196,39 @@ public class PoleDisplay {
     }
 
     public void printLines(String line1, String line2) {
-        try
+        if (displayStarted)
         {
-            if (line1.length() > 20) //Display can hold only 20 characters per line.Most of displays have 2 lines.
+            try
             {
-                line1 = line1.substring(0, 20);
-            }
-            outputStream.write(ESCPOS.Left_Line);
-            outputStream.write(line1.getBytes());
-            // outputStream.flush();
+                if (line1.length() > 20) //Display can hold only 20 characters per line.Most of displays have 2 lines.
+                {
+                    line1 = line1.substring(0, 20);
+                }
+                outputStream.write(ESCPOS.Left_Line);
+                outputStream.write(line1.getBytes());
+                // outputStream.flush();
 
-        }
-        catch (IOException r)
-        {
-            printError(r);
-        }
-        try
-        {
-            outputStream.write(ESCPOS.Down_Line);
-            outputStream.write(ESCPOS.Left_Line);
-            if (line2.length() > 20)
-            {
-                line2 = line2.substring(0, 20);
             }
-            outputStream.write(line2.getBytes());
-            //outputStream.flush();
-        }
-        catch (IOException y)
-        {
-            printError(y);
-            //System.out.println("Failed to print second line because of :"+y);
+            catch (IOException r)
+            {
+                printError(r);
+            }
+            try
+            {
+                outputStream.write(ESCPOS.Down_Line);
+                outputStream.write(ESCPOS.Left_Line);
+                if (line2.length() > 20)
+                {
+                    line2 = line2.substring(0, 20);
+                }
+                outputStream.write(line2.getBytes());
+                //outputStream.flush();
+            }
+            catch (IOException y)
+            {
+                printError(y);
+                //System.out.println("Failed to print second line because of :"+y);
+            }
         }
     }
 

@@ -416,7 +416,9 @@ public class DrawerReport implements Serializable {
                         else if (paymentType[0].contains("CHECK"))
                         {
                             lunchTotalCheck += item.getTotal();
-                        }else if(paymentType[0].contains("CHARGED TO")){
+                        }
+                        else if (paymentType[0].contains("CHARGED TO"))
+                        {
                             lunchChargedAmt += item.getTotal();
 
                         }
@@ -533,7 +535,7 @@ public class DrawerReport implements Serializable {
         System.out.print("Lunch Credit Total Collected: $" + lunchTotalCredit + "\n");
         System.out.print("Total UPS Collected: " + totalUPSSales + "\n");
         System.out.print("Total Employee Checks Paid With: " + totalPayCheckPayments + "\n");
-        System.out.print("Total Employee Lunches Charged: " + lunchChargedAmt+ "\n\n");
+        System.out.print("Total Employee Lunches Charged: " + lunchChargedAmt + "\n\n");
         if (!masterRefundDescriptionAndAmt.isEmpty())
         {
             System.out.print("\nMaster Refunds: \n");

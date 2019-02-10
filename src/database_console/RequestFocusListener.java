@@ -31,7 +31,8 @@ public class RequestFocusListener implements AncestorListener {
         JComponent component = e.getComponent();
         component.requestFocusInWindow();
 
-        if (removeListener) {
+        if (removeListener)
+        {
             component.removeAncestorListener(this);
         }
     }

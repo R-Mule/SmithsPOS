@@ -1,8 +1,8 @@
 package database_console;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class approvalCodeHandler {
 
@@ -12,7 +12,8 @@ public class approvalCodeHandler {
 
     approvalCodeHandler(String cardType, String code) {
         this.code = code;
-        switch (cardType) {
+        switch (cardType)
+        {
             case "DISCOVER":
                 discover();
                 break;
@@ -37,7 +38,8 @@ public class approvalCodeHandler {
     private void discover() {
         approved = false;
         System.out.println(code);
-        switch (code) {
+        switch (code)
+        {
             case "00":
                 responseText = "APPROVED";
                 approved = true;
@@ -172,7 +174,8 @@ public class approvalCodeHandler {
     private void masterCard() {
         approved = false;
         System.out.println(code);
-        switch (code) {
+        switch (code)
+        {
             case "00":
                 responseText = "APPROVED";
                 approved = true;
@@ -320,7 +323,8 @@ public class approvalCodeHandler {
     private void americanExpress() {
         approved = false;
         System.out.println(code);
-        switch (code) {
+        switch (code)
+        {
             case "00":
                 responseText = "APPROVED";
                 approved = true;
@@ -361,7 +365,8 @@ public class approvalCodeHandler {
     private void visa() {
         approved = false;
         System.out.println(code);
-        switch (code) {
+        switch (code)
+        {
             case "00":
                 responseText = "APPROVED";
                 approved = true;
@@ -510,7 +515,8 @@ public class approvalCodeHandler {
         System.out.println(code);
         System.out.println("SPECIAL CARD");
         approved = false;
-        switch (code) {
+        switch (code)
+        {
             case "00":
                 responseText = "APPROVED";
                 approved = true;

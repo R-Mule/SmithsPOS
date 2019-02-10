@@ -3,8 +3,8 @@ package database_console;
 import java.util.ArrayList;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class RefundCart extends Cart {
 
@@ -28,32 +28,45 @@ public class RefundCart extends Cart {
     public void loadRefundCart(String receiptNum) {
         ArrayList<RefundItem> tempItems = Database.loadReceipt(receiptNum);
         ArrayList<RefundItem> itemsToAdd = new ArrayList<RefundItem>();
-        if (!refundItems.isEmpty()) {
-            for (RefundItem item : tempItems) {
+        if (!refundItems.isEmpty())
+        {
+            for (RefundItem item : tempItems)
+            {
                 boolean found = false;
-                for (RefundItem cartItem : refundItems) {
-                    if (cartItem.isRX()) {
-                        if (cartItem.getID().contentEquals(item.getID()) && cartItem.getInsurance().contentEquals(item.getInsurance())) {
+                for (RefundItem cartItem : refundItems)
+                {
+                    if (cartItem.isRX())
+                    {
+                        if (cartItem.getID().contentEquals(item.getID()) && cartItem.getInsurance().contentEquals(item.getInsurance()))
+                        {
                             found = true;
                         }//end if
-                    } else {
+                    }
+                    else
+                    {
                         //System.out.println("HERE");
-                        if (cartItem.getID().contentEquals(item.getID())) {//already in cart, just increase quantity
+                        if (cartItem.getID().contentEquals(item.getID()))
+                        {//already in cart, just increase quantity
                             int cartItemQuantity = cartItem.getQuantity();
                             cartItem.setQuantity(cartItemQuantity + item.getQuantity());
                             found = true;
                         }//end if
                     }//end else
                 }//end for
-                if (!found) {
+                if (!found)
+                {
                     itemsToAdd.add(item);
                 }
             }//end for
-            for (RefundItem itemToAdd : itemsToAdd) {
+            for (RefundItem itemToAdd : itemsToAdd)
+            {
                 refundItems.add(itemToAdd);
             }
-        } else {//cart is empty, so we must add the entire list
-            for (RefundItem itemToAdd : tempItems) {
+        }
+        else
+        {//cart is empty, so we must add the entire list
+            for (RefundItem itemToAdd : tempItems)
+            {
                 refundItems.add(itemToAdd);
             }
         }
@@ -74,42 +87,53 @@ public class RefundCart extends Cart {
     public void addItem(RefundItem itemToAdd) {
         boolean tooAdd = true;
         System.out.println(itemToAdd.getID());
-        if (itemToAdd.isRX()) {
-            for (RefundItem item : refundItems) {
-                if (item.getRxNumber() == itemToAdd.getRxNumber() && item.getInsurance().contentEquals(itemToAdd.getInsurance())) {
+        if (itemToAdd.isRX())
+        {
+            for (RefundItem item : refundItems)
+            {
+                if (item.getRxNumber() == itemToAdd.getRxNumber() && item.getInsurance().contentEquals(itemToAdd.getInsurance()))
+                {
                     int i = item.getQuantity();
                     item.setQuantity(i + 1);
                     // System.out.println("HERE1");
                     tooAdd = false;
                 }
             }
-            if (tooAdd) {
+            if (tooAdd)
+            {
                 refundItems.add(itemToAdd);
                 itemToAdd.setQuantity(1);
                 //  System.out.println("HERE2");
             }
-        } else {
-            for (Item item : refundItems) {
-                if (item.getID().contentEquals(itemToAdd.getID())) {
+        }
+        else
+        {
+            for (Item item : refundItems)
+            {
+                if (item.getID().contentEquals(itemToAdd.getID()))
+                {
                     int i = item.getQuantity();
                     item.setQuantity(i + 1);
                     // System.out.println("HERE1");
                     tooAdd = false;
                 }
             }
-            if (tooAdd) {
+            if (tooAdd)
+            {
                 refundItems.add(itemToAdd);
                 itemToAdd.setQuantity(1);
                 //  System.out.println("HERE2");
             }
 
         }
-        if (refundItems.isEmpty()) {//no matches because cart must be empty
+        if (refundItems.isEmpty())
+        {//no matches because cart must be empty
             refundItems.add(itemToAdd);
             itemToAdd.setQuantity(1);
             //  System.out.println("HERE3");
         }
-        if (!tooAdd) {
+        if (!tooAdd)
+        {
             itemToAdd = null;
         }
 
@@ -138,20 +162,28 @@ public class RefundCart extends Cart {
 
     @Override
     public void updateTotal() {
-        if (refundItems != null && !refundItems.isEmpty()) {
+        if (refundItems != null && !refundItems.isEmpty())
+        {
             double taxableAmt = 0;
             double nonTaxableAmt = 0;
             totalPriceAfterTax = 0;
             amtOfTaxCharged = 0;
-            for (RefundItem temp : refundItems) {
-                if (!temp.isPreCharged() && !temp.hasBeenRefunded() && temp.getCategory() != 853 && temp.getCategory() != 854 && temp.refundAllActive()) {
-                    if (temp.isTaxable() && !temp.hasTaxBeenRefunded) {
+            for (RefundItem temp : refundItems)
+            {
+                if (!temp.isPreCharged() && !temp.hasBeenRefunded() && temp.getCategory() != 853 && temp.getCategory() != 854 && temp.refundAllActive())
+                {
+                    if (temp.isTaxable() && !temp.hasTaxBeenRefunded)
+                    {
                         taxableAmt += temp.getPrice() * temp.quantityBeingRefunded - temp.getDiscountAmount();
-                    } else {
+                    }
+                    else
+                    {
                         nonTaxableAmt += temp.getPrice() * temp.quantityBeingRefunded - temp.getDiscountAmount();
                     }//end else
 
-                } else if (temp.refundTaxOnly()) {
+                }
+                else if (temp.refundTaxOnly())
+                {
                     amtOfTaxCharged += temp.getTaxTotal();
                 }
             }//end for
@@ -163,7 +195,9 @@ public class RefundCart extends Cart {
             totalPriceBeforeTax = round(totalPriceBeforeTax);
             totalPriceAfterTax += amtOfTaxCharged + totalPriceBeforeTax;
             totalPriceAfterTax = round(totalPriceAfterTax);
-        } else {
+        }
+        else
+        {
             totalPriceAfterTax = 0;
             totalPriceBeforeTax = 0;
             amtOfTaxCharged = 0;
@@ -174,8 +208,10 @@ public class RefundCart extends Cart {
     @Override
     public int getTotalNumRX() {
         int i = 0;
-        for (RefundItem item : refundItems) {
-            if (item.isRX()) {
+        for (RefundItem item : refundItems)
+        {
+            if (item.isRX())
+            {
                 i++;
             }
         }
@@ -189,8 +225,10 @@ public class RefundCart extends Cart {
 
     @Override
     public void setTaxableOnItem(String itemNumber, boolean isTaxable) {
-        for (RefundItem item : refundItems) {
-            if (item.getUPC().contentEquals(itemNumber)) {
+        for (RefundItem item : refundItems)
+        {
+            if (item.getUPC().contentEquals(itemNumber))
+            {
                 item.setTaxable(isTaxable);
                 //System.out.println("HERE");
             }
@@ -200,8 +238,10 @@ public class RefundCart extends Cart {
 
     @Override
     public void setPrecharged(String itemName, boolean precharged) {
-        for (RefundItem item : refundItems) {
-            if (item.getName().contentEquals(itemName)) {
+        for (RefundItem item : refundItems)
+        {
+            if (item.getName().contentEquals(itemName))
+            {
                 item.setIsPreCharged(precharged);
                 //System.out.println("HERE");
             }
@@ -210,8 +250,10 @@ public class RefundCart extends Cart {
     }
 
     public boolean containsItemByID(String id) {
-        for (RefundItem item : refundItems) {
-            if (item.getID().contentEquals(id)) {
+        for (RefundItem item : refundItems)
+        {
+            if (item.getID().contentEquals(id))
+            {
                 return true;
             }
         }
@@ -219,8 +261,10 @@ public class RefundCart extends Cart {
     }
 
     public void increaseQtyByID(String id, int qty2Add) {
-        for (RefundItem item : refundItems) {
-            if (item.getID().contentEquals(id)) {
+        for (RefundItem item : refundItems)
+        {
+            if (item.getID().contentEquals(id))
+            {
                 System.out.println("INCREASING: " + item.getID() + "with " + item.quantity + " BY " + qty2Add);
                 item.quantity += qty2Add;
 
@@ -231,7 +275,8 @@ public class RefundCart extends Cart {
     @Override
     public double getDiscountTotal() {
         double total = 0;
-        for (RefundItem item : refundItems) {
+        for (RefundItem item : refundItems)
+        {
             total += item.getDiscountAmount();
         }
         return total;
@@ -239,8 +284,10 @@ public class RefundCart extends Cart {
 
     @Override
     void setMassDiscount(double discPer) {
-        for (RefundItem item : refundItems) {
-            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854) {
+        for (RefundItem item : refundItems)
+        {
+            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854)
+            {
                 item.setDiscountPercentage(discPer);
             }
         }
@@ -248,8 +295,10 @@ public class RefundCart extends Cart {
     }
 
     void setItemDiscount(String itemUPC, double percent) {
-        for (RefundItem item : refundItems) {
-            if (item.getUPC().contentEquals(itemUPC)) {
+        for (RefundItem item : refundItems)
+        {
+            if (item.getUPC().contentEquals(itemUPC))
+            {
                 item.setDiscountPercentage(percent);
             }
         }

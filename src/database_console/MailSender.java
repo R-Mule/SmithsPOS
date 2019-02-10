@@ -10,12 +10,10 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-
-
 /**
- * i will clean this up later..
- *
- * @author R-Mule
+ i will clean this up later..
+
+ @author R-Mule
  */
 public class MailSender {
 

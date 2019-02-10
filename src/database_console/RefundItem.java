@@ -1,8 +1,8 @@
 package database_console;
 
 /**
- *
- * @author A.Smith
+
+ @author A.Smith
  */
 public class RefundItem extends Item {
 
@@ -87,9 +87,12 @@ public class RefundItem extends Item {
         double totalOnItem = 0;
         double itemP;
         itemP = round(itemPrice * quantityBeingRefunded) - round(round(itemPrice * quantityBeingRefunded) * percentageDisc);
-        if (isTaxable) {
+        if (isTaxable)
+        {
             totalOnItem = round(itemP + itemP * taxRate);
-        } else {
+        }
+        else
+        {
             totalOnItem = round(itemP);
         }
         return totalOnItem;
@@ -110,11 +113,14 @@ public class RefundItem extends Item {
     @Override
     double getTaxTotal() {
         double itemP = round(itemPrice * quantityBeingRefunded) - round(round(itemPrice * quantityBeingRefunded) * percentageDisc);
-        if (isTaxable) {
+        if (isTaxable)
+        {
             double taxTotal = round(itemP * taxRate);
             return taxTotal;
 
-        } else {
+        }
+        else
+        {
             return 0.00;
         }
     }//end getTaxTotal

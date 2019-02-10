@@ -184,7 +184,7 @@ public class CardDataRequester {
         }
         catch (NullPointerException ex)
         {
-            
+
             transTerminate = true;
             responseText = "FAILED TO FIND AUTH RETRY Error code: 7";
             System.out.println("TRANS DECLINED3??");
