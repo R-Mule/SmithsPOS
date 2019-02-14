@@ -27,23 +27,28 @@ public class Pinky extends Ghost implements Observer {
         g2d = (Graphics2D) g;
 
         if (getCurImg() != null)
-        {
+        {   //draw the image if it's not null
             switch (currentDirection)
             {
                 case 'S':
-                    g2d.drawImage(getCurImg(), xCoord * widthHeight + 4, yCoord * widthHeight + 4, widthHeight - 8, widthHeight - 8, null);
+                    // g2d.drawImage(getCurImg(), xCoord * widthHeight + 4 - xOffset, yCoord * widthHeight + 4, widthHeight - 8, widthHeight - 8, null);
+                    g2d.drawImage(getCurImg(), xCoord + 4, yCoord + 4, widthHeight - 8, widthHeight - 8, null);
                     break;
                 case 'W':
-                    g2d.drawImage(getCurImg(), xCoord * widthHeight + 4, yCoord * widthHeight + 4, widthHeight - 8, widthHeight - 8, null);
+                    //g2d.drawImage(getCurImg(), xCoord * widthHeight + 4, yCoord * widthHeight + 4 - yOffset, widthHeight - 8, widthHeight - 8, null);
+                    g2d.drawImage(getCurImg(), xCoord + 4, yCoord + 4, widthHeight - 8, widthHeight - 8, null);
                     break;
                 case 'E':
-                    g2d.drawImage(getCurImg(), xCoord * widthHeight + 4, yCoord * widthHeight + 4, widthHeight - 8, widthHeight - 8, null);
+                    // g2d.drawImage(getCurImg(), xCoord * widthHeight + 4, yCoord * widthHeight + 4 + yOffset, widthHeight - 8, widthHeight - 8, null);
+                    g2d.drawImage(getCurImg(), xCoord + 4, yCoord + 4, widthHeight - 8, widthHeight - 8, null);
                     break;
                 case 'N':
-                    g2d.drawImage(getCurImg(), xCoord * widthHeight + 4, yCoord * widthHeight + 4, widthHeight - 8, widthHeight - 8, null);
+                    //g2d.drawImage(getCurImg(), xCoord * widthHeight + 4 + xOffset, yCoord * widthHeight + 4, widthHeight - 8, widthHeight - 8, null);
+                    g2d.drawImage(getCurImg(), xCoord + 4, yCoord + 4, widthHeight - 8, widthHeight - 8, null);
                     break;
                 default:
-                    g2d.drawImage(getCurImg(), xCoord * widthHeight + 4, yCoord * widthHeight + 4, widthHeight - 8, widthHeight - 8, null);
+                    // g2d.drawImage(getCurImg(), xCoord * widthHeight + 4, yCoord * widthHeight + 4, widthHeight - 8, widthHeight - 8, null);
+                    g2d.drawImage(getCurImg(), xCoord + 4, yCoord + 4, widthHeight - 8, widthHeight - 8, null);
                     break;
             }
         }
@@ -82,35 +87,35 @@ public class Pinky extends Ghost implements Observer {
     }
 
     private void loadImageArray() {
-        ImageIcon east1 = createImageIcon("images/PinkyEast.png", "PinkyEast");
+        ImageIcon east1 = createImageIcon("images/pinkyeast.png", "PinkyEast");
         pinkyPngsEAST[0] = (east1.getImage());
-        ImageIcon east2 = createImageIcon("images/PinkyEastAlt.png", "PinkyEastAlt");
+        ImageIcon east2 = createImageIcon("images/pinkyeastalt.png", "PinkyEastAlt");
         pinkyPngsEAST[1] = east2.getImage();
-        ImageIcon east3 = createImageIcon("images/PinkyEast.png", "PinkyEast");
+        ImageIcon east3 = createImageIcon("images/pinkyeast.png", "PinkyEast");
         pinkyPngsEAST[2] = east3.getImage();
         pinkyPngsEAST[3] = east2.getImage();
 
-        ImageIcon west1 = createImageIcon("images/PinkyWest.png", "PinkyWest");
+        ImageIcon west1 = createImageIcon("images/pinkywest.png", "PinkyWest");
         pinkyPngsWEST[0] = (west1.getImage());
-        ImageIcon west2 = createImageIcon("images/PinkyWestAlt.png", "PinkyWestAlt");
+        ImageIcon west2 = createImageIcon("images/pinkywestalt.png", "PinkyWestAlt");
         pinkyPngsWEST[1] = west2.getImage();
-        ImageIcon west3 = createImageIcon("images/PinkyWestAlt2.png", "PinkyWestAlt2");
+        ImageIcon west3 = createImageIcon("images/pinkywestalt2.png", "PinkyWestAlt2");
         pinkyPngsWEST[2] = west3.getImage();
         pinkyPngsWEST[3] = west2.getImage();
 
-        ImageIcon south1 = createImageIcon("images/PinkySouth.png", "PinkySouth");
+        ImageIcon south1 = createImageIcon("images/pinkysouth.png", "PinkySouth");
         pinkyPngsSOUTH[0] = (south1.getImage());
-        ImageIcon south2 = createImageIcon("images/PinkySouthAlt.png", "PinkySouthAlt");
+        ImageIcon south2 = createImageIcon("images/pinkysouthalt.png", "PinkySouthAlt");
         pinkyPngsSOUTH[1] = south2.getImage();
-        ImageIcon south3 = createImageIcon("images/PinkySouthAlt2.png", "PinkySouthAlt2");
+        ImageIcon south3 = createImageIcon("images/pinkysouthalt2.png", "PinkySouthAlt2");
         pinkyPngsSOUTH[2] = south3.getImage();
         pinkyPngsSOUTH[3] = south2.getImage();
 
-        ImageIcon north1 = createImageIcon("images/PinkyNorth.png", "PinkyNorth");
+        ImageIcon north1 = createImageIcon("images/pinkynorth.png", "PinkyNorth");
         pinkyPngsNORTH[0] = (north1.getImage());
-        ImageIcon north2 = createImageIcon("images/PinkyNorthAlt.png", "PinkyNorthAlt");
+        ImageIcon north2 = createImageIcon("images/pinkynorthalt.png", "PinkyNorthAlt");
         pinkyPngsNORTH[1] = north2.getImage();
-        ImageIcon north3 = createImageIcon("images/PinkyNorthAlt2.png", "PinkyNorthAlt2");
+        ImageIcon north3 = createImageIcon("images/pinkynorthalt2.png", "PinkyNorthAlt2");
         pinkyPngsNORTH[2] = north3.getImage();
         pinkyPngsNORTH[3] = north2.getImage();
     }//end loadImageArray
@@ -118,66 +123,179 @@ public class Pinky extends Ghost implements Observer {
     public void timerTriggered() {
         if (!pacman.isDead())
         {
-            int random = rand.nextInt((4) + 1);//generate random number between 1-4
-            if (!maze.get(xBlocks * 2 * yCoord + xCoord).isEastSolid() && random == 1)
+            if (currentTargetX == xCoord && currentTargetY == yCoord)
             {
-                this.currentDirection = 'E';
-                // incImg();
-                if (xCoord == xBlocks * 2 - 1)
+                int random = rand.nextInt((4) + 1);//randomly find next position
+                if (random == 1 && !checkWall('E', xCoord, yCoord))//!maze.get(xBlocks * 2 * yCoord + xCoord).isEastSolid())
                 {
-                    xCoord = 0;
+                    this.currentTargetX = xCoord + widthHeight;
+                    this.currentTargetY = yCoord;
+                    this.currentDirection = 'E';
+                    // incImg();
+                    // if (xCoord == xBlocks * 2 - 1)
+                    // {
+                    //     xCoord = 0;
+                    //  }
+                    // else
+                    //  {
+                    if (xCoord > (xBlocks * 2 - 1) * widthHeight)
+                    {
+                        xCoord = 0;
+                    }
+                    else
+                    {
+                        xCoord += 10;
+                    }
+                    // }
+                    subYcoord = pacman.getYcoord();
+                    subXcoord = pacman.getXcoord();
+                    if (yCoord == subYcoord && xCoord == subXcoord)
+                    {
+                        pacman.makeContact();
+                    }
+                    return;
                 }
-                else
+                else if (random == 2 && !checkWall('W', xCoord, yCoord))//!maze.get(xBlocks * 2 * yCoord + xCoord).isWestSolid() )
                 {
-                    xCoord++;
+                    this.currentTargetX = xCoord - widthHeight;
+                    this.currentTargetY = yCoord;
+                    this.currentDirection = 'W';
+                    //incImg();
+                    // if (xCoord == 0)
+                    // {
+                    //     xCoord = xBlocks * 2 - 1;
+                    // }
+                    // else
+                    // {
+                    if (xCoord < 0)
+                    {
+                        xCoord = (xBlocks * 2 - 1) * widthHeight;
+                    }
+                    else
+                    {
+                        xCoord -= 10;
+                    }
+                    // }
+                    subYcoord = pacman.getYcoord();
+                    subXcoord = pacman.getXcoord();
+                    if (yCoord == subYcoord && xCoord == subXcoord)
+                    {
+                        pacman.makeContact();
+                    }
+                    return;
                 }
-                if (yCoord == subYcoord && xCoord == subXcoord)
+                else if (random == 3 && !checkWall('S', xCoord, yCoord))//maze.get(xBlocks * 2 * yCoord + xCoord).isNorthSolid()
                 {
-                    pacman.makeContact();
+                    this.currentTargetX = xCoord;
+                    this.currentTargetY = yCoord + widthHeight;
+                    this.currentDirection = 'S';
+                    //incImg();
+                    yCoord += 10;
+                    subYcoord = pacman.getYcoord();
+                    subXcoord = pacman.getXcoord();
+                    if (yCoord == subYcoord && xCoord == subXcoord)
+                    {
+                        pacman.makeContact();
+                    }
+                    return;
                 }
-                return;
+                else if (random == 4 && !checkWall('N', xCoord, yCoord))//!maze.get(xBlocks * 2 * yCoord + xCoord).isSouthSolid())
+                {
+                    this.currentTargetX = xCoord;
+                    this.currentTargetY = yCoord - widthHeight;
+                    this.currentDirection = 'N';
+                    // incImg();
+                    yCoord -= 10;
+                    subYcoord = pacman.getYcoord();
+                    subXcoord = pacman.getXcoord();
+                    if (yCoord == subYcoord && xCoord == subXcoord)
+                    {
+                        pacman.makeContact();
+                    }
+                    return;
+                }
             }
-            else if (!maze.get(xBlocks * 2 * yCoord + xCoord).isWestSolid() && random == 2)
+            else
             {
-                this.currentDirection = 'W';
-                // incImg();
-                if (xCoord == 0)
+                switch (this.currentDirection)
                 {
-                    xCoord = xBlocks * 2 - 1;
+                    case 'N':
+                        yCoord -= 10;
+                        break;
+                    case 'S':
+                        yCoord += 10;
+                        break;
+                    case 'E':
+                        if (xCoord > (xBlocks * 2 - 1) * widthHeight)
+                        {
+                            xCoord = 0;
+                            this.currentTargetX = xCoord;
+                            this.currentTargetY = yCoord;
+                        }
+                        else
+                        {
+                            xCoord += 10;
+                        }
+                        break;
+                    case 'W':
+                        if (xCoord < 0)
+                        {
+                            xCoord = (xBlocks * 2 - 1) * widthHeight;
+                            this.currentTargetX = xCoord;
+                            this.currentTargetY = yCoord;
+                        }
+                        else
+                        {
+                            xCoord -= 10;
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                else
-                {
-                    xCoord--;
-                }
+                subYcoord = pacman.getYcoord();
+                subXcoord = pacman.getXcoord();
                 if (yCoord == subYcoord && xCoord == subXcoord)
                 {
                     pacman.makeContact();
                 }
-                return;
-            }
-            else if (!maze.get(xBlocks * 2 * yCoord + xCoord).isNorthSolid() && random == 3)
-            {
-                this.currentDirection = 'S';
-                // incImg();
-                yCoord--;
-                if (yCoord == subYcoord && xCoord == subXcoord)
-                {
-                    pacman.makeContact();
-                }
-                return;
-            }
-            else if (!maze.get(xBlocks * 2 * yCoord + xCoord).isSouthSolid() && random == 4)
-            {
-                this.currentDirection = 'N';
-                //incImg();
-                yCoord++;
-                if (yCoord == subYcoord && xCoord == subXcoord)
-                {
-                    pacman.makeContact();
-                }
-                return;
             }
         }
+    }
+
+    public boolean checkWall(char wallToCheck, int x, int y) {
+        for (Cell cell : maze)
+        {
+            if (cell.getXLoc() * widthHeight == x && cell.getYLoc() * widthHeight == y)
+            {
+
+                if (wallToCheck == 'N' && cell.isNorthSolid())
+                {
+
+                    return true;
+
+                }
+                else if (wallToCheck == 'S' && cell.isSouthSolid())
+                {
+
+                    return true;
+                }
+                else if (wallToCheck == 'E' && cell.isEastSolid())
+                {
+                    return true;
+                }
+                else if (wallToCheck == 'W' && cell.isWestSolid())
+                {
+
+                    return true;
+
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -186,18 +304,27 @@ public class Pinky extends Ghost implements Observer {
         subYcoord = pacman.getYcoord();
         if (subXcoord == xCoord && subYcoord == yCoord)
         {
-            boolean death = pacman.makeContact();
-            if (death)
+            if (!pacman.isDead())
             {
-                xCoord = xBlocks;
-                yCoord = yBlocks / 2;
+                boolean death = pacman.makeContact();
+                if (death)
+                {
+                    xCoord = xBlocks * widthHeight;
+                    yCoord = (yBlocks / 2) * widthHeight;
+                    this.currentTargetX = xCoord;
+                    this.currentTargetY = yCoord;
+                    this.currentDirection = 'N';
 
+                }
             }
         }
         if (pacman.isDead())
         {
-            xCoord = xBlocks;
-            yCoord = yBlocks / 2;
+            xCoord = xBlocks * widthHeight;
+            yCoord = (yBlocks / 2) * widthHeight;
+            this.currentTargetX = xCoord;
+            this.currentTargetY = yCoord;
+            this.currentDirection = 'N';
         }
 
     }

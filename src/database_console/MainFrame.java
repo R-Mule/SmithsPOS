@@ -175,7 +175,7 @@ public class MainFrame extends javax.swing.JFrame {
         Date date = new Date();
         previousDate = dateFormat.format(date);
         textField.setBounds(100, 800, 200, 20);
-        textField.addKeyListener(rp1);
+   //     textField.addKeyListener(rp1);
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
@@ -1201,7 +1201,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/weddingphoto.jpg", "C:/POS/SOFTWARE/weddingthankyou.wav", "", "Happy Anniversay Babe!");
                             }
 
-                            rp1.reload();
+                      //      rp1.reload();
                         }
                     }
 
@@ -1217,7 +1217,7 @@ public class MainFrame extends javax.swing.JFrame {
                 activeClerksPasscode = -1;
                 checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-                rp1.exit();
+            //    rp1.exit();
             }
         });
 
@@ -1513,7 +1513,7 @@ public class MainFrame extends javax.swing.JFrame {
                     JList<String> list = new JList<>(possibilities); //data has type Object[]
                     list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     list.setLayoutOrientation(JList.VERTICAL_WRAP);
-                    list.setBounds(100, 50, 50, 100);
+                    list.setBounds(100, 50, 50, 300);//100 to 300 on Y because so many insurances added.
                     list.setVisibleRowCount(-1);
 
                     for (int i = 0; i < possibilities.length; i++)
@@ -4173,7 +4173,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.8", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.9", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -4213,7 +4213,7 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
 
-    ReadyPlayerOne rp1 = new ReadyPlayerOne(this);
+    //ReadyPlayerOne rp1 = new ReadyPlayerOne(this);
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";
     ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");

@@ -23,7 +23,8 @@ public abstract class Ghost implements Observer {
     protected int subYcoord;//subjects current Y coord
     protected int xOffset, yOffset;//offset for the actual position(GUI related only)
     protected int offsetCntr;
-
+    protected int currentTargetX;
+    protected int currentTargetY;
     protected char currentDirection;//current direction ghost is looking
 
     protected ArrayList<Cell> maze;//current Maze ghost is inside of
@@ -49,6 +50,8 @@ public abstract class Ghost implements Observer {
         subXcoord = 0;
         subYcoord = 0;
         curImgIndex = 0;//default
+        this.currentTargetX = xCoord;
+        this.currentTargetY = yCoord;
         loadImageArray();
     }
 
@@ -80,9 +83,9 @@ public abstract class Ghost implements Observer {
     private void loadImageArray() {
         ImageIcon east1 = createImageIcon("images/zed.png", "Zed");
         zedPngs[0] = (east1.getImage());
-        ImageIcon east2 = createImageIcon("images/zedAlt.png", "ZedAlt");
+        ImageIcon east2 = createImageIcon("images/zedalt.png", "ZedAlt");
         zedPngs[1] = east2.getImage();
-        ImageIcon east3 = createImageIcon("images/zedAlt2.png", "ZedAlt2");
+        ImageIcon east3 = createImageIcon("images/zedalt2.png", "ZedAlt2");
         zedPngs[2] = east3.getImage();
         zedPngs[3] = east2.getImage();
 

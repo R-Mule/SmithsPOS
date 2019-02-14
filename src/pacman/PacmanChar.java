@@ -27,6 +27,7 @@ public class PacmanChar implements Subject, ActionListener {
     private int totalPowerUps;//number of power ups remaining
     private int totalPoints;//total Number of Points
     private char currentDirection;//pacmans current heading, North, South, East, West
+    private char nextDirection = 'X';
     private ArrayList<Cell> maze;//maze reference for location knowledge
     private boolean isPoweredUp = false;//is Pacman currently Powered Up?
     private Image[] pacmanGifsEAST = new Image[10];
@@ -39,6 +40,8 @@ public class PacmanChar implements Subject, ActionListener {
     private Image[] pacmanPoweredGifsSOUTH = new Image[10];
     private Content contConsumed;//What did you eat?!?!?!
     private int numLives;
+    private int noContentCntr = 0;
+
     Timer deathDelay = new Timer(4000, this);//start delay timer
     private boolean isDead = false;
     private GameSounds sound;
@@ -69,7 +72,7 @@ public class PacmanChar implements Subject, ActionListener {
         pacmanGifsEAST[2] = east3.getImage();
         pacmanGifsEAST[3] = east2.getImage();
 
-        ImageIcon west1 = createImageIcon("images/Pacman_West_CLOSED.png", "PmWestFrame1");
+        ImageIcon west1 = createImageIcon("images/PacMan_West_CLOSED.png", "PmWestFrame1");
         pacmanGifsWEST[0] = (west1.getImage());
         ImageIcon west2 = createImageIcon("images/Pacman_West_HALFO.png", "PmWestFrame2");
         pacmanGifsWEST[1] = west2.getImage();
@@ -132,8 +135,10 @@ public class PacmanChar implements Subject, ActionListener {
 
         if (getCurImg() != null)
         {
+            /*
             switch (currentDirection)
             {
+                
                 case 'S':
                     //g2d.drawImage(getCurImg(), pacX * widthHeight + 4, pacY * widthHeight + 4, widthHeight - 8, widthHeight - 8, null);
                     g2d.drawImage(getCurImg(), pacX , pacY, widthHeight - 8, widthHeight - 8, null);
@@ -151,81 +156,104 @@ public class PacmanChar implements Subject, ActionListener {
                     g2d.drawImage(getCurImg(), pacX * widthHeight + 4, pacY * widthHeight + 4, widthHeight - 8, widthHeight - 8, null);
                     break;
             }
+             */
+            g2d.drawImage(getCurImg(), pacX + 4, pacY + 4, widthHeight - 8, widthHeight - 8, null);
         }
     }//end draw
 
     public void timerTriggered() {
         if (!isDead)
         {
-            
+            if (nextDirection != 'X')
+            {
+
+                if (!checkWall(nextDirection, pacX, pacY, true))
+                {
+                    currentDirection = nextDirection;
+                    nextDirection = 'X';//on success
+                }
+
+            }
             int pointsGained = 0;
-            /*
-            if (maze.get(xBlocks * 2 * pacY + pacX).isEastSolid() && currentDirection == 'E')
+
+            //if (maze.get(xBlocks * 2 * pacY + pacX).isEastSolid() && currentDirection == 'E')
+            if (currentDirection == 'E' && checkWall('E', pacX, pacY, false))
             {
 
                 return;
             }
-            else if (maze.get(xBlocks * 2 * pacY + pacX).isWestSolid() && currentDirection == 'W')
+            //else if (maze.get(xBlocks * 2 * pacY + pacX).isWestSolid() && currentDirection == 'W')
+            else if (currentDirection == 'W' && checkWall('W', pacX, pacY, false))
             {
 
                 return;
             }
-            else if (maze.get(xBlocks * 2 * pacY + pacX).isNorthSolid() && currentDirection == 'N')
+            //else if (maze.get(xBlocks * 2 * pacY + pacX).isNorthSolid() && currentDirection == 'N')
+            else if (currentDirection == 'N' && checkWall('N', pacX, pacY, false))
             {
 
                 return;
             }
-            else if (maze.get(xBlocks * 2 * pacY + pacX).isSouthSolid() && currentDirection == 'S')
+            //else if (maze.get(xBlocks * 2 * pacY + pacX).isSouthSolid() && currentDirection == 'S')
+            else if (currentDirection == 'S' && checkWall('S', pacX, pacY, false))
             {
                 return;
             }
-*/
-            if (currentDirection == 'N')
-            {
-                pacY--;
 
-                contConsumed = maze.get(xBlocks * 2 * pacY + pacX).getContent();
-                incImg();
-                notifyObservers();
-                //Keeps the yellow guy from entering jail
-            }
-            //else if (currentDirection == 'S' && pacY * xBlocks * 2 + pacX != xBlocks * yBlocks - xBlocks * 3 && pacY * xBlocks * 2 + pacX != xBlocks * yBlocks - xBlocks * 3 - 1)
-            else if (currentDirection == 'S')
-            {//animate south with next img frame
-
-                pacY+=10;
-
-                //contConsumed = maze.get(xBlocks * 2 * pacY + pacX).getContent();//he just ate something
-                incImg();
-                notifyObservers();
-            }
-            else if (currentDirection == 'W')
+            switch (currentDirection)
             {
-                if (pacX == 0)
-                {
-                    pacX = xBlocks * 2 - 1;
-                }
-                else
-                {
-                    pacX--;
-                }
-                contConsumed = maze.get(xBlocks * 2 * pacY + pacX).getContent();
-                incImg();
-                notifyObservers();
-            }
-            else if (currentDirection == 'E')
-            {
-                if (pacX == xBlocks * 2 - 1)
-                {
-                    pacX = 0;
-                }
-                else
-                {
-                    pacX++;
-                }
-                contConsumed = maze.get(xBlocks * 2 * pacY + pacX).getContent();
-                incImg();
-                notifyObservers();
+                //else if (currentDirection == 'S' && pacY * xBlocks * 2 + pacX != xBlocks * yBlocks - xBlocks * 3 && pacY * xBlocks * 2 + pacX != xBlocks * yBlocks - xBlocks * 3 - 1)
+                case 'N':
+                    pacY -= 10;
+                    // contConsumed = maze.get(xBlocks * 2 * pacY + pacX).getContent();
+                    contConsumed = tryConsumeContent();
+                    incImg();
+                    notifyObservers();
+                    //Keeps the yellow guy from entering jail
+                    break;
+                case 'S':
+                    //animate south with next img frame
+
+                    pacY += 10;
+                    contConsumed = tryConsumeContent();
+                    //contConsumed = maze.get(xBlocks * 2 * pacY + pacX).getContent();//he just ate something
+                    incImg();
+                    notifyObservers();
+                    break;
+                case 'W':
+                    if (pacX < 0)
+                    {
+                        pacX = (xBlocks * 2 - 1) * widthHeight;
+                    }
+                    else
+                    {
+                        pacX -= 10;
+                    }
+                    contConsumed = tryConsumeContent();
+                    //contConsumed = maze.get(xBlocks * 2 * pacY + pacX).getContent();
+                    incImg();
+                    notifyObservers();
+                    break;
+                case 'E':
+                    //if (pacX == xBlocks * 2 - 1)
+                    //{
+                    //    pacX = 0;
+                    //}
+                    if (pacX > (xBlocks * 2 - 1) * widthHeight)
+                    {
+                        pacX = 0;
+                    }
+                    else
+                    {
+                        pacX += 10;
+                    }
+                    contConsumed = tryConsumeContent();
+                    // contConsumed = maze.get(xBlocks * 2 * pacY + pacX).getContent();
+                    incImg();
+                    notifyObservers();
+                    break;
+                default:
+                    break;
             }
 
             if (contConsumed != null && contConsumed.getContentType().equals(ContentType.Cake) && contConsumed.isVisible())
@@ -235,12 +263,19 @@ public class PacmanChar implements Subject, ActionListener {
                 powerUpT.restart();
                 totalPowerUps--;
                 pointsGained = contConsumed.getPointValue();
+                sound.eatFruitMusic();
             }
             else if (contConsumed != null && contConsumed.getContentType().equals(ContentType.CakeSlice) && contConsumed.isVisible())
             {
                 contConsumed.consumeContent();
                 totalCakeSlices--;
                 pointsGained = contConsumed.getPointValue();
+
+                sound.eatCakeSlice();
+                noContentCntr = 0;
+            }
+            else if (contConsumed == null)
+            {
 
             }
             contConsumed = null;
@@ -255,41 +290,31 @@ public class PacmanChar implements Subject, ActionListener {
 
     public Image getCurImg() {
         if (isPoweredUp)
-        {//loads powered up pacman pngs
-            if (currentDirection == 'N')
+        {   //loads powered up pacman pngs
+            switch (currentDirection)
             {
-                return pacmanPoweredGifsNORTH[currentImageIndex];
-            }
-            else if (currentDirection == 'S')
-            {
-                return pacmanPoweredGifsSOUTH[currentImageIndex];
-            }
-            else if (currentDirection == 'W')
-            {
-                return pacmanPoweredGifsWEST[currentImageIndex];
-            }
-            else
-            {
-                return pacmanPoweredGifsEAST[currentImageIndex];
+                case 'N':
+                    return pacmanPoweredGifsNORTH[currentImageIndex];
+                case 'S':
+                    return pacmanPoweredGifsSOUTH[currentImageIndex];
+                case 'W':
+                    return pacmanPoweredGifsWEST[currentImageIndex];
+                default:
+                    return pacmanPoweredGifsEAST[currentImageIndex];
             }
         }
         else
-        {//loads normal pacman pngs
-            if (currentDirection == 'N')
+        {   //loads normal pacman pngs
+            switch (currentDirection)
             {
-                return pacmanGifsNORTH[currentImageIndex];
-            }
-            else if (currentDirection == 'S')
-            {
-                return pacmanGifsSOUTH[currentImageIndex];
-            }
-            else if (currentDirection == 'W')
-            {
-                return pacmanGifsWEST[currentImageIndex];
-            }
-            else
-            {
-                return pacmanGifsEAST[currentImageIndex];
+                case 'N':
+                    return pacmanGifsNORTH[currentImageIndex];
+                case 'S':
+                    return pacmanGifsSOUTH[currentImageIndex];
+                case 'W':
+                    return pacmanGifsWEST[currentImageIndex];
+                default:
+                    return pacmanGifsEAST[currentImageIndex];
             }
         }
     }
@@ -395,8 +420,8 @@ public class PacmanChar implements Subject, ActionListener {
         }
         else
         {
-            pacX = xBlocks - 2;//restore pacman to start position
-            pacY = yBlocks / 2 + 1;
+            pacX = 4 * widthHeight;//restore pacman to start position
+            pacY = 8 * widthHeight;
             currentDirection = ' ';
 
             numLives--;//remove a life
@@ -423,11 +448,69 @@ public class PacmanChar implements Subject, ActionListener {
         if (e.getSource().equals(deathDelay) && numLives > 0)
         {
             isDead = false; //I AM BACK!
-            sound.loopMainMusic();
+            
             deathDelay.stop();
             notifyObservers();
+            sound.loopMainGhostMusic();
 
         }
     }//end actionPerformed
+
+    public Content tryConsumeContent() {
+        for (Cell cell : maze)
+        {
+            if (cell.getXLoc() * widthHeight == pacX && cell.getYLoc() * widthHeight == pacY)
+            {
+                return cell.getContent();
+            }
+        }
+        return null;
+    }
+
+    public boolean checkWall(char wallToCheck, int x, int y, boolean userKeyEvent) {
+        for (Cell cell : maze)
+        {
+            if (cell.getXLoc() * widthHeight == x && cell.getYLoc() * widthHeight == y)
+            {
+
+                if (wallToCheck == 'N' && cell.isNorthSolid())
+                {
+
+                    return true;
+
+                }
+                else if (wallToCheck == 'S' && cell.isSouthSolid() || (wallToCheck == 'S' && (cell.getXLoc() == 5 || cell.getXLoc() == 6) && cell.getYLoc() == 5))
+                {
+
+                    return true;
+                }
+                else if (wallToCheck == 'E' && cell.isEastSolid())
+                {
+                    return true;
+                }
+                else if (wallToCheck == 'W' && cell.isWestSolid())
+                {
+
+                    return true;
+
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        //This point can be reached IF the cell didn't match. Keyevent should trigger true, otherwise false.
+        if (userKeyEvent)
+        {
+            return true;//couldn't even find the cell.
+        }
+        return false;
+    }
+
+    public void setNextDirection(char nextDirection) {
+        this.nextDirection = nextDirection;
+    }
 
 }//end PacmanChar Class

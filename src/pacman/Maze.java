@@ -32,20 +32,20 @@ public class Maze extends JPanel implements KeyListener, ActionListener {
     private int difficulty;//set difficulty of current maze, used in draw maze
     private int midwallRandom;//random number for middle walls
     private int levelNum;//level number
-    GameSounds gameSounds = new GameSounds();//game sounds, which by the way, kill me.  I really don't like them...
+    GameSounds gameSounds;//game sounds, which by the way, kill me.  I really don't like them...
     private Random rand = new Random();//random num gen
     Timer startDELAY = new Timer(500, this);//start delay timer
-    Timer pacmant1 = new Timer(100, this);//recur every .2 seconds after the initial pacmans main clock
-    Timer blinkyt1 = new Timer(190, this);//recur every .19 seconds after the inital blinky delay
+    Timer pacmant1 = new Timer(65, this);//recur every .2 seconds after the initial pacmans main clock
+    Timer blinkyt1 = new Timer(70, this);//recur every .19 seconds after the inital blinky delay
     Timer blinkyt2 = new Timer(63, this);//animator
-    Timer inkyt1 = new Timer(190, this);//recur every .19 seconds after the inital blinky delay
+    Timer inkyt1 = new Timer(70, this);//recur every .19 seconds after the inital blinky delay
     Timer inkyt2 = new Timer(63, this);//animator
-    Timer pinkyt1 = new Timer(190, this);//recur every .19 seconds after the inital blinky delay
+    Timer pinkyt1 = new Timer(70, this);//recur every .19 seconds after the inital blinky delay
     Timer pinkyt2 = new Timer(63, this);//animator
-    Timer clydet1 = new Timer(190, this);//recur every .19 seconds after the inital blinky delay
+    Timer clydet1 = new Timer(70, this);//recur every .19 seconds after the inital blinky delay
     Timer clydet2 = new Timer(63, this);//animator
     private JLabel readyLabel = new JLabel("READY!");
-    public boolean forceStop=false;
+    public boolean forceStop = false;
     Graphics2D g2d;
     ArrayList<Cell> mazeCells = new ArrayList<Cell>();//array list of cells used
     ArrayList<Cell> actualMaze = new ArrayList<Cell>();//actual maze
@@ -93,17 +93,18 @@ public class Maze extends JPanel implements KeyListener, ActionListener {
         clydet2.setInitialDelay(190);//same wait...
         inkyt1.setInitialDelay(190);//wait for .19 seconds before starting
         inkyt2.setInitialDelay(190);//same wait...
+        gameSounds = new GameSounds();//game sounds, which by the way, kill me.  I really don't like them...
         gameSounds.introMusic();
         startDELAY.setInitialDelay(4000);//wait for 4 seconds before starting
 
         startDELAY.start();//begin startDelay Timer
 
         //I took the intro music out of here - let the maze be built in silence.  Seriously.
-        pacman = new PacmanChar(xBlocks - 2, yBlocks / 2 + 1, actualMaze, widthHeight, xBlocks, yBlocks, gameSounds, 4, 0);//GENERATE THE YELLOW MAN
-        inky = new Inky(xBlocks - 2, yBlocks / 2, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);//the next four lines generate ghosts
-        blinky = new Blinky(xBlocks - 1, yBlocks / 2, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
-        pinky = new Pinky(xBlocks, yBlocks / 2, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
-        clyde = new Clyde(xBlocks + 1, yBlocks / 2, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
+        pacman = new PacmanChar(4 * widthHeight, 8 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, gameSounds, 4, 0);//GENERATE THE YELLOW MAN
+        inky = new Inky((xBlocks - 2) * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);//the next four lines generate ghosts
+        blinky = new Blinky(5 * widthHeight, 7 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
+        pinky = new Pinky(xBlocks * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
+        clyde = new Clyde((xBlocks + 1) * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
         pacman.register(clyde);//HEY...HEY OBSERVERS...COME HERE TO GET REGISTERED
         pacman.register(inky);
         pacman.register(pinky);
@@ -118,27 +119,28 @@ public class Maze extends JPanel implements KeyListener, ActionListener {
 
         int midwallRandomNum = rand.nextInt((xBlocks * yBlocks - 1));//generate midwallRandom number between 0 & max node -1
         mazeCreation.createMaze(midwallRandomNum);//create perfect Depth First Search Maze, then ruin that perfection (we have to play after all)
-        
+
         mirrorMaze();//gen the other maze half
         ghostJail();//<--this thing is a coding nightmare but anyway, there's the ghost jail
         openPortal();
 
     }
-    public void openPortal(){
-        //choose portal location randomly...
-         Random rand = new Random();
 
-    // nextInt is normally exclusive of the top value,
-    // so add 1 to make it inclusive
-    int randomNum = rand.nextInt((yBlocks-1 - 1) + 1) + 1;
-        for(Cell cell : actualMaze)
+    public void openPortal() {
+        //choose portal location randomly...
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((yBlocks - 1 - 1) + 1) + 1;
+        for (Cell cell : actualMaze)
         {
-            if(cell.getYLoc() == randomNum && cell.getXLoc()==0)
+            if (cell.getYLoc() == randomNum && cell.getXLoc() == 0)
             {
                 cell.setWest(false);
-                
+
             }
-            else if(cell.getYLoc() == randomNum && cell.getXLoc() == xBlocks*2-1)
+            else if (cell.getYLoc() == randomNum && cell.getXLoc() == xBlocks * 2 - 1)
             {
                 cell.setEast(false);
             }
@@ -387,39 +389,79 @@ public class Maze extends JPanel implements KeyListener, ActionListener {
     public void keyPressed(KeyEvent e) {
         //update the yellow man's current direction
         int location = e.getExtendedKeyCode();
-        int index = pacman.getYcoord() * xBlocks * 2 + pacman.getXcoord();//find the index of the yellow guy's current cell
-        if (location == KeyEvent.VK_LEFT)
+        int index = pacman.getYcoord() / widthHeight * xBlocks * 2 + pacman.getXcoord() / widthHeight;//find the index of the yellow guy's current cell
+        boolean turn = false;
+        switch (location)
         {
-            //each of these if statements check to see if PacMan can move in the direction indicated by the key press
-            if (!actualMaze.get(index).isWestSolid())
-            {
-                pacman.setCurrentDirection('W');
+            case KeyEvent.VK_LEFT:
+                //each of these if statements check to see if PacMan can move in the direction indicated by the key press
+                //if (!actualMaze.get(index).isWestSolid())
+                //{
+                if (pacman.getCurrentDirection() != 'W')
+                {
+                    turn = pacman.getCurrentDirection() != 'E';
+                    if (!pacman.checkWall('W', pacman.getXcoord(), pacman.getYcoord(), turn))
+                    {
+                        pacman.setCurrentDirection('W');
 
-            }//end inner if
-        }
-        else if (location == KeyEvent.VK_RIGHT)
-        {
-            if (!actualMaze.get(index).isEastSolid())
-            {
-                pacman.setCurrentDirection('E');
+                    }//end inner if
+                    else
+                    {
+                        pacman.setNextDirection('W');
+                    }
+                }
+                break;
+            case KeyEvent.VK_RIGHT:
+                //if (!actualMaze.get(index).isEastSolid())
+                // {
+                if (pacman.getCurrentDirection() != 'E')
+                {
+                    turn = pacman.getCurrentDirection() != 'W';
+                    if (!pacman.checkWall('E', pacman.getXcoord(), pacman.getYcoord(), turn))
+                    {
+                        pacman.setCurrentDirection('E');
 
-            }//end inner if
-        }
-        else if (location == KeyEvent.VK_UP)
-        {
-            if (!actualMaze.get(index).isNorthSolid())
-            {
-                pacman.setCurrentDirection('N');
+                    }//end inner if
+                    else
+                    {
+                        pacman.setNextDirection('E');
+                    }
+                }
+                break;
+            case KeyEvent.VK_UP:
+                if (pacman.getCurrentDirection() != 'N')
+                {
+                    //if (!actualMaze.get(index).isNorthSolid())
+                    turn = pacman.getCurrentDirection() != 'S';
+                    if (!pacman.checkWall('N', pacman.getXcoord(), pacman.getYcoord(), turn))
+                    {
+                        pacman.setCurrentDirection('N');
 
-            }//end inner if
-        }
-        else if (location == KeyEvent.VK_DOWN)
-        {
-            //if (!actualMaze.get(index).isSouthSolid())
-           // {
-                pacman.setCurrentDirection('S');
+                    }//end inner if
+                    else
+                    {
+                        pacman.setNextDirection('N');
+                    }
+                }
+                break;
+            case KeyEvent.VK_DOWN:
+                //if (!actualMaze.get(index).isSouthSolid())
+                if (pacman.getCurrentDirection() != 'S')
+                {
+                    turn = pacman.getCurrentDirection() != 'N';
+                    if (!pacman.checkWall('S', pacman.getXcoord(), pacman.getYcoord(), turn))
+                    {
+                        pacman.setCurrentDirection('S');
 
-           // }//end inner if
+                    }//end inner if
+                    else
+                    {
+                        pacman.setNextDirection('S');
+                    }
+                }
+                break;
+            default:
+                break;
         }
     }//end keyPressed
 
@@ -502,7 +544,7 @@ public class Maze extends JPanel implements KeyListener, ActionListener {
         blinkyt1.start();
         blinkyt2.start();
         startDELAY.stop();
-        gameSounds.loopMainMusic();
+        gameSounds.loopMainGhostMusic();
     }//end startDelay
 
     void makeNewLevel() {
@@ -536,11 +578,11 @@ public class Maze extends JPanel implements KeyListener, ActionListener {
         }
         int totalPoints = pacman.getTotalScore();//retains player score - important only to some of us
         int numLives = pacman.getRemainingLives();//retains pacman's lives - kind of important
-        pacman = new PacmanChar(xBlocks - 2, yBlocks / 2 + 1, actualMaze, widthHeight, xBlocks, yBlocks, gameSounds, numLives, totalPoints);// a completely new yellow guy hits the maze
-        inky = new Inky(xBlocks - 2, yBlocks / 2, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);//create ghosts
-        blinky = new Blinky(xBlocks - 1, yBlocks / 2, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
-        pinky = new Pinky(xBlocks, yBlocks / 2, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
-        clyde = new Clyde(xBlocks + 1, yBlocks / 2, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
+        pacman = new PacmanChar(4 * widthHeight, 8 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, gameSounds, numLives, totalPoints);//GENERATE THE YELLOW MAN
+        inky = new Inky((xBlocks - 2) * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);//the next four lines generate ghosts
+        blinky = new Blinky(5 * widthHeight, 7 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
+        pinky = new Pinky(xBlocks * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
+        clyde = new Clyde((xBlocks + 1) * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds);
         pacman.register(clyde);//register observers
         pacman.register(inky);
         pacman.register(pinky);
@@ -549,19 +591,17 @@ public class Maze extends JPanel implements KeyListener, ActionListener {
         createMaze();//create the actual maze
     }//end makeNewLevel
 
-    
-    public void windowClosed()
-    {
+    public void windowClosed() {
         startDELAY.stop();
-                 pacmant1.stop();
-                blinkyt1.stop();
-                blinkyt2.stop();
-                inkyt1.stop();
-                inkyt2.stop();
-                clydet1.stop();
-                clydet2.stop();
-                pinkyt1.stop();
-                pinkyt2.stop();
-                gameSounds.forceStop();
+        pacmant1.stop();
+        blinkyt1.stop();
+        blinkyt2.stop();
+        inkyt1.stop();
+        inkyt2.stop();
+        clydet1.stop();
+        clydet2.stop();
+        pinkyt1.stop();
+        pinkyt2.stop();
+        gameSounds.forceStop();
     }
 }//end Maze

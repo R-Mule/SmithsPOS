@@ -10,22 +10,26 @@ import java.net.URL;
  */
 public class GameSounds {
 
-    private AudioClip introMusic, mainMusic, intermissionMusic, deathMusic, eatGhostMusic, eatFruitMusic;
+    private AudioClip introMusic, mainGhostMusic, intermissionMusic, deathMusic, eatGhostMusic, eatFruitMusic,eatCakeSliceMusic;
     private boolean onFinalLevel = false;
+    private boolean isMainLoopStopped = true;
 
     GameSounds() {
-        URL introUrl = getClass().getResource("music/pacman_beginning.wav");
+        //THESE ARE CASE SENSITIVE!!!!
+        URL introUrl = getClass().getResource("music/pacman_beginning.wav");//updated
         introMusic = Applet.newAudioClip(introUrl);
-        URL mainUrl = getClass().getResource("music/pacman_chomp.wav");
-        mainMusic = Applet.newAudioClip(mainUrl);
+        URL mainUrl = getClass().getResource("music/pacman_ghost_normal.wav");
+        mainGhostMusic = Applet.newAudioClip(mainUrl);
         URL interUrl = getClass().getResource("music/pacman_intermission.wav");
         intermissionMusic = Applet.newAudioClip(interUrl);
         URL pmanDeathUrl = getClass().getResource("music/pacman_death.wav");
         deathMusic = Applet.newAudioClip(pmanDeathUrl);
-        URL eatGhostUrl = getClass().getResource("music/pacman_eatGhost.wav");
+        URL eatGhostUrl = getClass().getResource("music/pacman_eatghost.wav");
         eatGhostMusic = Applet.newAudioClip(eatGhostUrl);
         URL eatFruitUrl = getClass().getResource("music/pacman_eatfruit.wav");
         eatFruitMusic = Applet.newAudioClip(eatFruitUrl);
+        URL eatCakeSliceUrl = getClass().getResource("music/pacman_eatCakeSlice.wav");//updated
+        eatCakeSliceMusic = Applet.newAudioClip(eatCakeSliceUrl);
 
     }
 
@@ -34,34 +38,42 @@ public class GameSounds {
         {
             this.onFinalLevel = true;
             URL mainUrl = getClass().getResource("music/pacman_fever.wav");
-            mainMusic = Applet.newAudioClip(mainUrl);
-            mainMusic.loop();
+            mainGhostMusic = Applet.newAudioClip(mainUrl);
+            mainGhostMusic.loop();
         }
     }
 
-    public void forceStop(){
-            introMusic.stop();
-            mainMusic.stop();
-            intermissionMusic.stop();
-            deathMusic.stop();
-            eatGhostMusic.stop();
-            eatFruitMusic.stop();
-            introMusic = null;
-            mainMusic = null;
-            intermissionMusic = null;
-            deathMusic = null;
-            eatGhostMusic = null;
-            eatFruitMusic = null;
+    public void forceStop() {
+        introMusic.stop();
+        mainGhostMusic.stop();
+        isMainLoopStopped = true;
+        intermissionMusic.stop();
+        deathMusic.stop();
+        eatGhostMusic.stop();
+        eatFruitMusic.stop();
+        eatCakeSliceMusic.stop();
+        introMusic = null;
+        mainGhostMusic = null;
+        intermissionMusic = null;
+        deathMusic = null;
+        eatGhostMusic = null;
+        eatFruitMusic = null;
+    }
+
+    public void eatCakeSlice(){
+        eatCakeSliceMusic.play();
     }
     public void stop() {
         if (onFinalLevel)
         {
             introMusic.stop();
-            mainMusic.stop();
+            mainGhostMusic.stop();
+            isMainLoopStopped = true;
             intermissionMusic.stop();
             //deathMusic.stop();
             eatGhostMusic.stop();
             eatFruitMusic.stop();
+            eatCakeSliceMusic.stop();
         }
 
     }
@@ -75,18 +87,33 @@ public class GameSounds {
 
     }
 
-    public void loopMainMusic() {
+    public void loopMainGhostMusic() {
+
         if (!onFinalLevel)
         {
-
-            mainMusic.loop();
+            if (isMainLoopStopped)
+            {
+                mainGhostMusic.loop();
+            }
+            isMainLoopStopped = false;
         }
+    }
+
+    public void stopMainGhostMusic() {
+        mainGhostMusic.stop();
+        isMainLoopStopped = true;
+    }
+
+    public void eatCakeSliceMusic() {
+
+        mainGhostMusic.play();
     }
 
     public void intermissionMusic() {
         if (!onFinalLevel)
         {
-            mainMusic.stop();
+            mainGhostMusic.stop();
+            isMainLoopStopped = true;
             intermissionMusic.play();
         }
 
@@ -99,7 +126,9 @@ public class GameSounds {
     public void pacmanDeathMusic() {
         if (!onFinalLevel)
         {
-            mainMusic.stop();
+            mainGhostMusic.stop();
+            isMainLoopStopped = true;
+            
             deathMusic.play();
         }
 
