@@ -155,7 +155,7 @@ public class CardDataRequester {
                     }
                     else
                     {
-                        responseText = "CARD Error code: 3. Please report error to manager, then try again.";
+                        responseText = "CARD Error code: 3. Transcation Declined.";
                         transTerminate = true;
                         System.out.println("TRANS DECLINED1??");
                     }
