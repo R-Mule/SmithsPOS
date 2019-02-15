@@ -1,7 +1,8 @@
 package database_console;
 
-import java.io.File;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
@@ -25,13 +26,13 @@ public class EasterEgg {
         if (ConfigFileReader.getPharmacyName().contentEquals("Smiths Super Aid"))
         {
             JFrame message1 = new JFrame("");
-            ImageIcon icon = new ImageIcon(imageFilePath);
+            ImageIcon icon = new ImageIcon(getClass().getResource(imageFilePath));
             try
             {
-                File audioFile = new File(audioFilePath);
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                AudioFormat format = audioStream.getFormat();
 
+                BufferedInputStream myStream = new BufferedInputStream(getClass().getResourceAsStream(audioFilePath)); 
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(myStream);
+                AudioFormat format = audioStream.getFormat();
                 DataLine.Info info = new DataLine.Info(Clip.class, format);
 
                 Clip audioClip = (Clip) AudioSystem.getLine(info);
@@ -54,8 +55,10 @@ public class EasterEgg {
         {
             try
             {
-                File audioFile = new File(audioFilePath);
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                //File audioFile = new File(audioFilePath);
+                //AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(audioFilePath));
+                BufferedInputStream myStream = new BufferedInputStream(getClass().getResourceAsStream(audioFilePath)); 
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(myStream);
                 AudioFormat format = audioStream.getFormat();
 
                 DataLine.Info info = new DataLine.Info(Clip.class, format);

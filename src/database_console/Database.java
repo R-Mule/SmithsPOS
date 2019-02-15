@@ -624,13 +624,13 @@ public class Database {
         else if (id.toUpperCase().contentEquals("WET BANDITS"))
         {
             loadedItems.add(new Item("HAPIZZA", "HAPIZZA", "Pizza Box", 11.1363636364, 11.1363636364, false, 852, 0, "", "", 1, false, 0, false));
-            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha1.gif", "C:/POS/SOFTWARE/ha1.wav", "What're you scared, Marv? Are you afraid? C'mon, get out here.", "");
+            EasterEgg ee = new EasterEgg("images/ha1.gif", "sounds/ha1.wav", "What're you scared, Marv? Are you afraid? C'mon, get out here.", "");
             return loadedItems;
         }
         else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA"))
         {
             loadedItems.add(new Item("HPSS2", "HPSS2", "Erised stra ehru oyt ube cafru oyt on wohsi", 1041.11, 1041.11, false, 852, 0, "", "", 1, false, 0, false));
-            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss2.gif", "C:/POS/SOFTWARE/hpss2.wav", "It does not do to dwell on dreams and forget to live.", "");
+            EasterEgg ee = new EasterEgg("images/HPSS2.gif", "sounds/HPSS2.wav", "It does not do to dwell on dreams and forget to live.", "");
             return loadedItems;
         }
         else if (id.toUpperCase().contentEquals("MICHAEL MYERS"))
@@ -651,7 +651,7 @@ public class Database {
             loadedItems.add(new Item("MMHA14", "MMHA14", "Dr. Wynn", 19.78, 19.78, false, 852, 0, "", "", 1, false, 0, false));
             loadedItems.add(new Item("MMHA15", "MMHA15", "Christopher", 8.00, 8.00, false, 852, 0, "", "", 1, false, 0, false));
 
-            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mmha1.gif", "C:/POS/SOFTWARE/mmha1.wav", "", "Was that the Boogeyman?");
+            EasterEgg ee = new EasterEgg("images/mmha1.gif", "sounds/mmha1.wav", "", "Was that the Boogeyman?");
             return loadedItems;
         }
         else

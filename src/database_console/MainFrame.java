@@ -175,7 +175,7 @@ public class MainFrame extends javax.swing.JFrame {
         Date date = new Date();
         previousDate = dateFormat.format(date);
         textField.setBounds(100, 800, 200, 20);
-   //     textField.addKeyListener(rp1);
+      //  textField.addKeyListener(rp1);
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
@@ -691,9 +691,9 @@ public class MainFrame extends javax.swing.JFrame {
         {
             //EASTER UPDATE
             //EASTER
-            ImageIcon easter1img = new ImageIcon("C:/POS/Software/Easter1.png");
+            ImageIcon easter1img = new ImageIcon(getClass().getResource("images/Easter1.png"));
             JLabel e1imageLabel = new JLabel(easter1img);
-            ImageIcon easter2img = new ImageIcon("C:/POS/Software/Easter2.png");
+            ImageIcon easter2img = new ImageIcon(getClass().getResource("images/Easter2.png"));
             JLabel e2imageLabel = new JLabel(easter2img);
             // e1imageLabel.setBounds(100, 100, 100, 100);
             e1imageLabel.setSize(800, 200);
@@ -709,11 +709,11 @@ public class MainFrame extends javax.swing.JFrame {
         {
             //Fourth
             //4th of July
-            ImageIcon fourth1img = new ImageIcon("C:/POS/Software/4th1.png");
+            ImageIcon fourth1img = new ImageIcon(getClass().getResource("images/4th1.png"));
             JLabel fourth1imageLabel = new JLabel(fourth1img);
-            ImageIcon fourth2img = new ImageIcon("C:/POS/Software/4th2.png");
+            ImageIcon fourth2img = new ImageIcon(getClass().getResource("images/4th2.png"));
             JLabel fourth2imageLabel = new JLabel(fourth2img);
-            ImageIcon fourth3img = new ImageIcon("C:/POS/Software/4th3.png");
+            ImageIcon fourth3img = new ImageIcon(getClass().getResource("images/4th3.png"));
             JLabel fourth3imageLabel = new JLabel(fourth3img);
             fourth1imageLabel.setSize(400, 200);
             fourth1imageLabel.setLocation(1400, 815);
@@ -730,13 +730,13 @@ public class MainFrame extends javax.swing.JFrame {
         }
         if (isValentinesDay)
         {
-            ImageIcon fourth1img = new ImageIcon("C:/POS/Software/valentines1.png");
+            ImageIcon fourth1img = new ImageIcon(getClass().getResource("images/Valentines1.png"));
             JLabel fourth1imageLabel = new JLabel(fourth1img);
-            ImageIcon fourth2img = new ImageIcon("C:/POS/Software/valentines2.png");
+            ImageIcon fourth2img = new ImageIcon(getClass().getResource("images/Valentines2.png"));
             JLabel fourth2imageLabel = new JLabel(fourth2img);
-            ImageIcon fourth3img = new ImageIcon("C:/POS/Software/valentines3.png");
+            ImageIcon fourth3img = new ImageIcon(getClass().getResource("images/Valentines3.png"));
             JLabel fourth3imageLabel = new JLabel(fourth3img);
-            ImageIcon valentines4img = new ImageIcon("C:/POS/Software/valentines4.png");
+            ImageIcon valentines4img = new ImageIcon(getClass().getResource("images/Valentines4.png"));
             JLabel valentines4imageLabel = new JLabel(valentines4img);
 
             fourth1imageLabel.setSize(400, 200);
@@ -760,21 +760,21 @@ public class MainFrame extends javax.swing.JFrame {
         if (isHalloween)
         {
             //Halloween
-            ImageIcon halloween1img = new ImageIcon("C:/POS/Software/halloween1.png");
+            ImageIcon halloween1img = new ImageIcon(getClass().getResource("images/Halloween1.png"));
             JLabel halloween1imageLabel = new JLabel(halloween1img);
-            ImageIcon halloween2img = new ImageIcon("C:/POS/Software/halloween2.png");
+            ImageIcon halloween2img = new ImageIcon(getClass().getResource("images/Halloween2.png"));
             JLabel halloween2imageLabel = new JLabel(halloween2img);
-            ImageIcon halloween3img = new ImageIcon("C:/POS/Software/halloween3.png");
+            ImageIcon halloween3img = new ImageIcon(getClass().getResource("images/Halloween3.png"));
             JLabel halloween3imageLabel = new JLabel(halloween3img);
-            ImageIcon halloween4img = new ImageIcon("C:/POS/Software/halloween4.png");
+            ImageIcon halloween4img = new ImageIcon(getClass().getResource("images/Halloween4.png"));
             JLabel halloween4imageLabel = new JLabel(halloween4img);
-            ImageIcon halloween5img = new ImageIcon("C:/POS/Software/halloween5.png");
+            ImageIcon halloween5img = new ImageIcon(getClass().getResource("images/Halloween5.png"));
             JLabel halloween5imageLabel = new JLabel(halloween5img);
-            ImageIcon halloween6img = new ImageIcon("C:/POS/Software/halloween6.png");
+            ImageIcon halloween6img = new ImageIcon(getClass().getResource("images/Halloween6.png"));
             JLabel halloween6imageLabel = new JLabel(halloween6img);
-            ImageIcon halloween7img = new ImageIcon("C:/POS/Software/halloween7.png");
+            ImageIcon halloween7img = new ImageIcon(getClass().getResource("images/Halloween7.png"));
             JLabel halloween7imageLabel = new JLabel(halloween7img);
-            ImageIcon halloween8img = new ImageIcon("C:/POS/Software/halloween8.png");
+            ImageIcon halloween8img = new ImageIcon(getClass().getResource("images/Halloween8.png"));
             JLabel halloween8imageLabel = new JLabel(halloween8img);
             //Halloween
             // e1imageLabel.setBounds(100, 100, 100, 100);
@@ -815,17 +815,17 @@ public class MainFrame extends javax.swing.JFrame {
         if (isChristmas)
         {
             //Christmas
-            ImageIcon christmas1img = new ImageIcon("C:/POS/Software/christmas1.png");
+            ImageIcon christmas1img = new ImageIcon(getClass().getResource("images/Christmas1.png"));
             JLabel christmas1imageLabel = new JLabel(christmas1img);
-            ImageIcon christmas2img = new ImageIcon("C:/POS/Software/christmas2.png");
+            ImageIcon christmas2img = new ImageIcon(getClass().getResource("images/Christmas2.png"));
             JLabel christmas2imageLabel = new JLabel(christmas2img);
-            ImageIcon christmas3img = new ImageIcon("C:/POS/Software/christmas3.png");
+            ImageIcon christmas3img = new ImageIcon(getClass().getResource("images/Christmas3.png"));
             JLabel christmas3imageLabel = new JLabel(christmas3img);
-            ImageIcon christmas4img = new ImageIcon("C:/POS/Software/christmas4.png");
+            ImageIcon christmas4img = new ImageIcon(getClass().getResource("images/Christmas4.png"));
             JLabel christmas4imageLabel = new JLabel(christmas4img);
-            ImageIcon christmas5img = new ImageIcon("C:/POS/Software/christmas5.png");
+            ImageIcon christmas5img = new ImageIcon(getClass().getResource("images/Christmas5.png"));
             JLabel christmas5imageLabel = new JLabel(christmas5img);
-            ImageIcon christmas6img = new ImageIcon("C:/POS/Software/christmas6.png");
+            ImageIcon christmas6img = new ImageIcon(getClass().getResource("images/Christmas6.png"));
             JLabel christmas6imageLabel = new JLabel(christmas6img);
 
             christmas1imageLabel.setSize(300, 300);
@@ -858,17 +858,17 @@ public class MainFrame extends javax.swing.JFrame {
         if (isSummerTime)
         {
             //SUMMER!
-            ImageIcon christmas1img = new ImageIcon("C:/POS/Software/beach1.png");
+            ImageIcon christmas1img = new ImageIcon(getClass().getResource("images/beach1.png"));
             JLabel christmas1imageLabel = new JLabel(christmas1img);
-            ImageIcon christmas2img = new ImageIcon("C:/POS/Software/beach2.png");
+            ImageIcon christmas2img = new ImageIcon(getClass().getResource("images/beach2.png"));
             JLabel christmas2imageLabel = new JLabel(christmas2img);
-            ImageIcon christmas3img = new ImageIcon("C:/POS/Software/beach3.png");
+            ImageIcon christmas3img = new ImageIcon(getClass().getResource("images/beach3.png"));
             JLabel christmas3imageLabel = new JLabel(christmas3img);
-            ImageIcon christmas4img = new ImageIcon("C:/POS/Software/beach4.png");
+            ImageIcon christmas4img = new ImageIcon(getClass().getResource("images/beach4.png"));
             JLabel christmas4imageLabel = new JLabel(christmas4img);
-            ImageIcon christmas5img = new ImageIcon("C:/POS/Software/beach5.png");
+            ImageIcon christmas5img = new ImageIcon(getClass().getResource("images/beach5.png"));
             JLabel christmas5imageLabel = new JLabel(christmas5img);
-            ImageIcon christmas6img = new ImageIcon("C:/POS/Software/beach6.png");
+            ImageIcon christmas6img = new ImageIcon(getClass().getResource("images/beach6.png"));
             JLabel christmas6imageLabel = new JLabel(christmas6img);
 
             christmas1imageLabel.setSize(300, 300);
@@ -900,11 +900,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         if (isThanksgiving)
         {
-            ImageIcon thanksgiving1img = new ImageIcon("C:/POS/Software/thanksgiving1.png");
+            ImageIcon thanksgiving1img = new ImageIcon(getClass().getResource("images/Thanksgiving1.png"));
             JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
-            ImageIcon thanksgiving2img = new ImageIcon("C:/POS/Software/thanksgiving2.png");
+            ImageIcon thanksgiving2img = new ImageIcon(getClass().getResource("images/Thanksgiving2.png"));
             JLabel thanksgiving2imageLabel = new JLabel(thanksgiving2img);
-            ImageIcon thanksgiving3img = new ImageIcon("C:/POS/Software/thanksgiving3.png");
+            ImageIcon thanksgiving3img = new ImageIcon(getClass().getResource("images/Thanksgiving3.png"));
             JLabel thanksgiving3imgLabel = new JLabel(thanksgiving3img);
 
             thanksgiving1imageLabel.setSize(400, 200);
@@ -923,11 +923,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         if (isSaintPatricksDay)
         {
-            ImageIcon thanksgiving1img = new ImageIcon("C:/POS/Software/saintpt1.png");
+            ImageIcon thanksgiving1img = new ImageIcon(getClass().getResource("images/saintpt1.png"));
             JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
-            ImageIcon thanksgiving2img = new ImageIcon("C:/POS/Software/saintpt2.png");
+            ImageIcon thanksgiving2img = new ImageIcon(getClass().getResource("images/saintpt2.png"));
             JLabel thanksgiving2imageLabel = new JLabel(thanksgiving2img);
-            ImageIcon thanksgiving3img = new ImageIcon("C:/POS/Software/saintpt3.png");
+            ImageIcon thanksgiving3img = new ImageIcon(getClass().getResource("images/saintpt3.png"));
             JLabel thanksgiving3imgLabel = new JLabel(thanksgiving3img);
 
             thanksgiving1imageLabel.setSize(400, 200);
@@ -946,17 +946,17 @@ public class MainFrame extends javax.swing.JFrame {
         if (isWeddingMonth)
         {
             //Christmas
-            ImageIcon christmas1img = new ImageIcon("C:/POS/Software/wedding1.png");
+            ImageIcon christmas1img = new ImageIcon(getClass().getResource("images/Wedding1.png"));
             JLabel christmas1imageLabel = new JLabel(christmas1img);
-            ImageIcon christmas2img = new ImageIcon("C:/POS/Software/wedding2.png");
+            ImageIcon christmas2img = new ImageIcon(getClass().getResource("images/Wedding2.png"));
             JLabel christmas2imageLabel = new JLabel(christmas2img);
-            ImageIcon christmas3img = new ImageIcon("C:/POS/Software/wedding3.png");
+            ImageIcon christmas3img = new ImageIcon(getClass().getResource("images/Wedding3.png"));
             JLabel christmas3imageLabel = new JLabel(christmas3img);
-            ImageIcon christmas4img = new ImageIcon("C:/POS/Software/wedding4.png");
+            ImageIcon christmas4img = new ImageIcon(getClass().getResource("images/Wedding4.png"));
             JLabel christmas4imageLabel = new JLabel(christmas4img);
-            ImageIcon christmas5img = new ImageIcon("C:/POS/Software/wedding5.png");
+            ImageIcon christmas5img = new ImageIcon(getClass().getResource("images/Wedding5.png"));
             JLabel christmas5imageLabel = new JLabel(christmas5img);
-            //  ImageIcon christmas6img = new ImageIcon("C:/POS/Software/wedding6.png");
+            //  ImageIcon christmas6img = new ImageIcon("images/wedding6.png");
             //  JLabel christmas6imageLabel = new JLabel(christmas6img);
 
             christmas1imageLabel.setSize(500, 500);
@@ -1128,13 +1128,13 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                         if (found)
                         {
-                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al2.gif", "C:/POS/SOFTWARE/al2.wav", "", "You ain't never had a friend like me!");
+                            EasterEgg ee = new EasterEgg("images/al2.gif", "sounds/al2.wav", "", "You ain't never had a friend like me!");
                         }
                     }//end if EE Protocol
                     if (field1.getText().contentEquals("Please"))
                     {//EE Protocol
 
-                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/ssj.gif");
+                        ImageIcon icon = new ImageIcon(getClass().getResource("images/ssj.gif"));
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "“I am the hope of the universe.\nI am the answer to all living things that cry out for peace.\nI am protector of the innocent.\nI am the light in the darkness. \nI am truth.\nAlly to good!\nNightmare to you!”", "", 0, icon);
 
@@ -1145,7 +1145,7 @@ public class MainFrame extends javax.swing.JFrame {
                         {
                             if (item.mutID.contentEquals("HAPIZZA") && item.quantity == 11 && isChristmas)
                             {
-                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ha3.gif", "C:/POS/SOFTWARE/ha3.wav", "", "Did anyone order me a plain cheese?");
+                                EasterEgg ee = new EasterEgg("images/ha3.gif", "sounds/ha3.wav", "", "Did anyone order me a plain cheese?");
                             }
                         }
 
@@ -1174,7 +1174,7 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                         if (found1 && found2 && found3 && cntr == 3)
                         {
-                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx4.gif", "C:/POS/SOFTWARE/mx4.wav", "", "You're not human, are you?");
+                            EasterEgg ee = new EasterEgg("images/mx4.gif", "sounds/mx4.wav", "", "You're not human, are you?");
                         }
                     }
                     if (!field1.getText().isEmpty() && validateInteger(field1.getText()))
@@ -1186,7 +1186,7 @@ public class MainFrame extends javax.swing.JFrame {
                             menuBar.setAllVisible();
                             if (isHalloween)
                             {
-                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mario1.wav");
+                                EasterEgg ee = new EasterEgg("sounds/mario1.wav");
                             }
                             employeeSelectionHeader.setText("Active Clerk: " + clerkName);
                             activeClerksPasscode = Integer.parseInt(field1.getText());
@@ -1194,14 +1194,15 @@ public class MainFrame extends javax.swing.JFrame {
                             clerkLogoutButton.setVisible(true);
                             if (clerkName.contentEquals("Smith, Hollie") && isHolliesBirthday)//It is Hollie's Birthday!
                             {
-                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/birthday.gif", "C:/POS/SOFTWARE/birthday.wav", "", "Happy Birthday Love!");
+                                EasterEgg ee = new EasterEgg("images/birthday.gif", "sounds/birthday.wav", "", "Happy Birthday Love!");
                             }
                             if (clerkName.contentEquals("Smith, Hollie") && isWeddingMonth)//wedding month is now our anniversary only
                             {
-                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/weddingphoto.jpg", "C:/POS/SOFTWARE/weddingthankyou.wav", "", "Happy Anniversay Babe!");
+                                EasterEgg ee = new EasterEgg("images/weddingphoto.jpg", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
                             }
 
-                      //      rp1.reload();
+                      
+                        //    rp1.reload();
                         }
                     }
 
@@ -1217,7 +1218,7 @@ public class MainFrame extends javax.swing.JFrame {
                 activeClerksPasscode = -1;
                 checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-            //    rp1.exit();
+             //   rp1.exit();
             }
         });
 
@@ -1686,7 +1687,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     if (Double.parseDouble(field3.getText()) > 9000 && field1.getText().contentEquals("Son Goku"))
                                     {//EE Protocol
                                         JFrame message1 = new JFrame("");
-                                        ImageIcon icon = new ImageIcon("C:/POS/SOFTWARE/over9000.jpg");
+                                        ImageIcon icon = new ImageIcon(getClass().getResource("images/over9000.jpg"));
                                         JOptionPane.showMessageDialog(message1, "", "", 0, icon);
                                     }
                                     else if (field1.getText().contentEquals("I show not your face but your hearts desire") && Double.parseDouble(field3.getText()) == 1114.01)
@@ -1707,13 +1708,13 @@ public class MainFrame extends javax.swing.JFrame {
                                         }
                                         if (part1 && part2)
                                         {
-                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss3.gif", "C:/POS/SOFTWARE/hpss3.wav", "", "One can never have enough socks.");
+                                            EasterEgg ee = new EasterEgg("images/hpss3.gif", "sounds/hpss3.wav", "", "One can never have enough socks.");
                                         }
 
                                     }
                                     else if (field1.getText().contentEquals("Platform") && Double.parseDouble(field3.getText()) == 9.75)
                                     {
-                                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hpss1.gif", "C:/POS/SOFTWARE/hpss1.wav", "", "Alas! Earwax!");
+                                        EasterEgg ee = new EasterEgg("images/hpss1.gif", "sounds/HPSS1.wav", "", "Alas! Earwax!");
 
                                     }
                                     else if (field1.getText().contentEquals("Guest") && Double.parseDouble(field3.getText()) == 20.17)
@@ -1733,7 +1734,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         }
                                         if (part1 && part2)
                                         {
-                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/bnb.gif", "C:/POS/SOFTWARE/BOG.wav", "", "Try the gray stuff, it's delicious!");
+                                            EasterEgg ee = new EasterEgg("images/bnb.gif", "sounds/BOG.wav", "", "Try the gray stuff, it's delicious!");
                                         }//end if BNB Protocol
                                     }//end EE protocol
                                     else if (field1.getText().contentEquals("Man") && Double.parseDouble(field3.getText()) == 20.03)
@@ -1751,7 +1752,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         }
                                         if (found1 && cntr == 1)
                                         {
-                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx2.gif", "C:/POS/SOFTWARE/mx2.wav", "Why do you persist?", "");
+                                            EasterEgg ee = new EasterEgg("images/mx2.gif", "sounds/mx2.wav", "Why do you persist?", "");
 
                                         }
 
@@ -1760,7 +1761,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     {
                                         if (curCart.getItems().size() == 2 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22") && curCart.getItems().get(1).mutID.contentEquals("BATMON") && curCart.getItems().get(1).getDiscountPercentage() == .5)
                                         {
-                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/dk3.gif", "C:/POS/SOFTWARE/dk3.wav", "Accomplice? I'm going to tell them the whole thing was your idea.", "");
+                                            EasterEgg ee = new EasterEgg("images/dk3.gif", "sounds/dk3.wav", "Accomplice? I'm going to tell them the whole thing was your idea.", "");
                                         }
                                     }
                                     else if (field1.getText().contentEquals("Because I choose to.") && Double.parseDouble(field3.getText()) == 20.03)
@@ -1783,13 +1784,13 @@ public class MainFrame extends javax.swing.JFrame {
                                         }
                                         if (found1 && found2 && cntr == 2)
                                         {
-                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mx3.gif", "C:/POS/SOFTWARE/mx3.wav", "", "Who are you?");
+                                            EasterEgg ee = new EasterEgg("images/mx3.gif", "sounds/mx3.wav", "", "Who are you?");
                                         }
 
                                     }
                                     else if (isHalloween && Double.parseDouble(field3.getText()) == 3.00 && field1.getText().contentEquals("Come Little Children"))
                                     {
-                                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hp1.gif", "C:/POS/SOFTWARE/hp1.wav", "", "Just one item to go!");
+                                        EasterEgg ee = new EasterEgg("images/hp1.gif", "sounds/hp1.wav", "", "Just one item to go!");
 
                                     }
                                     else if (Double.parseDouble(field3.getText()) == 16.93 && field1.getText().contentEquals("I Put A Spell On You"))
@@ -1804,12 +1805,12 @@ public class MainFrame extends javax.swing.JFrame {
                                         }
                                         if (found)
                                         {
-                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hp2.gif", "C:/POS/SOFTWARE/hp2.wav", "", "Max likes your yabbos!");
+                                            EasterEgg ee = new EasterEgg("images/hp2.gif", "sounds/hp2.wav", "", "Max likes your yabbos!");
                                         }
                                     }//end if EE Protocol
                                     else if (Double.parseDouble(field3.getText()) == 112519.92 && field1.getText().contentEquals("Bread"))
                                     {
-                                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al1.gif", "C:/POS/SOFTWARE/al1.wav", "", "Ring bells! Bang the drums!!");
+                                        EasterEgg ee = new EasterEgg("images/al1.gif", "sounds/al1.wav", "", "Ring bells! Bang the drums!!");
 
                                     }
                                     else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Witch"))
@@ -1824,7 +1825,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         }
                                         if (found)
                                         {
-                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mp1.gif", "C:/POS/SOFTWARE/mp1.wav", "", "She turned me into a newt!!");
+                                            EasterEgg ee = new EasterEgg("images/mp1.gif", "sounds/mp1.wav", "", "She turned me into a newt!!");
                                         }
                                     }
                                     else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Duck"))
@@ -1839,13 +1840,13 @@ public class MainFrame extends javax.swing.JFrame {
                                         }
                                         if (found)
                                         {
-                                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/mp1.gif", "C:/POS/SOFTWARE/mp1.wav", "", "She turned me into a newt!!");
+                                            EasterEgg ee = new EasterEgg("images/mp1.gif", "sounds/mp1.wav", "", "She turned me into a newt!!");
                                         }
 
                                     }
                                     else if (Double.parseDouble(field3.getText()) == 0.02 && field1.getText().contentEquals("Jango Fett"))
                                     {
-                                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw1.gif", "C:/POS/SOFTWARE/sw1.wav", "I'm just a simple man, trying to make my way in the universe.", "");
+                                        EasterEgg ee = new EasterEgg("images/sw1.gif", "sounds/sw1.wav", "I'm just a simple man, trying to make my way in the universe.", "");
                                     }//end if EE Protocol
 
                                     Item tempItem = new Item(tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
@@ -2708,23 +2709,23 @@ public class MainFrame extends javax.swing.JFrame {
                         {
                             if (field1.getText().contentEquals("BTITUDE"))
                             {
-                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/bat.gif", "C:/POS/SOFTWARE/batman.wav", "", "You think muscles are big, you haven't seen my brain!");
+                                EasterEgg ee = new EasterEgg("images/bat.gif", "sounds/batman.wav", "", "You think muscles are big, you haven't seen my brain!");
                             }
                             else if (field1.getText().contentEquals("Prince") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Anduin") && field4.getText().contentEquals("091318"))
                             {
-                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/as1.gif", "C:/POS/SOFTWARE/as1.wav", "", "Sometimes we must fight for what we believe in.");
+                                EasterEgg ee = new EasterEgg("images/as1.gif", "sounds/as1.wav", "", "Sometimes we must fight for what we believe in.");
                             }
                             else if (field1.getText().contentEquals("Princess") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Kieryn") && field4.getText().contentEquals("022411"))
                             {
-                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/ks1.gif", "C:/POS/SOFTWARE/ks1.wav", "", "Sometimes our strengths lie beneath the surface.");
+                                EasterEgg ee = new EasterEgg("images/ks1.gif", "sounds/ks1.wav", "", "Sometimes our strengths lie beneath the surface.");
                             }
                             else if (field1.getText().contentEquals("Apollo") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Andrew") && field4.getText().contentEquals("111789"))
                             {
-                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/fly1.gif", "C:/POS/SOFTWARE/fly1.wav", "When you run the marathon, you run against the distance, not against the other runners and not against the time.\n You are all the loves of my life and I do this all for you.", "");
+                                EasterEgg ee = new EasterEgg("images/fly1.gif", "sounds/fly1.wav", "When you run the marathon, you run against the distance, not against the other runners and not against the time.\n You are all the loves of my life and I do this all for you.", "");
                             }
                             else if (field1.getText().contentEquals("Starbuck") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Hollie") && field4.getText().contentEquals("030986"))
                             {
-                                EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/wwa.gif", "C:/POS/SOFTWARE/wwa.wav", "I would grant all your wishes \n"
+                                EasterEgg ee = new EasterEgg("images/wwa.gif", "sounds/wwa.wav", "I would grant all your wishes \n"
                                         + "If you promised me a thousand kisses \n"
                                         + "I will never, love another, like you\n"
                                         + "So give me all your secrets \n"
@@ -3797,13 +3798,13 @@ public class MainFrame extends javax.swing.JFrame {
                         {
                             itemFound = true;
                             eefound = true;
-                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/jp2.gif", "C:/POS/SOFTWARE/jp2.wav", "", "Life finds a way!");
+                            EasterEgg ee = new EasterEgg("images/jp2.gif", "sounds/jp2.wav", "", "Life finds a way!");
                         }//end if
                     }//end for all items
                     if (!itemFound)
                     {
                         eefound = true;
-                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/jp1.gif", "C:/POS/SOFTWARE/jp1.wav", " \nIt would seem the Park, I mean CART is missing something...\n", "Ah Ah Ah, you did't say the magic word!");
+                        EasterEgg ee = new EasterEgg("images/jp1.gif", "sounds/jp1.wav", " \nIt would seem the Park, I mean CART is missing something...\n", "Ah Ah Ah, you did't say the magic word!");
                     }//not found!
 
                 }
@@ -3816,13 +3817,13 @@ public class MainFrame extends javax.swing.JFrame {
                         {
                             itemFound = true;
                             eefound = true;
-                            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/im2.gif", "C:/POS/SOFTWARE/im2.wav", "", "I AM IRONMAN");
+                            EasterEgg ee = new EasterEgg("images/im2.gif", "sounds/im2.wav", "", "I AM IRONMAN");
                         }
                     }
                     if (!itemFound)
                     {
                         eefound = true;
-                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/im1.gif", "C:/POS/SOFTWARE/im1.wav", "", "Jarvis: Greetings sir!");
+                        EasterEgg ee = new EasterEgg("images/im1.gif", "sounds/im1.wav", "", "Jarvis: Greetings sir!");
                     }//not found!
 
                 }
@@ -3837,7 +3838,7 @@ public class MainFrame extends javax.swing.JFrame {
                     }
                     if (eefound)
                     {
-                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/sw3.gif", "C:/POS/SOFTWARE/sw3.wav", "", "Negotiations with a lightsaber.");
+                        EasterEgg ee = new EasterEgg("images/sw3.gif", "sounds/sw3.wav", "", "Negotiations with a lightsaber.");
                     }
                 }
                 else if (isHalloween && id.toUpperCase().contentEquals("THACKERY BINX"))
@@ -3857,7 +3858,7 @@ public class MainFrame extends javax.swing.JFrame {
                     }
                     if (found1 && found2)
                     {
-                        EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/hp3.gif", "C:/POS/SOFTWARE/hp3.wav", "", "Okay then, let's go!");
+                        EasterEgg ee = new EasterEgg("images/hp3.gif", "sounds/hp3.wav", "", "Okay then, let's go!");
                     }
                 }
                 else//end if EE Protocol
@@ -4148,7 +4149,7 @@ public class MainFrame extends javax.swing.JFrame {
     String previousInsurance = "AARP";
     String previousDate = "";
     JButton otcButton = new JButton("OTC");
-    ImageIcon upsimg = new ImageIcon("C:/POS/SOFTWARE/ups.png");
+    ImageIcon upsimg = new ImageIcon(getClass().getResource("images/ups.png"));
     int activeClerksPasscode = 0;
     JButton upsButton = new JButton(upsimg);
     JButton paperButton = new JButton("Paper");
@@ -4173,7 +4174,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.9", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.10", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -4216,7 +4217,7 @@ public class MainFrame extends javax.swing.JFrame {
     //ReadyPlayerOne rp1 = new ReadyPlayerOne(this);
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";
-    ImageIcon mmimg = new ImageIcon("C:/POS/SOFTWARE/MARCHMADNESS.png");
+    ImageIcon mmimg = new ImageIcon(getClass().getResource("images/MARCHMADNESS.png"));
     JButton mmButton = new JButton(mmimg);
     TopMenuBar menuBar;
     // Variables declaration - do not modify//GEN-BEGIN:variables

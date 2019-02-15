@@ -415,7 +415,7 @@ public class Cart {
         }
         if (found)
         {
-            EasterEgg ee = new EasterEgg("C:/POS/SOFTWARE/al3.gif", "C:/POS/SOFTWARE/al3.wav", "", "A WHOLE NEW WORLD!!");
+            EasterEgg ee = new EasterEgg("images/al3.gif", "sounds/al3.wav", "", "A WHOLE NEW WORLD!!");
         }//end if EE Protocol
         updateTotal();
     }
