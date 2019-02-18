@@ -175,7 +175,7 @@ public class MainFrame extends javax.swing.JFrame {
         Date date = new Date();
         previousDate = dateFormat.format(date);
         textField.setBounds(100, 800, 200, 20);
-        textField.addKeyListener(rp1);
+       // textField.addKeyListener(rp1);
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
@@ -890,7 +890,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 EasterEgg ee = new EasterEgg("images/weddingphoto.jpg", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
                             }
 
-                            rp1.reload();
+                         //   rp1.reload();
                         }
                     }
 
@@ -906,7 +906,7 @@ public class MainFrame extends javax.swing.JFrame {
                 activeClerksPasscode = -1;
                 checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-                rp1.exit();
+              //  rp1.exit();
             }
         });
 
@@ -3823,7 +3823,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.10", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.11", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -3863,7 +3863,7 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
 
-    ReadyPlayerOne rp1 = new ReadyPlayerOne(this);
+    //ReadyPlayerOne rp1 = new ReadyPlayerOne(this);
     HolidayLoader holidayLoader;
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";
