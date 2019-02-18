@@ -175,7 +175,7 @@ public class MainFrame extends javax.swing.JFrame {
         Date date = new Date();
         previousDate = dateFormat.format(date);
         textField.setBounds(100, 800, 200, 20);
-      //  textField.addKeyListener(rp1);
+        textField.addKeyListener(rp1);
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
@@ -252,16 +252,6 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(textField);
         this.setVisible(true);
 
-        //HEADERS FOR ITEMS
-        if (isHalloween)
-        {
-            setGUITextColor(Color.RED);
-        }
-
-        if (isFourthOfJuly)
-        {
-            setGUITextColor(Color.WHITE);
-        }
         //TotalNumRXinCart
         totalNumRXinCart.setLocation(250, 780);
         totalNumRXinCart.setSize(250, 50);
@@ -391,31 +381,6 @@ public class MainFrame extends javax.swing.JFrame {
         lookupReceiptByRXButton.setLocation(1700, 400);
         lookupReceiptByRXButton.setSize(100, 100);
         lookupReceiptByRXButton.setBackground(new Color(255, 200, 100));
-
-        if (quotesActive)
-        {
-            quoteButton.setVisible(true);
-            //this creates the quoteButton
-            quoteButton.setLocation(10, 10);
-            quoteButton.setSize(100, 15);
-            quoteButton.setBackground(new Color(10, 255, 10));
-            quoteButton.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    String temp = Database.getQuote();
-                    while (!temp.contentEquals("") && temp.contentEquals(quote.getText()))
-                    {
-                        temp = Database.getQuote();
-                    }
-                    quote.setText(temp);
-                    textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-                }
-            });
-        }
-        else
-        {
-            quoteButton.setVisible(false);
-        }
-        this.add(quoteButton);
 
         resaveTicket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -680,310 +645,54 @@ public class MainFrame extends javax.swing.JFrame {
         //This creates the UPS Payment Button
         upsButton.setLocation(1800, 100);
         upsButton.setSize(100, 100);
+
+        holidayLoader = new HolidayLoader(this);
+
         if (isMarchMadness)
         {
-            mmButton.setSize(350, 100);
-            mmButton.setLocation(1400, 900);
-            mmButton.setVisible(true);
-            this.add(mmButton);
+            holidayLoader.showMarchMaddness();
         }
         if (isEaster)
         {
-            //EASTER UPDATE
-            //EASTER
-            ImageIcon easter1img = new ImageIcon(getClass().getResource("images/Easter1.png"));
-            JLabel e1imageLabel = new JLabel(easter1img);
-            ImageIcon easter2img = new ImageIcon(getClass().getResource("images/Easter2.png"));
-            JLabel e2imageLabel = new JLabel(easter2img);
-            // e1imageLabel.setBounds(100, 100, 100, 100);
-            e1imageLabel.setSize(800, 200);
-            e1imageLabel.setLocation(1100, 540);
-            e1imageLabel.setVisible(true);
-            this.add(e1imageLabel);
-            e2imageLabel.setSize(800, 400);
-            e2imageLabel.setLocation(1200, 100);
-            e2imageLabel.setVisible(true);
-            this.add(e2imageLabel);
+            holidayLoader.makeEasterActiveHoliday();
         }
-        if (isFourthOfJuly)
+        else if (isFourthOfJuly)
         {
-            //Fourth
-            //4th of July
-            ImageIcon fourth1img = new ImageIcon(getClass().getResource("images/4th1.png"));
-            JLabel fourth1imageLabel = new JLabel(fourth1img);
-            ImageIcon fourth2img = new ImageIcon(getClass().getResource("images/4th2.png"));
-            JLabel fourth2imageLabel = new JLabel(fourth2img);
-            ImageIcon fourth3img = new ImageIcon(getClass().getResource("images/4th3.png"));
-            JLabel fourth3imageLabel = new JLabel(fourth3img);
-            fourth1imageLabel.setSize(400, 200);
-            fourth1imageLabel.setLocation(1400, 815);
-            fourth1imageLabel.setVisible(true);
-            this.add(fourth1imageLabel);
-            fourth2imageLabel.setSize(200, 400);
-            fourth2imageLabel.setLocation(1600, 390);
-            fourth2imageLabel.setVisible(true);
-            this.add(fourth2imageLabel);
-            fourth3imageLabel.setSize(600, 400);
-            fourth3imageLabel.setLocation(1300, 100);
-            fourth3imageLabel.setVisible(true);
-            this.add(fourth3imageLabel);
+            holidayLoader.make4thOfJulyActiveHoliday();
         }
-        if (isValentinesDay)
+        else if (isValentinesDay)
         {
-            ImageIcon fourth1img = new ImageIcon(getClass().getResource("images/Valentines1.png"));
-            JLabel fourth1imageLabel = new JLabel(fourth1img);
-            ImageIcon fourth2img = new ImageIcon(getClass().getResource("images/Valentines2.png"));
-            JLabel fourth2imageLabel = new JLabel(fourth2img);
-            ImageIcon fourth3img = new ImageIcon(getClass().getResource("images/Valentines3.png"));
-            JLabel fourth3imageLabel = new JLabel(fourth3img);
-            ImageIcon valentines4img = new ImageIcon(getClass().getResource("images/Valentines4.png"));
-            JLabel valentines4imageLabel = new JLabel(valentines4img);
-
-            fourth1imageLabel.setSize(400, 200);
-            fourth1imageLabel.setLocation(1300, 815);
-            fourth1imageLabel.setVisible(true);
-            this.add(fourth1imageLabel);
-            fourth2imageLabel.setSize(200, 200);
-            fourth2imageLabel.setLocation(300, -50);
-            fourth2imageLabel.setVisible(true);
-            this.add(fourth2imageLabel);
-            fourth3imageLabel.setSize(600, 400);
-            fourth3imageLabel.setLocation(1200, 420);
-            fourth3imageLabel.setVisible(true);
-            this.add(fourth3imageLabel);
-            valentines4imageLabel.setSize(600, 400);
-            valentines4imageLabel.setLocation(1300, 100);
-            valentines4imageLabel.setVisible(true);
-            this.add(valentines4imageLabel);
+            holidayLoader.makeValentinesDayActiveHoliday();
         }
 
-        if (isHalloween)
+        else if (isHalloween)
         {
-            //Halloween
-            ImageIcon halloween1img = new ImageIcon(getClass().getResource("images/Halloween1.png"));
-            JLabel halloween1imageLabel = new JLabel(halloween1img);
-            ImageIcon halloween2img = new ImageIcon(getClass().getResource("images/Halloween2.png"));
-            JLabel halloween2imageLabel = new JLabel(halloween2img);
-            ImageIcon halloween3img = new ImageIcon(getClass().getResource("images/Halloween3.png"));
-            JLabel halloween3imageLabel = new JLabel(halloween3img);
-            ImageIcon halloween4img = new ImageIcon(getClass().getResource("images/Halloween4.png"));
-            JLabel halloween4imageLabel = new JLabel(halloween4img);
-            ImageIcon halloween5img = new ImageIcon(getClass().getResource("images/Halloween5.png"));
-            JLabel halloween5imageLabel = new JLabel(halloween5img);
-            ImageIcon halloween6img = new ImageIcon(getClass().getResource("images/Halloween6.png"));
-            JLabel halloween6imageLabel = new JLabel(halloween6img);
-            ImageIcon halloween7img = new ImageIcon(getClass().getResource("images/Halloween7.png"));
-            JLabel halloween7imageLabel = new JLabel(halloween7img);
-            ImageIcon halloween8img = new ImageIcon(getClass().getResource("images/Halloween8.png"));
-            JLabel halloween8imageLabel = new JLabel(halloween8img);
-            //Halloween
-            // e1imageLabel.setBounds(100, 100, 100, 100);
-            halloween1imageLabel.setSize(300, 200);
-            halloween1imageLabel.setLocation(1475, 200);
-            halloween1imageLabel.setVisible(true);
-            this.add(halloween1imageLabel);
-            halloween2imageLabel.setSize(300, 200);
-            halloween2imageLabel.setLocation(1325, 200);
-            halloween2imageLabel.setVisible(true);
-            this.add(halloween2imageLabel);
-            halloween3imageLabel.setSize(300, 200);
-            halloween3imageLabel.setLocation(1200, 800);
-            halloween3imageLabel.setVisible(true);
-            this.add(halloween3imageLabel);
-            halloween4imageLabel.setSize(300, 200);
-            halloween4imageLabel.setLocation(1425, 800);
-            halloween4imageLabel.setVisible(true);
-            this.add(halloween4imageLabel);
-            halloween5imageLabel.setSize(200, 200);
-            halloween5imageLabel.setLocation(1625, 550);
-            halloween5imageLabel.setVisible(true);
-            this.add(halloween5imageLabel);
-            halloween6imageLabel.setSize(200, 200);
-            halloween6imageLabel.setLocation(1425, 500);
-            halloween6imageLabel.setVisible(true);
-            this.add(halloween6imageLabel);
-            halloween7imageLabel.setSize(200, 200);
-            halloween7imageLabel.setLocation(1230, 535);
-            halloween7imageLabel.setVisible(true);
-            this.add(halloween7imageLabel);
-            halloween8imageLabel.setSize(200, 200);
-            halloween8imageLabel.setLocation(350, -50);
-            halloween8imageLabel.setVisible(true);
-            this.add(halloween8imageLabel);
+            holidayLoader.makeHalloweenActiveHoliday();
         }
 
-        if (isChristmas)
+        else if (isChristmas)
         {
-            //Christmas
-            ImageIcon christmas1img = new ImageIcon(getClass().getResource("images/Christmas1.png"));
-            JLabel christmas1imageLabel = new JLabel(christmas1img);
-            ImageIcon christmas2img = new ImageIcon(getClass().getResource("images/Christmas2.png"));
-            JLabel christmas2imageLabel = new JLabel(christmas2img);
-            ImageIcon christmas3img = new ImageIcon(getClass().getResource("images/Christmas3.png"));
-            JLabel christmas3imageLabel = new JLabel(christmas3img);
-            ImageIcon christmas4img = new ImageIcon(getClass().getResource("images/Christmas4.png"));
-            JLabel christmas4imageLabel = new JLabel(christmas4img);
-            ImageIcon christmas5img = new ImageIcon(getClass().getResource("images/Christmas5.png"));
-            JLabel christmas5imageLabel = new JLabel(christmas5img);
-            ImageIcon christmas6img = new ImageIcon(getClass().getResource("images/Christmas6.png"));
-            JLabel christmas6imageLabel = new JLabel(christmas6img);
-
-            christmas1imageLabel.setSize(300, 300);
-            christmas1imageLabel.setLocation(1250, 450);
-            christmas1imageLabel.setVisible(true);
-            this.add(christmas1imageLabel);
-            christmas2imageLabel.setSize(300, 200);
-            christmas2imageLabel.setLocation(1525, 500);
-            christmas2imageLabel.setVisible(true);
-            this.add(christmas2imageLabel);
-            christmas3imageLabel.setSize(300, 200);
-            christmas3imageLabel.setLocation(250, -40);
-            christmas3imageLabel.setVisible(true);
-            this.add(christmas3imageLabel);
-            christmas4imageLabel.setSize(500, 200);
-            christmas4imageLabel.setLocation(1325, 820);
-            christmas4imageLabel.setVisible(true);
-            this.add(christmas4imageLabel);
-            christmas5imageLabel.setSize(200, 500);
-            christmas5imageLabel.setLocation(1175, 650);
-            christmas5imageLabel.setVisible(true);
-            this.add(christmas5imageLabel);
-            christmas6imageLabel.setSize(200, 200);
-            christmas6imageLabel.setLocation(1450, 200);
-            christmas6imageLabel.setVisible(true);
-            this.add(christmas6imageLabel);
-
+            holidayLoader.makeChristmasActiveHoliday();
         }
 
-        if (isSummerTime)
+        else if (isSummerTime)
         {
-            //SUMMER!
-            ImageIcon christmas1img = new ImageIcon(getClass().getResource("images/beach1.png"));
-            JLabel christmas1imageLabel = new JLabel(christmas1img);
-            ImageIcon christmas2img = new ImageIcon(getClass().getResource("images/beach2.png"));
-            JLabel christmas2imageLabel = new JLabel(christmas2img);
-            ImageIcon christmas3img = new ImageIcon(getClass().getResource("images/beach3.png"));
-            JLabel christmas3imageLabel = new JLabel(christmas3img);
-            ImageIcon christmas4img = new ImageIcon(getClass().getResource("images/beach4.png"));
-            JLabel christmas4imageLabel = new JLabel(christmas4img);
-            ImageIcon christmas5img = new ImageIcon(getClass().getResource("images/beach5.png"));
-            JLabel christmas5imageLabel = new JLabel(christmas5img);
-            ImageIcon christmas6img = new ImageIcon(getClass().getResource("images/beach6.png"));
-            JLabel christmas6imageLabel = new JLabel(christmas6img);
-
-            christmas1imageLabel.setSize(300, 300);
-            christmas1imageLabel.setLocation(1400, 175);
-            christmas1imageLabel.setVisible(true);
-            this.add(christmas1imageLabel);
-            christmas2imageLabel.setSize(300, 200);
-            christmas2imageLabel.setLocation(1450, 850);
-            christmas2imageLabel.setVisible(true);
-            this.add(christmas2imageLabel);
-            christmas3imageLabel.setSize(350, 400);
-            christmas3imageLabel.setLocation(1275, 710);
-            christmas3imageLabel.setVisible(true);
-            this.add(christmas3imageLabel);
-            christmas4imageLabel.setSize(600, 200);
-            christmas4imageLabel.setLocation(1375, 500);
-            christmas4imageLabel.setVisible(true);
-            this.add(christmas4imageLabel);
-            christmas5imageLabel.setSize(200, 200);
-            christmas5imageLabel.setLocation(300, -30);
-            christmas5imageLabel.setVisible(true);
-            this.add(christmas5imageLabel);
-            christmas6imageLabel.setSize(200, 200);
-            christmas6imageLabel.setLocation(1300, 500);
-            christmas6imageLabel.setVisible(true);
-            this.add(christmas6imageLabel);
-
+            holidayLoader.makeSummerTimeActiveHoliday();
         }
 
-        if (isThanksgiving)
+        else if (isThanksgiving)
         {
-            ImageIcon thanksgiving1img = new ImageIcon(getClass().getResource("images/Thanksgiving1.png"));
-            JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
-            ImageIcon thanksgiving2img = new ImageIcon(getClass().getResource("images/Thanksgiving2.png"));
-            JLabel thanksgiving2imageLabel = new JLabel(thanksgiving2img);
-            ImageIcon thanksgiving3img = new ImageIcon(getClass().getResource("images/Thanksgiving3.png"));
-            JLabel thanksgiving3imgLabel = new JLabel(thanksgiving3img);
-
-            thanksgiving1imageLabel.setSize(400, 200);
-            thanksgiving1imageLabel.setLocation(1400, 200);
-            thanksgiving1imageLabel.setVisible(true);
-            this.add(thanksgiving1imageLabel);
-            thanksgiving2imageLabel.setSize(200, 400);
-            thanksgiving2imageLabel.setLocation(1400, 400);
-            thanksgiving2imageLabel.setVisible(true);
-            this.add(thanksgiving2imageLabel);
-            thanksgiving3imgLabel.setSize(600, 400);
-            thanksgiving3imgLabel.setLocation(1200, 700);
-            thanksgiving3imgLabel.setVisible(true);
-            this.add(thanksgiving3imgLabel);
+            holidayLoader.makeThanskgivingActiveHoliday();
         }
 
-        if (isSaintPatricksDay)
+        else if (isSaintPatricksDay)
         {
-            ImageIcon thanksgiving1img = new ImageIcon(getClass().getResource("images/saintpt1.png"));
-            JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
-            ImageIcon thanksgiving2img = new ImageIcon(getClass().getResource("images/saintpt2.png"));
-            JLabel thanksgiving2imageLabel = new JLabel(thanksgiving2img);
-            ImageIcon thanksgiving3img = new ImageIcon(getClass().getResource("images/saintpt3.png"));
-            JLabel thanksgiving3imgLabel = new JLabel(thanksgiving3img);
-
-            thanksgiving1imageLabel.setSize(400, 200);
-            thanksgiving1imageLabel.setLocation(1400, 200);
-            thanksgiving1imageLabel.setVisible(true);
-            this.add(thanksgiving1imageLabel);
-            thanksgiving2imageLabel.setSize(200, 400);
-            thanksgiving2imageLabel.setLocation(1400, 400);
-            thanksgiving2imageLabel.setVisible(true);
-            this.add(thanksgiving2imageLabel);
-            thanksgiving3imgLabel.setSize(600, 400);
-            thanksgiving3imgLabel.setLocation(1100, -150);
-            thanksgiving3imgLabel.setVisible(true);
-            this.add(thanksgiving3imgLabel);
+            holidayLoader.makeSaintPatricksDayActiveHoliday();
         }
+
         if (isWeddingMonth)
         {
-            //Christmas
-            ImageIcon christmas1img = new ImageIcon(getClass().getResource("images/Wedding1.png"));
-            JLabel christmas1imageLabel = new JLabel(christmas1img);
-            ImageIcon christmas2img = new ImageIcon(getClass().getResource("images/Wedding2.png"));
-            JLabel christmas2imageLabel = new JLabel(christmas2img);
-            ImageIcon christmas3img = new ImageIcon(getClass().getResource("images/Wedding3.png"));
-            JLabel christmas3imageLabel = new JLabel(christmas3img);
-            ImageIcon christmas4img = new ImageIcon(getClass().getResource("images/Wedding4.png"));
-            JLabel christmas4imageLabel = new JLabel(christmas4img);
-            ImageIcon christmas5img = new ImageIcon(getClass().getResource("images/Wedding5.png"));
-            JLabel christmas5imageLabel = new JLabel(christmas5img);
-            //  ImageIcon christmas6img = new ImageIcon("images/wedding6.png");
-            //  JLabel christmas6imageLabel = new JLabel(christmas6img);
-
-            christmas1imageLabel.setSize(500, 500);
-            christmas1imageLabel.setLocation(1250, 675);
-            christmas1imageLabel.setVisible(true);
-            this.add(christmas1imageLabel);
-            christmas2imageLabel.setSize(300, 200);
-            christmas2imageLabel.setLocation(1525, 500);
-            christmas2imageLabel.setVisible(true);
-            this.add(christmas2imageLabel);
-            christmas3imageLabel.setSize(300, 200);
-            christmas3imageLabel.setLocation(250, -40);
-            christmas3imageLabel.setVisible(true);
-            this.add(christmas3imageLabel);
-            christmas4imageLabel.setSize(500, 300);
-            christmas4imageLabel.setLocation(1175, 450);
-            christmas4imageLabel.setVisible(true);
-            this.add(christmas4imageLabel);
-            christmas5imageLabel.setSize(400, 200);
-            christmas5imageLabel.setLocation(1375, 200);
-            christmas5imageLabel.setVisible(true);
-            this.add(christmas5imageLabel);
-            //  christmas6imageLabel.setSize(200, 200);
-            // christmas6imageLabel.setLocation(1450, 200);
-            // christmas6imageLabel.setVisible(true);
-            //this.add(christmas6imageLabel);
-
+            holidayLoader.makeWeddingMonthActiveHoliday();
         }
 
         //upsButton.setBackground(new Color(100, 65, 23));
@@ -1080,27 +789,7 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(clerkLogoutButton);
         this.add(clerkLoginButton);
 
-        if (isMarchMadness)
-        {
-            mmButton.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    ArrayList<String> data = Database.getEmployeesAndWinLossMM();
-                    System.out.println(data.get(0));
-                    JFrame frame = new JFrame("");
-                    String dataString = "Name : Wins : Losses\n";
-                    for (String temp : data)
-                    {
-                        dataString += temp + "\n";
-                    }
-//custom title, no icon
-                    JOptionPane.showMessageDialog(frame,
-                            dataString,
-                            "Yes...I spent time on this.",
-                            JOptionPane.PLAIN_MESSAGE);
-                    textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-                }
-            });
-        }
+
 
         clerkLoginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -1201,8 +890,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 EasterEgg ee = new EasterEgg("images/weddingphoto.jpg", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
                             }
 
-                      
-                        //    rp1.reload();
+                            rp1.reload();
                         }
                     }
 
@@ -1218,7 +906,7 @@ public class MainFrame extends javax.swing.JFrame {
                 activeClerksPasscode = -1;
                 checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-             //   rp1.exit();
+                rp1.exit();
             }
         });
 
@@ -3378,50 +3066,9 @@ public class MainFrame extends javax.swing.JFrame {
         this.setTitle("Smith's Super-Aid POS - Developed by: Andrew & Hollie Smith");
         menuBar = new TopMenuBar(this);//Hollie's Menu Bar!
         this.setJMenuBar(menuBar);
-        if (isHalloween)
-        {
-            getContentPane().setBackground(Color.BLACK);
-        }
-        else if (isThanksgiving)
-        {
-            getContentPane().setBackground(new Color(158, 104, 42));
-        }
-        else if (isEaster)
-        {
-            getContentPane().setBackground(new Color(224, 205, 255));
-        }
-        else if (isChristmas)
-        {
-            getContentPane().setBackground(new Color(203, 203, 203));
-        }
-        else if (isFourthOfJuly)
-        {
-            getContentPane().setBackground(new Color(30, 45, 96));
-        }
-        else if (isValentinesDay)
-        {
-            getContentPane().setBackground(new Color(228, 131, 151));
-        }
-        else if (isSaintPatricksDay)
-        {
-            getContentPane().setBackground(new Color(96, 168, 48));
-        }
-        else if (isSummerTime)
-        {
-            getContentPane().setBackground(new Color(219, 209, 180));
-        }
-        else if (isWeddingMonth)
-        {
-            getContentPane().setBackground(new Color(192, 192, 192));
-        }
+
         checkout = new CheckoutHandler();
-        if (quotesActive)
-        {
-            quote.setText(Database.getQuote());
-            this.add(quote);
-            quote.setVisible(true);
-            quote.setBounds(10, 10, 1900, 50);
-        }
+
         curCart = new Cart();//new cart because program just launched!
         String[] employeeStrings = Database.getEmployeesFromDatabase();
         employeeSelectionHeader.setBounds(120, 825, 400, 30);
@@ -4038,6 +3685,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
+    /*
     private void setGUITextColor(Color color) {
         itemNameHeader.setForeground(color);
         employeeCheckoutHeader.setForeground(color);
@@ -4061,6 +3709,7 @@ public class MainFrame extends javax.swing.JFrame {
         subTotalHeader.setForeground(color);
         itemTaxTotalHeader.setForeground(color);
     }
+     */
 
     public static void main(String args[]) {
         try
@@ -4214,7 +3863,8 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
 
-    //ReadyPlayerOne rp1 = new ReadyPlayerOne(this);
+    ReadyPlayerOne rp1 = new ReadyPlayerOne(this);
+    HolidayLoader holidayLoader;
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";
     ImageIcon mmimg = new ImageIcon(getClass().getResource("images/MARCHMADNESS.png"));
