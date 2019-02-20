@@ -175,7 +175,7 @@ public class MainFrame extends javax.swing.JFrame {
         Date date = new Date();
         previousDate = dateFormat.format(date);
         textField.setBounds(100, 800, 200, 20);
-       // textField.addKeyListener(rp1);
+        //textField.addKeyListener(rp1);
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
@@ -654,44 +654,53 @@ public class MainFrame extends javax.swing.JFrame {
         }
         if (isEaster)
         {
+            holidayLoader.assignActualHoliday(Holidays.EASTER);
             holidayLoader.makeEasterActiveHoliday();
         }
         else if (isFourthOfJuly)
         {
+            holidayLoader.assignActualHoliday(Holidays.FOURTHOFJULY);
             holidayLoader.make4thOfJulyActiveHoliday();
         }
         else if (isValentinesDay)
         {
+            holidayLoader.assignActualHoliday(Holidays.VALENTINES);
             holidayLoader.makeValentinesDayActiveHoliday();
         }
 
         else if (isHalloween)
         {
+            holidayLoader.assignActualHoliday(Holidays.HALLOWEEN);
             holidayLoader.makeHalloweenActiveHoliday();
         }
 
         else if (isChristmas)
         {
+            holidayLoader.assignActualHoliday(Holidays.CHRISTMAS);
             holidayLoader.makeChristmasActiveHoliday();
         }
 
         else if (isSummerTime)
         {
+            holidayLoader.assignActualHoliday(Holidays.SUMMERTIME);
             holidayLoader.makeSummerTimeActiveHoliday();
         }
 
         else if (isThanksgiving)
         {
-            holidayLoader.makeThanskgivingActiveHoliday();
+            holidayLoader.assignActualHoliday(Holidays.THANKSGIVING);
+            holidayLoader.makeThanksgivingActiveHoliday();
         }
 
         else if (isSaintPatricksDay)
         {
+            holidayLoader.assignActualHoliday(Holidays.SAINTPTSDAY);
             holidayLoader.makeSaintPatricksDayActiveHoliday();
         }
 
         if (isWeddingMonth)
         {
+            holidayLoader.assignActualHoliday(Holidays.WEDDINGMONTH);
             holidayLoader.makeWeddingMonthActiveHoliday();
         }
 
@@ -880,6 +889,7 @@ public class MainFrame extends javax.swing.JFrame {
                             employeeSelectionHeader.setText("Active Clerk: " + clerkName);
                             activeClerksPasscode = Integer.parseInt(field1.getText());
                             checkForAdminButtonVisible(Integer.parseInt(field1.getText()));
+                            holidayLoader.switchToActualHoliday();
                             clerkLogoutButton.setVisible(true);
                             if (clerkName.contentEquals("Smith, Hollie") && isHolliesBirthday)//It is Hollie's Birthday!
                             {
@@ -890,7 +900,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 EasterEgg ee = new EasterEgg("images/weddingphoto.jpg", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
                             }
 
-                         //   rp1.reload();
+                            //rp1.reload();
                         }
                     }
 
@@ -900,13 +910,14 @@ public class MainFrame extends javax.swing.JFrame {
         });
         clerkLogoutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                holidayLoader.switchToActualHoliday();
                 employeeSelectionHeader.setText("Active Clerk: NONE");
                 menuBar.setAllNotVisible();
                 clerkLogoutButton.setVisible(false);
                 activeClerksPasscode = -1;
                 checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-              //  rp1.exit();
+                //rp1.exit();
             }
         });
 
@@ -3067,7 +3078,7 @@ public class MainFrame extends javax.swing.JFrame {
         menuBar = new TopMenuBar(this);//Hollie's Menu Bar!
         this.setJMenuBar(menuBar);
 
-        checkout = new CheckoutHandler();
+        checkout = new CheckoutHandler(this);
 
         curCart = new Cart();//new cart because program just launched!
         String[] employeeStrings = Database.getEmployeesFromDatabase();
@@ -3685,31 +3696,6 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
-    /*
-    private void setGUITextColor(Color color) {
-        itemNameHeader.setForeground(color);
-        employeeCheckoutHeader.setForeground(color);
-        totalNumRXinCart.setForeground(color);
-        itemNameHeader.setForeground(color);
-        itemQuantityHeader.setForeground(color);
-        itemPriceHeader.setForeground(color);
-        versionHeader.setForeground(color);
-        discountHeader.setForeground(color);
-        itemSubTotalHeader.setForeground(color);
-        estimatedCheckTotalLabel.setForeground(color);
-        estimatedLunchTotalLabel.setForeground(color);
-        estimatedCashTotalLabel.setForeground(color);
-        estimatedCoinTotalLabel.setForeground(color);
-        employeeSelectionHeader.setForeground(color);
-        quote.setForeground(color);
-        subTotal.setForeground(color);
-        totalTax.setForeground(color);
-        totalPrice.setForeground(color);
-        changeDue.setForeground(color);
-        subTotalHeader.setForeground(color);
-        itemTaxTotalHeader.setForeground(color);
-    }
-     */
 
     public static void main(String args[]) {
         try
@@ -3823,7 +3809,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.11", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.12", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

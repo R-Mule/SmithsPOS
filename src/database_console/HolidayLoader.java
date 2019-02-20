@@ -15,6 +15,8 @@ import javax.swing.JOptionPane;
  */
 public class HolidayLoader {
 
+    private Holidays chosenHoliday;
+    private Holidays actualHoliday;
     private MainFrame mf;
     private ArrayList<Component> activeHolidayComponents = new ArrayList<>();
 
@@ -28,7 +30,8 @@ public class HolidayLoader {
         mf.getContentPane().setBackground(new Color(200, 200, 200));
         mf.quoteButton.setVisible(true);
         //this creates the quoteButton
-
+        actualHoliday = Holidays.NONE;
+        chosenHoliday = Holidays.NONE;
         mf.quoteButton.setLocation(10, 10);
         mf.quoteButton.setSize(100, 15);
         mf.quoteButton.setBackground(new Color(10, 255, 10));
@@ -76,9 +79,63 @@ public class HolidayLoader {
 
     }
 
+    public void assignActualHoliday(Holidays holiday) {
+        actualHoliday = holiday;
+    }
+
+    public void switchToActualHoliday() {
+        if (chosenHoliday == actualHoliday)
+        {
+            return;
+        }
+
+        chosenHoliday = actualHoliday;
+        switch (actualHoliday)
+        {
+            case CHRISTMAS:
+                makeChristmasActiveHoliday();
+                break;
+            case THANKSGIVING:
+                makeThanksgivingActiveHoliday();
+                break;
+            case VALENTINES:
+                makeThanksgivingActiveHoliday();
+                break;
+            case EASTER:
+                makeEasterActiveHoliday();
+                break;
+            case FOURTHOFJULY:
+                make4thOfJulyActiveHoliday();
+                break;
+            case SAINTPTSDAY:
+                makeSaintPatricksDayActiveHoliday();
+                break;
+            case WEDDINGMONTH:
+                makeWeddingMonthActiveHoliday();
+                break;
+            case HALLOWEEN:
+                makeHalloweenActiveHoliday();
+                break;
+            case SUMMERTIME:
+                makeSummerTimeActiveHoliday();
+                break;
+            case EVENTWINNER:
+                makeEventWinnerActiveHoliday();
+                break;
+            default:
+                removeActiveHoliday();
+                break;
+        }
+    }
+
+    public void makeEventWinnerActiveHoliday() {
+
+    }
+
     public void makeChristmasActiveHoliday() {
         removeActiveHoliday();
         hideMarchMaddness();
+        chosenHoliday = Holidays.CHRISTMAS;
         //Christmas
         ImageIcon christmas1img = new ImageIcon(getClass().getResource("images/Christmas1.png"));
         JLabel christmas1imageLabel = new JLabel(christmas1img);
@@ -132,6 +189,7 @@ public class HolidayLoader {
     public void makeHalloweenActiveHoliday() {
         removeActiveHoliday();
         hideMarchMaddness();
+        chosenHoliday = Holidays.HALLOWEEN;
         ImageIcon halloween1img = new ImageIcon(getClass().getResource("images/Halloween1.png"));
         JLabel halloween1imageLabel = new JLabel(halloween1img);
         ImageIcon halloween2img = new ImageIcon(getClass().getResource("images/Halloween2.png"));
@@ -202,7 +260,7 @@ public class HolidayLoader {
     public void make4thOfJulyActiveHoliday() {
         removeActiveHoliday();
         hideMarchMaddness();
-
+        chosenHoliday = Holidays.FOURTHOFJULY;
         ImageIcon fourth1img = new ImageIcon(getClass().getResource("images/4th1.png"));
         JLabel fourth1imageLabel = new JLabel(fourth1img);
         ImageIcon fourth2img = new ImageIcon(getClass().getResource("images/4th2.png"));
@@ -233,7 +291,7 @@ public class HolidayLoader {
     public void makeSummerTimeActiveHoliday() {
         removeActiveHoliday();
         hideMarchMaddness();
-
+        chosenHoliday = Holidays.SUMMERTIME;
         ImageIcon christmas1img = new ImageIcon(getClass().getResource("images/beach1.png"));
         JLabel christmas1imageLabel = new JLabel(christmas1img);
         ImageIcon christmas2img = new ImageIcon(getClass().getResource("images/beach2.png"));
@@ -285,6 +343,7 @@ public class HolidayLoader {
 
     public void makeEasterActiveHoliday() {
         removeActiveHoliday();
+        chosenHoliday = Holidays.EASTER;
         ImageIcon easter1img = new ImageIcon(getClass().getResource("images/Easter1.png"));
         JLabel e1imageLabel = new JLabel(easter1img);
         ImageIcon easter2img = new ImageIcon(getClass().getResource("images/Easter2.png"));
@@ -308,7 +367,7 @@ public class HolidayLoader {
         removeActiveHoliday();
         deactivateQuotes();
         hideMarchMaddness();
-
+        chosenHoliday = Holidays.WEDDINGMONTH;
         ImageIcon christmas1img = new ImageIcon(getClass().getResource("images/Wedding1.png"));
         JLabel christmas1imageLabel = new JLabel(christmas1img);
         ImageIcon christmas2img = new ImageIcon(getClass().getResource("images/Wedding2.png"));
@@ -354,7 +413,7 @@ public class HolidayLoader {
     public void makeValentinesDayActiveHoliday() {
         removeActiveHoliday();
         hideMarchMaddness();
-
+        chosenHoliday = Holidays.VALENTINES;
         ImageIcon fourth1img = new ImageIcon(getClass().getResource("images/Valentines1.png"));
         JLabel fourth1imageLabel = new JLabel(fourth1img);
         ImageIcon fourth2img = new ImageIcon(getClass().getResource("images/Valentines2.png"));
@@ -390,10 +449,10 @@ public class HolidayLoader {
 
     }
 
-    public void makeThanskgivingActiveHoliday() {
+    public void makeThanksgivingActiveHoliday() {
         removeActiveHoliday();//This makes quotes active by default.
         hideMarchMaddness();
-
+        chosenHoliday = Holidays.THANKSGIVING;
         ImageIcon thanksgiving1img = new ImageIcon(getClass().getResource("images/Thanksgiving1.png"));
         JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
         ImageIcon thanksgiving2img = new ImageIcon(getClass().getResource("images/Thanksgiving2.png"));
@@ -423,7 +482,7 @@ public class HolidayLoader {
 
     public void makeSaintPatricksDayActiveHoliday() {
         removeActiveHoliday();
-
+        chosenHoliday = Holidays.SAINTPTSDAY;
         ImageIcon thanksgiving1img = new ImageIcon(getClass().getResource("images/saintpt1.png"));
         JLabel thanksgiving1imageLabel = new JLabel(thanksgiving1img);
         ImageIcon thanksgiving2img = new ImageIcon(getClass().getResource("images/saintpt2.png"));
@@ -452,7 +511,7 @@ public class HolidayLoader {
 
     }
 
-    private void removeActiveHoliday() {
+    public void removeActiveHoliday() {
         for (Component comp : activeHolidayComponents)
         {
             comp.setVisible(false);

@@ -17,6 +17,7 @@ import pacman.PacmanGame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDate;
+import javafx.scene.layout.Border;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -38,6 +39,7 @@ public class ReadyPlayerOne implements KeyListener {
     private JButton tetrisButton;
     private JButton pacmanButton;
     private JButton galagaButton;
+    private JButton selectThemeButton;
     private boolean galagaIsRunning = false;
     private boolean activeUser = false;
     private boolean pacmanIsRunning = false;
@@ -91,7 +93,7 @@ public class ReadyPlayerOne implements KeyListener {
                                 TetrisGame tetris = new TetrisGame();
                                 tetris.setVisible(true);
                                 mf.setEnabled(false);
-                                
+
                                 tetris.addWindowListener(new WindowAdapter() {
 
                                     @Override
@@ -146,7 +148,7 @@ public class ReadyPlayerOne implements KeyListener {
                             tetris.setVisible(true);
                             mf.setEnabled(false);
                             tetrisIsRunning = true;
-                            
+
                             tetris.addWindowListener(new WindowAdapter() {
 
                                 @Override
@@ -208,7 +210,7 @@ public class ReadyPlayerOne implements KeyListener {
 
                                         //TODO: Need to get the data from the game here, window closed so must be time to update stuff...
                                         //Also make sure to lock them out regardless.
-                                    Database.insertEggLockout(LocalDate.now(), mf.activeClerksPasscode);
+                                        Database.insertEggLockout(LocalDate.now(), mf.activeClerksPasscode);
                                         mw.myMaze.windowClosed();
                                         mw.setVisible(false);
                                         pacmanIsRunning = false;
@@ -248,10 +250,84 @@ public class ReadyPlayerOne implements KeyListener {
                         }
                     }
                 });
+
+                selectThemeButton = new JButton("Theme");
+                selectThemeButton.setBackground(new Color(0, 255, 255));
+                selectThemeButton.setVisible(false);
+                selectThemeButton.setLocation(400, 925);
+                selectThemeButton.setSize(90, 50);
+
+                selectThemeButton.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
+                        JFrame textInputFrame = new JFrame("");
+                        JTextField field1 = new JTextField();
+                        Object[] message =
+                        {
+                            "Enter number for desired theme:\n1. Halloween\n2. Christmas\n3. Valentines Day\n4. Saint Patrick's Day\n5. Easter\n6. Wedding Month\n7. 4th of July\n8. Summer Time\n9. Thanksgiving\n10. Victory Theme\n11. None ", field1,
+
+                        };
+                        field1.addAncestorListener(new RequestFocusListener());
+                        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Theme Selector", JOptionPane.OK_CANCEL_OPTION);
+                        if (option == JOptionPane.OK_OPTION)
+                        {
+                            if (validateInteger(field1.getText()))
+                            {
+                                int selection = Integer.parseInt(field1.getText());
+
+                                switch (selection)
+                                {
+                                    case 1:
+                                        mf.holidayLoader.makeHalloweenActiveHoliday();
+                                        break;
+                                    case 2:
+                                        mf.holidayLoader.makeChristmasActiveHoliday();
+                                        break;
+                                    case 3:
+                                        mf.holidayLoader.makeValentinesDayActiveHoliday();
+                                        break;
+                                    case 4:
+                                        mf.holidayLoader.makeSaintPatricksDayActiveHoliday();
+                                        break;
+                                    case 5:
+                                        mf.holidayLoader.makeEasterActiveHoliday();
+                                        break;
+                                    case 6:
+                                        mf.holidayLoader.makeWeddingMonthActiveHoliday();
+                                        break;
+                                    case 7:
+                                        mf.holidayLoader.make4thOfJulyActiveHoliday();
+                                        break;
+                                    case 8:
+                                        mf.holidayLoader.makeSummerTimeActiveHoliday();
+                                        break;
+                                    case 9:
+                                        mf.holidayLoader.makeThanksgivingActiveHoliday();
+                                        break;
+                                    case 10:
+                                        mf.holidayLoader.makeEventWinnerActiveHoliday();
+                                        break;
+                                    default:
+                                        mf.holidayLoader.removeActiveHoliday();
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                JFrame message1 = new JFrame("Try again.");
+                                JOptionPane.showMessageDialog(message1, "Incorrect value.");
+                            }
+
+                        }
+                        mf.textField.requestFocusInWindow();
+                    }
+                });
+
                 mf.add(button);
                 mf.add(tetrisButton);
                 mf.add(galagaButton);
                 mf.add(pacmanButton);
+                mf.add(selectThemeButton);
+
             }
         }
     }
@@ -263,6 +339,7 @@ public class ReadyPlayerOne implements KeyListener {
             tetrisButton.setVisible(false);
             galagaButton.setVisible(false);
             pacmanButton.setVisible(false);
+            selectThemeButton.setVisible(false);
         }
         activeUser = true;//but might have changed! Need to recheck database.
     }
@@ -272,6 +349,8 @@ public class ReadyPlayerOne implements KeyListener {
         tetrisButton.setVisible(false);
         galagaButton.setVisible(false);
         pacmanButton.setVisible(false);
+        selectThemeButton.setVisible(false);
+
         activeUser = false;
     }
 
@@ -318,7 +397,6 @@ public class ReadyPlayerOne implements KeyListener {
             //Jade Key
             case 2:
             {
-                JFrame message1 = new JFrame("");
                 JFrame textInputFrame = new JFrame("");
                 JTextField field1 = new JTextField();
                 Object[] message =
@@ -445,6 +523,7 @@ public class ReadyPlayerOne implements KeyListener {
         tetrisButton.setVisible(true);
         galagaButton.setVisible(true);
         pacmanButton.setVisible(true);
+        selectThemeButton.setVisible(true);
 
     }
 
@@ -490,5 +569,21 @@ public class ReadyPlayerOne implements KeyListener {
         }
 
         Database.updateScore(mf.activeClerksPasscode, pointsToAdd);//first to clear gets 100 points. -10 down to 5 ppl then stays 50.
+    }
+
+    private boolean validateInteger(String integer) {
+        try
+        {
+            int integ = Integer.parseInt(integer);
+            if (integ < 0)
+            {
+                return false;
+            }
+        }
+        catch (NumberFormatException e)
+        {
+            return false;
+        }//end catch
+        return true;
     }
 }

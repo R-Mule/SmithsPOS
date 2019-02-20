@@ -23,13 +23,41 @@ public class CheckoutHandler {
     private String remoteDrivePath;
 
     //ConfigFileReader reader;
-    public CheckoutHandler() {
+    public CheckoutHandler(MainFrame mainFrame) {
         //reader = new ConfigFileReader();
         printerName = ConfigFileReader.getPrinterName();
         registerID = ConfigFileReader.getRegisterID();
         remoteDrivePath = ConfigFileReader.getRemoteDrivePath();
         //LOAD REGISTER ID and PRINTER NAME from file.
 
+        DrawerReport dr = null;
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("MMddyy");
+        String todaysDate = dateFormat.format(date);
+        try
+        {
+            File f = new File(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
+            if (f.exists() && !f.isDirectory())
+            {
+                // read object from file
+                FileInputStream fis = new FileInputStream(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                dr = (DrawerReport) ois.readObject();
+                ois.close();
+                mainFrame.estimatedCoinTotal = dr.totalCoinsAmt;
+                mainFrame.estimatedCashTotal = Math.round(dr.totalCashAmt);
+                mainFrame.estimatedCheckTotal = dr.totalChecksAmt;
+                mainFrame.estimatedLunchTotal = dr.lunchTotalAmt;
+            }
+            else
+            {
+                System.out.println("First load of the day. No report found to initalize values.");
+            }
+        }
+        catch (IOException | ClassNotFoundException ex)
+        {
+            System.out.println("First load of the day. No report found to initalize values.");
+        }
     }
 
     public String beginSplitTenderCheckout(Cart curCart, double cashAmt, double debitAmount, double credit1Amt, double check1Amt, double check2Amt, String check1Num, String check2Num, String clerkName, ArrayList<GuiCartItem> guiItems, MainFrame mainFrame, String employeeCheckoutName) {
