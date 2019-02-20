@@ -516,7 +516,7 @@ public class GuiCartItem {
         JList<String> list = new JList<String>(possibilities); //data has type Object[]
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
-        list.setBounds(100, 50, 50, 100);
+        list.setBounds(100, 50, 50, 300);
         list.setVisibleRowCount(-1);
 
         for (int i = 0; i < possibilities.length; i++)
