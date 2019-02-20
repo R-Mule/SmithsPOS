@@ -178,7 +178,7 @@ public class Database {
             ResultSet rs = stmt.executeQuery("select * from employees order by currentscore desc;");
             while (rs.next())
             {
-                bigList.add(rs.getInt(1) + "#" + rs.getString(2) + " : " + rs.getLong(8));
+                bigList.add(rs.getInt(1) + "#" + rs.getString(2) + " : " + rs.getInt(8));
             }//end while
             con.close();
             return bigList;

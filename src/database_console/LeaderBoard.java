@@ -17,7 +17,7 @@ public class LeaderBoard {
     
     private ArrayList<String> employees;
     private ArrayList<String> leaderNames;
-    private ArrayList<Long> leaderScores;
+    private ArrayList<Integer> leaderScores;
     private ArrayList<Integer> pids;
     private JFrame frame;
     private JButton button;
@@ -89,7 +89,7 @@ public class LeaderBoard {
             
             String empLastNameInital = employee.substring(employee.indexOf('#') + 1, employee.indexOf('#') + 2) + ".";
             String empName = employee.substring(employee.indexOf(',') + 2, employee.indexOf(':'));
-            long currentScore = Long.parseLong(employee.substring(employee.indexOf(':') + 2));
+            int currentScore = Integer.parseInt(employee.substring(employee.indexOf(':') + 2));
             // System.out.println("Name: "+  empName  +empLastNameInital + "Score: " + currentScore);
 
             if (currentScore > 0)
@@ -142,7 +142,7 @@ public class LeaderBoard {
                 }
                 customNames++;
                 //leaderNames.add("ATS");
-                long temp = 0;//for some dumb reason java sees 0 as int when used directly...
+                int temp = 0;//for some dumb reason java sees 0 as int when used directly...
                 leaderScores.add(temp);
                 pids.add(-1);
             }
