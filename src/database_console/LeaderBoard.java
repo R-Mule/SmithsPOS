@@ -155,7 +155,7 @@ public class LeaderBoard {
             JLabel field1 = new JLabel();
             field1.setSize(300, 50);
             field1.setLocation(0, 0 + posCntr);
-            field1.setFont(new Font("Monotype Corsiva", Font.PLAIN, 30));
+            field1.setFont(new Font("", Font.PLAIN, 30));
             field1.setText(name + " : " + leaderScores.get(leaderNames.indexOf(name)));
             field1.setForeground(Color.WHITE);
             frame.add(field1);
