@@ -11,7 +11,9 @@ public class Cell {
 
     private int x, y, size;//maze dimensions and GUI measurements
     private boolean north = true, south = true, east = true, west = true, isVisited = false;//walls around cell
-    private boolean inkyVisited = false, blinkyVisited = false, clydeVisited = false, pinkyVisited = false;
+    public int pinkyWeight = 100000, inkyWeight = 100000, blinkyWeight = 100000, clydeWeight = 100000;
+
+    public boolean inkyVisited = false, blinkyVisited = false, clydeVisited = false, pinkyVisited = false;
     public boolean isJailCell = false;//is this cell a Jail Cell
     //walls are init to True because they should all be solid in beginning, visited to false
     Content cellContent;//There will probably be cake inside...

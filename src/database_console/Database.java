@@ -1808,8 +1808,8 @@ public class Database {
             ResultSet rs = stmt.executeQuery("select currentScore from employees where passcode = " + employeePasscode + ";");
 
             while (rs.next())
-            { 
-                scoreToAdd+=rs.getInt(1);
+            {
+                scoreToAdd += rs.getInt(1);
                 Statement stmt2 = con.createStatement();
                 stmt2.executeUpdate("UPDATE `employees` set currentScore = " + scoreToAdd + " where passcode = " + employeePasscode + ";");
             }

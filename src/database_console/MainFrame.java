@@ -798,8 +798,6 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(clerkLogoutButton);
         this.add(clerkLoginButton);
 
-
-
         clerkLoginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
@@ -3695,7 +3693,6 @@ public class MainFrame extends javax.swing.JFrame {
             frame.setVisible(true);
         }
     }
-
 
     public static void main(String args[]) {
         try

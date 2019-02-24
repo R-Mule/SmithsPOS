@@ -130,10 +130,10 @@ public class Shape {
 
     public void moveToStartPosition() {
 
-        for(Block block : blocks)
-                {
-                    block.currentX+= 4*widthHeight;
-                }
+        for (Block block : blocks)
+        {
+            block.currentX += 4 * widthHeight;
+        }
 
     }
 

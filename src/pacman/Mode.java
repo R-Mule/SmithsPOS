@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package database_console;
+package pacman;
 
 /**
 
  @author R-Mule
  */
-public enum Holidays {
-    CHRISTMAS, THANKSGIVING, EASTER, SUMMERTIME, WEDDINGMONTH, FOURTHOFJULY, SAINTPTSDAY, HALLOWEEN, VALENTINES, EVENTWINNER, NONE;
-}
+public enum Mode {
+    SCATTER, CHASE
+};

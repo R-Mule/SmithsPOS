@@ -158,10 +158,12 @@ public class PacmanChar implements Subject, ActionListener {
             }
              */
             g2d.drawImage(getCurImg(), pacX + 4, pacY + 4, widthHeight - 8, widthHeight - 8, null);
+            // System.out.println("Pac X: " +pacX + "pac Y: " +pacY);
         }
     }//end draw
 
     public void timerTriggered() {
+        notifyObservers();
         if (!isDead)
         {
             if (nextDirection != 'X')
@@ -264,6 +266,7 @@ public class PacmanChar implements Subject, ActionListener {
                 totalPowerUps--;
                 pointsGained = contConsumed.getPointValue();
                 sound.eatFruitMusic();
+                sound.startGhostTurnBlueMusic();
             }
             else if (contConsumed != null && contConsumed.getContentType().equals(ContentType.CakeSlice) && contConsumed.isVisible())
             {
@@ -416,6 +419,7 @@ public class PacmanChar implements Subject, ActionListener {
         if (isPoweredUp)
         {
             totalPoints += 200;//you get points for eating ghosts
+            sound.eatGhostMusic();
             return true;//ghost dies 
         }
         else
@@ -444,11 +448,14 @@ public class PacmanChar implements Subject, ActionListener {
         {
             isPoweredUp = false;
             powerUpT.stop();
+            sound.stopGhostTurnBlueMusic();
+            sound.loopMainGhostMusic();
+            notifyObservers();
         }
         if (e.getSource().equals(deathDelay) && numLives > 0)
         {
             isDead = false; //I AM BACK!
-            
+
             deathDelay.stop();
             notifyObservers();
             sound.loopMainGhostMusic();

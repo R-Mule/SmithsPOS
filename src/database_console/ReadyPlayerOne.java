@@ -17,7 +17,9 @@ import pacman.PacmanGame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDate;
-import javafx.scene.layout.Border;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -44,6 +46,7 @@ public class ReadyPlayerOne implements KeyListener {
     private boolean activeUser = false;
     private boolean pacmanIsRunning = false;
     private boolean tetrisIsRunning = false;
+    private ScheduledExecutorService ses;
 
     public ReadyPlayerOne(MainFrame mf) {
         this.mf = mf;
@@ -513,10 +516,22 @@ public class ReadyPlayerOne implements KeyListener {
                 {//if this isn't a backdoor access show the normal Ready Player One button.
                     button.setVisible(true);
                 }
+                ses = Executors.newSingleThreadScheduledExecutor();//The text field couldn't be cleared here because of the a lagging around.
+                ses.scheduleWithFixedDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        doStuff();
+                    }
+                }, 0, 1, TimeUnit.SECONDS);
 
-            }
+            }//end if konami code.
         }
 
+    }
+
+    public void doStuff() {
+        mf.textField.setText("");//This clears the text field so there isn't a garbage ba in it...
+        ses.shutdown();
     }
 
     public void beginBackdoor() {

@@ -14,7 +14,7 @@ import javax.swing.JLabel;
  @author R-Mule
  */
 public class LeaderBoard {
-    
+
     private ArrayList<String> employees;
     private ArrayList<String> leaderNames;
     private ArrayList<Integer> leaderScores;
@@ -22,7 +22,7 @@ public class LeaderBoard {
     private JFrame frame;
     private JButton button;
     private MainFrame mf;
-    
+
     public LeaderBoard(MainFrame mf) {
         this.mf = mf;
         frame = new JFrame("Leaderboard");
@@ -38,46 +38,46 @@ public class LeaderBoard {
         button.setVisible(true);
         button.setLocation(0, 0);
         button.setBackground(Color.WHITE);
-        
+
         button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-              //  try
-              //  {
-                    frame = new JFrame("Leaderboard");
-                    frame.setLayout(null);
-                    frame.setResizable(false);
-                    frame.setSize(1000, 600);
-                    frame.setLocation(350, 200);
-                    frame.setAlwaysOnTop(true);
-                    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    //BufferedImage myImage = ImageIO.read(new File("images\\anaorak_.jpg"));
-                    //JFrame myJFrame = new JFrame("Image pane");
-                    //myJFrame.setContentPane(new ImagePanel(myImage));
-                    //frame.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("C:\\Users\\asmit\\Downloads\\test1.gif")))));
-                    //frame.setBackground(Color.BLACK);
-                    frame.getContentPane().setBackground(Color.BLACK); 
-                   // frame.setBackground(Color.BLACK);
-                    loadEverything();
-                    frame.setVisible(true);
-                    mf.textField.requestFocusInWindow();
-              //  }
-              //  catch (IOException ex)
-              //  {
-                  //  Logger.getLogger(LeaderBoard.class.getName()).log(Level.SEVERE, null, ex);
-              //  }
+                //  try
+                //  {
+                frame = new JFrame("Leaderboard");
+                frame.setLayout(null);
+                frame.setResizable(false);
+                frame.setSize(1000, 600);
+                frame.setLocation(350, 200);
+                frame.setAlwaysOnTop(true);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                //BufferedImage myImage = ImageIO.read(new File("images\\anaorak_.jpg"));
+                //JFrame myJFrame = new JFrame("Image pane");
+                //myJFrame.setContentPane(new ImagePanel(myImage));
+                //frame.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("C:\\Users\\asmit\\Downloads\\test1.gif")))));
+                //frame.setBackground(Color.BLACK);
+                frame.getContentPane().setBackground(Color.BLACK);
+                // frame.setBackground(Color.BLACK);
+                loadEverything();
+                frame.setVisible(true);
+                mf.textField.requestFocusInWindow();
+                //  }
+                //  catch (IOException ex)
+                //  {
+                //  Logger.getLogger(LeaderBoard.class.getName()).log(Level.SEVERE, null, ex);
+                //  }
             }
         });
-        
+
         this.mf.add(button);
-        
+
     }
-    
+
     private void loadEverything() {
         employees = Database.getEmployeesSortByScore();
         leaderNames = new ArrayList<>();
         leaderScores = new ArrayList<>();
         pids = new ArrayList<>();
-        
+
         int cntr = 0;
         for (String employee : employees)
         {
@@ -86,7 +86,7 @@ public class LeaderBoard {
                 break;
             }
             int pid = Integer.parseInt(employee.substring(0, employee.indexOf('#')));
-            
+
             String empLastNameInital = employee.substring(employee.indexOf('#') + 1, employee.indexOf('#') + 2) + ".";
             String empName = employee.substring(employee.indexOf(',') + 2, employee.indexOf(':'));
             int currentScore = Integer.parseInt(employee.substring(employee.indexOf(':') + 2));
@@ -99,12 +99,12 @@ public class LeaderBoard {
                 pids.add(pid);
                 cntr++;
             }
-            
+
         }
         int customNames = 0;
         for (int i = 0; i < 10; i++)
         {
-            
+
             if (leaderNames.size() == i)
             {
                 switch (customNames)
@@ -165,7 +165,7 @@ public class LeaderBoard {
             loadImages(pids.get(leaderNames.indexOf(name)), 0 + 300, posCntr);
             posCntr += 50;
         }
-        
+
         JLabel considerText = new JLabel();
         considerText.setSize(900, 50);
         considerText.setLocation(100, 500);
@@ -175,7 +175,7 @@ public class LeaderBoard {
         considerText.setVisible(true);
         frame.add(considerText);
     }
-    
+
     private void loadImages(int pid, int curX, int curY) {
         //this is where I will load default images for each employee based on keys cleared..
         //get results for employee PID
@@ -425,9 +425,9 @@ public class LeaderBoard {
             default:
                 break;
         }
-        
+
     }
-    
+
     private ImageIcon createImageIcon(String path, String description) {
         java.net.URL imgURL = getClass().getResource(path);
         if (imgURL != null)

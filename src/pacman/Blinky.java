@@ -3,7 +3,10 @@ package pacman;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.ImageIcon;
 import javax.swing.Timer;
 
@@ -11,18 +14,44 @@ import javax.swing.Timer;
 
  @author holliefuller
  */
-public class Blinky extends Ghost {
+public class Blinky extends Ghost implements ActionListener {
 
     //png files
     private Image[] blinkyPngsEAST = new Image[10];
     private Image[] blinkyPngsWEST = new Image[10];
     private Image[] blinkyPngsNORTH = new Image[10];
     private Image[] blinkyPngsSOUTH = new Image[10];
+    private Cell targetCell;
 
-    public Blinky(int xCoord, int yCoord, ArrayList<Cell> myMaze, int widthHeight, int xBlocks, int yBlocks, PacmanChar pacman, GameSounds sounds) {
-        super(xCoord, yCoord, myMaze, widthHeight, xBlocks, yBlocks, pacman, sounds);
+    public Blinky(int xCoord, int yCoord, ArrayList<Cell> myMaze, int widthHeight, int xBlocks, int yBlocks, PacmanChar pacman, GameSounds sounds, int chaseTimeMS, int scatterTimeMS) {
+        super(xCoord, yCoord, myMaze, widthHeight, xBlocks, yBlocks, pacman, sounds, chaseTimeMS, scatterTimeMS);
         loadImageArray();
+        currentPath = new ArrayList<>();
+        tempPath = new ArrayList<>();
+        queue = new ArrayList<>();
+        currentMode = Mode.CHASE;
+        requestedMode = Mode.CHASE;
+        modeTimer = new Timer(2000, this);
+        modeTimer.start();
+    }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource().equals(modeTimer))
+        {
+            if (currentMode.equals(Mode.CHASE))
+            {
+                modeTimer.setInitialDelay(scatterTimeMS);
+                requestedMode = Mode.SCATTER;
+            }
+            else
+            {
+                modeTimer.setInitialDelay(chaseTimeMS);
+                requestedMode = Mode.CHASE;
+            }
+        }
+        modeTimer.stop();
     }
 
     @Override
@@ -54,11 +83,16 @@ public class Blinky extends Ghost {
                     g2d.drawImage(getCurImg(), xCoord + 4, yCoord + 4, widthHeight - 8, widthHeight - 8, null);
                     break;
             }
+
         }
     }//end draw
 
     public Image getCurImg() {
-        if (pacman.isPoweredUp())
+        if (death)
+        {
+            return this.getCurrentDeadImage();
+        }
+        else if (pacman.isPoweredUp())
         {
             return this.getCurrentZedImage();
         }
@@ -126,96 +160,98 @@ public class Blinky extends Ghost {
     public void timerTriggered() {
         if (!pacman.isDead())
         {
-            if (currentTargetX == xCoord && currentTargetY == yCoord)
+            checkContact();
+            if ((currentTargetX == xCoord && currentTargetY == yCoord))//|| (findNextPath && xCoord % widthHeight == 0 && yCoord % widthHeight == 0))
             {
-                int random = rand.nextInt((4) + 1);//randomly find next position
-                if (random == 1 && !checkWall('E', xCoord, yCoord))//!maze.get(xBlocks * 2 * yCoord + xCoord).isEastSolid())
+                if (death && !currentPath.isEmpty() && currentPath.get(0) == startCell)
                 {
-                    this.currentTargetX = xCoord + widthHeight;
-                    this.currentTargetY = yCoord;
-                    this.currentDirection = 'E';
-                    // incImg();
-                    // if (xCoord == xBlocks * 2 - 1)
-                    // {
-                    //     xCoord = 0;
-                    //  }
-                    // else
-                    //  {
-                    if (xCoord > (xBlocks * 2 - 1) * widthHeight)
+                    death = false;
+                    sounds.stopGhostDeadMusic(true);
+                    if (pacman.isPoweredUp())
                     {
-                        xCoord = 0;
+                        sounds.startGhostTurnBlueMusic();
                     }
                     else
                     {
-                        xCoord += 10;
+                        sounds.loopMainGhostMusic();
                     }
-                    // }
-                    subYcoord = pacman.getYcoord();
-                    subXcoord = pacman.getXcoord();
-                    if (yCoord == subYcoord && xCoord == subXcoord)
-                    {
-                        pacman.makeContact();
-                    }
-                    return;
+                    currentPath.clear();
                 }
-                else if (random == 2 && !checkWall('W', xCoord, yCoord))//!maze.get(xBlocks * 2 * yCoord + xCoord).isWestSolid() )
+
+                if (!currentPath.isEmpty())
                 {
-                    this.currentTargetX = xCoord - widthHeight;
-                    this.currentTargetY = yCoord;
-                    this.currentDirection = 'W';
-                    //incImg();
-                    // if (xCoord == 0)
-                    // {
-                    //     xCoord = xBlocks * 2 - 1;
-                    // }
-                    // else
-                    // {
-                    if (xCoord < 0)
-                    {
-                        xCoord = (xBlocks * 2 - 1) * widthHeight;
-                    }
-                    else
-                    {
-                        xCoord -= 10;
-                    }
-                    // }
-                    subYcoord = pacman.getYcoord();
-                    subXcoord = pacman.getXcoord();
-                    if (yCoord == subYcoord && xCoord == subXcoord)
-                    {
-                        pacman.makeContact();
-                    }
-                    return;
+                    currentPath.remove(0);
                 }
-                else if (random == 3 && !checkWall('S', xCoord, yCoord))//maze.get(xBlocks * 2 * yCoord + xCoord).isNorthSolid()
+
+                if (currentPath.isEmpty() || (!death && !currentMode.equals(requestedMode)))
                 {
-                    this.currentTargetX = xCoord;
-                    this.currentTargetY = yCoord + widthHeight;
-                    this.currentDirection = 'S';
-                    //incImg();
-                    yCoord += 10;
-                    subYcoord = pacman.getYcoord();
-                    subXcoord = pacman.getXcoord();
-                    if (yCoord == subYcoord && xCoord == subXcoord)
+                    if (!death && !currentMode.equals(requestedMode))
                     {
-                        pacman.makeContact();
+                        modeTimer.start();
+                        currentMode = requestedMode;
                     }
-                    return;
+
+                    findNextPath();//This loads currentPath
+                    findNextPath = false;
                 }
-                else if (random == 4 && !checkWall('N', xCoord, yCoord))//!maze.get(xBlocks * 2 * yCoord + xCoord).isSouthSolid())
+
+                if (!currentPath.isEmpty())
                 {
-                    this.currentTargetX = xCoord;
-                    this.currentTargetY = yCoord - widthHeight;
-                    this.currentDirection = 'N';
-                    // incImg();
-                    yCoord -= 10;
-                    subYcoord = pacman.getYcoord();
-                    subXcoord = pacman.getXcoord();
-                    if (yCoord == subYcoord && xCoord == subXcoord)
+                    if (currentPath.get(0).getXLoc() * widthHeight > xCoord && !checkWall('E', xCoord, yCoord))
                     {
-                        pacman.makeContact();
+                        this.currentTargetX = xCoord + widthHeight;
+                        this.currentTargetY = yCoord;
+                        this.currentDirection = 'E';
+
+                        if (xCoord > (xBlocks * 2 - 1) * widthHeight)
+                        {
+                            xCoord = 0;
+                        }
+                        else
+                        {
+                            xCoord += 10;
+                        }
+                        checkContact();
+                        return;
                     }
-                    return;
+                    else if (currentPath.get(0).getXLoc() * widthHeight < xCoord && !checkWall('W', xCoord, yCoord))
+                    {
+                        this.currentTargetX = xCoord - widthHeight;
+                        this.currentTargetY = yCoord;
+                        this.currentDirection = 'W';
+
+                        if (xCoord < 0)
+                        {
+                            xCoord = (xBlocks * 2 - 1) * widthHeight;
+                        }
+                        else
+                        {
+                            xCoord -= 10;
+                        }
+                        // }
+                        checkContact();
+                        return;
+                    }
+                    else if (currentPath.get(0).getYLoc() * widthHeight > yCoord && !checkWall('S', xCoord, yCoord))
+                    {
+                        this.currentTargetX = xCoord;
+                        this.currentTargetY = yCoord + widthHeight;
+                        this.currentDirection = 'S';
+                        //incImg();
+                        yCoord += 10;
+                        checkContact();
+                        return;
+                    }
+                    else if (currentPath.get(0).getYLoc() * widthHeight < yCoord && !checkWall('N', xCoord, yCoord))
+                    {
+                        this.currentTargetX = xCoord;
+                        this.currentTargetY = yCoord - widthHeight;
+                        this.currentDirection = 'N';
+                        // incImg();
+                        yCoord -= 10;
+                        checkContact();
+                        return;
+                    }
                 }
             }
             else
@@ -255,13 +291,214 @@ public class Blinky extends Ghost {
                     default:
                         break;
                 }
-                subYcoord = pacman.getYcoord();
-                subXcoord = pacman.getXcoord();
-                if (yCoord == subYcoord && xCoord == subXcoord)
+                checkContact();
+            }
+        }
+    }
+
+    public void findNextPath() {
+        if (!death)
+        {
+            if (currentMode.equals(Mode.CHASE))
+            {
+                //Here is where we either chase, or reassign...
+                findNextPath = false;
+                currentPath.clear();
+                if (pacman.getXcoord() % widthHeight != 0)
                 {
-                    pacman.makeContact();
+                    subXcoord = pacman.getXcoord() - pacman.getXcoord() % widthHeight;
+                }
+                else
+                {
+                    subXcoord = pacman.getXcoord();
+                }
+                if (pacman.getYcoord() % widthHeight != 0)
+                {
+                    subYcoord = pacman.getYcoord() - pacman.getYcoord() % widthHeight;
+                }
+                else
+                {
+                    subYcoord = pacman.getYcoord();
+                }
+
+                for (Cell cell : maze)
+                {
+
+                    if (cell.getXLoc() * widthHeight == subXcoord && cell.getYLoc() * widthHeight == subYcoord)
+                    {
+                        targetCell = cell;
+                    }
                 }
             }
+            else if (currentMode.equals(Mode.SCATTER))//Blinky owns the top right. So anything less than yBlocks/2 and greater than xBlocks for random choice.
+            {
+                int minX = xBlocks;
+                int maxX = xBlocks * 2 - 1;
+                int minY = 0;
+                int maxY = yBlocks / 2 - 2;//The minus 2 keeps it above the jail. We don't need to path there.
+                int xRandomNum = ThreadLocalRandom.current().nextInt(minX, maxX + 1);
+                int yRandomNum = ThreadLocalRandom.current().nextInt(minY, maxY + 1);
+                targetCell = maze.get(xRandomNum + yRandomNum * xBlocks * 2);
+            }
+        }
+        else
+        {
+            targetCell = startCell;
+        }
+        generateWaterfall(targetCell, 0);
+        loadNextPath();
+
+        /*
+        int index = 0;
+        for (Cell cell : maze)
+        {
+
+            System.out.print(cell.blinkyWeight + "      ");
+            index++;
+            if (index == 12)
+            {
+                System.out.println();
+                index = 0;
+            }
+        }
+        System.out.println("DONE");
+         */
+    }
+
+    public void loadNextPath() {
+        Cell currentCell = maze.get(xCoord / widthHeight + yCoord / widthHeight * xBlocks * 2);
+        Cell nextCell = null;
+        int xActual = xCoord / widthHeight;
+        int yActual = yCoord / widthHeight;
+        int weight = currentCell.blinkyWeight;
+        int tempWeight;
+        while (weight != 0)
+        {
+            if (!currentCell.isSouthSolid())
+            {
+                tempWeight = maze.get(xActual + (yActual + 1) * xBlocks * 2).blinkyWeight;
+                if (tempWeight < weight)
+                {
+                    nextCell = maze.get(xActual + (yActual + 1) * xBlocks * 2);
+                    weight = tempWeight;
+                }
+            }
+
+            if (!currentCell.isNorthSolid())
+            {
+                tempWeight = maze.get(xActual + (yActual - 1) * xBlocks * 2).blinkyWeight;
+                if (tempWeight < weight)
+                {
+                    nextCell = maze.get(xActual + (yActual - 1) * xBlocks * 2);
+                    weight = tempWeight;
+                }
+            }
+
+            if (!currentCell.isEastSolid() && xActual != xBlocks * 2 - 1)
+            {
+                tempWeight = maze.get(xActual + 1 + yActual * xBlocks * 2).blinkyWeight;
+                if (tempWeight < weight)
+                {
+
+                    nextCell = maze.get(xActual + 1 + yActual * xBlocks * 2);
+                    weight = tempWeight;
+                }
+            }
+
+            if (!currentCell.isWestSolid() && xActual != 0)
+            {
+                tempWeight = maze.get(xActual - 1 + yActual * xBlocks * 2).blinkyWeight;
+                if (tempWeight < weight)
+                {
+                    nextCell = maze.get(xActual - 1 + yActual * xBlocks * 2);
+                    weight = tempWeight;
+                }
+            }
+            // currentCell.blinkyWeight = 10000;//so we don't return to this cell. Hopefully.
+            xActual = nextCell.getXLoc();
+            yActual = nextCell.getYLoc();
+            currentPath.add(nextCell);
+            currentCell = nextCell;
+
+        }
+
+    }
+
+    public void generateWaterfall(Cell currentCell, int currentWeight) {
+
+        ArrayList<Cell> tempList = new ArrayList<>();
+
+        for (Cell tempCell : maze)
+        {
+            tempCell.blinkyWeight = 100000;
+        }
+        currentCell.blinkyVisited = true;
+        currentCell.blinkyWeight = 0;
+        queue.add(currentCell);
+
+        while (!queue.isEmpty())
+        {
+            currentWeight++;
+            for (Cell cell : queue)
+            {
+
+                if (!cell.isSouthSolid())
+
+                {
+                    Cell southCell = maze.get(cell.getXLoc() + (cell.getYLoc() + 1) * xBlocks * 2);
+                    if (southCell.blinkyWeight > currentWeight || !southCell.blinkyVisited)
+                    {
+                        southCell.blinkyVisited = true;
+                        southCell.blinkyWeight = currentWeight;
+                        tempList.add(southCell);
+                    }
+                }
+
+                if (!cell.isEastSolid() && cell.getXLoc() != xBlocks * 2 - 1)
+
+                {
+                    Cell eastCell = maze.get(cell.getXLoc() + 1 + cell.getYLoc() * xBlocks * 2);
+                    if (eastCell.blinkyWeight > currentWeight || !eastCell.blinkyVisited)
+                    {
+                        eastCell.blinkyVisited = true;
+                        eastCell.blinkyWeight = currentWeight;
+                        tempList.add(eastCell);
+
+                    }
+                }
+
+                if (!cell.isWestSolid() && cell.getXLoc() != 0)
+
+                {
+                    Cell westCell = maze.get(cell.getXLoc() - 1 + cell.getYLoc() * xBlocks * 2);
+                    if (westCell.blinkyWeight > currentWeight || !westCell.blinkyVisited)
+                    {
+                        westCell.blinkyVisited = true;
+                        westCell.blinkyWeight = currentWeight;
+                        tempList.add(westCell);
+
+                    }
+                }
+
+                if (!cell.isNorthSolid())
+
+                {
+                    Cell northCell = maze.get(cell.getXLoc() + (cell.getYLoc() - 1) * xBlocks * 2);
+                    if (northCell.blinkyWeight > currentWeight || !northCell.blinkyVisited)
+                    {
+                        northCell.blinkyVisited = true;
+                        northCell.blinkyWeight = currentWeight;
+                        tempList.add(northCell);
+
+                    }
+                }
+            }
+            queue.remove(0);
+            for (Cell cell : tempList)
+            {
+                queue.add(cell);
+            }
+            tempList.clear();
         }
     }
 
@@ -273,13 +510,10 @@ public class Blinky extends Ghost {
 
                 if (wallToCheck == 'N' && cell.isNorthSolid())
                 {
-
                     return true;
-
                 }
-                else if (wallToCheck == 'S' && cell.isSouthSolid())
+                else if ((wallToCheck == 'S' && cell.isSouthSolid()) || (!death && (wallToCheck == 'S' && (cell.getXLoc() == 5 || cell.getXLoc() == 6) && cell.getYLoc() == 5)))
                 {
-
                     return true;
                 }
                 else if (wallToCheck == 'E' && cell.isEastSolid())
@@ -303,32 +537,43 @@ public class Blinky extends Ghost {
 
     @Override
     public void update() {
-        subXcoord = pacman.getXcoord();//update current coords
-        subYcoord = pacman.getYcoord();
-        if (subXcoord == xCoord && subYcoord == yCoord)
+        if (!death)//if I am alive I would like these updates...
         {
-            if (!pacman.isDead())
+            subXcoord = pacman.getXcoord();//update current coords
+
+            subYcoord = pacman.getYcoord();
+
+            if (subXcoord == xCoord && subYcoord == yCoord)
             {
-                boolean death = pacman.makeContact();
-                if (death)
+                if (!pacman.isDead())
                 {
-                    xCoord = 5 * widthHeight;
-                    yCoord = yBlocks / 2 * widthHeight;
-                    this.currentTargetX = xCoord;
-                    this.currentTargetY = yCoord;
-                    this.currentDirection = 'N';
+                    death = pacman.makeContact();
+                    if (death)
+                    {
+                        currentPath.clear();
+                        sounds.stopGhostTurnBlueMusic();
+                        sounds.startGhostDeadMusic(true);
+                    }
                 }
             }
+
         }
+//even if I am dead, I need to know if pacman is dead so I can reset.
         if (pacman.isDead())
         {
+            currentPath.clear();
             xCoord = 5 * widthHeight;
             yCoord = yBlocks / 2 * widthHeight;
             this.currentTargetX = xCoord;
             this.currentTargetY = yCoord;
             this.currentDirection = 'N';
+            if (death)
+            {
+                death = false;
+                sounds.stopGhostDeadMusic(true);
+            }
+
         }
 
     }
-
 }

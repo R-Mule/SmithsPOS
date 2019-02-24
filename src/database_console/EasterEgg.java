@@ -30,7 +30,7 @@ public class EasterEgg {
             try
             {
 
-                BufferedInputStream myStream = new BufferedInputStream(getClass().getResourceAsStream(audioFilePath)); 
+                BufferedInputStream myStream = new BufferedInputStream(getClass().getResourceAsStream(audioFilePath));
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(myStream);
                 AudioFormat format = audioStream.getFormat();
                 DataLine.Info info = new DataLine.Info(Clip.class, format);
@@ -57,7 +57,7 @@ public class EasterEgg {
             {
                 //File audioFile = new File(audioFilePath);
                 //AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(audioFilePath));
-                BufferedInputStream myStream = new BufferedInputStream(getClass().getResourceAsStream(audioFilePath)); 
+                BufferedInputStream myStream = new BufferedInputStream(getClass().getResourceAsStream(audioFilePath));
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(myStream);
                 AudioFormat format = audioStream.getFormat();
 

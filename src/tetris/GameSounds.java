@@ -10,14 +10,13 @@ import java.net.URL;
  */
 public class GameSounds {
 
-    private AudioClip  mainMusic;
+    private AudioClip mainMusic;
     private boolean onFinalLevel = false;
 
     GameSounds() {
 
         URL mainUrl = getClass().getResource("music/TetrisTheme.wav");
         mainMusic = Applet.newAudioClip(mainUrl);
-
 
     }
 
@@ -32,18 +31,18 @@ public class GameSounds {
         }
     }
 
-    public void forceStop(){
-            if(mainMusic != null){
+    public void forceStop() {
+        if (mainMusic != null)
+        {
             mainMusic.stop();
-            }
-            mainMusic = null;
- 
+        }
+        mainMusic = null;
+
     }
+
     public void stop() {
-            mainMusic.stop();
+        mainMusic.stop();
     }
-
-
 
     public void loopMainMusic() {
         if (!onFinalLevel)
@@ -53,12 +52,4 @@ public class GameSounds {
         }
     }
 
-
-    }
-
- 
-
-
-
-
-
+}
