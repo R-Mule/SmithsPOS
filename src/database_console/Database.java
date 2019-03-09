@@ -142,6 +142,22 @@ public class Database {
         }//end catch
     }
 
+        public static void updateEmployeeMarchMadnessScores(int employeeID, int wins, int losses) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("update `employees` set wins = " + wins + " , losses = "+ losses +" where pid=" + employeeID + ";");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+        
     public static String getEmployeesSortByPID() {
         try
         {

@@ -23,7 +23,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
 
- @author hfull This menu bar spans the top of the screen and should have menu
+ @author hollie smith This menu bar spans the top of the screen and should have menu
  items that drop down.
  */
 public class TopMenuBar extends JMenuBar {
@@ -32,7 +32,7 @@ public class TopMenuBar extends JMenuBar {
     JMenu addMenu, remMenu, mgmtMenu, feedMenu;
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
-            masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload,
+            masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
             modifyPermissions; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
 
@@ -121,6 +121,10 @@ public class TopMenuBar extends JMenuBar {
         mutualFileUpload = new JMenuItem();
         mutualFileUpload.setText("Mutual File Upload");
         mgmtMenu.add(mutualFileUpload);//This adds Mutual File Upload to Management Menu Choices
+
+        ncaaReportUpload = new JMenuItem();
+        ncaaReportUpload.setText("March Madness File Upload");
+        mgmtMenu.add(ncaaReportUpload);//This adds March Maddness File Upload to Management Menu Choices
 
         modifyPermissions = new JMenuItem();
         modifyPermissions.setText("Modify Permissions");
@@ -254,6 +258,13 @@ public class TopMenuBar extends JMenuBar {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mutualFileUploadActionPerformed(evt);
+            }
+        });
+
+        ncaaReportUpload.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ncaaReportUploadActionPerformed(evt);
             }
         });
 
@@ -1086,6 +1097,53 @@ public class TopMenuBar extends JMenuBar {
 
     }//end mutualFileUploadActionPerformed()
 
+    private void ncaaReportUploadActionPerformed(java.awt.event.ActionEvent evt) {
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("March Madness File", "csv");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(filter);
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.name")));
+        int result = fileChooser.showOpenDialog(mf);
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+            File selectedFile = fileChooser.getSelectedFile();
+            if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+            {
+                try
+                {
+                    BufferedReader in = new BufferedReader(new FileReader(selectedFile.getAbsolutePath()));
+
+                    String line;
+                    try
+                    {
+                        while ((line = in.readLine()) != null)
+                        {
+                            String[] tokens = line.split(",", 3);   //limits the split to 3 array elements ie only the first occurance so it will keep any colons in the value portion
+                            
+                            if (tokens.length < 3) //not all data is there just move along
+                            {
+                                continue;
+                            }
+                            //System.out.println(Integer.parseInt(tokens[0].trim()) + " " +Integer.parseInt(tokens[1].trim()) + " " + Integer.parseInt(tokens[2].trim()) );
+                            Database.updateEmployeeMarchMadnessScores(Integer.parseInt(tokens[0].trim()), Integer.parseInt(tokens[1].trim()), Integer.parseInt(tokens[2].trim()));
+                            
+                        }
+                    }                        
+                    catch (IOException ex)
+                    {
+                        System.out.println("Failed to load the NCAA March Madness File 2");
+                    }
+                }
+                catch (FileNotFoundException ex)
+                {
+                    System.out.println("Failed to load the NCAA March Madness File");
+                }
+            }
+        }
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+    }
+
     private void modifyPermissionsActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");
         JTextField field1 = new JTextField();
@@ -1186,10 +1244,12 @@ public class TopMenuBar extends JMenuBar {
                 {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Mail server connection failed. Report not sent.");
+
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TopMenuBar.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -1234,10 +1294,12 @@ public class TopMenuBar extends JMenuBar {
                 {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Mail server connection failed. Report not sent.");
+
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TopMenuBar.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
 
             }

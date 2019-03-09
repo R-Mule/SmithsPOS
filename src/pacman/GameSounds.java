@@ -10,10 +10,11 @@ import java.net.URL;
  */
 public class GameSounds {
 
-    private AudioClip introMusic, mainGhostMusic, intermissionMusic, deathMusic, eatGhostMusic, eatFruitMusic, eatCakeSliceMusic, ghostTurnBlueMusic, ghostDeadMusic;
+    private AudioClip introMusic, mainGhostMusic, intermissionMusic, deathMusic, eatGhostMusic, eatFruitMusic, eatCakeSliceMusic, ghostTurnBlueMusic, ghostDeadMusic,extraLifeMusic;
     private boolean onFinalLevel = false;
     private boolean isMainLoopStopped = true;
     private boolean isGhostDeadMusicStopped = true;
+    private boolean isGhostTurnBlueMusicStopped = true;
     private int deadGhosts;
 
     GameSounds() {
@@ -36,6 +37,8 @@ public class GameSounds {
         ghostTurnBlueMusic = Applet.newAudioClip(ghostTurnBlueUrl);
         URL ghostDeadUrl = getClass().getResource("music/ghost_dead.wav");
         ghostDeadMusic = Applet.newAudioClip(ghostDeadUrl);
+        URL extraLifeUrl = getClass().getResource("music/pacman_extrapac.wav");
+        extraLifeMusic = Applet.newAudioClip(extraLifeUrl);
     }
 
     public void finalLevel(boolean onFinalLevel) {
@@ -48,6 +51,10 @@ public class GameSounds {
         }
     }
 
+    public void extraLife()
+    {
+        extraLifeMusic.play();
+    }
     public void forceStop() {
         introMusic.stop();
         mainGhostMusic.stop();
@@ -57,8 +64,10 @@ public class GameSounds {
         eatGhostMusic.stop();
         eatFruitMusic.stop();
         ghostDeadMusic.stop();
+        extraLifeMusic.stop();
         isGhostDeadMusicStopped = true;
         ghostTurnBlueMusic.stop();
+        isGhostTurnBlueMusicStopped = true;
         eatCakeSliceMusic.stop();
         introMusic = null;
         mainGhostMusic = null;
@@ -80,6 +89,7 @@ public class GameSounds {
                 mainGhostMusic.stop();
                 isMainLoopStopped = true;
                 ghostTurnBlueMusic.loop();
+                isGhostTurnBlueMusicStopped = false;
             }
         }
     }
@@ -94,6 +104,7 @@ public class GameSounds {
             if (isGhostDeadMusicStopped)
             {
                 ghostTurnBlueMusic.stop();
+                isGhostTurnBlueMusicStopped = true;
                 ghostDeadMusic.loop();
                 isGhostDeadMusicStopped = false;
             }
@@ -173,6 +184,11 @@ public class GameSounds {
             stop();
             mainGhostMusic.stop();
             isMainLoopStopped = true;
+            if(!isGhostTurnBlueMusicStopped)
+            {
+                isGhostTurnBlueMusicStopped = true;
+                ghostTurnBlueMusic.stop();
+            }
             intermissionMusic.play();
         }
 

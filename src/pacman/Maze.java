@@ -46,6 +46,9 @@ public class Maze extends JPanel implements KeyListener, ActionListener {
     Timer clydet2 = new Timer(63, this);//animator
     private JLabel readyLabel = new JLabel("READY!");
     public boolean forceStop = false;
+    public boolean gameWon = false;
+    private boolean hasEarnedExtraLife = false;//only get one at 10,000 then never again
+    
     Graphics2D g2d;
     ArrayList<Cell> mazeCells = new ArrayList<Cell>();//array list of cells used
     ArrayList<Cell> actualMaze = new ArrayList<Cell>();//actual maze
@@ -101,7 +104,7 @@ public class Maze extends JPanel implements KeyListener, ActionListener {
         int chaseTime = 10000;
         int scatterTime = 5000;
         //I took the intro music out of here - let the maze be built in silence.  Seriously.
-        pacman = new PacmanChar(4 * widthHeight, 8 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, gameSounds, 4, 0);//GENERATE THE YELLOW MAN
+        pacman = new PacmanChar(4 * widthHeight, 8 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, gameSounds, 4, 0,hasEarnedExtraLife);//GENERATE THE YELLOW MAN
         inky = new Inky((xBlocks - 2) * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);//the next four lines generate ghosts
         blinky = new Blinky(5 * widthHeight, 7 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);
         pinky = new Pinky(xBlocks * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);
@@ -565,61 +568,77 @@ public class Maze extends JPanel implements KeyListener, ActionListener {
     }//end startDelay
 
     void makeNewLevel() {
-        if (levelNum == 2)
-        {
-            System.out.println("You beat the game!");
-        }
-        levelNum++;//add to our level number counter!
-        mazeCells.clear();//clears last maze
-        actualMaze.clear();//...
-        for (int k = 0; k < yBlocks; k++)
-        {//create new maze cells
-            for (int j = 0; j < xBlocks; j++)
-            {
-                if ((k == 0 && j == 0) || (k == yBlocks - 1 && j == 0))
-                {
-                    mazeCells.add(new Cell(j, k, widthHeight, xBlocks, yBlocks, ContentType.Cake));
-                }
-                else
-                {
-                    mazeCells.add(new Cell(j, k, widthHeight, xBlocks, yBlocks, ContentType.CakeSlice));
-                }
-            }
-
-        }
-        midwallRandom = rand.nextInt((2) + 1);//generate midwallRandom number between 0 & max node -1
-        startDELAY.start();
-        int chaseTime = 0;
-        int scatterTime = 0;
-        if (levelNum == 2)//one was chase 10sec, scatter 5sec.
-        {
-            chaseTime = 11000;//These are in MS.
-            scatterTime = 4000;
-        }
-        else if (levelNum == 3)
-        {
-            chaseTime = 12000;
-            scatterTime = 3000;
-        }
         if (levelNum == 4)
         {
-            chaseTime = 12000;
-            scatterTime = 2000;
-            gameSounds.finalLevel(true);
+            System.out.println("You beat the game!");
+            gameWon = true;
+            pacmant1.stop();
+            blinkyt1.stop();
+            blinkyt2.stop();
+            pinkyt1.stop();
+            pinkyt2.stop();
+            inkyt1.stop();
+            inkyt2.stop();
+            clydet1.stop();
+            clydet2.stop();
+            readyLabel.setText("CLEARED!");
+            readyLabel.setVisible(true);
         }
-        int totalPoints = pacman.getTotalScore();//retains player score - important only to some of us
-        int numLives = pacman.getRemainingLives();//retains pacman's lives - kind of important
-        createMaze();//create the actual maze
-        pacman = new PacmanChar(4 * widthHeight, 8 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, gameSounds, numLives, totalPoints);//GENERATE THE YELLOW MAN
-        inky = new Inky((xBlocks - 2) * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);//the next four lines generate ghosts
-        blinky = new Blinky(5 * widthHeight, 7 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);
-        pinky = new Pinky(xBlocks * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);
-        clyde = new Clyde((xBlocks + 1) * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);
-        pacman.register(clyde);//register observers
-        pacman.register(inky);
-        pacman.register(pinky);
-        pacman.register(blinky);
-        runOnce = true;
+        else
+        {
+            levelNum++;//add to our level number counter!
+            mazeCells.clear();//clears last maze
+            actualMaze.clear();//...
+            for (int k = 0; k < yBlocks; k++)
+            {//create new maze cells
+                for (int j = 0; j < xBlocks; j++)
+                {
+                    if ((k == 0 && j == 0) || (k == yBlocks - 1 && j == 0))
+                    {
+                        mazeCells.add(new Cell(j, k, widthHeight, xBlocks, yBlocks, ContentType.Cake));
+                    }
+                    else
+                    {
+                        mazeCells.add(new Cell(j, k, widthHeight, xBlocks, yBlocks, ContentType.CakeSlice));
+                    }
+                }
+
+            }
+            midwallRandom = rand.nextInt((2) + 1);//generate midwallRandom number between 0 & max node -1
+            startDELAY.start();
+            int chaseTime = 0;
+            int scatterTime = 0;
+            if (levelNum == 2)//one was chase 10sec, scatter 5sec.
+            {
+                chaseTime = 11000;//These are in MS.
+                scatterTime = 4000;
+            }
+            else if (levelNum == 3)
+            {
+                chaseTime = 12000;
+                scatterTime = 3000;
+            }
+            if (levelNum == 4)
+            {
+                chaseTime = 12000;
+                scatterTime = 2000;
+                gameSounds.finalLevel(true);
+            }
+            int totalPoints = pacman.getTotalScore();//retains player score - important only to some of us
+            this.hasEarnedExtraLife = pacman.hasEarnedExtraLife;
+            int numLives = pacman.getRemainingLives();//retains pacman's lives - kind of important
+            createMaze();//create the actual maze
+            pacman = new PacmanChar(4 * widthHeight, 8 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, gameSounds, numLives, totalPoints,hasEarnedExtraLife);//GENERATE THE YELLOW MAN
+            inky = new Inky((xBlocks - 2) * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);//the next four lines generate ghosts
+            blinky = new Blinky(5 * widthHeight, 7 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);
+            pinky = new Pinky(xBlocks * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);
+            clyde = new Clyde((xBlocks + 1) * widthHeight, yBlocks / 2 * widthHeight, actualMaze, widthHeight, xBlocks, yBlocks, pacman, gameSounds, chaseTime, scatterTime);
+            pacman.register(clyde);//register observers
+            pacman.register(inky);
+            pacman.register(pinky);
+            pacman.register(blinky);
+            runOnce = true;
+        }
 
     }//end makeNewLevel
 

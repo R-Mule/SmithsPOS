@@ -25,7 +25,7 @@ public class LeaderBoard {
 
     public LeaderBoard(MainFrame mf) {
         this.mf = mf;
-        frame = new JFrame("Leaderboard");
+        frame = new JFrame("Leaderboard - Embryos will not help you get here.");
         frame.setLayout(null);
         frame.setResizable(false);
         frame.setSize(1000, 600);
@@ -43,11 +43,11 @@ public class LeaderBoard {
             public void actionPerformed(ActionEvent event) {
                 //  try
                 //  {
-                frame = new JFrame("Leaderboard");
+                frame = new JFrame("Leaderboard - Embryos will not help you get here.");
                 frame.setLayout(null);
                 frame.setResizable(false);
-                frame.setSize(1000, 600);
-                frame.setLocation(350, 200);
+                frame.setSize(1000, 900);
+                frame.setLocation(350, 50);
                 frame.setAlwaysOnTop(true);
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 //BufferedImage myImage = ImageIO.read(new File("images\\anaorak_.jpg"));
@@ -81,7 +81,7 @@ public class LeaderBoard {
         int cntr = 0;
         for (String employee : employees)
         {
-            if (cntr == 10)//only ever display top 10.
+            if (cntr == 15)//only ever display top 15.
             {
                 break;
             }
@@ -102,7 +102,7 @@ public class LeaderBoard {
 
         }
         int customNames = 0;
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 15; i++)
         {
 
             if (leaderNames.size() == i)
@@ -136,8 +136,11 @@ public class LeaderBoard {
                     case 8:
                         leaderNames.add("Sho");
                         break;
-                    default:
+                    case 9:
                         leaderNames.add("JDH");
+                        break;
+                    default:
+                        leaderNames.add("ATS");
                         break;
                 }
                 customNames++;
@@ -168,7 +171,7 @@ public class LeaderBoard {
 
         JLabel considerText = new JLabel();
         considerText.setSize(900, 50);
-        considerText.setLocation(100, 500);
+        considerText.setLocation(100, 800);
         considerText.setFont(new Font("Monotype Corsiva", Font.BOLD, 28));
         considerText.setForeground(Color.WHITE);
         considerText.setText("To play this game, you must first consider yourself a hero...");

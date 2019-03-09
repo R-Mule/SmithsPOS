@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package database_console;
 
 import java.awt.Color;
@@ -103,6 +98,7 @@ public class ReadyPlayerOne implements KeyListener {
                                     public void windowClosing(WindowEvent arg0) {
 
                                         tetris.stopAll();
+
                                         //Also make sure to lock them out regardless.
                                         Database.insertEggLockout(LocalDate.now(), mf.activeClerksPasscode);
 
@@ -413,7 +409,7 @@ public class ReadyPlayerOne implements KeyListener {
                 {
                     if (field1.getText().toUpperCase().contentEquals("75144"))
                     {
-                        //TODO: Grant the Jade Key boss.
+                        //Grant the Jade Key boss.
                         Database.setCurrentLevelByPasscode(mf.activeClerksPasscode, 3);
                         updateScore(3, 1000);//Part 3 cleared, Max possible is 1000
                         System.out.println("Jade Key Revealed!!");
@@ -421,13 +417,50 @@ public class ReadyPlayerOne implements KeyListener {
                     else
                     {
                         Database.insertEggLockout(LocalDate.now(), mf.activeClerksPasscode);
-                        //TODO: LOCKOUT!
+
                     }
                 }
                 break;
             }
             //Jade Gate
             case 3:
+                if (!pacmanIsRunning)
+                {
+                    pacmanIsRunning = true;
+                    mf.setEnabled(false);
+                    PacmanGame mw = new PacmanGame();
+                    mw.setVisible(true);
+
+                    mw.addWindowListener(new WindowAdapter() {
+
+                        @Override
+                        public void windowClosing(WindowEvent arg0) {
+
+                            //TODO: Need to get the data from the game here, window closed so must be time to update stuff...
+                            //Also make sure to lock them out if they lost..
+                            if (mw.gameWon())//This stops everything that needs to be stopped and returns TRUE if they won the game!
+                            {
+
+                                Database.setCurrentLevelByPasscode(mf.activeClerksPasscode, 4);
+                                updateScore(4, 5000);
+                            }
+                            else
+                            {
+                                //Also make sure to lock them out if they lost..
+                                Database.insertEggLockout(LocalDate.now(), mf.activeClerksPasscode);
+                            }
+
+                            mw.myMaze.windowClosed();
+                            mw.setVisible(false);
+                            pacmanIsRunning = false;
+                            mf.setEnabled(true);
+                            mf.requestFocus();
+                            mf.textField.requestFocusInWindow();
+
+                        }
+
+                    });
+                }
                 break;
             //Crystal Key
             case 4:
@@ -448,6 +481,7 @@ public class ReadyPlayerOne implements KeyListener {
                     {
                         //TODO: Grant the Crystal Key boss.
                         Database.setCurrentLevelByPasscode(mf.activeClerksPasscode, 5);
+                        updateScore(5, 10000);
                         System.out.println("Crystal Key Revealed!!");
                     }
                     else
@@ -459,31 +493,10 @@ public class ReadyPlayerOne implements KeyListener {
             }
             //Crystal Gate
             case 5:
-                if (!pacmanIsRunning)
-                {
-                    pacmanIsRunning = true;
-                    mf.setEnabled(false);
-                    PacmanGame mw = new PacmanGame();
-                    mw.setVisible(true);
-
-                    mw.addWindowListener(new WindowAdapter() {
-
-                        @Override
-                        public void windowClosing(WindowEvent arg0) {
-
-                            //TODO: Need to get the data from the game here, window closed so must be time to update stuff...
-                            //Also make sure to lock them out if they lost..
-                            mw.myMaze.windowClosed();
-                            mw.setVisible(false);
-                            pacmanIsRunning = false;
-                            mf.setEnabled(true);
-                            mf.requestFocus();
-                            mf.textField.requestFocusInWindow();
-
-                        }
-
-                    });
-                }
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "The boss has not finished this part yet. Please let him know.");
+                //Database.setCurrentLevelByPasscode(mf.activeClerksPasscode, 6);
+                        //updateScore(6, 30000);
                 break;
             default:
                 break;

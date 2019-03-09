@@ -25,6 +25,7 @@ public class PacmanChar implements Subject, ActionListener {
     private int yBlocks;//number of total Y cells
     private int totalCakeSlices;//number of cake slices remaining
     private int totalPowerUps;//number of power ups remaining
+    public boolean hasEarnedExtraLife = false;
     private int totalPoints;//total Number of Points
     private char currentDirection;//pacmans current heading, North, South, East, West
     private char nextDirection = 'X';
@@ -46,7 +47,7 @@ public class PacmanChar implements Subject, ActionListener {
     private boolean isDead = false;
     private GameSounds sound;
 
-    PacmanChar(int xCoord, int yCoord, ArrayList<Cell> maze, int widthHeight, int xBlocks, int yBlocks, GameSounds sound, int numLives, int totalPoints) {
+    PacmanChar(int xCoord, int yCoord, ArrayList<Cell> maze, int widthHeight, int xBlocks, int yBlocks, GameSounds sound, int numLives, int totalPoints, boolean hasEarnedExtraLife) {
         this.pacX = xCoord;
         this.pacY = yCoord;
         this.currentImageIndex = 0;
@@ -60,6 +61,7 @@ public class PacmanChar implements Subject, ActionListener {
         totalPowerUps = 4;
         this.numLives = numLives;
         this.totalPoints = totalPoints;
+        this.hasEarnedExtraLife = hasEarnedExtraLife;
         powerUpT.setInitialDelay(8000);//8 seconds total powerup time
     }//end PacmanChar ctor
 
@@ -284,6 +286,12 @@ public class PacmanChar implements Subject, ActionListener {
             contConsumed = null;
 
             totalPoints += pointsGained;
+            if(!hasEarnedExtraLife && totalPoints > 10000)
+                {
+                    hasEarnedExtraLife = true;
+                    sound.extraLife();
+                    numLives++;
+                }
         }
     }
 
@@ -416,26 +424,36 @@ public class PacmanChar implements Subject, ActionListener {
     }
 
     public boolean makeContact() {
-        if (isPoweredUp)
+        if (!isDead)
         {
-            totalPoints += 200;//you get points for eating ghosts
-            sound.eatGhostMusic();
-            return true;//ghost dies 
-        }
-        else
-        {
-            pacX = 4 * widthHeight;//restore pacman to start position
-            pacY = 8 * widthHeight;
-            currentDirection = ' ';
+            if (isPoweredUp)
+            {
+                totalPoints += 200;//you get points for eating ghosts
+                if(!hasEarnedExtraLife && totalPoints > 10000)
+                {
+                    hasEarnedExtraLife = true;
+                    sound.extraLife();
+                    numLives++;
+                }
+                sound.eatGhostMusic();
+                return true;//ghost dies 
+            }
+            else
+            {
+                pacX = 4 * widthHeight;//restore pacman to start position
+                pacY = 8 * widthHeight;
+                currentDirection = ' ';
 
-            numLives--;//remove a life
-            isDead = true;
-            deathDelay.start();
-            sound.pacmanDeathMusic();
-            notifyObservers();
+                numLives--;//remove a life
+                isDead = true;
+                deathDelay.start();
+                sound.pacmanDeathMusic();
+                notifyObservers();
 
-            return false;
+                return false;
+            }
         }
+        return false;// I am somehow already dead.
     }//end makeContact
 
     public boolean isDead() {
