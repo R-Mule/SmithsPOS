@@ -2,7 +2,7 @@ package database_console;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
+import java.awt.FontFormatException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -11,10 +11,14 @@ import javax.swing.JButton;
 import pacman.PacmanGame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -30,7 +34,8 @@ public class ReadyPlayerOne implements KeyListener {
 
     private static Object lock = new Object();
     private LeaderBoard leaderboard;
-    private Konami code;
+    private Konami code1;
+    private Konami code2;
     private MainFrame mf;
     private JButton button;
     private JButton tetrisButton;
@@ -44,109 +49,62 @@ public class ReadyPlayerOne implements KeyListener {
     private ScheduledExecutorService ses;
 
     public ReadyPlayerOne(MainFrame mf) {
-        this.mf = mf;
-        leaderboard = new LeaderBoard(mf);
-        code = new Konami();
-        String fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-        for (String font : fonts)
+        try
         {
-            if (font.contentEquals("Ready Player One"))
+            this.mf = mf;
+            leaderboard = new LeaderBoard(mf);
+            int[] code1data =
             {
-                button = new JButton("Ready Player One");
-                button.setFont(new Font("Ready Player One", Font.PLAIN, 30));
-                button.setForeground(Color.BLUE);
-                button.setBorderPainted(false);
-                button.setContentAreaFilled(false);
-                button.setFocusPainted(false);
-                button.setOpaque(false);
-                button.setVisible(false);
-                button.setLocation(400, 800);
-                button.setSize(400, 200);
-
-                tetrisButton = new JButton();
-                try
-                {
-                    Image img = ImageIO.read(getClass().getResource("images/TetrisLogo.png"));
-                    tetrisButton.setIcon(new ImageIcon(img));
-                }
-                catch (Exception ex)
-                {
-                    System.out.println(ex);
-                }
-                tetrisButton.setBorderPainted(false);
-                tetrisButton.setContentAreaFilled(false);
-                tetrisButton.setFocusPainted(false);
-                tetrisButton.setOpaque(false);
-                tetrisButton.setVisible(false);
-                tetrisButton.setLocation(500, 900);
-                tetrisButton.setSize(200, 100);
-
-                tetrisButton.addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent event) {
-                        if (mf.activeClerksPasscode == 8 || Database.isLockoutLifted(mf.activeClerksPasscode))
+                38, 38, 40, 40, 37, 39, 37, 39, 66, 65
+            };//uppercase ba
+            //int[] code2data =
+           // {
+           //     38, 38, 40, 40, 37, 39, 37, 39, 98, 97
+           // };//Lowercase ba
+            
+            code1 = new Konami(code1data);
+           // code2 = new Konami(code2data);
+            button = new JButton("Ready Player One");
+            InputStream is = this.getClass().getResourceAsStream("images/rp1.ttf");
+            Font uniFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            float size = 30;
+            Font realFont = uniFont.deriveFont(size);
+            button.setFont(realFont);//new Font("Ready Player One", Font.PLAIN, 30));
+            button.setForeground(Color.BLUE);
+            button.setBorderPainted(false);
+            button.setContentAreaFilled(false);
+            button.setFocusPainted(false);
+            button.setOpaque(false);
+            button.setVisible(false);
+            button.setLocation(400, 800);
+            button.setSize(400, 200);
+            tetrisButton = new JButton();
+            try
+            {
+                Image img = ImageIO.read(getClass().getResource("images/TetrisLogo.png"));
+                tetrisButton.setIcon(new ImageIcon(img));
+            }
+            catch (Exception ex)
+            {
+                System.out.println(ex);
+            }
+            tetrisButton.setBorderPainted(false);
+            tetrisButton.setContentAreaFilled(false);
+            tetrisButton.setFocusPainted(false);
+            tetrisButton.setOpaque(false);
+            tetrisButton.setVisible(false);
+            tetrisButton.setLocation(500, 900);
+            tetrisButton.setSize(200, 100);
+            tetrisButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    if (mf.activeClerksPasscode == 8 || Database.isLockoutLifted(mf.activeClerksPasscode))
+                    {
+                        if (!pacmanIsRunning && !tetrisIsRunning && !galagaIsRunning)
                         {
-                            if (!pacmanIsRunning && !tetrisIsRunning && !galagaIsRunning)
-                            {
-                                tetrisIsRunning = true;
-                                TetrisGame tetris = new TetrisGame();
-                                tetris.setVisible(true);
-                                mf.setEnabled(false);
-
-                                tetris.addWindowListener(new WindowAdapter() {
-
-                                    @Override
-                                    public void windowClosing(WindowEvent arg0) {
-
-                                        tetris.stopAll();
-
-                                        //Also make sure to lock them out regardless.
-                                        Database.insertEggLockout(LocalDate.now(), mf.activeClerksPasscode);
-
-                                        tetris.setVisible(false);
-                                        tetrisIsRunning = false;
-                                        mf.setEnabled(true);
-                                        mf.requestFocus();
-                                        mf.textField.requestFocusInWindow();
-                                    }
-                                });
-                            }
-                        }
-                        else
-                        {
-                            JFrame message1 = new JFrame("See ya tomorrow!");
-                            JOptionPane.showMessageDialog(message1, "Please come back and try again tomorrow.");
-                        }
-                    }
-                });
-
-                galagaButton = new JButton();
-                try
-                {
-                    Image img = ImageIO.read(getClass().getResource("images/GalagaLogo.png"));
-                    galagaButton.setIcon(new ImageIcon(img));
-                }
-                catch (Exception ex)
-                {
-                    System.out.println(ex);
-                }
-                galagaButton.setBorderPainted(false);
-                galagaButton.setContentAreaFilled(false);
-                galagaButton.setFocusPainted(false);
-                galagaButton.setOpaque(false);
-                galagaButton.setVisible(false);
-                galagaButton.setLocation(600, 825);
-                galagaButton.setSize(200, 100);
-                //galagaButton.setBorder(null);
-
-                //TODO: Remove Tetris from Galaga settings....
-                galagaButton.addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent event) {
-                        if (mf.activeClerksPasscode == 8 || Database.isLockoutLifted(mf.activeClerksPasscode))
-                        {
+                            tetrisIsRunning = true;
                             TetrisGame tetris = new TetrisGame();
                             tetris.setVisible(true);
                             mf.setEnabled(false);
-                            tetrisIsRunning = true;
 
                             tetris.addWindowListener(new WindowAdapter() {
 
@@ -154,6 +112,7 @@ public class ReadyPlayerOne implements KeyListener {
                                 public void windowClosing(WindowEvent arg0) {
 
                                     tetris.stopAll();
+
                                     //Also make sure to lock them out regardless.
                                     Database.insertEggLockout(LocalDate.now(), mf.activeClerksPasscode);
 
@@ -165,169 +124,218 @@ public class ReadyPlayerOne implements KeyListener {
                                 }
                             });
                         }
-                        else
-                        {
-                            JFrame message1 = new JFrame("See ya tomorrow!");
-                            JOptionPane.showMessageDialog(message1, "Please come back and try again tomorrow.");
-                        }
                     }
-                });
-
-                pacmanButton = new JButton();
-                try
-                {
-                    Image img = ImageIO.read(getClass().getResource("images/PacmanLogo.png"));
-                    pacmanButton.setIcon(new ImageIcon(img));
+                    else
+                    {
+                        JFrame message1 = new JFrame("See ya tomorrow!");
+                        JOptionPane.showMessageDialog(message1, "Please come back and try again tomorrow.");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    System.out.println(ex);
-                }
-                pacmanButton.setBorderPainted(false);
-                pacmanButton.setContentAreaFilled(false);
-                pacmanButton.setFocusPainted(false);
-                pacmanButton.setOpaque(false);
-                pacmanButton.setVisible(false);
-                pacmanButton.setLocation(400, 825);
-                pacmanButton.setSize(200, 100);
-
-                pacmanButton.addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent event) {
-                        if (mf.activeClerksPasscode == 8 || Database.isLockoutLifted(mf.activeClerksPasscode))
-                        {
-                            if (!pacmanIsRunning && !tetrisIsRunning && !galagaIsRunning)
-                            {
-                                pacmanIsRunning = true;
-                                mf.setEnabled(false);
-                                PacmanGame mw = new PacmanGame();
-                                mw.setVisible(true);
-
-                                mw.addWindowListener(new WindowAdapter() {
-
-                                    @Override
-                                    public void windowClosing(WindowEvent arg0) {
-
-                                        //TODO: Need to get the data from the game here, window closed so must be time to update stuff...
-                                        //Also make sure to lock them out regardless.
-                                        Database.insertEggLockout(LocalDate.now(), mf.activeClerksPasscode);
-                                        mw.myMaze.windowClosed();
-                                        mw.setVisible(false);
-                                        pacmanIsRunning = false;
-                                        mf.setEnabled(true);
-                                        mf.requestFocus();
-                                        mf.textField.requestFocusInWindow();
-
-                                    }
-
-                                });
-                            }
-                        }
-                        else
-                        {
-                            JFrame message1 = new JFrame("See ya tomorrow!");
-                            JOptionPane.showMessageDialog(message1, "Please come back and try again tomorrow.");
-                        }
-                    }
-                });
-
-                button.addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent event) {
-                        System.out.println("They are ready to proceed to play!");
-
-                        if (mf.curCart.isEmpty() && mf.refundCart.isEmpty())//if there is nothing on the GUI lets play a game!
-                        {
-                            if (Database.isLockoutLifted(mf.activeClerksPasscode))
-                            {
-                                initiateGame();
-                            }
-                            else
-                            {
-                                JFrame message1 = new JFrame("Terminated!");
-                                JOptionPane.showMessageDialog(message1, "Please come back and try again tomorrow.");
-                            }
-
-                        }
-                    }
-                });
-
-                selectThemeButton = new JButton("Theme");
-                selectThemeButton.setBackground(new Color(0, 255, 255));
-                selectThemeButton.setVisible(false);
-                selectThemeButton.setLocation(400, 925);
-                selectThemeButton.setSize(90, 50);
-
-                selectThemeButton.addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(ActionEvent event) {
-                        JFrame textInputFrame = new JFrame("");
-                        JTextField field1 = new JTextField();
-                        Object[] message =
-                        {
-                            "Enter number for desired theme:\n1. Halloween\n2. Christmas\n3. Valentines Day\n4. Saint Patrick's Day\n5. Easter\n6. Wedding Month\n7. 4th of July\n8. Summer Time\n9. Thanksgiving\n10. Victory Theme\n11. None ", field1,
-
-                        };
-                        field1.addAncestorListener(new RequestFocusListener());
-                        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Theme Selector", JOptionPane.OK_CANCEL_OPTION);
-                        if (option == JOptionPane.OK_OPTION)
-                        {
-                            if (validateInteger(field1.getText()))
-                            {
-                                int selection = Integer.parseInt(field1.getText());
-
-                                switch (selection)
-                                {
-                                    case 1:
-                                        mf.holidayLoader.makeHalloweenActiveHoliday();
-                                        break;
-                                    case 2:
-                                        mf.holidayLoader.makeChristmasActiveHoliday();
-                                        break;
-                                    case 3:
-                                        mf.holidayLoader.makeValentinesDayActiveHoliday();
-                                        break;
-                                    case 4:
-                                        mf.holidayLoader.makeSaintPatricksDayActiveHoliday();
-                                        break;
-                                    case 5:
-                                        mf.holidayLoader.makeEasterActiveHoliday();
-                                        break;
-                                    case 6:
-                                        mf.holidayLoader.makeWeddingMonthActiveHoliday();
-                                        break;
-                                    case 7:
-                                        mf.holidayLoader.make4thOfJulyActiveHoliday();
-                                        break;
-                                    case 8:
-                                        mf.holidayLoader.makeSummerTimeActiveHoliday();
-                                        break;
-                                    case 9:
-                                        mf.holidayLoader.makeThanksgivingActiveHoliday();
-                                        break;
-                                    case 10:
-                                        mf.holidayLoader.makeEventWinnerActiveHoliday();
-                                        break;
-                                    default:
-                                        mf.holidayLoader.removeActiveHoliday();
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                JFrame message1 = new JFrame("Try again.");
-                                JOptionPane.showMessageDialog(message1, "Incorrect value.");
-                            }
-
-                        }
-                        mf.textField.requestFocusInWindow();
-                    }
-                });
-
-                mf.add(button);
-                mf.add(tetrisButton);
-                mf.add(galagaButton);
-                mf.add(pacmanButton);
-                mf.add(selectThemeButton);
-
+            });
+            galagaButton = new JButton();
+            try
+            {
+                Image img = ImageIO.read(getClass().getResource("images/GalagaLogo.png"));
+                galagaButton.setIcon(new ImageIcon(img));
             }
+            catch (Exception ex)
+            {
+                System.out.println(ex);
+            }
+            galagaButton.setBorderPainted(false);
+            galagaButton.setContentAreaFilled(false);
+            galagaButton.setFocusPainted(false);
+            galagaButton.setOpaque(false);
+            galagaButton.setVisible(false);
+            galagaButton.setLocation(600, 825);
+            galagaButton.setSize(200, 100);
+            //galagaButton.setBorder(null);
+            //TODO: Remove Tetris from Galaga settings....
+            galagaButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    if (mf.activeClerksPasscode == 8 || Database.isLockoutLifted(mf.activeClerksPasscode))
+                    {
+                        TetrisGame tetris = new TetrisGame();
+                        tetris.setVisible(true);
+                        mf.setEnabled(false);
+                        tetrisIsRunning = true;
+
+                        tetris.addWindowListener(new WindowAdapter() {
+
+                            @Override
+                            public void windowClosing(WindowEvent arg0) {
+
+                                tetris.stopAll();
+                                //Also make sure to lock them out regardless.
+                                Database.insertEggLockout(LocalDate.now(), mf.activeClerksPasscode);
+
+                                tetris.setVisible(false);
+                                tetrisIsRunning = false;
+                                mf.setEnabled(true);
+                                mf.requestFocus();
+                                mf.textField.requestFocusInWindow();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        JFrame message1 = new JFrame("See ya tomorrow!");
+                        JOptionPane.showMessageDialog(message1, "Please come back and try again tomorrow.");
+                    }
+                }
+            });
+            pacmanButton = new JButton();
+            try
+            {
+                Image img = ImageIO.read(getClass().getResource("images/PacmanLogo.png"));
+                pacmanButton.setIcon(new ImageIcon(img));
+            }
+            catch (Exception ex)
+            {
+                System.out.println(ex);
+            }
+            pacmanButton.setBorderPainted(false);
+            pacmanButton.setContentAreaFilled(false);
+            pacmanButton.setFocusPainted(false);
+            pacmanButton.setOpaque(false);
+            pacmanButton.setVisible(false);
+            pacmanButton.setLocation(400, 825);
+            pacmanButton.setSize(200, 100);
+            pacmanButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    if (mf.activeClerksPasscode == 8 || Database.isLockoutLifted(mf.activeClerksPasscode))
+                    {
+                        if (!pacmanIsRunning && !tetrisIsRunning && !galagaIsRunning)
+                        {
+                            pacmanIsRunning = true;
+                            mf.setEnabled(false);
+                            PacmanGame mw = new PacmanGame();
+                            mw.setVisible(true);
+
+                            mw.addWindowListener(new WindowAdapter() {
+
+                                @Override
+                                public void windowClosing(WindowEvent arg0) {
+
+                                    //TODO: Need to get the data from the game here, window closed so must be time to update stuff...
+                                    //Also make sure to lock them out regardless.
+                                    Database.insertEggLockout(LocalDate.now(), mf.activeClerksPasscode);
+                                    mw.myMaze.windowClosed();
+                                    mw.setVisible(false);
+                                    pacmanIsRunning = false;
+                                    mf.setEnabled(true);
+                                    mf.requestFocus();
+                                    mf.textField.requestFocusInWindow();
+
+                                }
+
+                            });
+                        }
+                    }
+                    else
+                    {
+                        JFrame message1 = new JFrame("See ya tomorrow!");
+                        JOptionPane.showMessageDialog(message1, "Please come back and try again tomorrow.");
+                    }
+                }
+            });
+            button.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    System.out.println("They are ready to proceed to play!");
+
+                    if (mf.curCart.isEmpty() && mf.refundCart.isEmpty())//if there is nothing on the GUI lets play a game!
+                    {
+                        if (Database.isLockoutLifted(mf.activeClerksPasscode))
+                        {
+                            initiateGame();
+                        }
+                        else
+                        {
+                            JFrame message1 = new JFrame("Terminated!");
+                            JOptionPane.showMessageDialog(message1, "Please come back and try again tomorrow.");
+                        }
+
+                    }
+                }
+            });
+            selectThemeButton = new JButton("Theme");
+            selectThemeButton.setBackground(new Color(0, 255, 255));
+            selectThemeButton.setVisible(false);
+            selectThemeButton.setLocation(400, 925);
+            selectThemeButton.setSize(90, 50);
+            selectThemeButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    JFrame textInputFrame = new JFrame("");
+                    JTextField field1 = new JTextField();
+                    Object[] message =
+                    {
+                        "Enter number for desired theme:\n1. Halloween\n2. Christmas\n3. Valentines Day\n4. Saint Patrick's Day\n5. Easter\n6. Wedding Month\n7. 4th of July\n8. Summer Time\n9. Thanksgiving\n10. Victory Theme\n11. None ", field1,
+
+                    };
+                    field1.addAncestorListener(new RequestFocusListener());
+                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Theme Selector", JOptionPane.OK_CANCEL_OPTION);
+                    if (option == JOptionPane.OK_OPTION)
+                    {
+                        if (validateInteger(field1.getText()))
+                        {
+                            int selection = Integer.parseInt(field1.getText());
+
+                            switch (selection)
+                            {
+                                case 1:
+                                    mf.holidayLoader.makeHalloweenActiveHoliday();
+                                    break;
+                                case 2:
+                                    mf.holidayLoader.makeChristmasActiveHoliday();
+                                    break;
+                                case 3:
+                                    mf.holidayLoader.makeValentinesDayActiveHoliday();
+                                    break;
+                                case 4:
+                                    mf.holidayLoader.makeSaintPatricksDayActiveHoliday();
+                                    break;
+                                case 5:
+                                    mf.holidayLoader.makeEasterActiveHoliday();
+                                    break;
+                                case 6:
+                                    mf.holidayLoader.makeWeddingMonthActiveHoliday();
+                                    break;
+                                case 7:
+                                    mf.holidayLoader.make4thOfJulyActiveHoliday();
+                                    break;
+                                case 8:
+                                    mf.holidayLoader.makeSummerTimeActiveHoliday();
+                                    break;
+                                case 9:
+                                    mf.holidayLoader.makeThanksgivingActiveHoliday();
+                                    break;
+                                case 10:
+                                    mf.holidayLoader.makeEventWinnerActiveHoliday();
+                                    break;
+                                default:
+                                    mf.holidayLoader.removeActiveHoliday();
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            JFrame message1 = new JFrame("Try again.");
+                            JOptionPane.showMessageDialog(message1, "Incorrect value.");
+                        }
+
+                    }
+                    mf.textField.requestFocusInWindow();
+                }
+            });
+            mf.add(button);
+            mf.add(tetrisButton);
+            mf.add(galagaButton);
+            mf.add(pacmanButton);
+            mf.add(selectThemeButton);
+        }
+        catch (FontFormatException | IOException ex)
+        {
+            Logger.getLogger(ReadyPlayerOne.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -496,7 +504,7 @@ public class ReadyPlayerOne implements KeyListener {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "The boss has not finished this part yet. Please let him know.");
                 //Database.setCurrentLevelByPasscode(mf.activeClerksPasscode, 6);
-                        //updateScore(6, 30000);
+                //updateScore(6, 30000);
                 break;
             default:
                 break;
@@ -511,7 +519,9 @@ public class ReadyPlayerOne implements KeyListener {
 
         if (activeUser && mf.displayActive)
         {
-            if (code.checkKonami(e.getKeyCode()))
+            //System.out.println("KEYCODE: "+e.getKeyCode());
+            if(e.getKeyCode()!= 16 && e.getKeyCode()!= 20){//SKIP IT IS Shift or caps
+            if (code1.checkKonami(e.getKeyCode())) //|| code2.checkKonami(e.getKeyCode()))
             {
 
                 System.out.println("Welcome Player One!!");
@@ -538,6 +548,7 @@ public class ReadyPlayerOne implements KeyListener {
                 }, 0, 1, TimeUnit.SECONDS);
 
             }//end if konami code.
+            }
         }
 
     }

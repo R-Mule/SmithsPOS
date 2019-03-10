@@ -35,7 +35,7 @@ public class Board extends JPanel implements ActionListener, KeyListener {
     protected boolean hardModeActive = false;
     public int currentScore = 0;
     protected int consecutiveTetris = 0;
-    protected int blocksRemaining = 50;//I made it at this amount..53 actually  ;)
+    protected int blocksRemaining = 100;//I made it at this amount..53 actually  ;)
     final protected int hardModeScore = 5000;
     public GameSounds gameSounds = new GameSounds();
     public boolean gameWon = false;

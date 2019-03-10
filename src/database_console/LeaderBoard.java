@@ -189,7 +189,7 @@ public class LeaderBoard {
             case 0:
             {
                 //Load all dummy keys.
-                JLabel copperKey = new JLabel(createImageIcon("images\\CopperKeyFade.png", "copperKeyFade"));
+                JLabel copperKey = new JLabel(createImageIcon("images/CopperKeyFade.png", "copperKeyFade"));
                 copperKey.setVisible(true);
                 copperKey.setLocation(curX, curY);
                 copperKey.setSize(100, 50);

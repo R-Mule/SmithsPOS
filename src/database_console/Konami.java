@@ -9,15 +9,13 @@ import java.util.TreeMap;
 
 public class Konami {
 
-    private int[] code =
-    {
-        38, 38, 40, 40, 37, 39, 37, 39, 66, 65
-    };
+    private int[] code;
     private Map<Integer, Integer>[] graph;
     private int currentNode = 0;
 
-    public Konami() {
-        graph = generateSequenceMap(code);
+    public Konami(int[] code) {
+        this.code = code;
+        graph = generateSequenceMap(this.code);
     }
 
     public boolean checkKonami(int keyPressed) {
@@ -46,9 +44,6 @@ public class Konami {
             {
                 if (sequence[j - i] == sequence[j])
                 {
-                    //  System.out.println("If at Node "+j+" you give me seq["+(j-i+1) 
-                    //          + "] OR " + (sequence[j-i+1]) + " , goto Node " + (j-i+1));
-
                     //Ensure that the longest possible sub-sequence is recognized
                     Integer value = graph[j].get(sequence[j - i + 1]);
                     if (value == null || value < j - i + 1)
