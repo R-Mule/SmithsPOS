@@ -3,6 +3,8 @@ package database_console;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,8 +32,16 @@ public class LeaderBoard {
         frame.setResizable(false);
         frame.setSize(1000, 600);
         frame.setLocation(350, 200);
-        frame.setAlwaysOnTop(true);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //frame.setAlwaysOnTop(true);
+        // frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent arg0) {
+                mf.setEnabled(true);
+                frame.dispose();
+            }
+        });
+
         frame.setVisible(false);
         button = new JButton("");
         button.setSize(5, 5);
@@ -49,7 +59,14 @@ public class LeaderBoard {
                 frame.setSize(1000, 900);
                 frame.setLocation(350, 50);
                 frame.setAlwaysOnTop(true);
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                //frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent arg0) {
+                        mf.setEnabled(true);
+                        frame.dispose();
+                    }
+                });
                 //BufferedImage myImage = ImageIO.read(new File("images\\anaorak_.jpg"));
                 //JFrame myJFrame = new JFrame("Image pane");
                 //myJFrame.setContentPane(new ImagePanel(myImage));
@@ -59,6 +76,8 @@ public class LeaderBoard {
                 // frame.setBackground(Color.BLACK);
                 loadEverything();
                 frame.setVisible(true);
+                mf.setEnabled(false);
+
                 mf.textField.requestFocusInWindow();
                 //  }
                 //  catch (IOException ex)

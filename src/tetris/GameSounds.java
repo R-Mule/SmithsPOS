@@ -18,7 +18,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  */
 public class GameSounds {
 
-    // private AudioClip mainMusic;
     private boolean onFinalLevel = false;
     private Clip mainMusic;
 
@@ -28,13 +27,8 @@ public class GameSounds {
         {
             mainMusic = AudioSystem.getClip();
             inputStream1 = AudioSystem.getAudioInputStream(this.getClass().getResource("music/TetrisTheme.wav"));
-            mainMusic.open(inputStream1);//FIX THIS LATER
+            mainMusic.open(inputStream1);
 
-
-            //System.out.println("Starting to make tetris sounds.");
-            // URL mainUrl = getClass().getResource("music/TetrisTheme.wav");
-            // mainMusic = Applet.newAudioClip(mainUrl);
-            // System.out.println("Tetris Sound made..");
         }
         catch (UnsupportedAudioFileException ex)
         {
