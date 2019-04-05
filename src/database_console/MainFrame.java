@@ -88,14 +88,14 @@ public class MainFrame extends javax.swing.JFrame {
             }
             else if (month.contentEquals("04"))
             {
-                if (day == 1)
+                if (day < 10)
                 {
                     isMarchMadness = true;
                     isEaster = true;
                 }
-                else if (day < 3)
+                else if (day < 21)
                 {
-                    isMarchMadness = true;
+                    isEaster = true;
                 }
                 else if (day == 28)
                 {
@@ -3806,7 +3806,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.15", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.16", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
