@@ -175,7 +175,6 @@ public class MainFrame extends javax.swing.JFrame {
         Date date = new Date();
         previousDate = dateFormat.format(date);
         textField.setBounds(100, 800, 200, 20);
-        textField.addKeyListener(rp1);
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
@@ -811,79 +810,12 @@ public class MainFrame extends javax.swing.JFrame {
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Employee Login Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION)
                 {
-
-                    if (field1.getText().contentEquals("Prince Ali Ababwa"))
-                    {
-                        boolean found = false;
-                        for (Item item : curCart.getItems())
-                        {
-                            if (item.itemName.contentEquals("Bread") && item.itemPrice == 112519.92 && item.getDiscountPercentage() == 1)
-                            {
-                                found = true;
-                            }
-                        }
-                        if (found)
-                        {
-                            EasterEgg ee = new EasterEgg("images/al2.gif", "sounds/al2.wav", "", "You ain't never had a friend like me!");
-                        }
-                    }//end if EE Protocol
-                    if (field1.getText().contentEquals("Please"))
-                    {//EE Protocol
-
-                        ImageIcon icon = new ImageIcon(getClass().getResource("images/ssj.gif"));
-                        JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "“I am the hope of the universe.\nI am the answer to all living things that cry out for peace.\nI am protector of the innocent.\nI am the light in the darkness. \nI am truth.\nAlly to good!\nNightmare to you!”", "", 0, icon);
-
-                    }
-                    else if (field1.getText().contentEquals("Kevin McCallister"))
-                    {
-                        for (Item item : curCart.getItems())
-                        {
-                            if (item.mutID.contentEquals("HAPIZZA") && item.quantity == 11 && isChristmas)
-                            {
-                                EasterEgg ee = new EasterEgg("images/ha3.gif", "sounds/ha3.wav", "", "Did anyone order me a plain cheese?");
-                            }
-                        }
-
-                    }
-                    else if (field1.getText().contentEquals("The One"))
-                    {//end EE Protocol
-                        boolean found1 = false;
-                        boolean found2 = false;
-                        boolean found3 = false;
-                        int cntr = 0;
-                        for (Item item : curCart.getItems())
-                        {
-                            cntr++;
-                            if (item.mutID.contentEquals("MATRED") && item.percentageDisc == 0.01)
-                            {
-                                found1 = true;
-                            }
-                            if (item.itemName.contentEquals("Man") && item.itemPrice == 20.03 && item.percentageDisc == 0.01)
-                            {
-                                found2 = true;
-                            }
-                            if (item.itemName.contentEquals("Because I choose to.") && item.itemPrice == 20.03 && item.percentageDisc == 0.01)
-                            {
-                                found3 = true;
-                            }
-                        }
-                        if (found1 && found2 && found3 && cntr == 3)
-                        {
-                            EasterEgg ee = new EasterEgg("images/mx4.gif", "sounds/mx4.wav", "", "You're not human, are you?");
-                        }
-                    }
                     if (!field1.getText().isEmpty() && validateInteger(field1.getText()))
                     {
                         String clerkName = Database.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
                         if (clerkName != null)
                         {
-
                             menuBar.setAllVisible();
-                            if (isHalloween)
-                            {
-                                EasterEgg ee = new EasterEgg("sounds/mario1.wav");
-                            }
                             employeeSelectionHeader.setText("Active Clerk: " + clerkName);
                             activeClerksPasscode = Integer.parseInt(field1.getText());
                             checkForAdminButtonVisible(Integer.parseInt(field1.getText()));
@@ -897,8 +829,6 @@ public class MainFrame extends javax.swing.JFrame {
                             {
                                 EasterEgg ee = new EasterEgg("images/weddingphoto.jpg", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
                             }
-
-                            rp1.reload();
                         }
                     }
 
@@ -915,7 +845,6 @@ public class MainFrame extends javax.swing.JFrame {
                 activeClerksPasscode = -1;
                 checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-                rp1.exit();
             }
         });
 
@@ -1381,170 +1310,6 @@ public class MainFrame extends javax.swing.JFrame {
                                     tempID = dateFormat.format(date);
                                     System.out.println(tempID);
                                     String upc = 'T' + tempID;
-                                    if (Double.parseDouble(field3.getText()) > 9000 && field1.getText().contentEquals("Son Goku"))
-                                    {//EE Protocol
-                                        JFrame message1 = new JFrame("");
-                                        ImageIcon icon = new ImageIcon(getClass().getResource("images/over9000.jpg"));
-                                        JOptionPane.showMessageDialog(message1, "", "", 0, icon);
-                                    }
-                                    else if (field1.getText().contentEquals("I show not your face but your hearts desire") && Double.parseDouble(field3.getText()) == 1114.01)
-                                    {
-                                        boolean part1 = false;
-                                        boolean part2 = false;
-                                        for (Item item : curCart.getItems())
-                                        {
-                                            if (item.mutID.contentEquals("HPSS2"))
-                                            {
-                                                part1 = true;
-                                            }
-                                            else if (item.itemName.contentEquals("Platform") && item.itemPrice == 9.75)
-                                            {
-                                                part2 = true;
-                                            }
-
-                                        }
-                                        if (part1 && part2)
-                                        {
-                                            EasterEgg ee = new EasterEgg("images/hpss3.gif", "sounds/hpss3.wav", "", "One can never have enough socks.");
-                                        }
-
-                                    }
-                                    else if (field1.getText().contentEquals("Platform") && Double.parseDouble(field3.getText()) == 9.75)
-                                    {
-                                        EasterEgg ee = new EasterEgg("images/hpss1.gif", "sounds/HPSS1.wav", "", "Alas! Earwax!");
-
-                                    }
-                                    else if (field1.getText().contentEquals("Guest") && Double.parseDouble(field3.getText()) == 20.17)
-                                    {
-                                        boolean part1 = false;
-                                        boolean part2 = false;
-                                        for (Item item : curCart.getItems())
-                                        {
-                                            if (item.itemName.contentEquals("Be") && item.getPriceOfItemsBeforeTax() == 0.03)
-                                            {
-                                                part1 = true;
-                                            }
-                                            else if (item.itemName.contentEquals("Our") && item.getPriceOfItemBeforeTax() == 0.17)
-                                            {
-                                                part2 = true;
-                                            }
-                                        }
-                                        if (part1 && part2)
-                                        {
-                                            EasterEgg ee = new EasterEgg("images/bnb.gif", "sounds/BOG.wav", "", "Try the gray stuff, it's delicious!");
-                                        }//end if BNB Protocol
-                                    }//end EE protocol
-                                    else if (field1.getText().contentEquals("Man") && Double.parseDouble(field3.getText()) == 20.03)
-                                    {
-
-                                        boolean found1 = false;
-                                        int cntr = 0;
-                                        for (Item item : curCart.getItems())
-                                        {
-                                            cntr++;
-                                            if (item.mutID.contentEquals("MATRED"))
-                                            {
-                                                found1 = true;
-                                            }
-                                        }
-                                        if (found1 && cntr == 1)
-                                        {
-                                            EasterEgg ee = new EasterEgg("images/mx2.gif", "sounds/mx2.wav", "Why do you persist?", "");
-
-                                        }
-
-                                    }
-                                    else if (field1.getText().contentEquals("A Dark Knight") && Double.parseDouble(field3.getText()) == 20.08)
-                                    {
-                                        if (curCart.getItems().size() == 2 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22") && curCart.getItems().get(1).mutID.contentEquals("BATMON") && curCart.getItems().get(1).getDiscountPercentage() == .5)
-                                        {
-                                            EasterEgg ee = new EasterEgg("images/dk3.gif", "sounds/dk3.wav", "Accomplice? I'm going to tell them the whole thing was your idea.", "");
-                                        }
-                                    }
-                                    else if (field1.getText().contentEquals("Because I choose to.") && Double.parseDouble(field3.getText()) == 20.03)
-                                    {
-
-                                        boolean found1 = false;
-                                        boolean found2 = false;
-                                        int cntr = 0;
-                                        for (Item item : curCart.getItems())
-                                        {
-                                            cntr++;
-                                            if (item.mutID.contentEquals("MATRED"))
-                                            {
-                                                found1 = true;
-                                            }
-                                            if (item.itemName.contentEquals("Man") && item.itemPrice == 20.03)
-                                            {
-                                                found2 = true;
-                                            }
-                                        }
-                                        if (found1 && found2 && cntr == 2)
-                                        {
-                                            EasterEgg ee = new EasterEgg("images/mx3.gif", "sounds/mx3.wav", "", "Who are you?");
-                                        }
-
-                                    }
-                                    else if (isHalloween && Double.parseDouble(field3.getText()) == 3.00 && field1.getText().contentEquals("Come Little Children"))
-                                    {
-                                        EasterEgg ee = new EasterEgg("images/hp1.gif", "sounds/hp1.wav", "", "Just one item to go!");
-
-                                    }
-                                    else if (Double.parseDouble(field3.getText()) == 16.93 && field1.getText().contentEquals("I Put A Spell On You"))
-                                    {
-                                        boolean found = false;
-                                        for (Item item : curCart.getItems())
-                                        {
-                                            if (item.itemName.contentEquals("Come Little Children") && item.itemPrice == 3.00)
-                                            {
-                                                found = true;
-                                            }
-                                        }
-                                        if (found)
-                                        {
-                                            EasterEgg ee = new EasterEgg("images/hp2.gif", "sounds/hp2.wav", "", "Max likes your yabbos!");
-                                        }
-                                    }//end if EE Protocol
-                                    else if (Double.parseDouble(field3.getText()) == 112519.92 && field1.getText().contentEquals("Bread"))
-                                    {
-                                        EasterEgg ee = new EasterEgg("images/al1.gif", "sounds/al1.wav", "", "Ring bells! Bang the drums!!");
-
-                                    }
-                                    else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Witch"))
-                                    {
-                                        boolean found = false;
-                                        for (Item item : curCart.getItems())
-                                        {
-                                            if (item.itemName.contentEquals("Duck") && item.itemPrice == 19.75)
-                                            {
-                                                found = true;
-                                            }
-                                        }
-                                        if (found)
-                                        {
-                                            EasterEgg ee = new EasterEgg("images/mp1.gif", "sounds/mp1.wav", "", "She turned me into a newt!!");
-                                        }
-                                    }
-                                    else if (Double.parseDouble(field3.getText()) == 19.75 && field1.getText().contentEquals("Duck"))
-                                    {
-                                        boolean found = false;
-                                        for (Item item : curCart.getItems())
-                                        {
-                                            if (item.itemName.contentEquals("Witch") && item.itemPrice == 19.75)
-                                            {
-                                                found = true;
-                                            }
-                                        }
-                                        if (found)
-                                        {
-                                            EasterEgg ee = new EasterEgg("images/mp1.gif", "sounds/mp1.wav", "", "She turned me into a newt!!");
-                                        }
-
-                                    }
-                                    else if (Double.parseDouble(field3.getText()) == 0.02 && field1.getText().contentEquals("Jango Fett"))
-                                    {
-                                        EasterEgg ee = new EasterEgg("images/sw1.gif", "sounds/sw1.wav", "I'm just a simple man, trying to make my way in the universe.", "");
-                                    }//end if EE Protocol
 
                                     Item tempItem = new Item(tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
                                     curCart.addItem(tempItem);
@@ -2404,11 +2169,7 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                         else
                         {
-                            if (field1.getText().contentEquals("BTITUDE"))
-                            {
-                                EasterEgg ee = new EasterEgg("images/bat.gif", "sounds/batman.wav", "", "You think muscles are big, you haven't seen my brain!");
-                            }
-                            else if (field1.getText().contentEquals("Prince") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Anduin") && field4.getText().contentEquals("091318"))
+                            if (field1.getText().contentEquals("Prince") && field2.getText().contentEquals("Smith") && field3.getText().contentEquals("Anduin") && field4.getText().contentEquals("091318"))
                             {
                                 EasterEgg ee = new EasterEgg("images/as1.gif", "sounds/as1.wav", "", "Sometimes we must fight for what we believe in.");
                             }
@@ -3444,160 +3205,84 @@ public class MainFrame extends javax.swing.JFrame {
             if (!Database.checkDatabaseForTicket(id))
             {//check ID to see if it exists in database
                 //if it doesnt, lets create it!
-                boolean eefound = false;
-                if (id.toUpperCase().contentEquals("DENNIS NEDRY"))
-                {//EE Protocol
-                    boolean itemFound = false;
-                    for (Item item : curCart.getItems())
-                    {
-                        if (item.mutID.contentEquals("012849"))
-                        {
-                            itemFound = true;
-                            eefound = true;
-                            EasterEgg ee = new EasterEgg("images/jp2.gif", "sounds/jp2.wav", "", "Life finds a way!");
-                        }//end if
-                    }//end for all items
-                    if (!itemFound)
-                    {
-                        eefound = true;
-                        EasterEgg ee = new EasterEgg("images/jp1.gif", "sounds/jp1.wav", " \nIt would seem the Park, I mean CART is missing something...\n", "Ah Ah Ah, you did't say the magic word!");
-                    }//not found!
 
-                }
-                else if (id.toUpperCase().contentEquals("ANTHONY EDWARD STARK"))
-                {//EE Protocol
-                    boolean itemFound = false;
-                    for (Item item : curCart.getItems())
+                if (!isSplitSavingActive)
+                {
+                    for (GuiCartItem item : guiItems)
                     {
-                        if (item.itemName.contentEquals("Mark") && item.itemPrice == 0.42)
-                        {
-                            itemFound = true;
-                            eefound = true;
-                            EasterEgg ee = new EasterEgg("images/im2.gif", "sounds/im2.wav", "", "I AM IRONMAN");
-                        }
+                        item.removeAllGUIData();
                     }
-                    if (!itemFound)
+                    guiItems.clear();
+                    if (curCart.isEmpDiscountActive)
                     {
-                        eefound = true;
-                        EasterEgg ee = new EasterEgg("images/im1.gif", "sounds/im1.wav", "", "Jarvis: Greetings sir!");
-                    }//not found!
+                        curCart.isEmpDiscountActive(false);
+                        empList2.setSelectedIndex(0);
+                    }
 
+                    curCart.storeCart(id, false);
+                    resizeCartWindow();
+                    resaveTicket.setVisible(false);
+                    isMassPreCharged = false;
+                    massPrechargeButton.setBackground(new Color(255, 0, 0));
+                    isMassSplitting = false;
+                    massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                    massSplitTicketButton.setText("Mass Off");
+
+                    resetVars();
                 }
-                else if (id.toUpperCase().contentEquals("SIFO-DYAS"))
-                {
-                    for (Item item : curCart.getItems())
+                else
+                {//Begin split ticket save logic
+
+                    if (curCart.containsItemToBeSplit())
                     {
-                        if (item.getPrice() == 0.02 && item.itemName.contentEquals("Jango Fett") && item.getQuantity() == 2)
-                        {
-                            eefound = true;
-                        }
-                    }
-                    if (eefound)
-                    {
-                        EasterEgg ee = new EasterEgg("images/sw3.gif", "sounds/sw3.wav", "", "Negotiations with a lightsaber.");
-                    }
-                }
-                else if (isHalloween && id.toUpperCase().contentEquals("THACKERY BINX"))
-                {
-                    boolean found1 = false;
-                    boolean found2 = false;
-                    for (Item item : curCart.getItems())
-                    {
-                        if (item.itemName.contentEquals("Come Little Children") && item.itemPrice == 3.00)
-                        {
-                            found1 = true;
-                        }
-                        if (item.itemName.contentEquals("I Put A Spell On You") && item.itemPrice == 16.93)
-                        {
-                            found2 = true;
-                        }
-                    }
-                    if (found1 && found2)
-                    {
-                        EasterEgg ee = new EasterEgg("images/hp3.gif", "sounds/hp3.wav", "", "Okay then, let's go!");
-                    }
-                }
-                else//end if EE Protocol
-                if (!eefound)
-                {
-                    if (!isSplitSavingActive)
-                    {
+                        ArrayList<GuiCartItem> itemsToRemove = new ArrayList<>();
                         for (GuiCartItem item : guiItems)
                         {
-                            item.removeAllGUIData();
+                            if (item.item.isSetToSplitSave)
+                            {
+                                itemsToRemove.add(item);
+                                resizeCartWindow();
+                            }
+                            else
+                            {
+                                item.splitTicketDeactivated();//we need to bring it back to normal view.
+                            }
                         }
-                        guiItems.clear();
-                        if (curCart.isEmpDiscountActive)
+                        for (GuiCartItem toRemove : itemsToRemove)
                         {
-                            curCart.isEmpDiscountActive(false);
-                            empList2.setSelectedIndex(0);
+                            guiItems.remove(toRemove);
+                            toRemove.removeAllGUIData();
                         }
+                        curCart.storeCart(id, true);
 
-                        curCart.storeCart(id, false);
+                        curCart.setRequiresRepaint(true);
+                        curCart.updateTotal();
+
+                        updateCartScreen();
                         resizeCartWindow();
                         resaveTicket.setVisible(false);
-                        isMassPreCharged = false;
-                        massPrechargeButton.setBackground(new Color(255, 0, 0));
-                        isMassSplitting = false;
-                        massSplitTicketButton.setBackground(new Color(255, 0, 0));
-                        massSplitTicketButton.setText("Mass Off");
-
-                        resetVars();
+                        if (curCart.isEmpty())
+                        {
+                            isMassPreCharged = false;
+                            massPrechargeButton.setBackground(new Color(255, 0, 0));
+                            isMassSplitting = false;
+                            massSplitTicketButton.setBackground(new Color(255, 0, 0));
+                            massSplitTicketButton.setText("Mass Off");
+                            resetVars();
+                            if (curCart.isEmpDiscountActive)
+                            {
+                                curCart.isEmpDiscountActive(false);
+                                empList2.setSelectedIndex(0);
+                            }
+                        }
+                        splitTicketEndShowContent();
+                        cancelSplitTicketButton.setVisible(false);
+                        beginSplitTicketButton.setVisible(true);
                     }
                     else
-                    {//Begin split ticket save logic
-
-                        if (curCart.containsItemToBeSplit())
-                        {
-                            ArrayList<GuiCartItem> itemsToRemove = new ArrayList<>();
-                            for (GuiCartItem item : guiItems)
-                            {
-                                if (item.item.isSetToSplitSave)
-                                {
-                                    itemsToRemove.add(item);
-                                    resizeCartWindow();
-                                }
-                                else
-                                {
-                                    item.splitTicketDeactivated();//we need to bring it back to normal view.
-                                }
-                            }
-                            for (GuiCartItem toRemove : itemsToRemove)
-                            {
-                                guiItems.remove(toRemove);
-                                toRemove.removeAllGUIData();
-                            }
-                            curCart.storeCart(id, true);
-
-                            curCart.setRequiresRepaint(true);
-                            curCart.updateTotal();
-
-                            updateCartScreen();
-                            resizeCartWindow();
-                            resaveTicket.setVisible(false);
-                            if (curCart.isEmpty())
-                            {
-                                isMassPreCharged = false;
-                                massPrechargeButton.setBackground(new Color(255, 0, 0));
-                                isMassSplitting = false;
-                                massSplitTicketButton.setBackground(new Color(255, 0, 0));
-                                massSplitTicketButton.setText("Mass Off");
-                                resetVars();
-                                if (curCart.isEmpDiscountActive)
-                                {
-                                    curCart.isEmpDiscountActive(false);
-                                    empList2.setSelectedIndex(0);
-                                }
-                            }
-                            splitTicketEndShowContent();
-                            cancelSplitTicketButton.setVisible(false);
-                            beginSplitTicketButton.setVisible(true);
-                        }
-                        else
-                        {
-                            JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, "Cannot save a ticket with nothing set to save.");
-                        }
+                    {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Cannot save a ticket with nothing set to save.");
                     }
                 }
 
@@ -3806,7 +3491,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.16", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.17", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -3846,7 +3531,6 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
 
-    ReadyPlayerOne rp1 = new ReadyPlayerOne(this);
     HolidayLoader holidayLoader;
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";

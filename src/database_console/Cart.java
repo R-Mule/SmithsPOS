@@ -399,24 +399,6 @@ public class Cart {
     }//end contains RX
 
     void setMassDiscount(double discPer) {
-        boolean found = false;
-        for (Item item : items)
-        {
-            if (!item.isRX() && item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860 && item.getCategory() != 861)
-            {
-                item.setDiscountPercentage(discPer);
-
-                if (item.itemName.contentEquals("Bread") && item.itemPrice == 112519.92 && item.getDiscountPercentage() == 1)
-                {
-                    found = true;
-                }
-
-            }
-        }
-        if (found)
-        {
-            EasterEgg ee = new EasterEgg("images/al3.gif", "sounds/al3.wav", "", "A WHOLE NEW WORLD!!");
-        }//end if EE Protocol
         updateTotal();
     }
 

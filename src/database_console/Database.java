@@ -615,63 +615,6 @@ public class Database {
 
     public static ArrayList<Item> getTicketItemsFromDatabase(String id) {
         ArrayList<Item> loadedItems = new ArrayList<>();
-        if (id.toUpperCase().contentEquals("WONDERLAND"))
-        {
-            loadedItems.add(new Item("MATRED", "MATRED", "Red Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MATBLU", "MATBLU", "Blue Pill", 19.99, 19.99, false, 852, 0, "", "", 1, false, 0, false));
-            return loadedItems;
-        }
-        else if (id.toUpperCase().contentEquals("STRANGER"))
-        {
-            for (int i = 1; i < 41; i++)
-            {
-                loadedItems.add(new Item("BATDIS" + i, "BATDIS" + i, "District", 0.07, 0.07, false, 852, 0, "", "", 1, false, 0, false));
-            }
-
-            return loadedItems;
-        }
-        else if (id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?"))
-        {
-            loadedItems.add(new Item("BATMON", "BATMON", "Mob Money", 0.36, 0.36, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("BATPEN", "BATPEN", "Pencil", 8.47, 8.47, false, 852, 0, "", "", 1, false, 0, false));
-
-            return loadedItems;
-        }
-        else if (id.toUpperCase().contentEquals("WET BANDITS"))
-        {
-            loadedItems.add(new Item("HAPIZZA", "HAPIZZA", "Pizza Box", 11.1363636364, 11.1363636364, false, 852, 0, "", "", 1, false, 0, false));
-            EasterEgg ee = new EasterEgg("images/ha1.gif", "sounds/ha1.wav", "What're you scared, Marv? Are you afraid? C'mon, get out here.", "");
-            return loadedItems;
-        }
-        else if (id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA"))
-        {
-            loadedItems.add(new Item("HPSS2", "HPSS2", "Erised stra ehru oyt ube cafru oyt on wohsi", 1041.11, 1041.11, false, 852, 0, "", "", 1, false, 0, false));
-            EasterEgg ee = new EasterEgg("images/HPSS2.gif", "sounds/HPSS2.wav", "It does not do to dwell on dreams and forget to live.", "");
-            return loadedItems;
-        }
-        else if (id.toUpperCase().contentEquals("MICHAEL MYERS"))
-        {
-            loadedItems.add(new Item("MMHA1", "MMHA1", "Loomis", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA2", "MMHA2", "Laurie", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA3", "MMHA3", "Annie", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA4", "MMHA4", "Bob", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA5", "MMHA5", "Brackett", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA6", "MMHA6", "Lindsey", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA7", "MMHA7", "Tommy", 0.10, 0.10, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA8", "MMHA8", "Judith", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA9", "MMHA9", "Lynda", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA10", "MMHA10", "Marion", 0.25, 0.25, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA11", "MMHA11", "Richie", 0.19, 0.19, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA12", "MMHA12", "Lonnie", 0.78, 0.78, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA13", "MMHA13", "Keith", 10.25, 10.25, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA14", "MMHA14", "Dr. Wynn", 19.78, 19.78, false, 852, 0, "", "", 1, false, 0, false));
-            loadedItems.add(new Item("MMHA15", "MMHA15", "Christopher", 8.00, 8.00, false, 852, 0, "", "", 1, false, 0, false));
-
-            EasterEgg ee = new EasterEgg("images/mmha1.gif", "sounds/mmha1.wav", "", "Was that the Boogeyman?");
-            return loadedItems;
-        }
-        else
-        {
             try
             {
                 Class.forName(driverPath);
@@ -714,7 +657,6 @@ public class Database {
                 System.out.println(e);
             }
             return loadedItems;
-        }//end else EE
 
     }//end getTicketFromDatabase
 

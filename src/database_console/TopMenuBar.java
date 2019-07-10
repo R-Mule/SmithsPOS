@@ -23,17 +23,17 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
 
- @author hollie smith This menu bar spans the top of the screen and should have menu
- items that drop down.
+ @author hollie smith This menu bar spans the top of the screen and should have
+ menu items that drop down.
  */
 public class TopMenuBar extends JMenuBar {
 
     //Class Variables
-    JMenu addMenu, remMenu, mgmtMenu, feedMenu;
+    JMenu addMenu, remMenu, mgmtMenu, feedMenu, themeMenu;
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
             masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
-            modifyPermissions; //bugReport and featureRequest - Hollie's suggestions
+            modifyPermissions, christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
 
     //ctor
@@ -50,9 +50,13 @@ public class TopMenuBar extends JMenuBar {
         mgmtMenu = new JMenu("Management");
         mgmtMenu.setMnemonic(KeyEvent.VK_M);
         mgmtMenu.setVisible(false);
+        themeMenu = new JMenu("Theme");
+        themeMenu.setMnemonic(KeyEvent.VK_T);
+        themeMenu.setVisible(false);
         feedMenu = new JMenu("Feedback");
         feedMenu.setMnemonic(KeyEvent.VK_F);
         feedMenu.setVisible(false);
+
 //Add  menu items
         addDmeAccount = new JMenuItem();
         addDmeAccount.setText("DME Account");
@@ -139,10 +143,45 @@ public class TopMenuBar extends JMenuBar {
         featureRequest.setText("Feature Request");
         feedMenu.add(featureRequest);//This adds Update Price to Management Menu Choices
 
+        //Theme menu items
+        christmasTheme = new JMenuItem();
+        christmasTheme.setText("Christmas");
+        themeMenu.add(christmasTheme);
+
+        thanksgivingTheme = new JMenuItem();
+        thanksgivingTheme.setText("Thanksgiving");
+        themeMenu.add(thanksgivingTheme);
+
+        fourthTheme = new JMenuItem();
+        fourthTheme.setText("4th of July");
+        themeMenu.add(fourthTheme);
+
+        saintPatsTheme = new JMenuItem();
+        saintPatsTheme.setText("Saint Patricks Day");
+        themeMenu.add(saintPatsTheme);
+
+        easterTheme = new JMenuItem();
+        easterTheme.setText("Easter");
+        themeMenu.add(easterTheme);
+
+        summerTimeTheme = new JMenuItem();
+        summerTimeTheme.setText("Summer");
+        themeMenu.add(summerTimeTheme);
+
+        halloweenTheme = new JMenuItem();
+        halloweenTheme.setText("Halloween");
+        themeMenu.add(halloweenTheme);
+
+        valentinesTheme = new JMenuItem();
+        valentinesTheme.setText("Valentines");
+        themeMenu.add(valentinesTheme);
+
         this.add(addMenu);
         this.add(remMenu);
         this.add(mgmtMenu);
+        this.add(themeMenu);
         this.add(feedMenu);
+
 
 //Add menu action listeners
         addDmeAccount.addActionListener(new java.awt.event.ActionListener() {
@@ -289,6 +328,63 @@ public class TopMenuBar extends JMenuBar {
                 featureRequestActionPerformed(evt);
             }
         });
+
+        christmasTheme.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                christmasThemeActionPerformed(evt);
+            }
+        });
+
+        fourthTheme.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fourthThemeActionPerformed(evt);
+            }
+        });
+
+        saintPatsTheme.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saintPatsThemeActionPerformed(evt);
+            }
+        });
+
+        thanksgivingTheme.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                thanksgivingThemeActionPerformed(evt);
+            }
+        });
+
+        halloweenTheme.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                halloweenThemeActionPerformed(evt);
+            }
+        });
+
+        summerTimeTheme.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                summerTimeThemeActionPerformed(evt);
+            }
+        });
+
+        valentinesTheme.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                valentinesThemeActionPerformed(evt);
+            }
+        });
+
+        easterTheme.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                easterThemeActionPerformed(evt);
+            }
+        });
+
     }//end ctor
 
     //members/functions
@@ -1120,16 +1216,16 @@ public class TopMenuBar extends JMenuBar {
                         while ((line = in.readLine()) != null)
                         {
                             String[] tokens = line.split(",", 3);   //limits the split to 3 array elements ie only the first occurance so it will keep any colons in the value portion
-                            
+
                             if (tokens.length < 3) //not all data is there just move along
                             {
                                 continue;
                             }
                             //System.out.println(Integer.parseInt(tokens[0].trim()) + " " +Integer.parseInt(tokens[1].trim()) + " " + Integer.parseInt(tokens[2].trim()) );
                             Database.updateEmployeeMarchMadnessScores(Integer.parseInt(tokens[0].trim()), Integer.parseInt(tokens[1].trim()), Integer.parseInt(tokens[2].trim()));
-                            
+
                         }
-                    }                        
+                    }
                     catch (IOException ex)
                     {
                         System.out.println("Failed to load the NCAA March Madness File 2");
@@ -1312,8 +1408,41 @@ public class TopMenuBar extends JMenuBar {
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
     }//end masterRefundActionPerformed
 
+    private void christmasThemeActionPerformed(java.awt.event.ActionEvent evt) {
+        mf.holidayLoader.makeChristmasActiveHoliday();
+    }
+
+    private void fourthThemeActionPerformed(java.awt.event.ActionEvent evt) {
+        mf.holidayLoader.make4thOfJulyActiveHoliday();
+    }
+
+    private void saintPatsThemeActionPerformed(java.awt.event.ActionEvent evt) {
+        mf.holidayLoader.makeSaintPatricksDayActiveHoliday();
+    }
+
+    private void thanksgivingThemeActionPerformed(java.awt.event.ActionEvent evt) {
+        mf.holidayLoader.makeThanksgivingActiveHoliday();
+    }
+
+    private void easterThemeActionPerformed(java.awt.event.ActionEvent evt) {
+        mf.holidayLoader.makeEasterActiveHoliday();
+    }
+
+    private void halloweenThemeActionPerformed(java.awt.event.ActionEvent evt) {
+        mf.holidayLoader.makeHalloweenActiveHoliday();
+    }
+
+    private void valentinesThemeActionPerformed(java.awt.event.ActionEvent evt) {
+        mf.holidayLoader.makeValentinesDayActiveHoliday();
+    }
+
+    private void summerTimeThemeActionPerformed(java.awt.event.ActionEvent evt) {
+        mf.holidayLoader.makeSummerTimeActiveHoliday();
+    }
+
     //Other action events go here.
     public void updateVisible(int permission) { //this will eventually handle responsible menu items to show or not show.
+
         switch (permission)
         {
             case 4:
@@ -1377,6 +1506,7 @@ public class TopMenuBar extends JMenuBar {
         remMenu.setVisible(true);
         mgmtMenu.setVisible(true);
         feedMenu.setVisible(true);
+        themeMenu.setVisible(true);
     }//end setAllVisible()
 
     public void setAllNotVisible() {
@@ -1384,5 +1514,6 @@ public class TopMenuBar extends JMenuBar {
         remMenu.setVisible(false);
         mgmtMenu.setVisible(false);
         feedMenu.setVisible(false);
+        themeMenu.setVisible(false);
     }//end setAllNotVisible()
 }//end TopMenuBar Class

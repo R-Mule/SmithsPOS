@@ -2,7 +2,6 @@ package database_console;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
@@ -22,6 +21,11 @@ import javax.swing.JOptionPane;
  */
 public class EasterEgg {
 
+    private Clip audioClipSaved;
+            
+    public EasterEgg(){//Used when user wants to play or stop audio.
+    }
+    
     public EasterEgg(String imageFilePath, String audioFilePath, String specialText1, String specialText2) {
         if (ConfigFileReader.getPharmacyName().contentEquals("Smiths Super Aid"))
         {
@@ -75,5 +79,38 @@ public class EasterEgg {
             }
         }
     }
+        public void playAudio(String audioFilePath) {
+        if (ConfigFileReader.getPharmacyName().contentEquals("Smiths Super Aid"))
+        {
+            try
+            {
+                //File audioFile = new File(audioFilePath);
+                //AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(audioFilePath));
+                BufferedInputStream myStream = new BufferedInputStream(getClass().getResourceAsStream(audioFilePath));
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(myStream);
+                AudioFormat format = audioStream.getFormat();
 
+                DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+                this.audioClipSaved = (Clip) AudioSystem.getLine(info);
+                audioClipSaved.open(audioStream);
+                audioClipSaved.start();
+                // audioClip.stop();
+
+            }
+            catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex)
+            {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+        public void stopAudio() {
+        if (ConfigFileReader.getPharmacyName().contentEquals("Smiths Super Aid"))
+        {
+
+                 this.audioClipSaved.stop();
+
+
+        }
+    }
 }

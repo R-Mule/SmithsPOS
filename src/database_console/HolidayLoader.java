@@ -1,13 +1,8 @@
 package database_console;
 
-import java.applet.Applet;
-import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -124,134 +119,10 @@ public class HolidayLoader {
             case SUMMERTIME:
                 makeSummerTimeActiveHoliday();
                 break;
-            case EVENTWINNER:
-                makeEventWinnerActiveHoliday();
-                break;
             default:
                 removeActiveHoliday();
                 break;
         }
-    }
-
-    public void makeEventWinnerActiveHoliday() {
-        removeActiveHoliday();
-        hideMarchMaddness();
-        chosenHoliday = Holidays.EVENTWINNER;
-        ImageIcon victory1img = new ImageIcon(getClass().getResource("images/vic1.png"));
-        JLabel victory1imageLabel = new JLabel(victory1img);
-        victory1imageLabel.setSize(90, 159);
-        victory1imageLabel.setLocation(0, 650);
-        victory1imageLabel.setVisible(true);
-        mf.add(victory1imageLabel);
-
-        ImageIcon victory2img = new ImageIcon(getClass().getResource("images/vic2.png"));
-        JLabel victory2imageLabel = new JLabel(victory2img);
-        victory2imageLabel.setSize(88, 91);
-        victory2imageLabel.setLocation(1800, 0);
-        victory2imageLabel.setVisible(true);
-        mf.add(victory2imageLabel);
-
-        ImageIcon victory3img = new ImageIcon(getClass().getResource("images/vic3.png"));
-        JLabel victory3imageLabel = new JLabel(victory3img);
-        victory3imageLabel.setSize(119, 181);
-        victory3imageLabel.setLocation(1700, 510);
-        victory3imageLabel.setVisible(true);
-        mf.add(victory3imageLabel);
-
-        ImageIcon victory4img = new ImageIcon(getClass().getResource("images/vic4.png"));
-        JLabel victory4imageLabel = new JLabel(victory4img);
-        victory4imageLabel.setSize(68, 90);
-        victory4imageLabel.setLocation(1100, 10);
-        victory4imageLabel.setVisible(true);
-        mf.add(victory4imageLabel);
-
-        ImageIcon victory5img = new ImageIcon(getClass().getResource("images/vic5.png"));
-        JLabel victory5imageLabel = new JLabel(victory5img);
-        victory5imageLabel.setSize(82, 180);
-        victory5imageLabel.setLocation(1600, 510);
-        victory5imageLabel.setVisible(true);
-        mf.add(victory5imageLabel);
-
-        ImageIcon victory6img = new ImageIcon(getClass().getResource("images/vic6.png"));
-        JLabel victory6imageLabel = new JLabel(victory6img);
-        victory6imageLabel.setSize(180, 180);
-        victory6imageLabel.setLocation(1400, 510);
-        victory6imageLabel.setVisible(true);
-        mf.add(victory6imageLabel);
-
-        ImageIcon victory7img = new ImageIcon(getClass().getResource("images/vic7.png"));
-        JLabel victory7imageLabel = new JLabel(victory7img);
-        victory7imageLabel.setSize(230, 180);
-        victory7imageLabel.setLocation(1425, 210);
-        victory7imageLabel.setVisible(true);
-        mf.add(victory7imageLabel);
-        
-        activeHolidayComponents.add(victory1imageLabel);
-        activeHolidayComponents.add(victory2imageLabel);
-        activeHolidayComponents.add(victory3imageLabel);
-        activeHolidayComponents.add(victory4imageLabel);
-        activeHolidayComponents.add(victory5imageLabel);
-        activeHolidayComponents.add(victory6imageLabel);
-        activeHolidayComponents.add(victory7imageLabel);
-
-        victory1imageLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                AudioClip goku;
-                URL pikaUrl = getClass().getResource("sounds/goku.wav");//updated
-                goku = Applet.newAudioClip(pikaUrl);
-                goku.play();
-            }
-        });
-
-        victory2imageLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                AudioClip pika;
-                URL pikaUrl = getClass().getResource("sounds/pikachu.wav");//updated
-                pika = Applet.newAudioClip(pikaUrl);
-                pika.play();
-            }
-        });
-
-        victory3imageLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                AudioClip masterchief;
-                URL masterchiefUrl = getClass().getResource("sounds/mastercheif.wav");//updated
-                masterchief = Applet.newAudioClip(masterchiefUrl);
-                masterchief.play();
-            }
-        });
-
-                victory5imageLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                AudioClip mario;
-                URL marioU = getClass().getResource("sounds/mario.wav");//updated
-                mario = Applet.newAudioClip(marioU);
-                mario.play();
-            }
-        });
-        
-        victory6imageLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                AudioClip pacman;
-                URL pacmanU = getClass().getResource("sounds/pacman_extrapac.wav");//updated
-                pacman = Applet.newAudioClip(pacmanU);
-                pacman.play();
-            }
-        });
-        
-                victory7imageLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                AudioClip zelda;
-                URL zeldaU = getClass().getResource("sounds/zelda.wav");//updated
-                zelda = Applet.newAudioClip(zeldaU);
-                zelda.play();
-            }
-        });
-        
-        mf.getContentPane().setBackground(new Color(203, 203, 203));
-
-        deactivateQuotes();
-
     }
 
     public void makeChristmasActiveHoliday() {
