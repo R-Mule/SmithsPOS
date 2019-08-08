@@ -389,7 +389,7 @@ public class CheckoutHandler {
         Date date = new Date();
         String displayDate;
         displayDate = dateFormat2.format(date);
-        receipt += "           Smith's Super-Aid Pharmacy\n              247 Old Virginia Ave\n              Rich Creek, VA 24147\n            Main Line:(540) 726-2993\n           Office/DME: (540) 726-7331\nStore Hours: M-F 9:00AM-7:00PM Office closes @5\n             Sat: 9:00AM-2:00PM Office Closed\n             Sun: Closed\n\n";
+        receipt += "           Smith's Super-Aid Pharmacy\n              247 Old Virginia Ave\n              Rich Creek, VA 24147\n            Main Line:(540) 726-2993\n           Office/DME: (540) 726-7486\nStore Hours: M-F 9:00AM-7:00PM Office closes @5\n             Sat: 9:00AM-2:00PM Office Closed\n             Sun: Closed\n\n";
         String tempClerkName = "Clerk: " + clerkName.substring(clerkName.indexOf(" ") + 1) + " " + clerkName.substring(0, 1) + ".";
         receipt += String.format("%-20s %24s\n", "Receipt Number", tempClerkName);
         receipt += String.format("%-20s %25s\n\n", receiptNum, displayDate);
@@ -812,7 +812,7 @@ public class CheckoutHandler {
         Date date = new Date();
         String displayDate;
         displayDate = dateFormat2.format(date);
-        receipt += "           Smith's Super-Aid Pharmacy\n              247 Old Virginia Ave\n              Rich Creek, VA 24147\n            Main Line:(540) 726-2993\n           Office/DME: (540) 726-7331\nStore Hours: M-F 9:00AM-7:00PM Office closes @5\n             Sat: 9:00AM-2:00PM Office Closed\n             Sun: Closed\n\n";
+        receipt += "           Smith's Super-Aid Pharmacy\n              247 Old Virginia Ave\n              Rich Creek, VA 24147\n            Main Line:(540) 726-2993\n           Office/DME: (540) 726-7486\nStore Hours: M-F 9:00AM-7:00PM Office closes @5\n             Sat: 9:00AM-2:00PM Office Closed\n             Sun: Closed\n\n";
         String tempClerkName = "Clerk: " + clerkName.substring(clerkName.indexOf(" ") + 1) + " " + clerkName.substring(0, 1) + ".";
         receipt += String.format("%-20s %24s\n", "Receipt Number", tempClerkName);
         receipt += String.format("%-20s %25s\n\n", receiptNum, displayDate);

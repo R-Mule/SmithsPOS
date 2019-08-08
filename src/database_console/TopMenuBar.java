@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.MessagingException;
@@ -17,9 +18,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 /**
 
@@ -33,7 +36,8 @@ public class TopMenuBar extends JMenuBar {
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
             masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
-            modifyPermissions, christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
+            editEmployee,
+            christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
 
     //ctor
@@ -130,10 +134,9 @@ public class TopMenuBar extends JMenuBar {
         ncaaReportUpload.setText("March Madness File Upload");
         mgmtMenu.add(ncaaReportUpload);//This adds March Maddness File Upload to Management Menu Choices
 
-        modifyPermissions = new JMenuItem();
-        modifyPermissions.setText("Modify Permissions");
-        mgmtMenu.add(modifyPermissions);//This adds Modify Employee Permissions to Management Menu Choices
-
+        editEmployee = new JMenuItem();
+        editEmployee.setText("Edit Employee");
+        mgmtMenu.add(editEmployee);//This adds Modify Employee to Management Menu Choices
 //Feedback menu items
         bugReport = new JMenuItem();
         bugReport.setText("Bug Report");
@@ -181,7 +184,6 @@ public class TopMenuBar extends JMenuBar {
         this.add(mgmtMenu);
         this.add(themeMenu);
         this.add(feedMenu);
-
 
 //Add menu action listeners
         addDmeAccount.addActionListener(new java.awt.event.ActionListener() {
@@ -307,10 +309,10 @@ public class TopMenuBar extends JMenuBar {
             }
         });
 
-        modifyPermissions.addActionListener(new java.awt.event.ActionListener() {
+        editEmployee.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifyPermissionsActionPerformed(evt);
+                editEmployeeActionPerformed(evt);
             }
         });
 
@@ -1240,61 +1242,199 @@ public class TopMenuBar extends JMenuBar {
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
     }
 
-    private void modifyPermissionsActionPerformed(java.awt.event.ActionEvent evt) {
+    private void editEmployeeActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");
-        JTextField field1 = new JTextField();
-        JTextField field2 = new JTextField();
-        field1.addAncestorListener(new RequestFocusListener());
-        String masterList = Database.getEmployeesSortByPID();//Format PID : NAME \n for all employees in this one String.
+        JTextField selectedEmployeePID = new JTextField();
+        JTextField columnToModify = new JTextField();
+        JTextField updatedValue = new JTextField();
+        selectedEmployeePID.addAncestorListener(new RequestFocusListener());
+        ArrayList<Employee> employees = Database.getEmployeesListSortByPID();//Format PID : NAME \n for all employees in this one String.
+
+        DefaultTableModel model = new DefaultTableModel();
+        JTable table = new JTable(model);
+
+        // table.setBounds(0, 0, 700, 700);
+        model.addColumn("# (PID)");
+        model.addColumn("A (Name)");
+        model.addColumn("B (Passcode)");
+        model.addColumn("C (Permission Level 1-4)");
+        model.addColumn("D (RFID)");
+        table.getColumnModel().getColumn(0).setMinWidth(50);
+        table.getColumnModel().getColumn(0).setWidth(50);
+        table.getColumnModel().getColumn(0).setPreferredWidth(50);
+        table.getColumnModel().getColumn(1).setMinWidth(150);
+        table.getColumnModel().getColumn(1).setWidth(150);
+        table.getColumnModel().getColumn(1).setPreferredWidth(150);
+        table.getColumnModel().getColumn(2).setMinWidth(100);
+        table.getColumnModel().getColumn(2).setWidth(100);
+        table.getColumnModel().getColumn(2).setPreferredWidth(100);
+        table.getColumnModel().getColumn(3).setMinWidth(150);
+        table.getColumnModel().getColumn(3).setWidth(150);
+        table.getColumnModel().getColumn(3).setPreferredWidth(150);
+        table.getColumnModel().getColumn(4).setMinWidth(80);
+        table.getColumnModel().getColumn(4).setWidth(80);
+        table.getColumnModel().getColumn(4).setPreferredWidth(80);
+
+        model.addRow(new Object[]
+        {
+            "# (PID)", "A (Name)", "B (Passcode)", "C (Permission Level 1-4)", "D (RFID)"
+        });
+
+        for (Employee employee : employees)
+        {
+            model.addRow(new Object[]
+            {
+                employee.pid, employee.name, employee.passcode, employee.permissionLevel, employee.rfid
+            });
+        }
+
+        table.setEnabled(false);
+
+        table.setColumnSelectionAllowed(false);
+        table.setCellSelectionEnabled(false);
+        table.getTableHeader().setReorderingAllowed(false);
+
         Object[] message =
         {
-            "Please select an employee # from this list to modify permissions on: \n" + masterList + "Enter Employee #", field1, "\nEnter New Permission Level: (1-4)\n", field2
+            table, "Enter Employee #", selectedEmployeePID, "\nColumn letter to change: (ex. A)\n", columnToModify, "\nNew Value: (ex. Smith,Andrew)\n", updatedValue
         };
-
-        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Modify Permissions Menu", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Modify Employee Menu", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION)
         {
-            if (!field1.getText().isEmpty())
+            String columnValue = columnToModify.getText().toUpperCase();
+            String dataValue = updatedValue.getText();
+            String empNum = selectedEmployeePID.getText();
+
+            if (!empNum.isEmpty() && mf.validateInteger(empNum))
             {
-                if (!field2.getText().isEmpty())
+                int employeeID = Integer.parseInt(empNum);
+                boolean validID = false;
+                for (Employee checkEmpID : employees)
                 {
-                    if (masterList.contains(field1.getText()) && mf.validateInteger(field1.getText()))
+                    if (checkEmpID.pid == employeeID)
                     {
-                        int begin = masterList.indexOf(field1.getText());//This finds the string of employee being removed.
-                        String temp = masterList.substring(begin);
-                        temp = temp.substring(0, temp.indexOf("\n"));
-                        int clerkIndex = mf.employeeSelectionHeader.getText().indexOf("Active Clerk: ") + 14;
-                        String activeClerk = mf.employeeSelectionHeader.getText().substring(clerkIndex);
-                        System.out.println(activeClerk);
-                        System.out.println(temp.substring(temp.indexOf(": ") + 2));
-                        if (activeClerk.contentEquals(temp.substring(temp.indexOf(": ") + 2)))
+                        validID = true;
+                    }
+                }
+                if (validID)
+                {
+                    if (!columnValue.isEmpty() && (columnValue.contentEquals("A") || columnValue.contentEquals("B") || columnValue.contentEquals("C") || columnValue.contentEquals("D")))
+                    {
+                        if (columnValue.contentEquals("A"))//Update of Employee Name
                         {
-                            JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, "Error: You cannot update your own permissions.");
+                            if (!dataValue.isEmpty() && dataValue.matches("[A-Z]{1}[a-z]+?,[A-Z]{1}[a-z]+?"))
+                            {
+                                boolean exisits = false;
+                                for (Employee tempEmp : employees)
+                                {
+                                    if (tempEmp.name.contentEquals(dataValue))
+                                    {
+                                        exisits = true;
+                                        break;
+                                    }
+                                }
+                                if (!exisits)
+                                {
+                                    //Everything checks out, store the new employee name.
+                                    Database.updateEmployeeName(employeeID, dataValue);
+                                }
+                                else
+                                {
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Error: Employee already exisits with that name.");
+                                }
+
+                            }
+                            else
+                            {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Error: Employee name must be in Last,First format.");
+                            }
                         }
-                        else if (Integer.parseInt(field2.getText()) < 1 || Integer.parseInt(field2.getText()) > 4)
+                        else if (columnValue.contentEquals("B"))//Update of Passcode
                         {
-                            JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, "Error: Must be 1-4 on permissions.");
+                            if (!dataValue.isEmpty() && mf.validateInteger(dataValue) && Integer.parseInt(dataValue) > 0 && Integer.parseInt(dataValue) < 100)
+                            {
+                                int passcode = Integer.parseInt(dataValue);
+                                boolean exisits = false;
+                                for (Employee tempEmployee : employees)
+                                {
+                                    if (tempEmployee.passcode == passcode)
+                                    {
+                                        exisits = true;
+                                        break;
+                                    }
+                                }
+                                if (!exisits)
+                                {//cleared, go ahead and save it.
+                                    Database.updateEmployeePasscode(employeeID, passcode);
+                                }
+                                else
+                                {
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Error: An employee already has that passcode.");
+                                }
+
+                            }
+                            else
+                            {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Error: Invalid Passcode must be between 1-99.");
+                            }
                         }
-                        else if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to update: " + temp, "WARNING",
-                                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                        else if (columnValue.contains("C"))//update of permission level
                         {
-                            Database.updateEmployeePermissionLevel(Integer.parseInt(field1.getText()), Integer.parseInt(field2.getText()));//Remove, its final.
-                            JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, "Employee: " + temp + " Permission updated!.");
+                            if (!dataValue.isEmpty() && mf.validateInteger(dataValue) && Integer.parseInt(dataValue) >= 1 && Integer.parseInt(dataValue) <= 4)
+                            {//go ahead and add it.
+                                Database.updateEmployeePermissionLevel(employeeID, Integer.parseInt(dataValue));
+                            }
+                            else
+                            {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Error: Invalid Permission Level.");
+                            }
                         }
+                        else if (columnValue.contains("D"))//update of RFID
+                        {
+                            if (!dataValue.isEmpty() && dataValue.matches("[0-9][0-9][0-9],[0-9][0-9][0-9][0-9][0-9]"))
+                            {
+                                boolean exisits = false;
+                                for (Employee tempEmp : employees)
+                                {
+                                    if (tempEmp.rfid.contentEquals(dataValue))
+                                    {
+                                        exisits = true;
+                                    }
+                                }
+                                if (!exisits)
+                                {
+                                    Database.updateEmployeeRFID(employeeID, dataValue);
+                                }
+                                else
+                                {
+                                    JFrame message1 = new JFrame("");
+                                    JOptionPane.showMessageDialog(message1, "Error: Employee RFID already exisits.");
+                                }
+
+                            }
+                            else
+                            {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Error: Invalid RFID, must be in the format of ###,#####.");
+                            }
+                        }
+
                     }
                     else
                     {
                         JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Error: Invalid Employee ID.");
+                        JOptionPane.showMessageDialog(message1, "Error: Column Value must be A,B,C, or D.");
                     }
                 }
                 else
                 {
                     JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Error: Invalid Permission Level.");
+                    JOptionPane.showMessageDialog(message1, "Error: Employee ID not a valid ID.");
                 }
             }
             else
@@ -1450,11 +1590,14 @@ public class TopMenuBar extends JMenuBar {
                 addMenu.setVisible(true);
                 remMenu.setVisible(true);
                 mgmtMenu.setVisible(true);
+                addEmployee.setVisible(true);//Only Hollie and I may add or remove employees.
+                remEmployee.setVisible(true);
                 drawerReports.setVisible(true);
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(true);
                 dmeDataUpload.setVisible(true);
-                modifyPermissions.setVisible(true);
+                editEmployee.setVisible(true);// DISABLED FOR CURRENT RELEASE
+                // editEmployee.setVisible(false);
                 break;
             case 3:
                 feedMenu.setVisible(true);//Menus visible
@@ -1467,7 +1610,7 @@ public class TopMenuBar extends JMenuBar {
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(false);
                 dmeDataUpload.setVisible(true);
-                modifyPermissions.setVisible(false);
+                editEmployee.setVisible(false);
                 break;
             case 2:
                 feedMenu.setVisible(true);//Menus visible
@@ -1479,7 +1622,7 @@ public class TopMenuBar extends JMenuBar {
                 rxDataUpload.setVisible(false);
                 dmeDataUpload.setVisible(false);
                 drawerReports.setVisible(false);
-                modifyPermissions.setVisible(false);
+                editEmployee.setVisible(false);
                 break;
             case 1:
                 addMenu.setVisible(false);

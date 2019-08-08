@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -781,6 +782,9 @@ public class MainFrame extends javax.swing.JFrame {
         activateDisplayButton.setLocation(500, 890);
         activateDisplayButton.setSize(150, 40);
         activateDisplayButton.setBackground(new Color(50, 255, 255));
+        anniverButton.setLocation(500, 890);
+        anniverButton.setSize(150, 40);
+        anniverButton.setBackground(new Color(50, 255, 255));
 
         //This creates the clerkLoginButton
         clerkLoginButton.setLocation(10, 820);
@@ -856,6 +860,16 @@ public class MainFrame extends javax.swing.JFrame {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "The Pole Display could not be successfully started! Error: Smith_2 \nContact Hollie.");
                 }
+                LocalDateTime dateTime = LocalDateTime.now();
+                if(dateTime.getYear()==2019 && dateTime.getDayOfMonth()==1 && dateTime.getMonthValue()==8)
+                {
+                    anniverButton.setVisible(true);
+                }
+                else
+                {
+                    anniverButton.setVisible(false);
+                }
+                
                 curCart.setDisplay(display);
                 refundCart.setDisplay(display);
                 curCart.updateTotal();
@@ -864,7 +878,13 @@ public class MainFrame extends javax.swing.JFrame {
                 activateDisplayButton.setVisible(false);
             }
         });
-
+        anniverButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+               // EasterEgg ee = new EasterEgg("images/anniv.gif", "sounds/anniv.wav", "", "Happy 15th Anniversary Everyone!");
+            }
+        });
+        
+        
         paperButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
@@ -1151,8 +1171,8 @@ public class MainFrame extends javax.swing.JFrame {
                         }//end if
                     }//end for
 
-                    JScrollPane listScroller = new JScrollPane(list);
-                    listScroller.setPreferredSize(new Dimension(250, 80));
+                    //JScrollPane listScroller = new JScrollPane(list);
+                   // listScroller.setPreferredSize(new Dimension(250, 80));
                     Object[] message =
                     {
                         "RX Number:", field1,
@@ -2663,6 +2683,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         activateDisplayButton.setVisible(true);
         this.add(activateDisplayButton);
+        this.add(anniverButton);
         paperButton.setVisible(true);
         this.add(paperButton);
         dmePaymentButton.setVisible(true);
@@ -3479,6 +3500,7 @@ public class MainFrame extends javax.swing.JFrame {
     JButton clerkLoginButton = new JButton("Clerk Login");
     JButton clerkLogoutButton = new JButton("Clerk Logout");
     JButton activateDisplayButton = new JButton("Activate Display");
+    JButton anniverButton = new JButton("Happy 15th!");
     JButton quoteButton = new JButton("New Quote");
     String cancelRefund = "Cancel\nRefund";
     JButton cancelRefundButton = new JButton("<html>" + cancelRefund.replaceAll("\\n", "<br>") + "</html>");
@@ -3491,7 +3513,7 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.17", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version 1.2.18", SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
