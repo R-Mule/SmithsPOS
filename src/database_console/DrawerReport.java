@@ -59,8 +59,8 @@ public class DrawerReport implements Serializable {
     //MANUAL CHARGES
     private double totalChargesRXAmt = 0;//UPDATED
 
-    private ArrayList<String> accountNameCharged = new ArrayList<String>();//UPDATED
-    private ArrayList<Double> amountChargedToAccount = new ArrayList<Double>();//UPDATED
+    protected ArrayList<String> accountNameCharged = new ArrayList<String>();//UPDATED
+    protected ArrayList<Double> amountChargedToAccount = new ArrayList<Double>();//UPDATED
     private ArrayList<ArrayList<String>> itemsChargedToAccount = new ArrayList<ArrayList<String>>();//YES THIS LOOKS THAT CRAZY. //UPDATED
 
     //PAID OUTS
@@ -69,12 +69,12 @@ public class DrawerReport implements Serializable {
 
     //ACCOUNT PAYMENT TOTALS
     private double totalARPayments = 0;//UPDATED
-    private ArrayList<String> ARAccountName = new ArrayList<String>();//UPDATED
-    private ArrayList<Double> amountPaidToARAccount = new ArrayList<Double>();//UPDATED
+    protected ArrayList<String> ARAccountName = new ArrayList<String>();//UPDATED
+    protected ArrayList<Double> amountPaidToARAccount = new ArrayList<Double>();//UPDATED
 
     private double totalDMEPayments = 0;//UPDATED
-    private ArrayList<String> DMEAccountName = new ArrayList<String>();//UPDATED
-    private ArrayList<Double> amountPaidToDMEAccount = new ArrayList<Double>();//UPDATED
+    protected ArrayList<String> DMEAccountName = new ArrayList<String>();//UPDATED
+    protected ArrayList<Double> amountPaidToDMEAccount = new ArrayList<Double>();//UPDATED
 
     //ITEM CATEGORIES
     private double otcTaxedTotal = 0;//updated

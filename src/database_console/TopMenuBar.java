@@ -2,12 +2,17 @@ package database_console;
 
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,7 +41,7 @@ public class TopMenuBar extends JMenuBar {
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
             masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
-            editEmployee,
+            editEmployee, arAuditReport,
             christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
 
@@ -121,6 +126,10 @@ public class TopMenuBar extends JMenuBar {
         drawerReports = new JMenuItem();
         drawerReports.setText("Drawer Reports");
         mgmtMenu.add(drawerReports);//This adds Drawer Reports to Management Menu Choices
+
+        arAuditReport = new JMenuItem();
+        arAuditReport.setText("AR Audit Reports");
+        mgmtMenu.add(arAuditReport);
 
         updatePrice = new JMenuItem();
         updatePrice.setText("Update Price");
@@ -288,6 +297,13 @@ public class TopMenuBar extends JMenuBar {
                 drawerReportsActionPerformed(evt);
             }
         });
+        arAuditReport.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                arAuditReportsActionPerformed(evt);
+            }
+        });
+
         updatePrice.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -995,6 +1011,259 @@ public class TopMenuBar extends JMenuBar {
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
     }//end masterRptRecptActionPerformed
 
+    private void arAuditReportsActionPerformed(java.awt.event.ActionEvent evt) {
+        DateRangeSelector drs = new DateRangeSelector();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMddyy");
+        ArrayList<DrawerReport> reports = new ArrayList<>();
+
+        if (drs.validDates())
+        {
+            LocalDateTime startDate = drs.getStartDate();
+            LocalDateTime endDate = drs.getEndDate();
+            FileWriter rxFW = null;
+            BufferedWriter rxBW = null;
+            FileWriter dmeFW = null;
+            BufferedWriter dmeBW = null;
+            try
+            {
+                //All reports now loaded. Time to do the work and generate the file.
+                rxFW = new FileWriter("C:\\pos\\REPORTS\\RX_AR_AUIDT-" + startDate.format(dateFormat) + "_" + endDate.format(dateFormat) + ".txt");//Hollie's Accounts (RX)
+                rxBW = new BufferedWriter(rxFW);
+                dmeFW = new FileWriter("C:\\pos\\REPORTS\\DME_AR_AUIDT-" + startDate.format(dateFormat) + "_" + endDate.format(dateFormat) + ".txt");
+                dmeBW = new BufferedWriter(dmeFW);
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            while (startDate.isBefore(endDate) || startDate.isEqual(endDate))
+            {
+                String currentDate = startDate.format(dateFormat);
+                try
+                {
+                    File rxFile, dmeFile;
+                    String path = "";
+
+                    rxFile = new File("Z:\\" + currentDate + "R.posrf");
+                    path = "Z:\\";
+                    // System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
+
+                    dmeFile = new File("Y:\\" + currentDate + "D.posrf");
+                    path = "Y:\\";
+                    //System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
+                    DrawerReport rxReport = null;
+                    if (rxFile.exists() && !rxFile.isDirectory())
+                    {
+                        // read object from file path + currentDate + "R.posrf"
+                        FileInputStream fis = new FileInputStream(rxFile);
+                        ObjectInputStream ois = new ObjectInputStream(fis);
+                        rxReport = (DrawerReport) ois.readObject();
+                        //System.out.println("RX Exisits " + currentDate);
+                        //reports.add(dr);
+                        ois.close();
+                    }
+                    DrawerReport dmeReport = null;
+                    if (dmeFile.exists() && !dmeFile.isDirectory())
+                    {
+                        // read object from file
+                        FileInputStream fis = new FileInputStream(dmeFile);
+                        ObjectInputStream ois = new ObjectInputStream(fis);
+                        dmeReport = (DrawerReport) ois.readObject();
+                        //System.out.println("DME Exisits " + currentDate);
+                        //reports.add(dr);
+                        ois.close();
+                    }
+                    //Merge the two reports, then log the data to file.
+
+                    ArrayList<String> mergedARAccountNames = new ArrayList<>();
+                    ArrayList<Double> mergedARAccountPayments = new ArrayList<>();
+                    ArrayList<String> mergedARAccountChargesNames = new ArrayList<>();
+                    ArrayList<Double> mergedARAccountCharges = new ArrayList<>();
+                    ArrayList<String> mergedDMEAccountNames = new ArrayList<>();
+                    ArrayList<Double> mergedDMEAccountPayments = new ArrayList<>();
+                    if (rxReport != null)
+                    {
+                        int loadIndex = 0;
+                        for (String accountName : rxReport.ARAccountName)
+                        {
+                            mergedARAccountNames.add(accountName);
+                            mergedARAccountPayments.add(rxReport.amountPaidToARAccount.get(loadIndex));
+                            loadIndex++;
+                        }
+                        loadIndex = 0;
+                        for (String accountName : rxReport.accountNameCharged)
+                        {
+                            mergedARAccountChargesNames.add(accountName);
+                            mergedARAccountCharges.add(rxReport.amountChargedToAccount.get(loadIndex));
+                            loadIndex++;
+                        }
+                        loadIndex = 0;
+                        for (String accountName : rxReport.DMEAccountName)
+                        {
+                            mergedDMEAccountNames.add(accountName);
+                            mergedDMEAccountPayments.add(rxReport.amountPaidToDMEAccount.get(loadIndex));
+                            loadIndex++;
+                        }
+                    }
+
+                    if (dmeReport != null)
+                    {
+                        int index = 0;
+                        for (String dmeName : dmeReport.ARAccountName)
+                        {
+                            boolean found = false;
+                            int innerIndex = 0;
+                            for (String existingName : mergedARAccountNames)
+                            {
+                                if (dmeName.contentEquals(existingName))//FOUND!
+                                {
+                                    mergedARAccountPayments.set(innerIndex, mergedARAccountPayments.get(innerIndex) + dmeReport.amountPaidToARAccount.get(index));
+                                    //    mergedARAccountCharges.set(index, mergedARAccountCharges.get(index) + dmeReport.amountChargedToAccount.get(innerIndex));
+                                    found = true;
+                                    break;
+                                }
+                                innerIndex++;
+                            }
+                            if (!found)
+                            {
+                                mergedARAccountNames.add(dmeName);
+                                mergedARAccountPayments.add(dmeReport.amountPaidToARAccount.get(index));
+                            }
+                            index++;
+                        }
+                        
+                        index = 0;
+                        for (String dmeName : dmeReport.accountNameCharged)
+                        {
+                            boolean found = false;
+                            int innerIndex = 0;
+                            for (String existingName : mergedARAccountChargesNames)
+                            {
+                                if (dmeName.contentEquals(existingName))//FOUND!
+                                {
+                                    mergedARAccountCharges.set(innerIndex, mergedARAccountCharges.get(innerIndex) + dmeReport.amountChargedToAccount.get(index));
+                                    found = true;
+                                    break;
+                                }
+                                innerIndex++;
+                            }
+                            if (!found)
+                            {
+                                mergedARAccountChargesNames.add(dmeName);
+                                mergedARAccountCharges.add(dmeReport.amountChargedToAccount.get(index));
+                                //    mergedARAccountCharges.add(dmeReport.amountChargedToAccount.get(index));
+                            }
+                            index++;
+                        }
+
+                        index = 0;
+                        for (String dmeName : dmeReport.DMEAccountName)
+                        {
+                            boolean found = false;
+                            int innerIndex = 0;
+                            for (String existingName : mergedDMEAccountNames)
+                            {
+                                if (dmeName.contentEquals(existingName))//FOUND!
+                                {
+                                    mergedDMEAccountPayments.set(innerIndex, mergedDMEAccountPayments.get(innerIndex) + dmeReport.amountPaidToDMEAccount.get(index));
+                                    found = true;
+                                    break;
+                                }
+                                innerIndex++;
+                            }
+                            if (!found)
+                            {
+                                mergedDMEAccountNames.add(dmeName);
+                                mergedDMEAccountPayments.add(dmeReport.amountPaidToDMEAccount.get(index));
+                            }
+                            index++;
+                        }
+                        
+                    }
+                    int index = 0;
+                    for (String accountName : mergedARAccountNames)
+                    {
+                        if (index == 0)
+                        {
+                            rxBW.write("Account Payments\n");
+                        }
+                        rxBW.write(currentDate + "  :  " + accountName + "  :  " + mergedARAccountPayments.get(index) + "\n");
+                        index++;
+                    }
+                    
+                    
+                    index = 0;
+                    for (String accountName : mergedARAccountChargesNames)
+                    {
+                        if (index == 0)
+                        {
+                            rxBW.write("Account Charges\n");
+                        }
+                        rxBW.write(currentDate + "  :  " + accountName + "  :  " + mergedARAccountCharges.get(index) + "\n");
+                        index++;
+                    }
+                    
+                    for (String accountName : mergedDMEAccountNames)
+                    {
+                        dmeBW.write(currentDate + "  :  " + accountName + "  :  " + mergedDMEAccountPayments.get(index) + "\n");
+                        index++;
+                    }
+                    
+                }
+                catch (FileNotFoundException e)
+                {
+                    System.out.println("JERE");
+                    e.printStackTrace();
+                }
+                catch (IOException e)
+                {
+                    System.out.println("EERE");
+                    e.printStackTrace();
+                }
+                catch (ClassNotFoundException e)
+                {
+                    e.printStackTrace();
+                    System.out.println("JERsE");
+                }
+
+                startDate = startDate.plusDays(1);
+            }//end while loading reports
+
+            try
+            {
+
+                if (rxBW != null)
+                {
+                    rxBW.close();
+                }
+
+                if (rxFW != null)
+                {
+                    rxFW.close();
+                }
+                if (dmeBW != null)
+                {
+                    dmeBW.close();
+                }
+
+                if (dmeFW != null)
+                {
+                    dmeFW.close();
+                }
+            }
+            catch (IOException ex)
+            {
+
+                ex.printStackTrace();
+
+            }
+
+        }
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+
+    }//end arReportsActionPerformed
+
     private void drawerReportsActionPerformed(java.awt.event.ActionEvent evt) {
 
         JFrame textInputFrame = new JFrame("");
@@ -1596,8 +1865,8 @@ public class TopMenuBar extends JMenuBar {
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(true);
                 dmeDataUpload.setVisible(true);
-                editEmployee.setVisible(true);// DISABLED FOR CURRENT RELEASE
-                // editEmployee.setVisible(false);
+                editEmployee.setVisible(true);
+                arAuditReport.setVisible(true);
                 break;
             case 3:
                 feedMenu.setVisible(true);//Menus visible
@@ -1607,6 +1876,7 @@ public class TopMenuBar extends JMenuBar {
                 remMenu.setVisible(true);
                 mgmtMenu.setVisible(true);
                 drawerReports.setVisible(false);
+                arAuditReport.setVisible(false);
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(false);
                 dmeDataUpload.setVisible(true);
@@ -1622,6 +1892,7 @@ public class TopMenuBar extends JMenuBar {
                 rxDataUpload.setVisible(false);
                 dmeDataUpload.setVisible(false);
                 drawerReports.setVisible(false);
+                arAuditReport.setVisible(false);
                 editEmployee.setVisible(false);
                 break;
             case 1:
