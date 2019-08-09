@@ -1204,6 +1204,7 @@ public class TopMenuBar extends JMenuBar {
                         index++;
                     }
                     
+                    index = 0;
                     for (String accountName : mergedDMEAccountNames)
                     {
                         dmeBW.write(currentDate + "  :  " + accountName + "  :  " + mergedDMEAccountPayments.get(index) + "\n");
