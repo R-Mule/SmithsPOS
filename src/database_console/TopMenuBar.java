@@ -995,10 +995,14 @@ public class TopMenuBar extends JMenuBar {
         {
             if (!field1.getText().isEmpty())
             {
-                String receipt = Database.getReceiptString(field1.getText());
-                if (receipt != null && !receipt.isEmpty())
+                ArrayList<String> receipts = Database.getReceiptString(field1.getText());
+                if (receipts != null && !receipts.isEmpty())
                 {
-                    mf.checkout.reprintReceipt(receipt);
+                    for(String receipt : receipts)
+                    {
+                        mf.checkout.reprintReceipt(receipt);
+                    }
+                    
                 }
                 else
                 {

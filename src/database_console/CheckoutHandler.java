@@ -706,16 +706,27 @@ public class CheckoutHandler {
                     if (!hasBeenAddedAlready)
                     {
                         RefundItem itemTemp = new RefundItem(item);
-                        if (item.getID().length() > 6)
+                        if (item.isRX)
+                        {
+                            itemTemp.itemPrice = item.startItemPrice - item.itemPrice;
+                            if (itemTemp.itemPrice == 0)
+                            {
+                                itemTemp.hasBeenRefunded = true;
+                            }
+                        }
+                        else if (item.getID().length() > 6)
                         {
                             itemTemp.setID(item.getID() + "F");//FINISHED!
+                            itemTemp.hasBeenRefunded = true;
                         }
                         else
                         {
                             itemTemp.setID(item.getID() + "TF");//FINISHED!
+                            itemTemp.hasBeenRefunded = true;
                         }
+
                         itemTemp.quantity = item.quantityBeingRefunded;
-                        itemTemp.hasBeenRefunded = true;
+
                         itemTemp.hasTaxBeenRefunded = true;
                         itemTemp.refundAllActive = false;
                         itemTemp.refundTaxOnly = false;
@@ -758,7 +769,10 @@ public class CheckoutHandler {
                         RefundItem itemTemp = new RefundItem(item);
                         itemTemp.mutID = item.getID() + "T";//TAX REFUNDED!
                         itemTemp.quantity = item.quantityBeingRefunded;
-
+                       // if (!item.refundTaxOnly || item.isRX)
+                      //  {
+                      //      itemTemp.itemPrice = item.startItemPrice - item.itemPrice;
+                       // }
                         itemTemp.hasTaxBeenRefunded = true;
                         itemTemp.refundTaxOnly = false;
                         itemTemp.quantityBeingRefunded = 0;
@@ -798,6 +812,9 @@ public class CheckoutHandler {
         PrinterService printerService = new PrinterService();
         boolean itemDiscounted = false;
         String receipt = "";
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
+        String refundReceiptNum = "RR" + dateFormat.format(date) + registerID;
         boolean isCreditSale = false;
         boolean requires2Receipts = false;
         for (int i = 0; i < paymentType.length; i++)
@@ -809,13 +826,15 @@ public class CheckoutHandler {
             }
         }
         DateFormat dateFormat2 = new SimpleDateFormat("MM/dd/yyyy KK:mmaa");
-        Date date = new Date();
         String displayDate;
         displayDate = dateFormat2.format(date);
         receipt += "           Smith's Super-Aid Pharmacy\n              247 Old Virginia Ave\n              Rich Creek, VA 24147\n            Main Line:(540) 726-2993\n           Office/DME: (540) 726-7486\nStore Hours: M-F 9:00AM-7:00PM Office closes @5\n             Sat: 9:00AM-2:00PM Office Closed\n             Sun: Closed\n\n";
         String tempClerkName = "Clerk: " + clerkName.substring(clerkName.indexOf(" ") + 1) + " " + clerkName.substring(0, 1) + ".";
         receipt += String.format("%-20s %24s\n", "Receipt Number", tempClerkName);
         receipt += String.format("%-20s %25s\n\n", receiptNum, displayDate);
+
+        receipt += String.format("%-20s\n", "Refund Receipt Number");
+        receipt += String.format("%-20s\n\n", refundReceiptNum);
 
         String s = String.format("%-10s %15s %9s\n", "Qty@Price", "Item Name", "               Price");
         String s1 = String.format("%-10s %-27s %9s\n", "----------", "---------------------------", "--------");
@@ -951,6 +970,7 @@ public class CheckoutHandler {
         myself.changeDue.setText("Change Due: $" + String.format("%.2f", total));
         myself.displayChangeDue = true;
         storeReceiptData(curCart, clerkName, paymentType, paymentAmt, receiptNum, true, "NO", myself, false);
+        Database.storeRefundReceiptString(receiptNum, refundReceiptNum, receipt);
     }
 
     public void reprintReceipt(String receipt) {

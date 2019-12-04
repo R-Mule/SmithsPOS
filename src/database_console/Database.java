@@ -139,6 +139,22 @@ public class Database {
         }//end catch
     }
 
+        public static void updateEmployeeUpdateAckByPasscode(int passcode, String version) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("update `employees` set ackdUpdate = '"+ version + "' where passcode= "+ passcode + ";");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+        
     public static void updateEmployeeName(int employeeID, String employeeName) {
         try
         {
@@ -239,7 +255,7 @@ public class Database {
             ResultSet rs = stmt.executeQuery("select * from employees order by pid asc,empname;");
             while (rs.next())
             {
-                employees.add(new Employee(rs.getInt(1), rs.getString(2), rs.getString(7), rs.getInt(3), rs.getInt(6), rs.getInt(4), rs.getInt(5)));
+                employees.add(new Employee(rs.getInt(1), rs.getString(2), rs.getString(7), rs.getInt(3), rs.getInt(6), rs.getInt(4), rs.getInt(5), rs.getString(8)));
             }//end while
             con.close();
             return employees;
@@ -350,9 +366,10 @@ public class Database {
         return null;
     }
 
-    public static String getReceiptString(String receiptNum) {
+    public static ArrayList<String> getReceiptString(String receiptNum) {
         try
         {
+            ArrayList<String> receipts = new ArrayList<>();
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
@@ -360,10 +377,17 @@ public class Database {
             ResultSet rs = stmt.executeQuery("select * from receiptsFull where receiptNum = '" + receiptNum + "';");
             while (rs.next())
             {
-                String temp = rs.getString(3);
-                con.close();
-                return temp;
-            }//end while       
+                receipts.add(rs.getString(3));
+            }//end while 
+            
+            ResultSet rs2 = stmt.executeQuery("select * from refundreceiptsFull where receiptNum = '" + receiptNum + "' or refundreceiptnum = '" + receiptNum + "';");
+            while (rs2.next())
+            {
+                receipts.add(rs2.getString(4));
+            }//end while 
+
+            con.close();
+            return receipts;
         }
         catch (Exception e)
         {
@@ -389,6 +413,22 @@ public class Database {
         }//end catch
     }
 
+        public static void storeRefundReceiptString(String receiptNum, String refundReceiptNum, String receipt) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            receipt = receipt.replaceAll("'", " ");
+            stmt.executeUpdate("INSERT INTO `refundreceiptsfull`(`pid`,`receiptNum`,`refundreceiptnum`,`receipt`) VALUES (NULL,'" + receiptNum + "','" + refundReceiptNum + "','" + receipt + "')");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
     public static String getEmployeeNameByCode(int code) {
 
         try
@@ -1367,6 +1407,10 @@ public class Database {
                     RefundItem temp = new RefundItem(receiptNum, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getBoolean(7), rs.getInt(8), rs.getInt(9), rs.getString(10), rs.getString(11), rs.getInt(12), rs.getBoolean(13), rs.getDouble(14), rs.getBoolean(15), rs.getBoolean(16), rs.getBoolean(17));
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasBeenRefunded());
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasTaxBeenRefunded());
+                   // if(temp.hasBeenRefunded == true && temp.getPriceOfItemBeforeTax() > 0)
+                   // {
+                   //     temp.hasBeenRefunded = false;
+                   // }
                     //if(!temp.hasBeenRefunded&& temp.getCategory()==861){
                     //     temp.refundAllActive=true;
                     //  }

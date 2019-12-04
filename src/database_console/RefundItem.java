@@ -10,6 +10,7 @@ public class RefundItem extends Item {
     protected boolean hasTaxBeenRefunded;
     protected boolean refundTaxOnly = false;
     protected boolean refundAllActive = false;
+    protected double startItemPrice;
     protected String receiptNum;
     protected int quantityBeingRefunded = 0;
 
@@ -17,6 +18,7 @@ public class RefundItem extends Item {
         super(mutID, upc, name, amtPaidBeforeTax, amtPaidBeforeTax, wasTaxed, category, rxNumber, insurance, filldate, quantity, isRX, percentageDisc, isPreCharged);
         this.hasBeenRefunded = hasBeenRefunded;
         this.hasTaxBeenRefunded = hasTaxBeenRefunded;
+        this.startItemPrice = amtPaidBeforeTax;
         this.receiptNum = receiptNum;
     }//end ctor
 
@@ -33,6 +35,7 @@ public class RefundItem extends Item {
         this.category = item.category;
         this.itemUPC = item.itemUPC;
         this.isPreCharged = item.isPreCharged;
+        this.mutID = item.mutID;
 
     }
 

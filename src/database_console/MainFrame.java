@@ -172,6 +172,8 @@ public class MainFrame extends javax.swing.JFrame {
                 //nothing right now, give them a month off :)
             }
         }
+        anniverButton.setVisible(false);//Hidden by default. So it doesn't show on refunds...
+        
         DateFormat dateFormat = new SimpleDateFormat("MMddyy");
         Date date = new Date();
         previousDate = dateFormat.format(date);
@@ -706,7 +708,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         //upsButton.setBackground(new Color(100, 65, 23));
         //This creates the Void Item Button
-        voidButton.setLocation(1300, 200);
+        voidButton.setLocation(1300, 300);
         voidButton.setSize(100, 100);
         voidButton.setBackground(new Color(255, 0, 0));
         //This creates the cashCheckout Button
@@ -832,6 +834,20 @@ public class MainFrame extends javax.swing.JFrame {
                             if (clerkName.contentEquals("Smith, Hollie") && isWeddingMonth)//wedding month is now our anniversary only
                             {
                                 EasterEgg ee = new EasterEgg("images/weddingphoto.jpg", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
+                            }
+                            ArrayList<Employee> employees = Database.getEmployeesListSortByPID();
+                            for(Employee employee : employees)
+                            {
+                                if(employee.passcode == activeClerksPasscode)
+                                {
+                                    activeEmployee = employee;
+                                }
+                            }
+                            if(!activeEmployee.acknowledgedUpdateVersion.contentEquals(currentVersion))
+                            {
+                                //JFrame message1 = new JFrame("Welcome to Update " + currentVersion+"!");
+                                JOptionPane.showMessageDialog(null, "Version "+currentVersion +" provided the following:\n"+updateString,"Welcome to Update " + currentVersion+"!", JOptionPane.INFORMATION_MESSAGE);
+                                Database.updateEmployeeUpdateAckByPasscode(activeEmployee.passcode, currentVersion);
                             }
                         }
                     }
@@ -965,6 +981,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     splitTenderButton.setVisible(false);
                                     chargeButton.setVisible(false);
                                     voidButton.setVisible(false);
+                                    beginSplitTicketButton.setVisible(false);
                                     noSaleButton.setVisible(false);
                                     loadTicket.setVisible(false);
                                     createTicket.setVisible(false);
@@ -980,6 +997,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     //creditButton.setVisible(false);
                                     debitButton.setVisible(false);
                                     upsButton.setVisible(false);
+                                    
                                     if (isMarchMadness)
                                     {
                                         mmButton.setVisible(false);
@@ -2420,8 +2438,8 @@ public class MainFrame extends javax.swing.JFrame {
                     }
                     else
                     {
-                        JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "You need at least two items to them into different tickets.");
+                        JFrame message1 = new JFrame("Split Ticket Requires 2 Items");
+                        JOptionPane.showMessageDialog(message1, "Must have two items in cart to start a split ticket.");
                     }
                 }
                 else
@@ -3099,8 +3117,9 @@ public class MainFrame extends javax.swing.JFrame {
         debitButton.setVisible(true);
         upsButton.setVisible(true);
         massPrechargeButton.setVisible(true);
+        beginSplitTicketButton.setVisible(true);
 
-        if (isMarchMadness)
+        if (isMarchMadness)//TODO what if they don't have this holiday loaded?!
         {
             mmButton.setVisible(true);
         }
@@ -3108,7 +3127,9 @@ public class MainFrame extends javax.swing.JFrame {
         {
             activateDisplayButton.setVisible(true);
         }
+        
         cancelRefundButton.setVisible(false);
+        menuBar.setAllVisible();
         checkForAdminButtonVisible(activeClerksPasscode);
     }
 
@@ -3512,8 +3533,10 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
+    String currentVersion = "1.2.20";
+    String updateString = "Test Line 1\nTest Line 2";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version 1.2.19", SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version "+currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";
@@ -3552,7 +3575,7 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isSummerTime = false;
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
-
+    Employee activeEmployee;
     HolidayLoader holidayLoader;
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";
