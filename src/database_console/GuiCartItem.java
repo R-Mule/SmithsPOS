@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -131,7 +130,7 @@ public class GuiCartItem {
         //ADD BUTTON
         addQuantityButton = new JButton("ADD");
         editRXButton = new JButton("Edit");
-        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860)
+        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 862)
         {
             addQuantityButton.setVisible(false);
 
@@ -177,7 +176,7 @@ public class GuiCartItem {
 
         //ISTAXABLE BUTTON       
         taxableButton = new JButton("");
-        if (item.isTaxable())
+        if (item.isTaxable() && item.getCategory() != 862)//862 is a DME Rental, don't allow it to toggle.
         {
             taxableButton.setVisible(true);
         }
@@ -195,7 +194,7 @@ public class GuiCartItem {
         //NOT TAXABLE BUTTON
         notTaxableButton = new JButton("");
 
-        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 861)
+        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 861 || item.getCategory() == 862)
         {//this HIDES tax buttons for RX because it is ALWAYS false
             notTaxableButton.setVisible(false);
             notTaxableButton.setVisible(false);
@@ -280,7 +279,7 @@ public class GuiCartItem {
             prechargedTrueButton.setVisible(false);
         }
 
-        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 861)
+        if (item.isRX() || item.getCategory() == 853 || item.getCategory() == 854 || item.getCategory() == 860 || item.getCategory() == 861 || item.getCategory() == 862)
         {//this HIDES discount buttons for RX &&RA because it is ALWAYS false
             discountButton.setVisible(false);
             discountButton.setVisible(false);
@@ -742,7 +741,7 @@ public class GuiCartItem {
             taxableButton.setVisible(true);
 
         }
-        else if (item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860 && !item.isRX())
+        else if (item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860 && !item.isRX() && item.getCategory() != 862)
         {
             notTaxableButton.setVisible(true);
         }
@@ -758,7 +757,7 @@ public class GuiCartItem {
         {
             editRXButton.setVisible(true);
         }
-        else if (item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860)
+        else if (item.getCategory() != 853 && item.getCategory() != 854 && item.getCategory() != 860 && item.getCategory() != 862)
         {//RA payments and UPS, they are not quantible or discountable.
             addQuantityButton.setVisible(true);
             discountButton.setVisible(true);

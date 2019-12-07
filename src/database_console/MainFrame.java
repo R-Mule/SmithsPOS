@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.AbstractAction;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -27,11 +28,15 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 
 /**
@@ -173,7 +178,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         }
         anniverButton.setVisible(false);//Hidden by default. So it doesn't show on refunds...
-        
+
         DateFormat dateFormat = new SimpleDateFormat("MMddyy");
         Date date = new Date();
         previousDate = dateFormat.format(date);
@@ -711,6 +716,10 @@ public class MainFrame extends javax.swing.JFrame {
         voidButton.setLocation(1300, 300);
         voidButton.setSize(100, 100);
         voidButton.setBackground(new Color(255, 0, 0));
+        //This creates the dmeRentalButton
+        dmeRentalButton.setLocation(1300, 200);
+        dmeRentalButton.setSize(100, 100);
+        dmeRentalButton.setBackground(new Color(128, 91, 222));
         //This creates the cashCheckout Button
         cashButton.setLocation(1300, 700);
         cashButton.setSize(100, 100);
@@ -836,17 +845,17 @@ public class MainFrame extends javax.swing.JFrame {
                                 EasterEgg ee = new EasterEgg("images/weddingphoto.jpg", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
                             }
                             ArrayList<Employee> employees = Database.getEmployeesListSortByPID();
-                            for(Employee employee : employees)
+                            for (Employee employee : employees)
                             {
-                                if(employee.passcode == activeClerksPasscode)
+                                if (employee.passcode == activeClerksPasscode)
                                 {
                                     activeEmployee = employee;
                                 }
                             }
-                            if(!activeEmployee.acknowledgedUpdateVersion.contentEquals(currentVersion))
+                            if (!activeEmployee.acknowledgedUpdateVersion.contentEquals(currentVersion))
                             {
                                 //JFrame message1 = new JFrame("Welcome to Update " + currentVersion+"!");
-                                JOptionPane.showMessageDialog(null, "Version "+currentVersion +" provided the following:\n"+updateString,"Welcome to Update " + currentVersion+"!", JOptionPane.INFORMATION_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "Version " + currentVersion + " provided the following:\n" + updateString, "Welcome to Update " + currentVersion + "!", JOptionPane.INFORMATION_MESSAGE);
                                 Database.updateEmployeeUpdateAckByPasscode(activeEmployee.passcode, currentVersion);
                             }
                         }
@@ -877,7 +886,7 @@ public class MainFrame extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(message1, "The Pole Display could not be successfully started! Error: Smith_2 \nContact Hollie.");
                 }
                 LocalDateTime dateTime = LocalDateTime.now();
-                if(dateTime.getYear()==2019 && dateTime.getDayOfMonth()==1 && dateTime.getMonthValue()==8)
+                if (dateTime.getYear() == 2019 && dateTime.getDayOfMonth() == 1 && dateTime.getMonthValue() == 8)
                 {
                     anniverButton.setVisible(true);
                 }
@@ -885,7 +894,7 @@ public class MainFrame extends javax.swing.JFrame {
                 {
                     anniverButton.setVisible(false);
                 }
-                
+
                 curCart.setDisplay(display);
                 refundCart.setDisplay(display);
                 curCart.updateTotal();
@@ -896,11 +905,10 @@ public class MainFrame extends javax.swing.JFrame {
         });
         anniverButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-               // EasterEgg ee = new EasterEgg("images/anniv.gif", "sounds/anniv.wav", "", "Happy 15th Anniversary Everyone!");
+                // EasterEgg ee = new EasterEgg("images/anniv.gif", "sounds/anniv.wav", "", "Happy 15th Anniversary Everyone!");
             }
         });
-        
-        
+
         paperButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
@@ -978,6 +986,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     rxButton.setVisible(false);
                                     otcButton.setVisible(false);
                                     arPaymentButton.setVisible(false);
+                                    dmeRentalButton.setVisible(false);
                                     splitTenderButton.setVisible(false);
                                     chargeButton.setVisible(false);
                                     voidButton.setVisible(false);
@@ -997,7 +1006,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     //creditButton.setVisible(false);
                                     debitButton.setVisible(false);
                                     upsButton.setVisible(false);
-                                    
+
                                     if (isMarchMadness)
                                     {
                                         mmButton.setVisible(false);
@@ -1190,7 +1199,7 @@ public class MainFrame extends javax.swing.JFrame {
                     }//end for
 
                     //JScrollPane listScroller = new JScrollPane(list);
-                   // listScroller.setPreferredSize(new Dimension(250, 80));
+                    // listScroller.setPreferredSize(new Dimension(250, 80));
                     Object[] message =
                     {
                         "RX Number:", field1,
@@ -1420,7 +1429,201 @@ public class MainFrame extends javax.swing.JFrame {
         }
         );//end upsButtonAction
 
+        dmeRentalButton.addActionListener(new java.awt.event.ActionListener() {
+//TODO Implement this for the new database info.
+            public void actionPerformed(ActionEvent event) {
+                if (!employeeSelectionHeader.getText().contains("NONE"))
+                {
+                    ArrayList<DMERentalItem> dmeRentalItems = Database.getAllDMERentalItems();
+
+                    JComboBox<String> dmeRentalDropDownList = new JComboBox<>();
+
+                    for (DMERentalItem dri : dmeRentalItems)
+                    {
+                        dmeRentalDropDownList.addItem(dri.itemName);
+                    }
+
+                    dmeRentalDropDownList.setSelectedIndex(0);
+                    JRadioButton customerYesButton = new JRadioButton("Yes");
+                    customerYesButton.setActionCommand("Yes");
+                    JRadioButton customerNoButton = new JRadioButton("No");
+                    customerNoButton.setActionCommand("No");
+
+                    JRadioButton rxSuppliedYesButton = new JRadioButton("Yes");
+                    rxSuppliedYesButton.setActionCommand("Yes");
+                    JRadioButton rxSuppliedNoButton = new JRadioButton("No");
+                    rxSuppliedNoButton.setActionCommand("No");
+
+                    //Group the radio buttons.
+                    ButtonGroup customerGroup = new ButtonGroup();
+                    customerGroup.add(customerYesButton);
+                    customerGroup.add(customerNoButton);
+                    customerGroup.setSelected(customerYesButton.getModel(), true);
+
+                    ButtonGroup rxSuppliedGroup = new ButtonGroup();
+                    rxSuppliedGroup.add(rxSuppliedYesButton);
+                    rxSuppliedGroup.add(rxSuppliedNoButton);
+                    rxSuppliedGroup.setSelected(rxSuppliedYesButton.getModel(), true);
+
+                    JFrame itemSelectionFrame = new JFrame("");
+                    //JTextField field3 = new JTextField();
+                    Object[] message =
+                    {
+                        "Does the Customer have a Prescription for the Item?\n", rxSuppliedYesButton, rxSuppliedNoButton,
+                        "\nIs this Customer a Known Pharmacy Customer? Ask Pharmacist if you do not know.", customerYesButton, customerNoButton,
+                        "\nItem to Rent:", dmeRentalDropDownList
+                    };
+
+                    //field3.setText("");
+                    // field3.addAncestorListener(new RequestFocusListener());
+                    int option = JOptionPane.showConfirmDialog(itemSelectionFrame, message, "DME Rental Item", JOptionPane.OK_CANCEL_OPTION);
+                    if (option == JOptionPane.OK_OPTION)
+                    {
+                        if (dmeRentalDropDownList.getSelectedItem() == null || dmeRentalDropDownList.getSelectedItem().toString().isEmpty())
+                        {
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Must select an item.");
+                        }
+                        else
+                        {//Item is good.
+                            boolean isCustomer = customerYesButton.isSelected();
+                            boolean isTaxed = rxSuppliedNoButton.isSelected();
+
+                            String selectedItemName = dmeRentalDropDownList.getSelectedItem().toString();
+                            DMERentalItem selectedItem = null;
+                            for (DMERentalItem dri : dmeRentalItems)
+                            {
+                                if (dri.itemName.contentEquals(selectedItemName))
+                                {
+                                    selectedItem = dri;
+                                    break;//Found the item the user selected.
+                                }
+                            }
+                            String taxString = "";
+                            if (isTaxed)
+                            {
+                                taxString = "The Customer will also owe tax on the item because they do not have an RX for it.\n"
+                                        + "Please make sure a Rental Agreement is filled out.";
+                            }
+                            else
+                            {
+                                taxString = "The Customer will not owe tax on the item because they have provided an RX for it.\n"
+                                        + "Please place the RX with the filled out Rental Agreement.";
+                            }
+
+                            String itemLengthInfo = String.format("This item is rented at a rate of $%.2f per " + selectedItem.minCustomerUnit.toLowerCase() + ".\n", selectedItem.customerRate);
+                            //If they are locked into a downpayment because it requires a downpayment this statement will be true.
+                            if (selectedItem.minNonCustomerUnit.contentEquals("DOWN"))
+                            {//They owe a flat rate, display a message and with the amount and add to cart on OK.
+                                JFrame nonCustomerDownFrame = new JFrame("");
+                                //JTextField field3 = new JTextField();
+
+                                String downInfo = String.format("Because the Customer is not a routine RX Customer, this item has a Down Payment Requirement.\nThe down payment is: $%.2f\n", selectedItem.nonCustomerRate);
+
+                                String returnMsg = "When the rented item is returned in good order the Customer will be\n"
+                                        + "reimbursed the difference of the down payment and the rented amount they owed.";
+                                Object[] message3 =
+                                {
+                                    downInfo, itemLengthInfo, returnMsg, taxString
+                                };
+                                int option3 = JOptionPane.showConfirmDialog(nonCustomerDownFrame, message3, selectedItem.itemName + " Rental", JOptionPane.OK_CANCEL_OPTION);
+                                if (option3 == JOptionPane.OK_OPTION)
+                                {
+                                    DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
+                                    Date date = new Date();
+                                    String tempID;
+                                    tempID = dateFormat.format(date);
+                                    System.out.println(tempID);
+                                    String upc = "DMER" + tempID;
+                                    Item tempItem = new Item(tempID, upc, selectedItem.itemName + " Rental Down Payment", selectedItem.nonCustomerRate, selectedItem.nonCustomerRate, isTaxed, 862, 0, "", "", 1, false, 0, false);
+                                    curCart.addItem(tempItem);
+                                    guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                                    displayChangeDue = false;
+                                }
+                            }
+                            else
+                            {
+                                ArrayList<Integer> qtys = new ArrayList<>();
+                                for (int i = 1; i <= 100; i++)
+                                {
+                                    qtys.add(i);
+                                }
+                                SpinnerListModel slm = new SpinnerListModel(qtys);
+                                JSpinner qtyOfUnits = new JSpinner(slm);
+                                ((DefaultEditor) qtyOfUnits.getEditor()).getTextField().setEditable(false);
+                                qtyOfUnits.getComponent(0).setPreferredSize(new Dimension(50, 50));
+                                qtyOfUnits.setPreferredSize(new Dimension(50, 50));
+                                qtyOfUnits.setFont(new Font("", 30, 30));
+                                String pleaseEnterValue = "Please enter the number of " + selectedItem.minCustomerUnit.toLowerCase() + "s the Customer wants to rent the item for:\n";
+                                String anyLessThanTime = "The item cannot be rented for any less than 1 " + selectedItem.minCustomerUnit.toLowerCase() + ".\n";
+                                JFrame itemInfoFrame = new JFrame("");
+
+                                Object[] message2 =
+                                {
+                                    itemLengthInfo, anyLessThanTime, pleaseEnterValue, qtyOfUnits
+                                };
+                                //field3.setText("");
+                                // field3.addAncestorListener(new RequestFocusListener());
+                                int option2 = JOptionPane.showConfirmDialog(itemInfoFrame, message2, selectedItem.itemName + " Rental", JOptionPane.OK_CANCEL_OPTION);
+                                if (option2 == JOptionPane.OK_OPTION)
+                                {//If they said OK, then they have selected a time to rent the item for at this point.
+                                    //The next step is to tell them the amount they are going to owe, and if tax will apply or not. Then on next OK, add it to cart.
+
+                                    int qtyRequested = Integer.parseInt(qtyOfUnits.getModel().getValue().toString());
+                                    double itemPrice = 0;
+                                    String unit = "";
+                                    if (isCustomer)
+                                    {
+                                        itemPrice = selectedItem.customerRate * qtyRequested;
+                                        unit = selectedItem.minCustomerUnit.toLowerCase();
+                                    }
+                                    else
+                                    {
+                                        itemPrice = selectedItem.nonCustomerRate * qtyRequested;
+                                        unit = selectedItem.minNonCustomerUnit.toLowerCase();
+                                    }
+                                    String rentalAmount = String.format("The rental amount for this item is $%.2f\n", itemPrice);
+                                    Object[] message4 =
+                                    {
+                                        rentalAmount,taxString
+                                    };
+                                    int option4 = JOptionPane.showConfirmDialog(itemInfoFrame, message4, selectedItem.itemName + " Rental", JOptionPane.OK_CANCEL_OPTION);
+                                    if (option4 == JOptionPane.OK_OPTION)
+                                    {
+                                        DateFormat dateFormat = new SimpleDateFormat("MMddyyhhmmss");
+                                        Date date = new Date();
+                                        String tempID;
+                                        tempID = dateFormat.format(date);
+                                        System.out.println(tempID);
+                                        String upc = "DMER" + tempID;
+
+                                        Item tempItem = new Item(tempID, upc, selectedItem.itemName + " Rent " + qtyRequested + " " + unit, itemPrice, itemPrice, isTaxed, 862, 0, "", "", 1, false, 0, false);
+                                        curCart.addItem(tempItem);
+                                        guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                                        displayChangeDue = false;
+                                    }
+                                }
+                            }
+
+                        }//end else
+
+                    }//end if
+
+                    updateCartScreen();
+
+                }
+                else
+                {//No employee Selected!
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Select an employee first!");
+                }
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }//end actionPerformed
+        }
+        );//end dmeRentalButtonAction
+
         noSaleButton.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
                 {
@@ -2724,6 +2927,8 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(otcButton);
         rxButton.setVisible(true);
         this.add(rxButton);
+        dmeRentalButton.setVisible(true);
+        this.add(dmeRentalButton);
         voidButton.setVisible(true);
         this.add(voidButton);
         arPaymentButton.setVisible(true);
@@ -3105,6 +3310,7 @@ public class MainFrame extends javax.swing.JFrame {
         noSaleButton.setVisible(true);
         loadTicket.setVisible(true);
         createTicket.setVisible(true);
+        dmeRentalButton.setVisible(true);
         checkButton.setVisible(true);
         paidOutButton.setVisible(true);
         refundButton.setVisible(true);
@@ -3127,7 +3333,7 @@ public class MainFrame extends javax.swing.JFrame {
         {
             activateDisplayButton.setVisible(true);
         }
-        
+
         cancelRefundButton.setVisible(false);
         menuBar.setAllVisible();
         checkForAdminButtonVisible(activeClerksPasscode);
@@ -3139,6 +3345,7 @@ public class MainFrame extends javax.swing.JFrame {
         rxButton.setVisible(false);
         otcButton.setVisible(false);
         arPaymentButton.setVisible(false);
+        dmeRentalButton.setVisible(false);
         splitTenderButton.setVisible(false);
         chargeButton.setVisible(false);
         voidButton.setVisible(false);
@@ -3178,6 +3385,7 @@ public class MainFrame extends javax.swing.JFrame {
         rxButton.setVisible(true);
         otcButton.setVisible(true);
         arPaymentButton.setVisible(true);
+        dmeRentalButton.setVisible(true);
         splitTenderButton.setVisible(true);
         chargeButton.setVisible(true);
         voidButton.setVisible(true);
@@ -3511,6 +3719,7 @@ public class MainFrame extends javax.swing.JFrame {
     ImageIcon upsimg = new ImageIcon(getClass().getResource("images/ups.png"));
     int activeClerksPasscode = 0;
     JButton upsButton = new JButton(upsimg);
+    JButton dmeRentalButton = new JButton("DME Rental");
     JButton paperButton = new JButton("Paper");
     JButton voidButton = new JButton("Void");
     JButton cashButton = new JButton("Cash");
@@ -3534,9 +3743,17 @@ public class MainFrame extends javax.swing.JFrame {
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
     String currentVersion = "1.2.20";
-    String updateString = "Test Line 1\nTest Line 2";
+    String updateString = ""
+            + "+Added support for refund receipt reprint from parent receipt ID or refund receipt ID."
+            + "\n+Added ability to refund RX copay multiple times until 0 balance."
+            + "\n+Added new update acknowledgement system... You're looking at it..."
+            + "\n+Added new DME Rental Item Button. Allows for partial refund. Non-Qty/Non-Discountable."
+            + "\n*Fixed issue where anniversary event button would show on refund if display was not yet active."
+            + "\n*Fixed issue where split ticket button would show on refund."
+            + "\n*Fixed issue where not all permissions were restored to user on refund over."
+            + "\n*Fixed issue where refunding RX and clicking cancel on partial amount allowed for refund of $0.00.";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
-    JLabel versionHeader = new JLabel("Version "+currentVersion, SwingConstants.LEFT);
+    JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
     protected String previousReceipt = "EMPTY";
     String st = "Split\nTender";

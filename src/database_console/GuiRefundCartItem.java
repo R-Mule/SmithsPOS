@@ -133,7 +133,7 @@ public class GuiRefundCartItem extends GuiCartItem {
                                 taxRefundedTrueButton.setVisible(false);
                                 taxRefundedFalseButton.setVisible(true);
                                 item.setRefundAllActive(false);
-                                if (item.isRX)
+                                if (item.isRX || item.category == 862)
                                 {
                                     item.setPrice(Double.parseDouble(priceOfItemsLabel.getText()));
                                     totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
@@ -165,7 +165,7 @@ public class GuiRefundCartItem extends GuiCartItem {
             refundInactiveButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(ActionEvent event) {
                     refundInactiveButtonPressed();
-                    taxRefundedFalsePressed();
+
                 }
             });
 
@@ -263,7 +263,12 @@ public class GuiRefundCartItem extends GuiCartItem {
         {
             taxRefundedFalseButton.setVisible(false);
             taxRefundedTrueButton.setVisible(true);
-            item.setRefundTaxOnly(true);
+            if (!item.hasTaxBeenRefunded && !item.isRX)
+            {
+                item.setRefundTaxOnly(true);
+            }
+            //More logic needed here for other category
+
             refundCart.updateTotal();
             mainFrame.updateCartScreen();
         }
@@ -281,7 +286,7 @@ public class GuiRefundCartItem extends GuiCartItem {
 
         if (item.quantityBeingRefunded > 0)
         {
-            if (item.isRX)
+            if (item.isRX || item.category == 862)
             {//BEGIN PARTIAL REFUND!
                 JFrame textInputFrame = new JFrame("");
                 JTextField field2 = new JTextField();
@@ -304,7 +309,7 @@ public class GuiRefundCartItem extends GuiCartItem {
                 field2.setSelectionStart(0);
                 field2.setSelectionEnd(4);
                 field2.addAncestorListener(new RequestFocusListener());
-                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "RX Refund Menu", JOptionPane.OK_CANCEL_OPTION);
+                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Partial Refund Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION)
                 {
                     if (!validateDouble(field2.getText()))
@@ -316,7 +321,7 @@ public class GuiRefundCartItem extends GuiCartItem {
                     {
                         double amtReceived = Double.parseDouble(field2.getText());
                         amtReceived = round(amtReceived);
-                        if (amtReceived > 0 && amtReceived <= item.getTotal())
+                        if (item.isRX && amtReceived > 0 && amtReceived <= item.getTotal())
                         {
                             item.setPrice(amtReceived);
 
@@ -325,11 +330,27 @@ public class GuiRefundCartItem extends GuiCartItem {
 
                             totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
                             item.setRefundAllActive(true);
+                            //taxRefundedFalsePressed();
+                        }
+                        else if (item.category == 862 && amtReceived > 0)
+                        {
+                            if ((item.hasTaxBeenRefunded && amtReceived <= item.getPriceOfItemsBeforeTax()) || (!item.hasTaxBeenRefunded && amtReceived <= item.getTotal()))
+                            {
+                                item.setPrice(amtReceived);
+
+                                refundInactiveButton.setVisible(false);
+                                refundActiveButton.setVisible(true);
+
+                                totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
+                                item.setRefundAllActive(true);
+                                taxRefundedFalsePressed();
+                            }
+
                         }
                         else
                         {
                             JFrame message1 = new JFrame("");
-                            JOptionPane.showMessageDialog(message1, "Refund must be greater than 0 and less than or equal to RX Total Price.");
+                            JOptionPane.showMessageDialog(message1, "Refund must be greater than 0 and less than or equal to Total Price.");
                         }//end else not 0 or less
                     }//end else
                 }//end if  
@@ -340,6 +361,7 @@ public class GuiRefundCartItem extends GuiCartItem {
                 refundActiveButton.setVisible(true);
                 totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
                 item.setRefundAllActive(true);
+                taxRefundedFalsePressed();
             }
             refundCart.updateTotal();
             mainFrame.updateCartScreen();
@@ -352,7 +374,7 @@ public class GuiRefundCartItem extends GuiCartItem {
         // priceOfItemsLabel.setText(String.format("%.2f", item.getPriceOfItemsBeforeTax()));
         // pricePerItemLabel.setText(String.format("%.2f", item.getPrice()));
         // totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));
-        if (item.isRX)
+        if (item.isRX || item.category == 862)
         {
             item.setPrice(Double.parseDouble(priceOfItemsLabel.getText()));
             totalItemPriceLabel.setText(String.format("%.2f", item.getTotal()));

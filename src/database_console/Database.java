@@ -1755,6 +1755,31 @@ public class Database {
         }//end catch
     }
 
+    public static ArrayList<DMERentalItem> getAllDMERentalItems() {
+        ArrayList<DMERentalItem> dmeRentalItems = new ArrayList<>();
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from dmeRentalItems order by equipmentName");
+            int i = 0;
+            while (rs.next())
+            {
+                    dmeRentalItems.add(new DMERentalItem(rs.getString(2),rs.getDouble(3),rs.getDouble(4),rs.getString(5),rs.getString(6)));
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+
+        return dmeRentalItems;
+    }
+    
     private static double round(double num) {//rounds to 2 decimal places.
         num = Math.round(num * 100.0) / 100.0;
         return num;

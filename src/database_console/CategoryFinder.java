@@ -462,6 +462,9 @@ public class CategoryFinder implements Serializable {
             case 861:
                 category = "DISCOUNT CODES";
                 break;
+            case 862:
+                category = "DME RENTALS";
+                break;
             default:
                 category = "UNKNOWN";
                 break;
