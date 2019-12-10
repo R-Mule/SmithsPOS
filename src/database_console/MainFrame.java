@@ -1513,12 +1513,12 @@ public class MainFrame extends javax.swing.JFrame {
 
                             String itemLengthInfo = String.format("This item is rented at a rate of $%.2f per " + selectedItem.minCustomerUnit.toLowerCase() + ".\n", selectedItem.customerRate);
                             //If they are locked into a downpayment because it requires a downpayment this statement will be true.
-                            if (selectedItem.minNonCustomerUnit.contentEquals("DOWN"))
+                            if ((isCustomer && selectedItem.minCustomerUnit.contentEquals("DOWN")) || (!isCustomer && selectedItem.minNonCustomerUnit.contentEquals("DOWN")))
                             {//They owe a flat rate, display a message and with the amount and add to cart on OK.
                                 JFrame nonCustomerDownFrame = new JFrame("");
                                 //JTextField field3 = new JTextField();
 
-                                String downInfo = String.format("Because the Customer is not a routine RX Customer, this item has a Down Payment Requirement.\nThe down payment is: $%.2f\n", selectedItem.nonCustomerRate);
+                                String downInfo = String.format("This item has a Down Payment Requirement.\nThe down payment is: $%.2f\n", selectedItem.nonCustomerRate);
 
                                 String returnMsg = "When the rented item is returned in good order the Customer will be\n"
                                         + "reimbursed the difference of the down payment and the rented amount they owed.";
