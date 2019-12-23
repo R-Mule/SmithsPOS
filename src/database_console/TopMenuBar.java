@@ -10,7 +10,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -1049,12 +1048,17 @@ public class TopMenuBar extends JMenuBar {
                     File rxFile, dmeFile;
                     String path = "";
 
-                    rxFile = new File("Z:\\" + currentDate + "R.posrf");
-                    path = "Z:\\";
+                    //rxFile = new File("Z:\\" + currentDate + "R.posrf");
+                    //path = "Z:\\";
+                    path = ConfigFileReader.getRxReportPath();
+                    rxFile = new File(path + currentDate + "R.posrf");
+                   // path = "Z:\\";
+                    
                     // System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
-
-                    dmeFile = new File("Y:\\" + currentDate + "D.posrf");
-                    path = "Y:\\";
+                    //path = "Y:\\";
+                    path = ConfigFileReader.getRxReportPath();
+                    dmeFile = new File(path + currentDate + "D.posrf");
+                    
                     //System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                     DrawerReport rxReport = null;
                     if (rxFile.exists() && !rxFile.isDirectory())
@@ -1289,14 +1293,19 @@ public class TopMenuBar extends JMenuBar {
                 String path = "";
                 if (field1.getText().toUpperCase().contains("R"))
                 {
-                    f = new File("Z:\\" + field1.getText().toUpperCase() + ".posrf");
-                    path = "Z:\\";
+                    //f = new File("Z:\\" + field1.getText().toUpperCase() + ".posrf");
+                    //path = "Z:\\";
+                    path = ConfigFileReader.getRxReportPath();
+                    f = new File(path + field1.getText().toUpperCase() + ".posrf");
+                    
                     // System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                 }
                 else
                 {
-                    f = new File("Y:\\" + field1.getText().toUpperCase() + ".posrf");
-                    path = "Y:\\";
+                    //f = new File("Y:\\" + field1.getText().toUpperCase() + ".posrf");
+                    //path = "Y:\\";
+                    path = ConfigFileReader.getDmeReportPath();
+                    f = new File(path + field1.getText().toUpperCase() + ".posrf");
                     //System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                 }
                 if (f.exists() && !f.isDirectory())

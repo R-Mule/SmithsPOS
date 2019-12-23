@@ -297,14 +297,14 @@ public class CapSignature extends JDialog {//implements Runnable {
             };
 
     private void initConnection() {
-        for (int i = 0; i < connections.length; i++)
+        for (String connection : connections)
         {
-            connectionChoice.add(connections[i]);
+            connectionChoice.add(connection);
         }
 
-        for (int i = 0; i < tablets.length; i++)
+        for (String tablet : tablets)
         {
-            connectionTablet.add(tablets[i]);
+            connectionTablet.add(tablet);
         }
 
     }

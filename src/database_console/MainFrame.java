@@ -1430,7 +1430,6 @@ public class MainFrame extends javax.swing.JFrame {
         );//end upsButtonAction
 
         dmeRentalButton.addActionListener(new java.awt.event.ActionListener() {
-//TODO Implement this for the new database info.
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
                 {
@@ -2960,6 +2959,30 @@ public class MainFrame extends javax.swing.JFrame {
         keys.add(tab);
         keys.add(ctrlTab);
         KeyboardFocusManager.getCurrentKeyboardFocusManager().setDefaultFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, keys);
+        
+        if(ConfigFileReader.getRegisterID().contentEquals("X"))
+        {//Initiate hidden mode
+            rxButton.setVisible(false);
+            otcButton.setVisible(false);
+            upsButton.setVisible(false);
+            cashButton.setVisible(false);
+            checkButton.setVisible(false);
+            creditButton.setVisible(false);
+            debitButton.setVisible(false);
+            splitTenderButton.setVisible(false);
+            paidOutButton.setVisible(false);
+            reprintReceiptButton.setVisible(false);
+            paperButton.setVisible(false);
+            loadTicket.setVisible(false);
+            refundButton.setVisible(false);
+            noSaleButton.setVisible(false);
+            lookupReceiptByRXButton.setVisible(false);
+            beginSplitTicketButton.setVisible(false);
+            chargeButton.setVisible(false);
+            activateDisplayButton.setVisible(false);
+            createTicket.setVisible(false);
+            
+        }
     }//end JFrame
 
     public void removeGuiCartItem(GuiCartItem item) {
@@ -3641,24 +3664,10 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
         }
-        catch (ClassNotFoundException ex)
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex)
         {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        catch (InstantiationException ex)
-        {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        catch (IllegalAccessException ex)
-        {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        catch (javax.swing.UnsupportedLookAndFeelException ex)
-        {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -3671,8 +3680,6 @@ public class MainFrame extends javax.swing.JFrame {
     public javax.swing.JPanel jPanel1;
     protected Cart curCart;
     protected CheckoutHandler checkout;
-    private int[] integerArray = new int[12];
-    private int arrayLoc = 0;
     JLabel totalPrice = new JLabel("Total Price: ", SwingConstants.RIGHT);
     JLabel totalTax = new JLabel("Total Tax: ", SwingConstants.RIGHT);
     JLabel subTotal = new JLabel("Subtotal: ", SwingConstants.RIGHT);
@@ -3742,16 +3749,11 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.2.20";
+    String currentVersion = "1.2.21";
     String updateString = ""
-            + "+Added support for refund receipt reprint from parent receipt ID or refund receipt ID."
-            + "\n+Added ability to refund RX copay multiple times until 0 balance."
-            + "\n+Added new update acknowledgement system... You're looking at it..."
-            + "\n+Added new DME Rental Item Button. Allows for partial refund. Non-Qty/Non-Discountable."
-            + "\n*Fixed issue where anniversary event button would show on refund if display was not yet active."
-            + "\n*Fixed issue where split ticket button would show on refund."
-            + "\n*Fixed issue where not all permissions were restored to user on refund over."
-            + "\n*Fixed issue where refunding RX and clicking cancel on partial amount allowed for refund of $0.00.";
+            + "Backend fixes, nothing fancy."
+            + "\nMerry Christmas!"
+            + "\nHappy New Year!";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
@@ -3769,10 +3771,9 @@ public class MainFrame extends javax.swing.JFrame {
     JLabel estimatedCashTotalLabel = new JLabel(String.format("Cash: $%d", estimatedCashTotal), SwingConstants.LEFT);
     JLabel estimatedCoinTotalLabel = new JLabel(String.format("Coin: $%.2f", estimatedCoinTotal), SwingConstants.LEFT);
     JButton reprintReceiptButton = new JButton("<html>" + receipt.replaceAll("\\n", "<br>") + "</html>");
-    private boolean itemIsTaxable = true;//assume every item is taxable at first.
     JTextField textField = new JTextField(10);
-    ArrayList<GuiCartItem> guiItems = new ArrayList<GuiCartItem>();
-    ArrayList<GuiRefundCartItem> guiRefundItems = new ArrayList<GuiRefundCartItem>();
+    ArrayList<GuiCartItem> guiItems = new ArrayList<>();
+    ArrayList<GuiRefundCartItem> guiRefundItems = new ArrayList<>();
     MainFrame myself = this;
     PoleDisplay display;
     RefundCart refundCart = new RefundCart();

@@ -22,6 +22,8 @@ public class ConfigFileReader {
     private static String cardReaderURL;
     private static String pharmacyName;
     private static String mailPassword;
+    private static String rxReportPath;
+    private static String dmeReportPath;
 
     private ConfigFileReader() //do not instantiate
     {
@@ -91,7 +93,14 @@ public class ConfigFileReader {
                 {
                     mailPassword = tokens[1].trim();
                 }
-
+                else if (tokens[0].contains("RX Report Path"))
+                {
+                    rxReportPath = tokens[1].trim();
+                }
+                else if (tokens[0].contains("DME Report Path"))
+                {
+                    dmeReportPath = tokens[1].trim();
+                }
             }//end while
 
         }
@@ -122,6 +131,14 @@ public class ConfigFileReader {
 
     public static String getRegisterReportPath() {
         return registerReportPath;
+    }
+
+    public static String getDmeReportPath() {
+        return dmeReportPath;
+    }
+
+    public static String getRxReportPath() {
+        return rxReportPath;
     }
 
     public static String getRegisterID() {
