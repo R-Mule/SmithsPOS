@@ -1056,7 +1056,7 @@ public class TopMenuBar extends JMenuBar {
                     
                     // System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                     //path = "Y:\\";
-                    path = ConfigFileReader.getRxReportPath();
+                    path = ConfigFileReader.getDmeReportPath();
                     dmeFile = new File(path + currentDate + "D.posrf");
                     
                     //System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
