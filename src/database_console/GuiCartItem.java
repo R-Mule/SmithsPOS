@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.time.LocalDateTime;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -55,6 +56,12 @@ public class GuiCartItem {
     }
 
     public GuiCartItem(Item item, int baseY, JPanel frameGUI, Cart curCart, MainFrame mainFrame) {
+        if (mainFrame.isLoadedTicketAnEmployees)
+        {
+            Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                    mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Item Added To Cart", LocalDateTime.now(),
+                    ConfigFileReader.getRegisterID()));
+        }
         this.mainFrame = mainFrame;
         this.frame = frameGUI;
         this.curCart = curCart;
@@ -291,12 +298,24 @@ public class GuiCartItem {
 
         isSplitSavingButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (mainFrame.isLoadedTicketAnEmployees)
+                {
+                    Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                            mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Split Save Triggered", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
+                }
                 isSplitSavingButtonPressed(event);
             }
         });
 
         notSplitSavingButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (mainFrame.isLoadedTicketAnEmployees)
+                {
+                    Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                            mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Split Save Stopped", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
+                }
                 notSplitSavingButtonPressed(event);
             }
         });
@@ -304,30 +323,60 @@ public class GuiCartItem {
         //DISCOUNT BUTTON PRESSED
         discountButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (mainFrame.isLoadedTicketAnEmployees)
+                {
+                    Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                            mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Discount Button Pressed", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
+                }
                 individualDiscountButtonPressed(event);
             }
         });
         //ADD ITEM BUTTON PRESSED
         addQuantityButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (mainFrame.isLoadedTicketAnEmployees)
+                {
+                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
+                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Add Qty Button Pressed",LocalDateTime.now(),
+                    ConfigFileReader.getRegisterID()));
+                }
                 addItemButtonPressed(event);
             }
         });
         //ADD ITEM BUTTON PRESSED
         editRXButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (mainFrame.isLoadedTicketAnEmployees)
+                {
+                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
+                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Edit RX Button Pressed",LocalDateTime.now(),
+                    ConfigFileReader.getRegisterID()));
+                }
                 editRXButtonPressed(event);
             }
         });
         //REMOVE ITEM BUTTON PRESSED
         subQuantityButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (mainFrame.isLoadedTicketAnEmployees)
+                {
+                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
+                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Sub Qty Button Pressed",LocalDateTime.now(),
+                    ConfigFileReader.getRegisterID()));
+                }
                 removeItemButtonPressed(event);
             }
         });
         //SET TAXABLE FALSE BUTTON
         notTaxableButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (mainFrame.isLoadedTicketAnEmployees)
+                {
+                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
+                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Add Taxable Button Pressed",LocalDateTime.now(),
+                    ConfigFileReader.getRegisterID()));
+                }
                 notTaxableButtonPressed(event);
             }
         });
@@ -335,18 +384,36 @@ public class GuiCartItem {
         //SET NOTTAXABLE FALSE BUTTON
         taxableButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (mainFrame.isLoadedTicketAnEmployees)
+                {
+                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
+                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Remove Tax Button Pressed",LocalDateTime.now(),
+                    ConfigFileReader.getRegisterID()));
+                }
                 taxableButtonPressed(event);
             }
         });
         //SET PRECHARGED FALSE BUTTON
         prechargedFalseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (mainFrame.isLoadedTicketAnEmployees)
+                {
+                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
+                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Make Precharged Button Pressed",LocalDateTime.now(),
+                    ConfigFileReader.getRegisterID()));
+                }
                 setPrechargedFalsePressed(event);
             }
         });
         //SET PRECHARGED TRUE BUTTON
         prechargedTrueButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (mainFrame.isLoadedTicketAnEmployees)
+                {
+                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
+                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Make not Precharged Button Pressed",LocalDateTime.now(),
+                    ConfigFileReader.getRegisterID()));
+                }
                 setPrechargedTruePressed(event);
             }
         });
@@ -631,7 +698,6 @@ public class GuiCartItem {
         }
         else
         {
-        
 
             removeAllGUIData();
             curCart.removeItem(item);

@@ -14,8 +14,9 @@ public class Employee {
     protected int wins;//March Maddness
     protected int losses;//March Maddness
     protected String acknowledgedUpdateVersion; //Used to tell the employee of the latest update information if they haven't seen it.
+    protected String patientCode;
     
-    public Employee(int pid,String name, String rfid, int passcode, int permissionLevel, int wins, int losses, String ackdUpdate){
+    public Employee(int pid,String name, String rfid, int passcode, int permissionLevel, int wins, int losses, String ackdUpdate, String patientCode){
         this.rfid = rfid;
         this.pid = pid;
         this.passcode = passcode;
@@ -24,6 +25,7 @@ public class Employee {
         this.wins = wins;
         this.losses = losses;
         this.acknowledgedUpdateVersion = ackdUpdate;
+        this.patientCode = patientCode.toUpperCase();
     }
     
 }

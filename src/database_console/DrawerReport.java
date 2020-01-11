@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class DrawerReport implements Serializable {
 
-    private static final long serialVersionUID = 7526472295622776148L;
+    private static final long serialVersionUID = 7526472295622776149L;
     private static final String HOLLIEFILENAME = "C:\\pos\\REPORTS\\HollieAccnt";
     private static final String DEBBIEFILENAME = "C:\\pos\\REPORTS\\DebbieAccnt";
     private static final String REPORTFILENAME = "C:\\pos\\REPORTS\\DailyReport";
@@ -61,7 +61,8 @@ public class DrawerReport implements Serializable {
 
     protected ArrayList<String> accountNameCharged = new ArrayList<String>();//UPDATED
     protected ArrayList<Double> amountChargedToAccount = new ArrayList<Double>();//UPDATED
-    private ArrayList<ArrayList<String>> itemsChargedToAccount = new ArrayList<ArrayList<String>>();//YES THIS LOOKS THAT CRAZY. //UPDATED
+    protected ArrayList<ArrayList<String>> itemsChargedToAccount = new ArrayList<ArrayList<String>>();//YES THIS LOOKS THAT CRAZY. //UPDATED
+    protected ArrayList<ArrayList<String>> receiptNumbersChargedToAccount = new ArrayList<ArrayList<String>>();
 
     //PAID OUTS
     private ArrayList<String> descriptionsPO = new ArrayList<String>();//UPDATED
@@ -71,10 +72,12 @@ public class DrawerReport implements Serializable {
     private double totalARPayments = 0;//UPDATED
     protected ArrayList<String> ARAccountName = new ArrayList<String>();//UPDATED
     protected ArrayList<Double> amountPaidToARAccount = new ArrayList<Double>();//UPDATED
+    protected ArrayList<ArrayList<String>> receiptNumbersPaidToAccount = new ArrayList<ArrayList<String>>();
 
     private double totalDMEPayments = 0;//UPDATED
     protected ArrayList<String> DMEAccountName = new ArrayList<String>();//UPDATED
     protected ArrayList<Double> amountPaidToDMEAccount = new ArrayList<Double>();//UPDATED
+    protected ArrayList<ArrayList<String>> receiptNumbersPaidToDMEAccount = new ArrayList<ArrayList<String>>();
 
     //ITEM CATEGORIES
     private double otcTaxedTotal = 0;//updated
@@ -85,9 +88,9 @@ public class DrawerReport implements Serializable {
     private double totalPaperSales = 0;//UPDATED
     private double totalUPSSales = 0;//UPDATED
 
-    DrawerReport(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName, boolean isPayCheckReceipt) {
+    DrawerReport(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName, boolean isPayCheckReceipt, String receiptNumber) {
         //FIRST TIME REPORT IS MADE. DEFAULT VALUE TIME!
-        update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt);
+        update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt, receiptNumber);
     }//end DrawerReportCtor
 
     DrawerReport(RefundCart curCart, String clerkName, String[] paymentType, double[] paymentAmt, boolean isRefund) {
@@ -174,7 +177,7 @@ public class DrawerReport implements Serializable {
         totalTaxCharged -= curCart.getTax();
     }
 
-    public void update(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName, boolean isPayCheckReceipt) {
+    public void update(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName, boolean isPayCheckReceipt, String receiptNumber) {
 
         //UPDATE CLERK TRANSACTION COUNT!
         if (employeeNames != null && !employeeNames.isEmpty() && employeeNames.contains(clerkName))
@@ -281,9 +284,25 @@ public class DrawerReport implements Serializable {
                         int index = ARAccountName.indexOf(item.getName());
                         double amount = round(amountPaidToARAccount.get(index) + item.getTotal());
                         amountPaidToARAccount.set(index, amount);
+                        boolean found = false;
+                        for (String receipt : receiptNumbersPaidToAccount.get(index))
+                        {
+                            if (receipt.contentEquals(receiptNumber))
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            receiptNumbersPaidToAccount.get(index).add(receiptNumber);
+                        }
                     }
                     else
                     {
+                        ArrayList<String> receipts = new ArrayList<>();
+                        receipts.add(receiptNumber);
+                        receiptNumbersPaidToAccount.add(receipts);
                         ARAccountName.add(item.getName());
                         amountPaidToARAccount.add(item.getTotal());
                     }
@@ -296,11 +315,27 @@ public class DrawerReport implements Serializable {
                         int index = DMEAccountName.indexOf(item.getName());
                         double amount = round(amountPaidToDMEAccount.get(index) + item.getTotal());
                         amountPaidToDMEAccount.set(index, amount);
+                        boolean found = false;
+                        for (String receipt : receiptNumbersPaidToDMEAccount.get(index))
+                        {
+                            if (receipt.contentEquals(receiptNumber))
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            receiptNumbersPaidToDMEAccount.get(index).add(receiptNumber);
+                        }
                     }
                     else
                     {
                         DMEAccountName.add(item.getName());
                         amountPaidToDMEAccount.add(item.getTotal());
+                        ArrayList<String> receiptsForAccount = new ArrayList<>();
+                        receiptsForAccount.add(receiptNumber);
+                        receiptNumbersPaidToDMEAccount.add(receiptsForAccount);
                     }
                     totalDMEPayments = round(totalDMEPayments + item.getTotal());
                 }
@@ -358,7 +393,7 @@ public class DrawerReport implements Serializable {
 
                 if (charged)
                 {
-                    if (accountNameCharged != null && accountNameCharged != null && accountNameCharged.contains(paymentType[0].substring(11)) && !item.isPreCharged)
+                    if (accountNameCharged != null && accountNameCharged.contains(paymentType[0].substring(11)) && !item.isPreCharged)
                     {
                         int index = accountNameCharged.indexOf(paymentType[0].substring(11));
                         double amount = round(amountChargedToAccount.get(index) + item.getTotal());
@@ -373,6 +408,8 @@ public class DrawerReport implements Serializable {
                         accountNameCharged.add(paymentType[0].substring(11));
                         amountChargedToAccount.add(round((item.getTotal())));
                         ArrayList<String> items = new ArrayList<String>();
+                        ArrayList<String> receiptNums = new ArrayList<String>();
+                        receiptNumbersChargedToAccount.add(receiptNums);//used later.
                         items.add(item.getQuantity() + "  " + item.getName() + "  " + round(item.getTotal()));
 
                         itemsChargedToAccount.add(items);
@@ -425,6 +462,25 @@ public class DrawerReport implements Serializable {
                     }
                 }
             }//end for all items
+            if (charged)
+            {
+                int index = accountNameCharged.indexOf(paymentType[0].substring(11));
+                ArrayList<String> receipts = receiptNumbersChargedToAccount.get(index);
+                boolean found = false;
+                for (String rec : receipts)
+                {
+                    if (rec.contentEquals(receiptNumber))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    receipts.add(receiptNumber);
+                    //receiptNumbersChargedToAccount.add(receipts);
+                }
+            }
         }//end else not paycheckReceipt
     }//end update()
 
@@ -485,6 +541,12 @@ public class DrawerReport implements Serializable {
         for (String name : ARAccountName)
         {
             System.out.println(name + " " + amountPaidToARAccount.get(index));
+            System.out.println("Receipts for Payments: ");
+            for (String receiptNumber : receiptNumbersPaidToAccount.get(index))
+            {
+                System.out.println(receiptNumber);
+            }
+
             index++;
         }
 
@@ -493,6 +555,11 @@ public class DrawerReport implements Serializable {
         for (String name : DMEAccountName)
         {
             System.out.println(name + " " + amountPaidToDMEAccount.get(index));
+            System.out.println("Receipts for " + name + " Payments: ");
+            for (String receipt : receiptNumbersPaidToDMEAccount.get(index))
+            {
+                System.out.println(receipt);
+            }
             index++;
         }
 
@@ -507,6 +574,12 @@ public class DrawerReport implements Serializable {
             for (String item : temp)
             {
                 System.out.println(item);
+            }
+
+            System.out.println("\nReceipts for " + s + " Charges");
+            for (String receipt : receiptNumbersChargedToAccount.get(index))
+            {
+                System.out.println(receipt);
             }
             System.out.println();
             index++;
@@ -580,6 +653,7 @@ public class DrawerReport implements Serializable {
                 int index = 0;
                 for (String s : accountNameCharged)
                 {
+                    bw.write("******************************\n");
                     bw.write("Account Name: " + s + "\n");
                     bw.write("Total Charged: " + amountChargedToAccount.get(index) + "\n");
                     ArrayList<String> temp = itemsChargedToAccount.get(index);
@@ -587,16 +661,32 @@ public class DrawerReport implements Serializable {
                     {
                         bw.write(item + "\n");
                     }
-                    bw.write("\n");
+
+                    bw.write("\nReceipts for " + s + " Charges\n");
+                    for (String receipt : receiptNumbersChargedToAccount.get(index))
+                    {
+                        bw.write(receipt + "\n");
+                    }
+                    bw.write("******************************\n\n");
                     index++;
                 }
 
-                bw.write("\n Account Payments: \n");
-                index = 0;
-                for (String name : ARAccountName)
+                if (!ARAccountName.isEmpty())
                 {
-                    bw.write(name + " " + amountPaidToARAccount.get(index) + "\n");
-                    index++;
+                    bw.write("\n Account Payments: \n");
+                    index = 0;
+                    for (String name : ARAccountName)
+                    {
+                        bw.write("******************************\n");
+                        bw.write(name + " " + amountPaidToARAccount.get(index) + "\n\n");
+                        bw.write("Receipts for " + name + " Payments:\n");
+                        for (String receiptNumber : receiptNumbersPaidToAccount.get(index))
+                        {
+                            bw.write(receiptNumber + "\n");
+                        }
+                        bw.write("******************************\n\n");
+                        index++;
+                    }
                 }
             }
         }
@@ -640,9 +730,17 @@ public class DrawerReport implements Serializable {
                 bw = new BufferedWriter(fw);
                 int index = 0;
                 bw.write("Account Payments: \n");
+                
                 for (String name : DMEAccountName)
                 {
+                    bw.write("******************************\n");
                     bw.write(name + " " + amountPaidToDMEAccount.get(index) + "\n");
+                    bw.write("Receipts for " + name + " Payments: \n");
+                    for (String receipt : receiptNumbersPaidToDMEAccount.get(index))
+                    {
+                        System.out.println(receipt);
+                    }
+                    bw.write("******************************\n\n");
                     index++;
                 }
             }

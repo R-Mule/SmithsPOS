@@ -1,6 +1,8 @@
 package database_console;
 
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -10,12 +12,17 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 import org.apache.commons.csv.CSVFormat;
-
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
@@ -30,6 +37,9 @@ public class Database {
     private static String password;
     private static String driverPath = "com.mysql.cj.jdbc.Driver";
     //private ConfigFileReader reader;
+    private static int addedCntr = 0;
+    private static int updatedCntr = 0;
+    private static int failedCntr = 0;
 
     private Database() {
     }//end databaseCtor
@@ -90,14 +100,14 @@ public class Database {
         }//end catch
     }
 
-    public static String addEmployee(String firstName, String lastName, int passCode, String rfid) {
+    public static String addEmployee(String firstName, String lastName, int passCode, String rfid, String patientCode) {
         try
         {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("INSERT INTO `employees`(`pid`,`empname`,`passcode`,`wins`,`losses`,`emprfid`) VALUES (NULL,'" + lastName + ", " + firstName + "','" + passCode + "',0,0,'" + rfid + "')");//zeros are for wins and losses. for March Madness
+            stmt.executeUpdate("INSERT INTO `employees`(`pid`,`empname`,`passcode`,`wins`,`losses`,`emprfid`,`uuid`) VALUES (NULL,'" + lastName + ", " + firstName + "','" + passCode + "',0,0,'" + rfid + "','" + patientCode + "')");//zeros are for wins and losses. for March Madness
             con.close();
         }
         catch (Exception e)
@@ -139,14 +149,14 @@ public class Database {
         }//end catch
     }
 
-        public static void updateEmployeeUpdateAckByPasscode(int passcode, String version) {
+    public static void updateEmployeePatientCode(int employeeID, String patientCode) {
         try
         {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("update `employees` set ackdUpdate = '"+ version + "' where passcode= "+ passcode + ";");
+            stmt.executeUpdate("update `employees` set uuid = '" + patientCode + "' where pid=" + employeeID + ";");
             con.close();
         }
         catch (Exception e)
@@ -154,7 +164,23 @@ public class Database {
             System.out.println(e);
         }//end catch
     }
-        
+
+    public static void updateEmployeeUpdateAckByPasscode(int passcode, String version) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("update `employees` set ackdUpdate = '" + version + "' where passcode= " + passcode + ";");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+
     public static void updateEmployeeName(int employeeID, String employeeName) {
         try
         {
@@ -255,7 +281,7 @@ public class Database {
             ResultSet rs = stmt.executeQuery("select * from employees order by pid asc,empname;");
             while (rs.next())
             {
-                employees.add(new Employee(rs.getInt(1), rs.getString(2), rs.getString(7), rs.getInt(3), rs.getInt(6), rs.getInt(4), rs.getInt(5), rs.getString(8)));
+                employees.add(new Employee(rs.getInt(1), rs.getString(2), rs.getString(7), rs.getInt(3), rs.getInt(6), rs.getInt(4), rs.getInt(5), rs.getString(8), rs.getString(9)));
             }//end while
             con.close();
             return employees;
@@ -379,7 +405,7 @@ public class Database {
             {
                 receipts.add(rs.getString(3));
             }//end while 
-            
+
             ResultSet rs2 = stmt.executeQuery("select * from refundreceiptsFull where receiptNum = '" + receiptNum + "' or refundreceiptnum = '" + receiptNum + "';");
             while (rs2.next())
             {
@@ -413,7 +439,7 @@ public class Database {
         }//end catch
     }
 
-        public static void storeRefundReceiptString(String receiptNum, String refundReceiptNum, String receipt) {
+    public static void storeRefundReceiptString(String receiptNum, String refundReceiptNum, String receipt) {
         try
         {
             Class.forName(driverPath);
@@ -429,6 +455,7 @@ public class Database {
             System.out.println(e);
         }//end catch
     }
+
     public static String getEmployeeNameByCode(int code) {
 
         try
@@ -993,113 +1020,315 @@ public class Database {
     }
 
     public static void loadARData(String path) {
-        try
-        {
-            BufferedReader in = new BufferedReader(new FileReader(path));
-            String line;
-            while ((line = in.readLine()) != null)
-            {
-                String[] tokens = line.split(":");
-
-                if (line != null && !line.isEmpty() && !line.contains("*"))
+        addedCntr = 0;
+        updatedCntr = 0;
+        failedCntr = 0;
+        JFrame frame = new JFrame("AR Data Upload");
+        //frame.setLayout();
+        JLabel addedCustomersLabel = new JLabel("AR Accounts Added: 0");
+        JLabel updatedCustomersLabel = new JLabel("AR Accounts Updated: 0");
+        JLabel failuresLabel = new JLabel("Failures: (Notify Drew if Any): 0");
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 0));
+        JButton acknowledgeButton = new JButton("Ok");
+        frame.setSize(350, 200);
+        addedCustomersLabel.setSize(50, 50);
+        updatedCustomersLabel.setSize(50, 50);
+        failuresLabel.setSize(50, 50);
+        panel.setSize(350, 200);
+        frame.add(panel);
+        frame.setLocation(800, 300);
+        panel.add(addedCustomersLabel);
+        panel.add(updatedCustomersLabel);
+        panel.add(failuresLabel);
+        panel.add(acknowledgeButton);
+        panel.setVisible(true);
+        frame.setVisible(true);
+        frame.setAlwaysOnTop(true);
+        acknowledgeButton.setVisible(false);
+        acknowledgeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                frame.setVisible(false);
+            }
+        });
+        SwingWorker worker = new SwingWorker<Boolean, Integer>() {
+            @Override
+            protected Boolean doInBackground() throws Exception {
+                // Background work
+                try
                 {
-                    double realBal = 0;
-                    line = line.trim();
-                    if (!line.isEmpty())
+                    BufferedReader in = new BufferedReader(new FileReader(path));
+                    String line;
+                    while ((line = in.readLine()) != null)
                     {
-                        String uuid = line.substring(0, 12).replaceAll(" ", "");
-                        String accntname = line.substring(12, 24).replaceAll(" ", "");
-                        String lastname = line.substring(24, 43).replaceAll(" ", "");
-                        String firstname = line.substring(43, 57).replaceAll(" ", "");
-                        String dob = line.substring(57, 67).replaceAll(" ", "");
-                        String balance = line.substring(68, 87).replaceAll(" ", "");
-                        String fro = line.substring(87).replaceAll(" ", "");
-                        boolean frozen;
-                        if (fro.contentEquals("YES"))
-                        {
-                            frozen = true;
-                        }
-                        else
-                        {
-                            frozen = false;
-                        }
-                        // uuid=uuid.replaceAll(" ","");
-                        if (firstname.isEmpty())
-                        {
-                            firstname = "_";
-                        }
-                        if (lastname.isEmpty())
-                        {
-                            lastname = "_";
-                        }
-                        accntname = accntname.replaceAll(" ", "");
-                        dob = dob.replaceAll("/", "");
-                        dob = dob.substring(0, 4) + dob.substring(6, 8);
-                        firstname = firstname.replaceAll("'", " ");
-                        lastname = lastname.replaceAll("'", " ");
-                        accntname = accntname.replaceAll("'", " ");
+                        String[] tokens = line.split(":");
 
-                        balance = balance.replaceAll(",", "");
-                        if (balance.charAt(balance.length() - 1) == '-')
+                        if (line != null && !line.isEmpty() && !line.contains("*"))
                         {
-                            realBal = Double.parseDouble(balance.substring(0, balance.indexOf('-')));
-                            realBal = realBal * -1;
-                        }
-                        else
-                        {
-                            realBal = Double.parseDouble(balance.substring(0, balance.length()));
-                        }
-                        System.out.println(uuid + accntname + lastname + firstname + dob + balance + "      " + realBal);
+                            double realBal = 0;
+                            line = line.trim();
+                            if (!line.isEmpty())
+                            {
+                                String uuid = line.substring(0, 12).replaceAll(" ", "");
+                                String accntname = line.substring(12, 24).replaceAll(" ", "");
+                                String lastname = line.substring(24, 43).replaceAll(" ", "");
+                                String firstname = line.substring(43, 57).replaceAll(" ", "");
+                                String dob = line.substring(57, 67).replaceAll(" ", "");
+                                String balance = line.substring(68, 87).replaceAll(" ", "");
+                                String fro = line.substring(87).replaceAll(" ", "");
+                                boolean frozen;
+                                if (fro.contentEquals("YES"))
+                                {
+                                    frozen = true;
+                                }
+                                else
+                                {
+                                    frozen = false;
+                                }
+                                // uuid=uuid.replaceAll(" ","");
+                                if (firstname.isEmpty())
+                                {
+                                    firstname = "_";
+                                }
+                                if (lastname.isEmpty())
+                                {
+                                    lastname = "_";
+                                }
+                                accntname = accntname.replaceAll(" ", "");
+                                dob = dob.replaceAll("/", "");
+                                dob = dob.substring(0, 4) + dob.substring(6, 8);
+                                firstname = firstname.replaceAll("'", "''");
+                                lastname = lastname.replaceAll("'", "''");
+                                accntname = accntname.replaceAll("'", "''");
 
-                        boolean itemFound = false;
-                        if (accntname.isEmpty())
+                                balance = balance.replaceAll(",", "");
+                                if (balance.charAt(balance.length() - 1) == '-')
+                                {
+                                    realBal = Double.parseDouble(balance.substring(0, balance.indexOf('-')));
+                                    realBal = realBal * -1;
+                                }
+                                else
+                                {
+                                    realBal = Double.parseDouble(balance.substring(0, balance.length()));
+                                }
+                                //  System.out.println(uuid + accntname + lastname + firstname + dob + balance + "      " + realBal);
+
+                                boolean itemFound = false;
+                                if (accntname.isEmpty())
+                                {
+                                    accntname = "DELETED";
+                                }
+                                try
+                                {
+                                    Class.forName(driverPath);
+                                    Connection con = DriverManager.getConnection(
+                                            host, userName, password);
+//here sonoo is database name, root is username and password  
+                                    Statement stmt = con.createStatement();
+                                    ResultSet rs = stmt.executeQuery("select * from chargeaccounts where uuid = '" + uuid + "';");
+                                    while (rs.next())
+                                    {
+                                        itemFound = true;
+                                        Statement stmt2 = con.createStatement();
+                                        stmt2.executeUpdate("UPDATE `chargeaccounts` set lastname = '" + lastname + "',firstname='" + firstname + "',balance=" + realBal + ",dob='" + dob + "',accntname='" + accntname + "',frozen =  " + frozen + " where uuid = '" + uuid + "';");
+                                        //System.out.println("FOUND ACCOUNT!");
+                                        updatedCntr++;
+                                        updatedCustomersLabel.setText("AR Accounts Updated: " + Integer.toString(updatedCntr) + "\n");
+
+                                    }//end while
+                                    if (!itemFound)
+                                    {
+                                        stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`balance`,`uuid`,`frozen`) VALUES (NULL, '" + accntname + "','" + lastname + "','" + firstname + "','" + dob + "'," + realBal + ",'" + uuid + "'," + frozen + ");");
+                                        addedCntr++;
+                                        addedCustomersLabel.setText("AR Accounts Added: " + Integer.toString(addedCntr) + "\n");
+                                    }
+                                    con.close();
+                                }
+                                catch (Exception e)
+                                {
+                                    System.out.println(e);
+                                    failedCntr++;
+                                    failuresLabel.setText("Failures: (Notify Drew if Any): " + Integer.toString(failedCntr) + "\n");
+                                }
+
+                            }//end if lines not empty
+
+                        }//end if line is garbage
+                        if (line.contains("*"))
                         {
-                            accntname = "DELETED";
+                            break;
                         }
+                    }//end while next line
+                }
+                catch (FileNotFoundException e)
+                {
+                    System.out.println("The file could not be found or opened");
+                }
+                catch (IOException e)
+                {
+                    System.out.println("Error reading the file");
+                }
+                // Value transmitted to done()
+                return true;
+            }
+
+            @Override
+            protected void process(List<Integer> chunks) {
+                // Process results
+                //progress++;
+
+            }
+
+            @Override
+            protected void done() {
+                System.out.println("DONE!");
+                acknowledgeButton.setVisible(true);
+            }
+        };
+
+        // executes the swingworker on worker thread 
+        worker.execute();
+    }
+
+    public static void loadCustomerData(String path) {
+
+        addedCntr = 0;
+        updatedCntr = 0;
+        failedCntr = 0;
+        JFrame frame = new JFrame("Customer Data Upload");
+        //frame.setLayout();
+        JLabel addedCustomersLabel = new JLabel("Customers Added: 0");
+        JLabel updatedCustomersLabel = new JLabel("Customers Updated: 0");
+        JLabel failuresLabel = new JLabel("Failures: (Notify Drew if Any): 0");
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 0));
+        JButton acknowledgeButton = new JButton("Ok");
+        frame.setSize(350, 200);
+        addedCustomersLabel.setSize(50, 50);
+        updatedCustomersLabel.setSize(50, 50);
+        failuresLabel.setSize(50, 50);
+        panel.setSize(350, 200);
+        frame.add(panel);
+        frame.setLocation(800, 300);
+        panel.add(addedCustomersLabel);
+        panel.add(updatedCustomersLabel);
+        panel.add(failuresLabel);
+        panel.add(acknowledgeButton);
+        panel.setVisible(true);
+        frame.setVisible(true);
+        frame.setAlwaysOnTop(true);
+        acknowledgeButton.setVisible(false);
+        acknowledgeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                frame.setVisible(false);
+            }
+        });
+
+        //loadTimer();
+        SwingWorker worker = new SwingWorker<Boolean, Integer>() {
+            @Override
+            protected Boolean doInBackground() throws Exception {
+                // Background work
+                try
+                {
+                    BufferedReader in = new BufferedReader(new FileReader(path));
+                    String line;
+                    Connection con = DriverManager.getConnection(
+                            host, userName, password);
+                    Statement stmt = con.createStatement();
+                    while ((line = in.readLine()) != null)
+                    {
+                        line = line.replaceAll("'", "''");
+                        String[] tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", 9);
+
+                        if (tokens.length < 8)
+                        {
+                            continue;
+                        }
+                        /*
+                token[0] == uuid
+                token[1] == last name
+                token[2] == first name
+                token[3] == dob
+                token[4] == address
+                token[5] == state
+                token[6] == zip code
+                token[7] == charge account if exists.
+                token[8] == city
+                         */
+                        String uuid = tokens[0].replaceAll("\"", "");
+                        String lastName = tokens[1].replaceAll("\"", "");
+                        String firstName = tokens[2].replaceAll("\"", "");
+                        String dob = tokens[3].replaceAll("\"", "");
+                        String address = tokens[4].replaceAll("\"", "");
+                        String state = tokens[5].replaceAll("\"", "");
+                        String zip = tokens[6].replaceAll("\"", "");
+                        String chargeAccount = tokens[7].replaceAll("\"", "");
+                        String city = tokens[8].replaceAll("\"", "");
                         try
                         {
                             Class.forName(driverPath);
-                            Connection con = DriverManager.getConnection(
-                                    host, userName, password);
+                            //Connection con = DriverManager.getConnection(
+                            //        host, userName, password);
 //here sonoo is database name, root is username and password  
-                            Statement stmt = con.createStatement();
-                            ResultSet rs = stmt.executeQuery("select * from chargeaccounts where uuid = '" + uuid + "';");
+                            //Statement stmt = con.createStatement();
+                            ResultSet rs = stmt.executeQuery("select * from customers where uuid = '" + uuid + "';");
+                            boolean itemFound = false;
                             while (rs.next())
                             {
                                 itemFound = true;
                                 Statement stmt2 = con.createStatement();
-                                stmt2.executeUpdate("UPDATE `chargeaccounts` set lastname = '" + lastname + "',firstname='" + firstname + "',balance=" + realBal + ",dob='" + dob + "',accntname='" + accntname + "',frozen =  " + frozen + " where uuid = '" + uuid + "';");
-                                System.out.println("FOUND ACCOUNT!");
+                                stmt2.executeUpdate("UPDATE `customers` set state = '" + state + "',firstname='" + firstName + "',lastname='" + lastName + "',dob='" + dob + "',address='" + address + "',city =  '" + city + "', zip = '" + zip + "', chargeaccount = '" + chargeAccount + "' where uuid = '" + uuid + "';");
+                                updatedCntr++;
+                                updatedCustomersLabel.setText("Customers Updated: " + Integer.toString(updatedCntr) + "\n");
 
                             }//end while
                             if (!itemFound)
                             {
-                                stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`balance`,`uuid`,`frozen`) VALUES (NULL, '" + accntname + "','" + lastname + "','" + firstname + "','" + dob + "'," + realBal + ",'" + uuid + "'," + frozen + ");");
+                                stmt.executeUpdate("INSERT INTO `customers` (pid, uuid, firstname, lastname, dob, address, city, state, zip, chargeaccount) VALUES (NULL, '" + uuid + "','" + firstName + "','" + lastName + "','" + dob + "','" + address + "','" + city + "','" + state + "','" + zip + "','" + chargeAccount + "');");
+                                addedCntr++;
+                                addedCustomersLabel.setText("Customers Added: " + Integer.toString(addedCntr) + "\n");
                             }
-                            con.close();
+
                         }
                         catch (Exception e)
                         {
+                            failedCntr++;
+                            failuresLabel.setText("Failures: (Notify Drew if Any): " + Integer.toString(failedCntr) + "\n");
                             System.out.println(e);
                         }
-
-                    }//end if lines not empty
-
-                }//end if line is garbage
-                if (line.contains("*"))
-                {
-                    break;
+                    }//end while next line
+                    con.close();
                 }
-            }//end while next line
-        }
-        catch (FileNotFoundException e)
-        {
-            System.out.println("The file could not be found or opened");
-        }
-        catch (IOException e)
-        {
-            System.out.println("Error reading the file");
-        }
+                catch (FileNotFoundException e)
+                {
+                    System.out.println("The file could not be found or opened");
+                }
+                catch (IOException e)
+                {
+                    System.out.println("Error reading the file");
+                }
+                // Value transmitted to done()
+                return true;
+            }
+
+            @Override
+            protected void process(List<Integer> chunks) {
+                // Process results
+                //progress++;
+
+            }
+
+            @Override
+            protected void done() {
+                System.out.println("DONE!");
+                acknowledgeButton.setVisible(true);
+            }
+        };
+
+        // executes the swingworker on worker thread 
+        worker.execute();
+
     }
 
     public static String[] getARList(String accntName, String lastName, String firstName, String dob) {
@@ -1158,9 +1387,13 @@ public class Database {
 
             while (rs.next())
             {
+                if (!rs.getString(2).contentEquals("DELETED"))
+                {
+                    accounts[i] = rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6) + " Current Balance $" + String.format("%.2f", rs.getDouble(6));
+                    i++;
+                }
                 // System.out.println(rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4)+" "+rs.getString(5).substring(0, 2)+"-"+rs.getString(5).substring(2, 4)+"-"+rs.getString(5).substring(4, 6));
-                accounts[i] = rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5).substring(0, 2) + "-" + rs.getString(5).substring(2, 4) + "-" + rs.getString(5).substring(4, 6) + " Current Balance $" + String.format("%.2f", rs.getDouble(6));
-                i++;
+
             }//end while
 
             con.close();
@@ -1331,6 +1564,30 @@ public class Database {
         return emp;
     }//end getTicketFromDatabase
 
+    public static Customer getCustomerByCID(String customerCID) {
+        Customer customer = null;
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from customers where uuid = '" + customerCID + "'");
+
+            while (rs.next())
+            {
+                customer = new Customer(rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(2), rs.getString(10), rs.getString(9), rs.getString(6), rs.getString(7), rs.getString(8));
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return customer;
+    }
+
     public static void storeReceipt(Cart curCart, String receiptNum) {
         for (Item item : curCart.getItems())
         {
@@ -1407,10 +1664,10 @@ public class Database {
                     RefundItem temp = new RefundItem(receiptNum, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getBoolean(7), rs.getInt(8), rs.getInt(9), rs.getString(10), rs.getString(11), rs.getInt(12), rs.getBoolean(13), rs.getDouble(14), rs.getBoolean(15), rs.getBoolean(16), rs.getBoolean(17));
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasBeenRefunded());
                     System.out.println("LOAD " + temp.getName() + " :" + temp.hasTaxBeenRefunded());
-                   // if(temp.hasBeenRefunded == true && temp.getPriceOfItemBeforeTax() > 0)
-                   // {
-                   //     temp.hasBeenRefunded = false;
-                   // }
+                    // if(temp.hasBeenRefunded == true && temp.getPriceOfItemBeforeTax() > 0)
+                    // {
+                    //     temp.hasBeenRefunded = false;
+                    // }
                     //if(!temp.hasBeenRefunded&& temp.getCategory()==861){
                     //     temp.refundAllActive=true;
                     //  }
@@ -1559,6 +1816,22 @@ public class Database {
         }//end catch
     }
 
+    public static void addCustomer(Customer customer) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("INSERT INTO `customers` (pid, uuid, firstname, lastname, dob, address, city, state, zip, chargeaccount) VALUES (NULL, '" + customer.cid + "','" + customer.firstName + "','" + customer.lastName + "','" + customer.dob + "','" + customer.address + "','" + customer.city + "','" + customer.state + "','" + customer.zipCode + "','" + customer.chargeAccountName + "');");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+
     public static boolean doesChargeAccountExisit(String accountName) {
         try
         {
@@ -1616,6 +1889,49 @@ public class Database {
                     host, userName, password);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("INSERT INTO `chargeaccounts` (`pid`,`accntname`,`lastname`,`firstname`,`dob`,`uuid`) VALUES (NULL, '" + accountName + "','" + lastName + "','" + firstName + "','" + dob + "','" + uuid + "');");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+
+    public static ArrayList<TicketLog> getTicketLogList(LocalDateTime startDate, LocalDateTime endDate, String ticketOwnerAccountName) {
+        ArrayList<TicketLog> ticketLogs = new ArrayList<>();
+        DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+       
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from ticketlog where ticketOwnersAccount = '" + ticketOwnerAccountName + "' and modificationTime >= '"+sdf.format(startDate) + "' and modificationTime <= '"+sdf.format(endDate) + "';");
+
+            while (rs.next())
+            {
+                ticketLogs.add(new TicketLog(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getTimestamp(8).toLocalDateTime(), rs.getString(9)));
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return ticketLogs;
+    }
+    
+    public static void insertTicketLog(TicketLog ticketLog) {
+        DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("INSERT INTO `ticketLog` (`pid`,`ticketOwnersName`,`ticketOwnersAccount`,`modifiedByName`,`modifiedBysAccount`,`itemModified`,`modificationType`,`modificationTime`,`registerUsed`) VALUES (NULL, '" + ticketLog.ticketOwnersName + "','" + ticketLog.ticketOwnersAccount + "','" + ticketLog.modifiedByName.toUpperCase() + "','" + ticketLog.modifiedByAccount + "','" + ticketLog.itemModified + "','" + ticketLog.modificationType + "','" + sdf.format(ticketLog.modificationTime) + "','" + ticketLog.registerUsed + "');");
             con.close();
         }
         catch (Exception e)
@@ -1767,7 +2083,7 @@ public class Database {
             int i = 0;
             while (rs.next())
             {
-                    dmeRentalItems.add(new DMERentalItem(rs.getString(2),rs.getDouble(3),rs.getDouble(4),rs.getString(5),rs.getString(6)));
+                dmeRentalItems.add(new DMERentalItem(rs.getString(2), rs.getDouble(3), rs.getDouble(4), rs.getString(5), rs.getString(6)));
             }//end while
 
             con.close();
@@ -1779,7 +2095,7 @@ public class Database {
 
         return dmeRentalItems;
     }
-    
+
     private static double round(double num) {//rounds to 2 decimal places.
         num = Math.round(num * 100.0) / 100.0;
         return num;

@@ -395,7 +395,15 @@ public class MainFrame extends javax.swing.JFrame {
                 {
                     if (!curCart.isEmpty())
                     {
-                        saveTicket(loadedTicketID);
+                        if (activeEmployee.patientCode.toUpperCase().contentEquals(loadedTicketID.toUpperCase()) && activeEmployee.permissionLevel < 4)
+                        {
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "You cannot save your own ticket.");
+                        }
+                        else
+                        {
+                            saveTicket(loadedTicketID.toUpperCase());
+                        }
                     }
                     else
                     {//CARTS EMPTY!
@@ -426,11 +434,114 @@ public class MainFrame extends javax.swing.JFrame {
                         JFrame textInputFrame = new JFrame("");
                         String id = JOptionPane.showInputDialog(
                                 textInputFrame,
-                                "Enter the customer account name to continue:",
-                                "Customer Account Name Input",
+                                "Enter the Patient Code to continue:",
+                                "Customer Patient Code Input",
                                 JOptionPane.INFORMATION_MESSAGE
                         );
-                        saveTicket(id);
+                        if (id == null)
+                        {
+                            //Cancel was clicked.
+                        }
+                        else if (id.isEmpty())
+                        {
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Patient Code cannot be empty.");
+                        }
+                        else
+                        {
+                            id = id.toUpperCase();
+                            Customer customer = Database.getCustomerByCID(id);
+                            if (activeEmployee.patientCode.toUpperCase().contentEquals(id) && activeEmployee.permissionLevel < 4)
+                            {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "You cannot save your own ticket.");
+                            }
+                            else if (customer != null)
+                            {
+
+                                //Confirm... Save ticket under? Show customer info. YES NO
+                                int input = JOptionPane.showConfirmDialog(null,
+                                        "Save Ticket Under?"
+                                        + String.format("\n%-18s", "Patient Code: ") + customer.cid
+                                        + String.format("\n%-23s", "Name: ") + customer.lastName + ", " + customer.firstName
+                                        + String.format("\n%-25s", "DOB: ") + customer.dob
+                                        + String.format("\n%-20s", "City, State Zip: ") + customer.city + ", " + customer.state + " " + customer.zipCode,
+                                        "Save Ticket Menu", JOptionPane.YES_NO_OPTION);
+                                if (input == JOptionPane.OK_OPTION)
+                                {
+                                    saveTicket(id);
+                                }
+                                else
+                                {
+                                    //Do nothing, they selected no.
+                                }
+
+                            }
+                            else if (id.length() > 10)
+                            {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Patient Code cannot be greater than 10 characters.");
+                            }
+                            else
+                            {//Customer not found, would you like to add a new customer?
+                                //Confirm... Save ticket under? Show customer info. YES NO
+                                int input = JOptionPane.showConfirmDialog(null, "Customer not found. Create new customer with Patient Code? " + id, "Add New Customer?", JOptionPane.YES_NO_OPTION);
+
+                                if (input == JOptionPane.OK_OPTION)
+                                {
+                                    JFrame addCustomerFrame = new JFrame("");
+                                    JTextField field1 = new JTextField();
+                                    JTextField field2 = new JTextField();
+                                    JTextField field3 = new JTextField();
+                                    JTextField field4 = new JTextField();
+                                    JTextField field5 = new JTextField();
+                                    JTextField field6 = new JTextField();
+                                    JTextField field7 = new JTextField();
+                                    JTextField field8 = new JTextField();
+                                    JTextField field9 = new JTextField();
+                                    //field2.setText(previousDate);
+                                    Object[] message =
+                                    {
+                                        "It is ok to leave blank any field not provided.",
+                                        "QS/1 Patient Code:", field1,
+                                        "Last Name:", field2,
+                                        "First Name:", field3,
+                                        "DOB: ex: 03/09/1986", field4,
+                                        "Address:", field5,
+                                        "City:", field9,
+                                        "State: ex: WV:", field6,
+                                        "Zip Code:", field7,
+                                        "QS/1 Charge Account:", field8,
+                                    };
+                                    field1.setText(id);
+                                    field1.setEditable(false);
+                                    field2.setText("");
+                                    field3.setText("");
+                                    field4.setText("");
+                                    field5.setText("");
+                                    field6.setText("");
+                                    field7.setText("");
+                                    field8.setText("");
+                                    //field2.setSelectionStart(0);
+                                    //field2.setSelectionEnd(4);
+                                    field2.addAncestorListener(new RequestFocusListener());
+                                    int option = JOptionPane.showConfirmDialog(addCustomerFrame, message, "OTC Item Information", JOptionPane.OK_CANCEL_OPTION);
+                                    if (option == JOptionPane.OK_OPTION)
+                                    {
+                                        //Insert into database.
+                                        Customer tempCustomer = new Customer(field3.getText(), field2.getText(), field4.getText(), field1.getText(), field8.getText(), field7.getText(), field5.getText(), field9.getText(), field6.getText());
+                                        Database.addCustomer(tempCustomer);
+                                        //save ticket with id?
+                                        updateCartScreen();
+                                    }//end if
+
+                                }
+                                else
+                                {
+                                    //Do nothing, they selected no.
+                                }
+                            }//end else customer was not found
+                        }
                     }
                     else
                     {//CARTS EMPTY!
@@ -438,91 +549,53 @@ public class MainFrame extends javax.swing.JFrame {
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, "There is nothing in the cart to save!");
                     }//end else its empty
-
                     updateCartScreen();
-
                 }
                 else
                 {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Select an employee first!");
                 }
+
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
 
-        });//END createTicket ActionListener!
+        }
+        );//END createTicket ActionListener!
 
         loadTicket.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
                 {
-                    //System.out.println("HELLO");
                     JFrame textInputFrame = new JFrame("");
                     JTextField field1 = new JTextField();
 
                     Object[] message =
                     {
-                        "Enter the customer account name to continue:", field1
+                        "Enter the Patient Code to continue:", field1
                     };
                     field1.setText("");
                     field1.addAncestorListener(new RequestFocusListener());
 
-                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Ticket Name", JOptionPane.OK_CANCEL_OPTION);
+                    int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter QS/1 Patient Code", JOptionPane.OK_CANCEL_OPTION);
                     if (option == JOptionPane.OK_OPTION)
                     {
                         String id = field1.getText();
                         id = id.toUpperCase();
-                        if (id != null && !id.isEmpty() && Database.checkDatabaseForTicket(id))
+                        if (activeEmployee.patientCode.toUpperCase().contentEquals(id) && activeEmployee.permissionLevel < 4)
                         {
-                            boolean allowed = true;
-                            if (id.contentEquals("HOW ABOUT A MAGIC TRICK?"))
-                            {
-                                if (curCart.getItems().size() == 1 && curCart.getItems().get(0).mutID.contentEquals("BATDIS22"))
-                                {
-                                    allowed = true;
-                                }
-                                else
-                                {
-                                    allowed = false;
-                                }
-                            }
-                            if (id.contentEquals("WET BANDITS"))
-                            {
-                                if (!isChristmas)
-                                {
-                                    allowed = false;
-                                }
-                            }
-                            if (id.contentEquals("MICHAEL MYERS"))
-                            {
-                                if (!isHalloween)
-                                {
-                                    allowed = false;
-                                }
-                            }
-                            if (id.contentEquals("WINGARDIUM LEVIOSA"))
-                            {
-                                for (Item item : curCart.getItems())
-                                {
-                                    if (item.itemName.contentEquals("Platform") && item.itemPrice == 9.75)
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        allowed = false;
-                                    }
-                                }
-                            }
-                            if (allowed)
-                            {
-                                loadTicketWithId(id);
-                                loadedTicketID = id;
-                                resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
-                                resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
-                                resaveTicket.setVisible(true);
-                                updateCartScreen();
-                            }
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "You cannot open your own ticket.");
+                        }
+                        else if (id != null && !id.isEmpty() && Database.checkDatabaseForTicket(id))
+                        {
+                            loadTicketWithId(id);
+                            loadedTicketID = id;
+                            resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
+                            resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
+                            resaveTicket.setVisible(true);
+                            updateCartScreen();
                         }
                         else
                         {//Load All Tickets into selectable GUI
@@ -559,7 +632,8 @@ public class MainFrame extends javax.swing.JFrame {
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed loadTicket
-        });//end loadTicket action
+        }
+        );//end loadTicket action
 
         lookupReceiptByRXButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -1086,6 +1160,10 @@ public class MainFrame extends javax.swing.JFrame {
                                     tempItem.setMassDiscount();
                                 }
                                 updateCartScreen();
+                                Database.insertTicketLog(new TicketLog(currentCustomer.lastName + "," + currentCustomer.firstName, currentCustomer.cid,
+                                        activeEmployee.name, activeEmployee.patientCode, "Percentage: " + discPer, "Mass Discount Applied!!!", LocalDateTime.now(),
+                                        ConfigFileReader.getRegisterID()));
+
                             }//end else
                         }//end else
                     }//end if
@@ -1128,6 +1206,9 @@ public class MainFrame extends javax.swing.JFrame {
                             }
                         }
                     }
+                    Database.insertTicketLog(new TicketLog(currentCustomer.lastName + "," + currentCustomer.firstName, currentCustomer.cid,
+                            activeEmployee.name, activeEmployee.patientCode, "NONE", "Mass Precharge Toggled", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
                     updateCartScreen();
                 }//end cartIsNotEmpty
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
@@ -1252,31 +1333,39 @@ public class MainFrame extends javax.swing.JFrame {
                                         Item tempItem = new Item(rxNumber, fillDate, insurance, copay, false);
                                         if (!curCart.containsRX(tempItem.rxNumber, insurance, fillDate))
                                         {
-                                            curCart.addItem(tempItem);
-                                            guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
-                                            totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
-                                            displayChangeDue = false;
-                                            previousInsurance = insurance;
-                                            previousDate = fillDate;
                                             ArrayList<String> ticketIDs = Database.getAllTicketsNamesWithRxNumber(rxNumber);
-                                            if (!ticketIDs.isEmpty())
+                                            if (!ticketIDs.isEmpty() && ticketIDs.get(0).toUpperCase().contentEquals(activeEmployee.patientCode) && activeEmployee.permissionLevel < 4)
                                             {
-                                                if (JOptionPane.showConfirmDialog(null, "There are already  ticket(s) with that RX Number. Would you like me to load those?", "WARNING",
-                                                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                                                JFrame message1 = new JFrame("");
+                                                JOptionPane.showMessageDialog(message1, "This RX Number is already in a ticket, that is your own. Employee's cannot add RX's to themselves.", "Yay a warning message!", JOptionPane.WARNING_MESSAGE);
+                                            }
+                                            else
+                                            {
+                                                curCart.addItem(tempItem);
+                                                guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                                                totalNumRXinCart.setText("# of Rx's in Cart: " + curCart.getTotalNumRX());
+                                                displayChangeDue = false;
+                                                previousInsurance = insurance;
+                                                previousDate = fillDate;
+                                                if (!ticketIDs.isEmpty())
                                                 {
-                                                    for (String id : ticketIDs)
+                                                    if (JOptionPane.showConfirmDialog(null, "There are already  ticket(s) with that RX Number. Would you like me to load those?", "WARNING",
+                                                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
                                                     {
-                                                        loadedTicketID = id;
-                                                        resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
-                                                        resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
-                                                        resaveTicket.setVisible(true);
-                                                        loadTicketWithId(id);
+                                                        for (String id : ticketIDs)
+                                                        {
+                                                            loadedTicketID = id;
+                                                            resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
+                                                            resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
+                                                            resaveTicket.setVisible(true);
+                                                            loadTicketWithId(id);
+                                                        }
+                                                        updateCartScreen();
                                                     }
-                                                    updateCartScreen();
-                                                }
-                                                else
-                                                {
-                                                    // no option
+                                                    else
+                                                    {
+                                                        // no option
+                                                    }
                                                 }
                                             }
                                         }
@@ -1584,7 +1673,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     String rentalAmount = String.format("The rental amount for this item is $%.2f\n", itemPrice);
                                     Object[] message4 =
                                     {
-                                        rentalAmount,taxString
+                                        rentalAmount, taxString
                                     };
                                     int option4 = JOptionPane.showConfirmDialog(itemInfoFrame, message4, selectedItem.itemName + " Rental", JOptionPane.OK_CANCEL_OPTION);
                                     if (option4 == JOptionPane.OK_OPTION)
@@ -1927,6 +2016,12 @@ public class MainFrame extends javax.swing.JFrame {
 
         voidButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                if (isLoadedTicketAnEmployees)
+                {
+                    Database.insertTicketLog(new TicketLog(currentCustomer.lastName + "," + currentCustomer.firstName, currentCustomer.cid,
+                            activeEmployee.name, activeEmployee.patientCode, "NONE", "Ticket Voided!!!", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
+                }
                 voidCarts();
 
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
@@ -2824,12 +2919,12 @@ public class MainFrame extends javax.swing.JFrame {
                                         else
                                         {
                                             String[] choices = Database.getARList(field1.getText(), field2.getText(), field3.getText(), field4.getText());
-                                            for (int i = 0; i < choices.length; i++)
-                                            {//this removes current from the display when they are charging TO account
-                                                choices[i] = choices[i].substring(0, choices[i].indexOf("Current"));
-                                            }
                                             if (choices != null)
                                             {
+                                                for (int i = 0; i < choices.length; i++)
+                                                {//this removes current from the display when they are charging TO account
+                                                    choices[i] = choices[i].substring(0, choices[i].indexOf("Current"));
+                                                }
                                                 accountName = (String) JOptionPane.showInputDialog(null, "Choose now...",
                                                         "Choose AR Account", JOptionPane.QUESTION_MESSAGE, null, // Use
                                                         // default
@@ -2959,8 +3054,8 @@ public class MainFrame extends javax.swing.JFrame {
         keys.add(tab);
         keys.add(ctrlTab);
         KeyboardFocusManager.getCurrentKeyboardFocusManager().setDefaultFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, keys);
-        
-        if(ConfigFileReader.getRegisterID().contentEquals("X"))
+
+        if (ConfigFileReader.getRegisterID().contentEquals("X"))
         {//Initiate hidden mode
             rxButton.setVisible(false);
             otcButton.setVisible(false);
@@ -2981,7 +3076,7 @@ public class MainFrame extends javax.swing.JFrame {
             chargeButton.setVisible(false);
             activateDisplayButton.setVisible(false);
             createTicket.setVisible(false);
-            
+
         }
     }//end JFrame
 
@@ -3097,6 +3192,11 @@ public class MainFrame extends javax.swing.JFrame {
 
     public void checkForAdminButtonVisible(int passCode) {
         menuBar.updateVisible(Database.getEmployeePermissionByCode(passCode));
+    }
+
+    public void showErrorMessage(String message) {
+        JFrame message1 = new JFrame("");
+        JOptionPane.showMessageDialog(message1, message, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
 
     public void setData() {
@@ -3303,6 +3403,25 @@ public class MainFrame extends javax.swing.JFrame {
             guiItems.add(new GuiCartItem(item, i, jPanel1, curCart, myself));
             i += 15;
         }
+        //LOAD Customer for current Ticket ID
+        currentCustomer = Database.getCustomerByCID(id);
+        loadedTicketID = id;
+        //for(Employee temp : Database.getEmployeesListSortByPID())
+        // {
+        //    if(temp.)
+        // }
+        isLoadedTicketAnEmployees = false;
+        for (Employee employee : Database.getEmployeesListSortByPID())
+        {
+            if (employee.patientCode.contentEquals(loadedTicketID))
+            {
+                isLoadedTicketAnEmployees = true;
+                Database.insertTicketLog(new TicketLog(currentCustomer.lastName + "," + currentCustomer.firstName, currentCustomer.cid,
+                        activeEmployee.name, activeEmployee.patientCode, "NONE", "Ticket Opened", LocalDateTime.now(),
+                        ConfigFileReader.getRegisterID()));
+                break;
+            }
+        }
 
         displayChangeDue = false;
     }
@@ -3449,6 +3568,10 @@ public class MainFrame extends javax.swing.JFrame {
             rxSignout();
             receiptNum = "";
         }
+        if (loadedTicketID != null && !loadedTicketID.isEmpty())
+        {
+            ticketUnloaded();
+        }
         curCart.voidCart();
         refundCart.voidCart();
         resaveTicket.setVisible(false);
@@ -3493,6 +3616,12 @@ public class MainFrame extends javax.swing.JFrame {
                     }
 
                     curCart.storeCart(id, false);
+                    if (isLoadedTicketAnEmployees)
+                    {
+                        Database.insertTicketLog(new TicketLog(currentCustomer.lastName + "," + currentCustomer.firstName, currentCustomer.cid,
+                                activeEmployee.name, activeEmployee.patientCode, "NONE", "Ticket Saved", LocalDateTime.now(),
+                                ConfigFileReader.getRegisterID()));
+                    }
                     resizeCartWindow();
                     resaveTicket.setVisible(false);
                     isMassPreCharged = false;
@@ -3501,6 +3630,10 @@ public class MainFrame extends javax.swing.JFrame {
                     massSplitTicketButton.setBackground(new Color(255, 0, 0));
                     massSplitTicketButton.setText("Mass Off");
 
+                    if (loadedTicketID != null && !loadedTicketID.isEmpty())
+                    {
+                        ticketUnloaded();
+                    }
                     resetVars();
                 }
                 else
@@ -3602,6 +3735,13 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new Dimension(1120, extra));
     }
 
+    private void ticketUnloaded() {
+        //Hide GUI of Active Ticket TODO
+        loadedTicketID = "";
+        currentCustomer = null;
+        isLoadedTicketAnEmployees = false;
+    }
+
     private boolean checkLunch() {
         boolean valid = true;
         for (Item item : curCart.getItems())
@@ -3661,12 +3801,14 @@ public class MainFrame extends javax.swing.JFrame {
                 {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         }
         catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex)
         {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainFrame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         /* Create and display the form */
@@ -3746,14 +3888,20 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isMassPreCharged = false;//always start out with mass precharged off
     JButton massSplitTicketButton = new JButton("Mass Off");
     boolean isMassSplitting = false;
+    boolean isLoadedTicketAnEmployees = false;
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.2.21";
+    String currentVersion = "1.2.99";
     String updateString = ""
-            + "Backend fixes, nothing fancy."
-            + "\nMerry Christmas!"
-            + "\nHappy New Year!";
+            + "* Fixed issue where entering nonexistant account to charge to threw null pointer exception."
+            + "\n* Fixed issue where deleted charge accounts showed in list to charge to or make payments to."
+            + "\n* Fixed issue where ticket name could be empty string."
+            + "\n* Fixed issue where ticket save cancel click resulted in null pointer exception."
+            + "\n+ Added new upload trackers for Mutual Upload and AR Account Upload."
+            + "\n+ Added new Customer Upload Report with upload tracker."
+            + "\n+ Added linked employee tickets. Employees cannot save or open their own tickets."
+            + "\n+ Added new receipt tracking for DME and RX Charges to Daily Drawer AR Reports.";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
@@ -3794,6 +3942,7 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
     Employee activeEmployee;
+    Customer currentCustomer;
     HolidayLoader holidayLoader;
     String pharmacyName = "";
     final String superaid = "Smiths Super Aid";

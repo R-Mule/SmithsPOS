@@ -1,5 +1,7 @@
 package database_console;
 
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,18 +15,23 @@ import java.io.ObjectInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.MessagingException;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
@@ -40,9 +47,12 @@ public class TopMenuBar extends JMenuBar {
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
             masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
-            editEmployee, arAuditReport,
+            editEmployee, arAuditReport, customerDataUpload, ticketReport,
             christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
+    int totalCntr = 0;
+    int totalFound = 0;
+    int totalAdded = 0;
 
     //ctor
     public TopMenuBar(MainFrame mf) {
@@ -111,8 +121,12 @@ public class TopMenuBar extends JMenuBar {
         mgmtMenu.add(dmeDataUpload);//This adds DME Data Upload to Management Menu Choices
 
         rxDataUpload = new JMenuItem();
-        rxDataUpload.setText("Rx Data Upload");
+        rxDataUpload.setText("AR Data Upload");
         mgmtMenu.add(rxDataUpload);//This adds Rx Data Upload to Management Menu Choices
+
+        customerDataUpload = new JMenuItem();
+        customerDataUpload.setText("Customer Data Upload");
+        mgmtMenu.add(customerDataUpload);//This adds Customer Data Upload to Management Menu Choices
 
         masterRefund = new JMenuItem();
         masterRefund.setText("Master Refund");
@@ -129,6 +143,10 @@ public class TopMenuBar extends JMenuBar {
         arAuditReport = new JMenuItem();
         arAuditReport.setText("AR Audit Reports");
         mgmtMenu.add(arAuditReport);
+
+        ticketReport = new JMenuItem();
+        ticketReport.setText("Ticket Report");
+        mgmtMenu.add(ticketReport);
 
         updatePrice = new JMenuItem();
         updatePrice.setText("Update Price");
@@ -278,6 +296,13 @@ public class TopMenuBar extends JMenuBar {
             }
         });
 
+        customerDataUpload.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customerDataUploadActionPerformed(evt);
+            }
+        });
+
         masterRefund.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -296,10 +321,18 @@ public class TopMenuBar extends JMenuBar {
                 drawerReportsActionPerformed(evt);
             }
         });
+
         arAuditReport.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 arAuditReportsActionPerformed(evt);
+            }
+        });
+
+        ticketReport.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ticketReportActionPerformed(evt);
             }
         });
 
@@ -551,9 +584,10 @@ public class TopMenuBar extends JMenuBar {
         JTextField field2 = new JTextField();
         JTextField field3 = new JTextField();
         JTextField field4 = new JTextField();
+        JTextField field5 = new JTextField();
         Object[] message =
         {
-            "First Name: ex. Anduin", field1, "Last Name: ex. Smith", field2, "Passcode: (1-99)", field3, "Employee RFID: ###,#####", field4
+            "First Name: ex. Anduin", field1, "Last Name: ex. Smith", field2, "Passcode: (1-99)", field3, "Employee RFID: ###,#####", field4, "Employee Patient Code: 10 Char Max", field5
         };
         do
         {
@@ -598,6 +632,12 @@ public class TopMenuBar extends JMenuBar {
                     JOptionPane.showMessageDialog(message1, "Employee RFID Must be in format: ###,#####");//prompt try again?
                     tryAgain = true;
                 }
+                else if (field5.getText().length() > 10)
+                {//Same as above, name Validation. ###,#####
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Employee Charge Account must be no more than 10 characters.");//prompt try again?
+                    tryAgain = true;
+                }
                 if (tryAgain)
                 {
                     int option2 = JOptionPane.showConfirmDialog(textInputFrame, "Would you like to try again?", "Try Again Menu", JOptionPane.YES_NO_OPTION);
@@ -611,13 +651,13 @@ public class TopMenuBar extends JMenuBar {
 
                     Object[] message2 =
                     {
-                        "Are you sure?\nFirst Name: " + field1.getText(), "Last Name: " + field2.getText(), "Passcode: " + field3.getText(), "RFID #: " + field4.getText()
+                        "Are you sure?\nFirst Name: " + field1.getText(), "Last Name: " + field2.getText(), "Passcode: " + field3.getText(), "RFID #: " + field4.getText(), "Patient Code: " + field5.getText(),
                     };
 
                     int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add New Employee Menu", JOptionPane.OK_CANCEL_OPTION);
                     if (option2 == JOptionPane.OK_OPTION)
                     {
-                        String result = Database.addEmployee(field1.getText(), field2.getText(), Integer.parseInt(field3.getText()), field4.getText());
+                        String result = Database.addEmployee(field1.getText(), field2.getText(), Integer.parseInt(field3.getText()), field4.getText(), field5.getText());
                         JFrame message1 = new JFrame("");
                         JOptionPane.showMessageDialog(message1, result);
                     }
@@ -948,6 +988,27 @@ public class TopMenuBar extends JMenuBar {
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
     }//end rxDataUploadActionPerformed
 
+    private void customerDataUploadActionPerformed(java.awt.event.ActionEvent evt) {
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files", "csv");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(filter);
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.name")));
+        int result = fileChooser.showOpenDialog(mf);
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+            File selectedFile = fileChooser.getSelectedFile();
+            if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+            {
+                //Hollie or Drew, do AR.
+                // String path = "C://QS1/AR.txt";
+                // create a frame 
+                Database.loadCustomerData(selectedFile.getAbsolutePath());
+            }
+        }
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+    }//end rxDataUploadActionPerformed
+
     private void masterRefundActionPerformed(java.awt.event.ActionEvent evt) {
 
         JFrame textInputFrame = new JFrame("");
@@ -997,11 +1058,11 @@ public class TopMenuBar extends JMenuBar {
                 ArrayList<String> receipts = Database.getReceiptString(field1.getText());
                 if (receipts != null && !receipts.isEmpty())
                 {
-                    for(String receipt : receipts)
+                    for (String receipt : receipts)
                     {
                         mf.checkout.reprintReceipt(receipt);
                     }
-                    
+
                 }
                 else
                 {
@@ -1017,7 +1078,6 @@ public class TopMenuBar extends JMenuBar {
     private void arAuditReportsActionPerformed(java.awt.event.ActionEvent evt) {
         DateRangeSelector drs = new DateRangeSelector();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMddyy");
-        ArrayList<DrawerReport> reports = new ArrayList<>();
 
         if (drs.validDates())
         {
@@ -1052,13 +1112,13 @@ public class TopMenuBar extends JMenuBar {
                     //path = "Z:\\";
                     path = ConfigFileReader.getRxReportPath();
                     rxFile = new File(path + currentDate + "R.posrf");
-                   // path = "Z:\\";
-                    
+                    // path = "Z:\\";
+
                     // System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                     //path = "Y:\\";
                     path = ConfigFileReader.getDmeReportPath();
                     dmeFile = new File(path + currentDate + "D.posrf");
-                    
+
                     //System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                     DrawerReport rxReport = null;
                     if (rxFile.exists() && !rxFile.isDirectory())
@@ -1140,7 +1200,7 @@ public class TopMenuBar extends JMenuBar {
                             }
                             index++;
                         }
-                        
+
                         index = 0;
                         for (String dmeName : dmeReport.accountNameCharged)
                         {
@@ -1187,7 +1247,7 @@ public class TopMenuBar extends JMenuBar {
                             }
                             index++;
                         }
-                        
+
                     }
                     int index = 0;
                     for (String accountName : mergedARAccountNames)
@@ -1199,8 +1259,7 @@ public class TopMenuBar extends JMenuBar {
                         rxBW.write(currentDate + "  :  " + accountName + "  :  " + mergedARAccountPayments.get(index) + "\n");
                         index++;
                     }
-                    
-                    
+
                     index = 0;
                     for (String accountName : mergedARAccountChargesNames)
                     {
@@ -1211,14 +1270,14 @@ public class TopMenuBar extends JMenuBar {
                         rxBW.write(currentDate + "  :  " + accountName + "  :  " + mergedARAccountCharges.get(index) + "\n");
                         index++;
                     }
-                    
+
                     index = 0;
                     for (String accountName : mergedDMEAccountNames)
                     {
                         dmeBW.write(currentDate + "  :  " + accountName + "  :  " + mergedDMEAccountPayments.get(index) + "\n");
                         index++;
                     }
-                    
+
                 }
                 catch (FileNotFoundException e)
                 {
@@ -1297,7 +1356,7 @@ public class TopMenuBar extends JMenuBar {
                     //path = "Z:\\";
                     path = ConfigFileReader.getRxReportPath();
                     f = new File(path + field1.getText().toUpperCase() + ".posrf");
-                    
+
                     // System.out.println("\\\\Pos-server\\pos\\REPORTS\\" + field1.getText().toUpperCase() + ".posrf");
                 }
                 else
@@ -1326,12 +1385,13 @@ public class TopMenuBar extends JMenuBar {
             }
             catch (FileNotFoundException e)
             {
-                System.out.println("JERE");
+                System.out.println("NO FILE FOUND!");
                 e.printStackTrace();
             }
             catch (IOException e)
             {
-                System.out.println("EERE");
+                System.out.println("READ WRITE EX");
+                mf.showErrorMessage("Could not open drawer data, incompatible file?!");
                 e.printStackTrace();
             }
             catch (ClassNotFoundException e)
@@ -1381,97 +1441,151 @@ public class TopMenuBar extends JMenuBar {
             if (JOptionPane.showConfirmDialog(null, "Are you sure you wish to load file data?", "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
             {
-                int totalCntr = 0;
-                int totalFound = 0;
-                int totalAdded = 0;
-
-                try
-                {
-
-                    BufferedReader in = new BufferedReader(new FileReader(selectedFile.getAbsolutePath()));
-
-                    String line;
-
-                    while ((line = in.readLine()) != null && !line.isEmpty())
-                    {
-                        totalCntr++;
-                        //WORKING UPC
-                        //  System.out.println("");
-                        String upc = line.substring(0, 11);
-
-                        // System.out.println("UPC: " + upc);
-                        //WORKING NAME
-                        String name = line.substring(26, 71);
-                        name = name.replace("'", " ");
-                        // System.out.println("NAME: " + name);
-
-                        //WORKING PRICE
-                        String price = line.substring(107, 113);
-                        Double d = Double.parseDouble(price);
-                        d = d / 100;
-                        //  System.out.println("PRICE: " + d);
-
-                        //WORKING MUTUAL ID
-                        String mutID = line.substring(114, 117);
-                        mutID += line.substring(118, 121);
-                        //  System.out.println("mutual ID: " + mutID);
-
-                        //COST
-                        String costTemp = line.substring(90, 99);
-                        Double cost = Double.parseDouble(costTemp);
-                        cost = cost / 1000;
-                        //System.out.println(line.substring(124, 127));
-                        int quantity = Integer.parseInt(line.substring(124, 127));
-                        if (quantity != 0)
+                JFrame frame = new JFrame("Mutual POS File Upload");
+                //frame.setLayout();
+                JLabel addedCustomersLabel = new JLabel("Mutual Items Added: 0");
+                JLabel updatedCustomersLabel = new JLabel("Mutual Items Updated: 0");
+                JLabel processedLabel = new JLabel("Total Muutal Items Processed: 0");
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridLayout(4, 0));
+                JButton acknowledgeButton = new JButton("Ok");
+                frame.setSize(350, 200);
+                addedCustomersLabel.setSize(50, 50);
+                updatedCustomersLabel.setSize(50, 50);
+                processedLabel.setSize(50, 50);
+                panel.setSize(350, 200);
+                frame.add(panel);
+                frame.setLocation(800, 300);
+                panel.add(addedCustomersLabel);
+                panel.add(updatedCustomersLabel);
+                panel.add(processedLabel);
+                panel.add(acknowledgeButton);
+                panel.setVisible(true);
+                frame.setVisible(true);
+                frame.setAlwaysOnTop(true);
+                acknowledgeButton.setVisible(false);
+                acknowledgeButton.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
+                        frame.setVisible(false);
+                    }
+                });
+                totalCntr = 0;
+                totalFound = 0;
+                totalAdded = 0;
+                SwingWorker worker = new SwingWorker<Boolean, Integer>() {
+                    @Override
+                    protected Boolean doInBackground() throws Exception {
+                        // Background work
+                        try
                         {
-                            cost = round(cost / quantity);
-                        }
-                        // System.out.println("COST: " + cost);
 
-                        //ITEM CATEGORY CODE
-                        String code = line.substring(76, 79);
-                        int actualCode = Integer.parseInt(code);
+                            BufferedReader in = new BufferedReader(new FileReader(selectedFile.getAbsolutePath()));
 
-                        //System.out.println("CODE: " + code);
-                        boolean found;
+                            String line;
 
-                        if (actualCode == 11 || actualCode == 12 || actualCode == 31 || actualCode == 32 || actualCode == 151 || actualCode == 152 || actualCode == 153 || actualCode == 154 || actualCode == 252 || actualCode == 371 || actualCode == 372 || actualCode == 471 || actualCode == 651 || actualCode == 851 || actualCode == 801)
-                        {
-                            found = Database.updateMutualInventory(mutID, upc, name, d, cost, false, actualCode);
-                            // System.out.println("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '"+mutID+"','"+upc+"','"+name+"',"+d+","+cost+",false,"+actualCode+");");
-                        }
-                        else
-                        {
-                            //System.out.println("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '"+mutID+"','"+upc+"','"+name+"',"+d+","+cost+",true,"+actualCode+");");
-                            found = Database.updateMutualInventory(mutID, upc, name, d, cost, true, actualCode);
-                        }
-                        if (found)
-                        {
-                            totalFound++;
-                        }
-                        else
-                        {
-                            totalAdded++;
-                        }
+                            while ((line = in.readLine()) != null && !line.isEmpty())
+                            {
+                                totalCntr++;
+                                //WORKING UPC
+                                //  System.out.println("");
+                                String upc = line.substring(0, 11);
 
-                    }//end while
-                    System.out.println("Total Items Updated: " + totalFound);
-                    System.out.println("Total Items Added: " + totalAdded);
-                    System.out.println("Total Items Processed: " + totalCntr);
-                    JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "WHOOP THERE IT IS!\nTotal Items Updated: " + totalFound + "\nTotal Items Added: " + totalAdded + "\nTotal Items Processed: " + totalCntr);
-                    //progressFrame.setVisible(false);
-                }
-                catch (FileNotFoundException e)
-                {
-                    System.out.println("The file could not be found or opened");
-                }
-                catch (IOException e)
-                {
-                    JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Error reading the file.");
-                    System.out.println("Error reading the file");
-                }
+                                // System.out.println("UPC: " + upc);
+                                //WORKING NAME
+                                String name = line.substring(26, 71);
+                                name = name.replace("'", " ");
+                                // System.out.println("NAME: " + name);
+
+                                //WORKING PRICE
+                                String price = line.substring(107, 113);
+                                Double d = Double.parseDouble(price);
+                                d = d / 100;
+                                //  System.out.println("PRICE: " + d);
+
+                                //WORKING MUTUAL ID
+                                String mutID = line.substring(114, 117);
+                                mutID += line.substring(118, 121);
+                                //  System.out.println("mutual ID: " + mutID);
+
+                                //COST
+                                String costTemp = line.substring(90, 99);
+                                Double cost = Double.parseDouble(costTemp);
+                                cost = cost / 1000;
+                                //System.out.println(line.substring(124, 127));
+                                int quantity = Integer.parseInt(line.substring(124, 127));
+                                if (quantity != 0)
+                                {
+                                    cost = round(cost / quantity);
+                                }
+                                // System.out.println("COST: " + cost);
+
+                                //ITEM CATEGORY CODE
+                                String code = line.substring(76, 79);
+                                int actualCode = Integer.parseInt(code);
+
+                                //System.out.println("CODE: " + code);
+                                boolean found;
+
+                                if (actualCode == 11 || actualCode == 12 || actualCode == 31 || actualCode == 32 || actualCode == 151 || actualCode == 152 || actualCode == 153 || actualCode == 154 || actualCode == 252 || actualCode == 371 || actualCode == 372 || actualCode == 471 || actualCode == 651 || actualCode == 851 || actualCode == 801)
+                                {
+                                    found = Database.updateMutualInventory(mutID, upc, name, d, cost, false, actualCode);
+                                    // System.out.println("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '"+mutID+"','"+upc+"','"+name+"',"+d+","+cost+",false,"+actualCode+");");
+                                }
+                                else
+                                {
+                                    //System.out.println("INSERT INTO `inventory` (`pid`,`mutID`,`upc`,`name`,`price`,`cost`,`taxable`,`category`) VALUES (NULL, '"+mutID+"','"+upc+"','"+name+"',"+d+","+cost+",true,"+actualCode+");");
+                                    found = Database.updateMutualInventory(mutID, upc, name, d, cost, true, actualCode);
+                                }
+                                if (found)
+                                {
+                                    totalFound++;
+                                    updatedCustomersLabel.setText("Mutual Items Updated: " + Integer.toString(totalFound) + "\n");
+                                }
+                                else
+                                {
+                                    totalAdded++;
+                                    addedCustomersLabel.setText("Mutual Items Added: " + Integer.toString(totalAdded) + "\n");
+                                }
+                                processedLabel.setText("Total Mututal Items Processed: " + Integer.toString(totalCntr) + "\n");
+
+                            }//end while
+                            //System.out.println("Total Items Updated: " + totalFound);
+                            //System.out.println("Total Items Added: " + totalAdded);
+                            //System.out.println("Total Items Processed: " + totalCntr);
+                            //JFrame message1 = new JFrame("");
+                            //JOptionPane.showMessageDialog(message1, "WHOOP THERE IT IS!\nTotal Items Updated: " + totalFound + "\nTotal Items Added: " + totalAdded + "\nTotal Items Processed: " + totalCntr);
+                            //progressFrame.setVisible(false);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            System.out.println("The file could not be found or opened");
+                        }
+                        catch (IOException e)
+                        {
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Error reading the file.");
+                            System.out.println("Error reading the file");
+                        }
+                        // Value transmitted to done()
+                        return true;
+                    }
+
+                    @Override
+                    protected void process(List<Integer> chunks) {
+                        // Process results
+                        //progress++;
+
+                    }
+
+                    @Override
+                    protected void done() {
+                        System.out.println("DONE!");
+                        acknowledgeButton.setVisible(true);
+                    }
+                };
+
+                // executes the swingworker on worker thread 
+                worker.execute();
             }
         }
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
@@ -1542,6 +1656,7 @@ public class TopMenuBar extends JMenuBar {
         model.addColumn("B (Passcode)");
         model.addColumn("C (Permission Level 1-4)");
         model.addColumn("D (RFID)");
+        model.addColumn("E (C-Account)");
         table.getColumnModel().getColumn(0).setMinWidth(50);
         table.getColumnModel().getColumn(0).setWidth(50);
         table.getColumnModel().getColumn(0).setPreferredWidth(50);
@@ -1557,17 +1672,20 @@ public class TopMenuBar extends JMenuBar {
         table.getColumnModel().getColumn(4).setMinWidth(80);
         table.getColumnModel().getColumn(4).setWidth(80);
         table.getColumnModel().getColumn(4).setPreferredWidth(80);
+        table.getColumnModel().getColumn(5).setMinWidth(100);
+        table.getColumnModel().getColumn(5).setWidth(100);
+        table.getColumnModel().getColumn(5).setPreferredWidth(100);
 
         model.addRow(new Object[]
         {
-            "# (PID)", "A (Name)", "B (Passcode)", "C (Permission Level 1-4)", "D (RFID)"
+            "# (PID)", "A (Name)", "B (Passcode)", "C (Permission Level 1-4)", "D (RFID)", "E (Patient Code)",
         });
 
         for (Employee employee : employees)
         {
             model.addRow(new Object[]
             {
-                employee.pid, employee.name, employee.passcode, employee.permissionLevel, employee.rfid
+                employee.pid, employee.name, employee.passcode, employee.permissionLevel, employee.rfid, employee.patientCode
             });
         }
 
@@ -1601,7 +1719,7 @@ public class TopMenuBar extends JMenuBar {
                 }
                 if (validID)
                 {
-                    if (!columnValue.isEmpty() && (columnValue.contentEquals("A") || columnValue.contentEquals("B") || columnValue.contentEquals("C") || columnValue.contentEquals("D")))
+                    if (!columnValue.isEmpty() && (columnValue.contentEquals("A") || columnValue.contentEquals("B") || columnValue.contentEquals("C") || columnValue.contentEquals("D") || columnValue.contentEquals("E")))
                     {
                         if (columnValue.contentEquals("A"))//Update of Employee Name
                         {
@@ -1706,12 +1824,23 @@ public class TopMenuBar extends JMenuBar {
                                 JOptionPane.showMessageDialog(message1, "Error: Invalid RFID, must be in the format of ###,#####.");
                             }
                         }
-
+                        else if (columnValue.contains("E"))//update of Patient Code
+                        {
+                            if (dataValue.length() <= 10)
+                            {
+                                Database.updateEmployeePatientCode(employeeID, dataValue.toUpperCase());
+                            }
+                            else
+                            {
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Error: Invalid Patient Code Name, must be 10 characters or less.");
+                            }
+                        }
                     }
                     else
                     {
                         JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Error: Column Value must be A,B,C, or D.");
+                        JOptionPane.showMessageDialog(message1, "Error: Column Value must be A,B,C,D or E.");
                     }
                 }
                 else
@@ -1831,6 +1960,90 @@ public class TopMenuBar extends JMenuBar {
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
     }//end masterRefundActionPerformed
 
+    private void ticketReportActionPerformed(java.awt.event.ActionEvent evt) {
+        DateRangeSelector drs = new DateRangeSelector();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMddyy");
+        if (drs.validDates())
+        {
+            LocalDateTime startDate = drs.getStartDate();
+            LocalDateTime endDate = drs.getEndDate();
+            endDate = endDate.plusHours(23);
+            endDate = endDate.plusMinutes(59);
+            JFrame textInputFrame = new JFrame("");
+            String id = JOptionPane.showInputDialog(
+                    textInputFrame,
+                    "Enter the Patient Code to continue:",
+                    "Customer Patient Code Input",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            if (id == null)
+            {
+               return; //Cancel was clicked, we are done here.
+            }
+            else if (id.isEmpty())
+            {
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "Patient Code cannot be empty.");
+            }
+            else
+            {
+                id = id.toUpperCase();
+            }
+            FileWriter ticketFW = null;
+            BufferedWriter ticketBW = null;
+            try
+            {
+                //All reports now loaded. Time to do the work and generate the file.
+                ticketFW = new FileWriter("C:\\pos\\REPORTS\\TicketReport-" + startDate.format(dateFormat) + "_" + endDate.format(dateFormat) + ".txt");//TicketReportFile
+                ticketBW = new BufferedWriter(ticketFW);
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ArrayList<TicketLog> ticketLogs = Database.getTicketLogList(startDate, endDate, id);
+
+            try
+            {
+                if(ticketLogs.isEmpty())
+                {
+                    ticketBW.write("No Data Found, Ticket must not have been modified or patient code entered wrong.");
+                }
+                else
+                {
+                    ticketBW.write("Ticket-Owners-Name@Ticket-Owners-Account@Modified-By-Name@Modifed-Bys-Account@Modification-Time@Register-Modified-On@Modification-Type@Item-Modified\n");
+                }
+                for (TicketLog ticketLog : ticketLogs)
+                {
+                    ticketBW.write(ticketLog.ticketOwnersName +"@"+ticketLog.ticketOwnersAccount+"@"+ticketLog.modifiedByName+"@"+ticketLog.modifiedByAccount+"@"+ticketLog.modificationTime+"@"+ticketLog.registerUsed+"@"+ticketLog.modificationType+"@"+ticketLog.itemModified + "\n");
+                }
+                if (ticketBW != null)
+                {
+                    ticketBW.close();
+                }
+
+                if (ticketFW != null)
+                {
+                    ticketFW.close();
+                }
+            }
+            catch (FileNotFoundException e)
+            {
+                System.out.println("JERE");
+                e.printStackTrace();
+            }
+            catch (IOException e)
+            {
+                System.out.println("EERE");
+                e.printStackTrace();
+            }
+
+        }//end while loading reports
+
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+
+    }//end ticketReportActionPerformed
+
     private void christmasThemeActionPerformed(java.awt.event.ActionEvent evt) {
         mf.holidayLoader.makeChristmasActiveHoliday();
     }
@@ -1878,9 +2091,11 @@ public class TopMenuBar extends JMenuBar {
                 drawerReports.setVisible(true);
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(true);
+                customerDataUpload.setVisible(true);
                 dmeDataUpload.setVisible(true);
                 editEmployee.setVisible(true);
                 arAuditReport.setVisible(true);
+                ticketReport.setVisible(true);
                 break;
             case 3:
                 feedMenu.setVisible(true);//Menus visible
@@ -1893,8 +2108,10 @@ public class TopMenuBar extends JMenuBar {
                 arAuditReport.setVisible(false);
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(false);
+                customerDataUpload.setVisible(false);
                 dmeDataUpload.setVisible(true);
                 editEmployee.setVisible(false);
+                ticketReport.setVisible(false);
                 break;
             case 2:
                 feedMenu.setVisible(true);//Menus visible
@@ -1904,10 +2121,12 @@ public class TopMenuBar extends JMenuBar {
                 remEmployee.setVisible(false);
                 mgmtMenu.setVisible(true);
                 rxDataUpload.setVisible(false);
+                customerDataUpload.setVisible(false);
                 dmeDataUpload.setVisible(false);
                 drawerReports.setVisible(false);
                 arAuditReport.setVisible(false);
                 editEmployee.setVisible(false);
+                ticketReport.setVisible(false);
                 break;
             case 1:
                 addMenu.setVisible(false);

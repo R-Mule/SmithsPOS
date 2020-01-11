@@ -19,6 +19,7 @@ public class Cart {
     protected boolean requiresRepaint = false;
     private boolean displayActive = false;
     boolean isEmpDiscountActive = false;
+    
 
     Cart() {
         updateTotal();

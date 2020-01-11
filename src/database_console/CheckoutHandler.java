@@ -1113,7 +1113,7 @@ public class CheckoutHandler {
                 if (!isRefund)
                 {
 
-                    dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt);
+                    dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt, receiptNum);
                 }
                 else
                 {
@@ -1124,7 +1124,7 @@ public class CheckoutHandler {
             {
                 if (!isRefund)
                 {
-                    dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt);
+                    dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt, receiptNum);
                 }
                 else
                 {
@@ -1160,7 +1160,7 @@ public class CheckoutHandler {
                     ois.close();
                     if (!isRefund)
                     {
-                        dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt);
+                        dr.update(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt, receiptNum);
                     }
                     else
                     {
@@ -1171,7 +1171,7 @@ public class CheckoutHandler {
                 {
                     if (!isRefund)
                     {
-                        dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt);
+                        dr = new DrawerReport(curCart, clerkName, paymentType, paymentAmt, employeeCheckoutName, isPayCheckReceipt, receiptNum);
                     }
                     else
                     {
