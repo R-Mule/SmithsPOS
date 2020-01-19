@@ -43,11 +43,11 @@ import javax.swing.table.DefaultTableModel;
 public class TopMenuBar extends JMenuBar {
 
     //Class Variables
-    JMenu addMenu, remMenu, mgmtMenu, feedMenu, themeMenu;
+    JMenu addMenu, remMenu, mgmtMenu, viewMenu, feedMenu, themeMenu;
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
             masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
-            editEmployee, arAuditReport, customerDataUpload, ticketReport,
+            editEmployee, arAuditReport, customerDataUpload, ticketReport, addSmsSub, remSmsSub, viewSmsSub, viewCustomer, addCustomer, remCustomer,
             christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
     int totalCntr = 0;
@@ -75,7 +75,27 @@ public class TopMenuBar extends JMenuBar {
         feedMenu.setMnemonic(KeyEvent.VK_F);
         feedMenu.setVisible(false);
 
-//Add  menu items
+        viewMenu = new JMenu("View");
+        viewMenu.setMnemonic(KeyEvent.VK_V);
+        viewMenu.setVisible(false);
+
+        viewSmsSub = new JMenuItem();
+        viewSmsSub.setText("SMS Subscriber");
+        viewMenu.add(viewSmsSub);
+
+        viewCustomer = new JMenuItem();
+        viewCustomer.setText("Customer");
+        viewMenu.add(viewCustomer);
+
+//Add  menu items   
+        addSmsSub = new JMenuItem();
+        addSmsSub.setText("SMS Subscriber");
+        addMenu.add(addSmsSub);
+
+        addCustomer = new JMenuItem();
+        addCustomer.setText("Customer");
+        addMenu.add(addCustomer);
+
         addDmeAccount = new JMenuItem();
         addDmeAccount.setText("DME Account");
         addMenu.add(addDmeAccount);//This adds DME Account Selection to Add Menu Choices
@@ -96,6 +116,14 @@ public class TopMenuBar extends JMenuBar {
         addInventoryItem.setText("Inventory Item");
         addMenu.add(addInventoryItem);//This adds Inventory Item Selection to Add Menu Choices
 //Remove menu items
+        remSmsSub = new JMenuItem();
+        remSmsSub.setText("SMS Subscriber");
+        remMenu.add(remSmsSub);
+
+        remCustomer = new JMenuItem();
+        remCustomer.setText("Customer");
+        remMenu.add(remCustomer);
+
         remDmeAccount = new JMenuItem();
         remDmeAccount.setText("DME Account");
         remMenu.add(remDmeAccount);//This adds DME Account Selection to Rem Menu Choices
@@ -207,11 +235,40 @@ public class TopMenuBar extends JMenuBar {
 
         this.add(addMenu);
         this.add(remMenu);
+        this.add(viewMenu);
         this.add(mgmtMenu);
         this.add(themeMenu);
         this.add(feedMenu);
 
+        viewCustomer.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewCustomerActionPerformed(evt);
+            }
+        });
+
+        viewSmsSub.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewSmsSubActionPerformed(evt);
+            }
+        });
+
 //Add menu action listeners
+        addSmsSub.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addSmsSubActionPerformed(evt);
+            }
+        });
+
+        addCustomer.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addCustomerActionPerformed(evt);
+            }
+        });
+
         addDmeAccount.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -247,6 +304,20 @@ public class TopMenuBar extends JMenuBar {
             }
         });
 //Remove menu action listeners
+        remSmsSub.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                remSmsSubActionPerformed(evt);
+            }
+        });
+
+        remCustomer.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                remCustomerActionPerformed(evt);
+            }
+        });
+
         remDmeAccount.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -437,8 +508,253 @@ public class TopMenuBar extends JMenuBar {
 
     }//end ctor
 
+    private boolean doesCustomersContainAccount(ArrayList<Customer> customers, String cid) {
+        for (Customer customer : customers)
+        {
+            if (customer.cid.toUpperCase().contentEquals(cid.toUpperCase()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean doesListContainPhoneNumber(ArrayList<String> phoneNumbers, String phoneNumber) {
+        for (String tempNum : phoneNumbers)
+        {
+            if (tempNum.contentEquals(phoneNumber))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //members/functions
 //Addition menu item functions
+    private void addSmsSubActionPerformed(java.awt.event.ActionEvent evt) {
+        ArrayList<Customer> customers = new ArrayList<>();//Used for accounts
+        ArrayList<String> phoneNumbersList = new ArrayList<>();
+        boolean doAgain = true;
+        boolean failedAttempt = false;
+        String accounts = "";
+        String phoneNumbers = "";
+
+        while (doAgain)
+        {
+            JFrame textInputFrame = new JFrame("");
+            JTextField field1 = new JTextField();
+            field1.addAncestorListener(new RequestFocusListener());
+            Object[] message =
+            {
+                accounts,
+                "QS/1 Patient Code: ", field1
+            };
+            field1.setText("");
+
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add SMS Subscriber Menu", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION)
+            {
+                String qs1UUID = field1.getText().toUpperCase();
+                if (!Database.doesQS1UUIDExisit(qs1UUID))
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Invalid QS/1 Patient Code");
+                    failedAttempt = true;
+                }
+                else if (doesCustomersContainAccount(customers, qs1UUID))
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "QS/1 Patient Code already in list!");
+                    failedAttempt = true;
+                }
+                else
+                {
+                    failedAttempt = false;
+                }
+                //else
+                // {
+                if (!failedAttempt)
+                {
+                    customers.add(Database.getCustomerByCID(qs1UUID));
+                    accounts = "Account(s): \n";
+
+                    for (Customer customer : customers)
+                    {
+                        accounts += customer.cid + " " + customer.lastName + "," + customer.firstName + " " + customer.dob + "\n";
+                    }
+                }
+                if (!customers.isEmpty())
+                {
+                    Object stringArray[] =
+                    {
+                        "Add Another Account", "Move on to Phone Numbers"
+                    };
+                    int option1 = JOptionPane.showOptionDialog(textInputFrame, accounts + "Add another account to subscriber group? Or start adding phone numbers?", "Add SMS Subscriber Menu",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, stringArray,
+                            stringArray[0]);
+                    if (option1 == JOptionPane.CLOSED_OPTION || option1 == JOptionPane.CANCEL_OPTION)
+                    {
+                        mf.textField.requestFocusInWindow();
+                        return;
+                    }
+                    else if (option1 == JOptionPane.YES_OPTION)//do again
+                    {
+                        doAgain = true;
+                    }
+                    else
+                    {
+                        doAgain = false;
+                    }
+                }
+                else
+                {
+                    doAgain = true;
+                }
+                // }//end else
+            }//end if  
+            else
+            {
+                mf.textField.requestFocusInWindow();
+                return;
+            }
+        }//end do again for account names.
+
+        //Account Names gathered. Now get phone numbers.
+        System.out.println(accounts);
+        doAgain = true;
+        failedAttempt = true;
+        while (doAgain)
+        {
+            JFrame textInputFrame = new JFrame("");
+            JTextField field1 = new JTextField();
+            field1.addAncestorListener(new RequestFocusListener());
+            Object[] message =
+            {
+                accounts, phoneNumbers,
+                "Phone Number: Ex. 15407262993", field1
+            };
+            field1.setText("1");
+
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add SMS Subscriber Menu", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION)
+            {
+                String phoneNumber = field1.getText().toUpperCase();
+                if (!phoneNumber.matches("[1][2-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]"))
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Invalid Phone number. Must start with 1 and be 11 digits total. Digits ONLY. No spaces, etc.");
+                    failedAttempt = true;
+                }
+                else if (doesListContainPhoneNumber(phoneNumbersList, phoneNumber))
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Phone Number already in list!");
+                    failedAttempt = true;
+                }
+                else
+                {
+                    failedAttempt = false;
+                }
+                if (!failedAttempt)
+                {
+                    phoneNumbersList.add(phoneNumber);
+                    phoneNumbers = "Phone Number(s): \n";
+                    for (String number : phoneNumbersList)
+                    {
+                        phoneNumbers += number + "\n";
+                    }
+                }
+                if (!phoneNumbersList.isEmpty())
+                {
+                    Object stringArray[] =
+                    {
+                        "Add Another Phone Number", "Finished"
+                    };
+                    int option1 = JOptionPane.showOptionDialog(textInputFrame, accounts + phoneNumbers + "Add another phone number to subscriber group? Or finished?", "Add SMS Subscriber Menu",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, stringArray,
+                            stringArray[0]);
+                    if (option1 == JOptionPane.CLOSED_OPTION || option1 == JOptionPane.CANCEL_OPTION)
+                    {
+                        mf.textField.requestFocusInWindow();
+                        return;
+                    }
+                    else if (option1 == JOptionPane.YES_OPTION)//do again
+                    {
+                        doAgain = true;
+                    }
+                    else
+                    {
+                        doAgain = false;
+                    }
+                }
+                else
+                {
+                    doAgain = true;
+                }
+            }//end if
+            else
+            {
+                mf.textField.requestFocusInWindow();
+                return;
+            }
+        }//end doAgain for phoneNumbers
+
+        ArrayList<String> alreadyAddedPhoneNumbers = new ArrayList<>();
+        ArrayList<Customer> alreadyAddedCustomersAtPhoneNumbers = new ArrayList<>();
+        ArrayList<String> successfullyAddedPhoneNumbers = new ArrayList<>();
+        ArrayList<Customer> successfullyAddedCustomersAtPhoneNumbers = new ArrayList<>();
+
+        for (Customer customer : customers)
+        {//For each account to be added.
+            for (String phoneNumber : phoneNumbersList)
+            {
+                if (!Database.isPhoneAndAccountNameSubscribed(phoneNumber, customer.cid.toUpperCase()))
+                {
+                    successfullyAddedPhoneNumbers.add(phoneNumber);
+                    successfullyAddedCustomersAtPhoneNumbers.add(customer);
+                    Database.createSmsSubscriber(customer.cid.toUpperCase(), phoneNumber);
+                    Database.storeSmsMessage(customer.cid.toUpperCase(), "This is Smith''s Super-Aid. This phone number has been subscribed to receive messages for account: " + customer.cid.toUpperCase() + " send \"STOP\" to unsubscribe.", phoneNumber);
+                }
+                else
+                {
+                    alreadyAddedPhoneNumbers.add(phoneNumber);
+                    alreadyAddedCustomersAtPhoneNumbers.add(customer);
+                }
+            }
+        }
+        String linked = "";
+        String alreadyLinked = "";
+        int index = 0;
+        if (!successfullyAddedCustomersAtPhoneNumbers.isEmpty())
+        {
+            linked = "Successfully Subscribed:\n";
+            for (Customer customer : successfullyAddedCustomersAtPhoneNumbers)
+            {
+                linked += customer.chargeAccountName + " to " + successfullyAddedPhoneNumbers.get(index) + "\n";
+                index++;
+            }
+        }
+        index = 0;
+        if (!alreadyAddedCustomersAtPhoneNumbers.isEmpty())
+        {
+            alreadyLinked = "Already Subscribed. Not Added:\n";
+            for (Customer customer : alreadyAddedCustomersAtPhoneNumbers)
+            {
+                alreadyLinked += customer.chargeAccountName + " to " + alreadyAddedPhoneNumbers.get(index) + "\n";
+                index++;
+            }
+            alreadyLinked += "\n";
+        }
+        Object[] message =
+        {
+            alreadyLinked, linked
+        };
+        JFrame messageFrame = new JFrame("");
+        JOptionPane.showMessageDialog(messageFrame, message, "Add SMS Subscriber Menu", JOptionPane.INFORMATION_MESSAGE);
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+    }//end 
+
     private void addDmeAccountActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");
         JTextField field1 = new JTextField();
@@ -753,8 +1069,389 @@ public class TopMenuBar extends JMenuBar {
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
     }//end addInventoryItemActionPerformed
 
+    private void viewSmsSubActionPerformed(java.awt.event.ActionEvent evt) {
+        JFrame optionFrame = new JFrame("");
+        Object stringArray[] =
+        {
+            "Account Name", "Phone Number"
+        };
+        int option1 = JOptionPane.showOptionDialog(optionFrame, "View by Account Name or Phone Number?", "SMS Subscriber View Menu",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, stringArray,
+                stringArray[0]);
+        if (option1 == JOptionPane.CLOSED_OPTION || option1 == JOptionPane.CANCEL_OPTION)
+        {
+            mf.textField.requestFocusInWindow();
+            return;
+        }
+        else if (option1 == JOptionPane.YES_OPTION)//View by Account Name
+        {
+            JFrame textInputFrame = new JFrame("");
+            JTextField field2 = new JTextField();
+            field2.addAncestorListener(new RequestFocusListener());
+            Object[] message =
+            {
+                "SMS Subscriber Account Name to View", field2
+            };
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "SMS Subscriber View Menu", JOptionPane.OK_CANCEL_OPTION);
+            //If there is an account name of field two, show removed, otherwise say no account name.
+            if (!field2.getText().isEmpty() && option == JOptionPane.OK_OPTION)
+            {
+                String accountName = field2.getText().toUpperCase();
+                if (!Database.isAccountNameSubscribedToSms(accountName))
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: Account Name: " + accountName + " is not subscribed.");
+                }
+                else
+                {
+                    Customer customer = Database.getCustomerByCID(accountName);
+                    String subscribedNumbers = "Account Name: \n" + accountName + " " + customer.lastName + ", " + customer.firstName + " " + customer.dob + "\n\nSubscribed Numbers: \n";
+                    for (String phoneNumber : Database.getPhoneNumbersForSmsAccount(accountName))
+                    {
+                        subscribedNumbers += phoneNumber;
+                    }
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, subscribedNumbers);
+                }//end else
+            }//end if
+        }
+        else if (option1 == JOptionPane.NO_OPTION)//Remove by Phone Number
+        {
+            JFrame textInputFrame = new JFrame("");
+            JTextField field2 = new JTextField();
+            field2.addAncestorListener(new RequestFocusListener());
+            Object[] message =
+            {
+                "SMS Subscriber Phone Number to View", field2
+            };
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "SMS Subscriber View Menu", JOptionPane.OK_CANCEL_OPTION);
+            if (!field2.getText().isEmpty() && option == JOptionPane.OK_OPTION)
+            {
+                if (!Database.isPhoneNumberSubscribed(field2.getText()))
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: Phone Number: " + field2.getText() + " is not subscribed.");
+                }
+                else
+                {
+                    String accountNames = "Subscribed Account Names: \n";
+                    for (String accountName : Database.getAccountNamesForSmsAccountByPhoneNumber(field2.getText()))
+                    {
+                        Customer customer = Database.getCustomerByCID(accountName);
+                        accountNames += accountName + " " + customer.lastName + ", " + customer.firstName + " " + customer.dob + "\n";
+                    }
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Phone Number: " + field2.getText() + accountNames);
+                }//end else
+            }//end if
+        }
+        mf.textField.requestFocusInWindow();
+    }//end
+
+    private void addCustomerActionPerformed(java.awt.event.ActionEvent evt) {
+        JFrame textInputFrame = new JFrame("");
+        String id = JOptionPane.showInputDialog(
+                textInputFrame,
+                "Enter the Patient Code to continue:",
+                "Customer Patient Code Input",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+        if (id == null)
+        {
+            //Cancel was clicked.
+        }
+        else if (id.isEmpty())
+        {
+            JFrame message1 = new JFrame("");
+            JOptionPane.showMessageDialog(message1, "Patient Code cannot be empty.");
+        }
+        else
+        {
+            id = id.toUpperCase();
+            if (Database.doesQS1UUIDExisit(id))
+            {
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "Customer already exisits.");
+            }
+            else
+            {
+                if (id.length() > 10)
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Patient Code cannot be greater than 10 characters.");
+                }
+                else
+                {//Customer not found, would you like to add a new customer?
+                    //Confirm... Save ticket under? Show customer info. YES NO
+                    int input = JOptionPane.showConfirmDialog(null, "Create new customer with Patient Code? " + id, "Add New Customer?", JOptionPane.YES_NO_OPTION);
+
+                    if (input == JOptionPane.OK_OPTION)
+                    {
+                        JFrame addCustomerFrame = new JFrame("");
+                        JTextField field1 = new JTextField();
+                        JTextField field2 = new JTextField();
+                        JTextField field3 = new JTextField();
+                        JTextField field4 = new JTextField();
+                        JTextField field5 = new JTextField();
+                        JTextField field6 = new JTextField();
+                        JTextField field7 = new JTextField();
+                        JTextField field8 = new JTextField();
+                        JTextField field9 = new JTextField();
+                        //field2.setText(previousDate);
+                        Object[] message =
+                        {
+                            "It is ok to leave blank any field not provided.\nAdding a charge account does not create a new account.",
+                            "QS/1 Patient Code:", field1,
+                            "Last Name:", field2,
+                            "First Name:", field3,
+                            "DOB: ex: 03/09/1986", field4,
+                            "Address:", field5,
+                            "City:", field9,
+                            "State: ex: WV:", field6,
+                            "Zip Code:", field7,
+                            "QS/1 Charge Account:", field8,
+                        };
+                        field1.setText(id);
+                        field1.setEditable(false);
+                        field2.setText("");
+                        field3.setText("");
+                        field4.setText("");
+                        field5.setText("");
+                        field6.setText("");
+                        field7.setText("");
+                        field8.setText("");
+                        //field2.setSelectionStart(0);
+                        //field2.setSelectionEnd(4);
+                        field2.addAncestorListener(new RequestFocusListener());
+                        int option = JOptionPane.showConfirmDialog(addCustomerFrame, message, "Add Customer Menu", JOptionPane.OK_CANCEL_OPTION);
+                        if (option == JOptionPane.OK_OPTION)
+                        {
+                            if (JOptionPane.showConfirmDialog(null, "Account Name:\n" + field1.getText() + "\n\nLast Name, First Name:\n" + field2.getText() + ", "
+                                    + field3.getText() + "\n\nDOB:\n" + field4.getText() + "\n\nAddress:\n" + field5.getText() + "\n\nCity, State Zip:\n"
+                                    + field9.getText() + ", " + field6.getText() + " " + field7.getText() + "\n\nCharge Account:\n" + field8.getText(),
+                                    "Customer Information",
+                                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                            {
+                                Customer tempCustomer = new Customer(field3.getText(), field2.getText(), field4.getText(), field1.getText(), field8.getText(), field7.getText(), field5.getText(), field9.getText(), field6.getText());
+                                Database.addCustomer(tempCustomer);
+                                JFrame message1 = new JFrame("");
+                                JOptionPane.showMessageDialog(message1, "Customer added.");
+                            }
+                            //Insert into database.
+                        }//end if
+                    }
+                    else
+                    {
+                        //Do nothing, they selected no.
+                    }
+                }//end else customer was not found
+            }
+        }
+        mf.textField.requestFocusInWindow();
+    }//end
+
+    private void remCustomerActionPerformed(java.awt.event.ActionEvent evt) {
+        JFrame textInputFrame = new JFrame("");
+        String id = JOptionPane.showInputDialog(
+                textInputFrame,
+                "Enter the Patient Code to continue:",
+                "Customer Patient Code Input",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+        if (id == null)
+        {
+            //Cancel was clicked.
+        }
+        else if (id.isEmpty())
+        {
+            JFrame message1 = new JFrame("");
+            JOptionPane.showMessageDialog(message1, "Patient Code cannot be empty.");
+        }
+        else
+        {
+            id = id.toUpperCase();
+            if (!Database.doesQS1UUIDExisit(id))
+            {
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "Customer does not exisit.");
+            }
+            else
+            {
+                Customer currentCustomer = Database.getCustomerByCID(id);
+                //Confirm... Save ticket under? Show customer info. YES NO
+                int input = JOptionPane.showConfirmDialog(null, "Delete Customer?\n\n" + "Account Name:\n" + currentCustomer.cid + "\n\nLast Name, First Name:\n" + currentCustomer.lastName + ", "
+                        + currentCustomer.firstName + "\n\nDOB:\n" + currentCustomer.dob + "\n\nAddress:\n" + currentCustomer.address + "\n\nCity, State Zip:\n"
+                        + currentCustomer.city + ", " + currentCustomer.state + " " + currentCustomer.zipCode + "\n\nCharge Account:\n" + currentCustomer.chargeAccountName, "Add New Customer?", JOptionPane.YES_NO_OPTION);
+
+                if (input == JOptionPane.OK_OPTION)
+                {
+                    Database.removeCustomer(id);
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Customer deleted successfully.");
+                }
+            }
+        }
+        mf.textField.requestFocusInWindow();
+    }//end
+
+    private void viewCustomerActionPerformed(java.awt.event.ActionEvent evt) {
+        JFrame textInputFrame = new JFrame("");
+        JTextField field1 = new JTextField();
+        JTextField field2 = new JTextField();
+        JTextField field3 = new JTextField();
+        JTextField field4 = new JTextField();
+        JTextField field5 = new JTextField();
+        Object[] message =
+        {
+            "Enter only what you know.",
+            "QS/1 Patient Code:", field1,
+            "Last Name:", field2,
+            "First Name:", field3,
+            "DOB: ex: 022411", field4
+        };
+        Object[] message2 =
+        {
+            "Amount To Pay:", field5
+        };
+        field1.setText("");
+        field2.setText("");
+        field3.setText("");
+        field4.setText("");
+        field5.setText("");
+        String selection = "";
+        field1.addAncestorListener(new RequestFocusListener());
+        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION)
+        {
+            if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty())
+            {
+                //do nothing, they clicked OK with everything blank
+            }
+            else
+            {
+                ArrayList<Customer> customers = Database.getCustomers(field1.getText(), field2.getText(), field3.getText(), field4.getText());
+                if (customers != null && !customers.isEmpty())
+                {
+                    String[] choices = new String[customers.size()];
+                    int index = 0;
+                    for (Customer customer : customers)
+                    {
+                        choices[index] = customer.cid + " " + customer.lastName + ", " + customer.firstName + " " + customer.dob;
+                        index++;
+                    }
+
+                    selection = (String) JOptionPane.showInputDialog(null, "Choose now...",
+                            "Choose Customer", JOptionPane.QUESTION_MESSAGE, null,
+                            choices, // Array of choices
+                            choices[0]); // Initial choice
+
+                    Customer currentCustomer = null;
+                    for (Customer customer : customers)
+                    {
+                        if (selection.contentEquals(customer.cid + " " + customer.lastName + ", " + customer.firstName + " " + customer.dob))
+                        {
+                            currentCustomer = customer;
+                            break;
+                        }
+                    }
+                    if (currentCustomer != null)
+                    {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "QS/1 Patient Code:\n" + currentCustomer.cid + "\n\nLast Name, First Name:\n" + currentCustomer.lastName + ", "
+                                + currentCustomer.firstName + "\n\nDOB:\n" + currentCustomer.dob + "\n\nAddress:\n" + currentCustomer.address + "\n\nCity, State Zip:\n"
+                                + currentCustomer.city + ", " + currentCustomer.state + " " + currentCustomer.zipCode + "\n\nCharge Account:\n" + currentCustomer.chargeAccountName,
+                                "Customer Information", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+                else
+                {//No such customer found
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "No such account.");
+                }
+            }
+        }
+
+        mf.textField.requestFocusInWindow();
+    }//end
+
 //Removal menu item functions
-    //Fn to be built (below)
+    private void remSmsSubActionPerformed(java.awt.event.ActionEvent evt) {
+        JFrame optionFrame = new JFrame("");
+        Object stringArray[] =
+        {
+            "Account Name", "Phone Number"
+        };
+        int option1 = JOptionPane.showOptionDialog(optionFrame, "Remove by Account Name or Phone Number?", "SMS Subscriber Removal Menu",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, stringArray,
+                stringArray[0]);
+        if (option1 == JOptionPane.CLOSED_OPTION || option1 == JOptionPane.CANCEL_OPTION)
+        {
+            mf.textField.requestFocusInWindow();
+            return;
+        }
+        else if (option1 == JOptionPane.YES_OPTION)//Remove by Account Name
+        {
+            JFrame textInputFrame = new JFrame("");
+            JTextField field2 = new JTextField();
+            field2.addAncestorListener(new RequestFocusListener());
+            Object[] message =
+            {
+                "SMS Subscriber Account Name to Remove", field2
+            };
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "SMS Subscriber Removal Menu", JOptionPane.OK_CANCEL_OPTION);
+            //If there is an account name of field two, show removed, otherwise say no account name.
+            if (!field2.getText().isEmpty() && option == JOptionPane.OK_OPTION)
+            {
+                String accountName = field2.getText().toUpperCase();
+                if (!Database.isAccountNameSubscribedToSms(accountName))
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: Account Name: " + accountName + " is not subscribed.");
+                }
+                else
+                {
+                    for (String phoneNumber : Database.getPhoneNumbersForSmsAccount(accountName))
+                    {
+                        Database.storeSmsMessage(accountName, "This is Smith''s Super-Aid. Phone number: " + phoneNumber + " has been unsubscribed for account: " + accountName, phoneNumber);
+                    }
+                    Database.deleteSmsSubscriberByAccountName(accountName);
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Account Name: " + accountName + " has been unsubscribed successfully.");
+                }//end else
+            }//end if
+        }
+        else if (option1 == JOptionPane.NO_OPTION)//Remove by Phone Number
+        {
+            JFrame textInputFrame = new JFrame("");
+            JTextField field2 = new JTextField();
+            field2.addAncestorListener(new RequestFocusListener());
+            Object[] message =
+            {
+                "SMS Subscriber Phone Number to Remove", field2
+            };
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "SMS Subscriber Removal Menu", JOptionPane.OK_CANCEL_OPTION);
+            if (!field2.getText().isEmpty() && option == JOptionPane.OK_OPTION)
+            {
+                if (!Database.isPhoneNumberSubscribed(field2.getText()))
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Error: Phone Number: " + field2.getText() + " is not subscribed.");
+                }
+                else
+                {
+                    for (String accountName : Database.getAccountNamesForSmsAccountByPhoneNumber(field2.getText()))
+                    {
+                        Database.storeSmsMessage(accountName, "This is Smith''s Super-Aid. Phone number: " + field2.getText() + " has been unsubscribed for account: " + accountName, field2.getText());
+                    }
+                    Database.deleteSmsSubscriberByPhoneNumber(field2.getText());
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Phone Number: " + field2.getText() + " has been unsubscribed successfully.");
+                }//end else
+            }//end if
+        }
+        mf.textField.requestFocusInWindow();
+    }//end
+
     private void remDmeAccountActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");
         JTextField field2 = new JTextField();
@@ -792,7 +1489,6 @@ public class TopMenuBar extends JMenuBar {
             }//end if
         }//end if ok option
     }//end dmeAccountActionPerformed
-    //Fn to be built (below)
 
     private void remRxAccountActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame textInputFrame = new JFrame("");
@@ -1978,7 +2674,7 @@ public class TopMenuBar extends JMenuBar {
             );
             if (id == null)
             {
-               return; //Cancel was clicked, we are done here.
+                return; //Cancel was clicked, we are done here.
             }
             else if (id.isEmpty())
             {
@@ -2005,7 +2701,7 @@ public class TopMenuBar extends JMenuBar {
 
             try
             {
-                if(ticketLogs.isEmpty())
+                if (ticketLogs.isEmpty())
                 {
                     ticketBW.write("No Data Found, Ticket must not have been modified or patient code entered wrong.");
                 }
@@ -2015,7 +2711,7 @@ public class TopMenuBar extends JMenuBar {
                 }
                 for (TicketLog ticketLog : ticketLogs)
                 {
-                    ticketBW.write(ticketLog.ticketOwnersName +"@"+ticketLog.ticketOwnersAccount+"@"+ticketLog.modifiedByName+"@"+ticketLog.modifiedByAccount+"@"+ticketLog.modificationTime+"@"+ticketLog.registerUsed+"@"+ticketLog.modificationType+"@"+ticketLog.itemModified + "\n");
+                    ticketBW.write(ticketLog.ticketOwnersName + "@" + ticketLog.ticketOwnersAccount + "@" + ticketLog.modifiedByName + "@" + ticketLog.modifiedByAccount + "@" + ticketLog.modificationTime + "@" + ticketLog.registerUsed + "@" + ticketLog.modificationType + "@" + ticketLog.itemModified + "\n");
                 }
                 if (ticketBW != null)
                 {
@@ -2096,6 +2792,17 @@ public class TopMenuBar extends JMenuBar {
                 editEmployee.setVisible(true);
                 arAuditReport.setVisible(true);
                 ticketReport.setVisible(true);
+                addRxAccount.setVisible(true);
+                addDmeAccount.setVisible(true);
+                remRxAccount.setVisible(true);
+                remDmeAccount.setVisible(true);
+                addInsurance.setVisible(true);
+                remInsurance.setVisible(true);
+                remInventoryItem.setVisible(true);
+                addInventoryItem.setVisible(true);
+                viewMenu.setVisible(true);
+                addSmsSub.setVisible(true);
+                remCustomer.setVisible(true);
                 break;
             case 3:
                 feedMenu.setVisible(true);//Menus visible
@@ -2112,6 +2819,17 @@ public class TopMenuBar extends JMenuBar {
                 dmeDataUpload.setVisible(true);
                 editEmployee.setVisible(false);
                 ticketReport.setVisible(false);
+                addRxAccount.setVisible(true);
+                addDmeAccount.setVisible(true);
+                remRxAccount.setVisible(true);
+                remDmeAccount.setVisible(true);
+                addInsurance.setVisible(true);
+                remInsurance.setVisible(true);
+                remInventoryItem.setVisible(true);
+                addInventoryItem.setVisible(true);
+                viewMenu.setVisible(true);
+                addSmsSub.setVisible(true);
+                remCustomer.setVisible(true);
                 break;
             case 2:
                 feedMenu.setVisible(true);//Menus visible
@@ -2127,12 +2845,39 @@ public class TopMenuBar extends JMenuBar {
                 arAuditReport.setVisible(false);
                 editEmployee.setVisible(false);
                 ticketReport.setVisible(false);
+                addRxAccount.setVisible(true);
+                addDmeAccount.setVisible(true);
+                remRxAccount.setVisible(true);
+                remDmeAccount.setVisible(true);
+                addInsurance.setVisible(true);
+                remInsurance.setVisible(true);
+                remInventoryItem.setVisible(true);
+                addInventoryItem.setVisible(true);
+                viewMenu.setVisible(true);
+                addSmsSub.setVisible(true);
+                remCustomer.setVisible(true);
+
                 break;
             case 1:
-                addMenu.setVisible(false);
-                remMenu.setVisible(false);
+                //remMenu.setVisible(true);
+                addMenu.setVisible(true);
+                // addMenu.setVisible(false);
+                //remMenu.setVisible(true);
+                addRxAccount.setVisible(false);
+                addDmeAccount.setVisible(false);
+                remRxAccount.setVisible(false);
+                remDmeAccount.setVisible(false);
+                addInsurance.setVisible(false);
+                remInsurance.setVisible(false);
+                remInventoryItem.setVisible(false);
+                addInventoryItem.setVisible(false);
+                addEmployee.setVisible(false);
+                remEmployee.setVisible(false);
                 mgmtMenu.setVisible(false);
                 feedMenu.setVisible(true);
+                viewMenu.setVisible(true);
+                addSmsSub.setVisible(false);
+                remCustomer.setVisible(false);
 
                 // masterRptRecpt.setVisible(false);
                 break;
@@ -2141,6 +2886,7 @@ public class TopMenuBar extends JMenuBar {
                 remMenu.setVisible(false);
                 mgmtMenu.setVisible(false);
                 feedMenu.setVisible(false);
+                viewMenu.setVisible(false);
                 // masterRptRecpt.setVisible(false);
                 break;
             default:
@@ -2152,6 +2898,7 @@ public class TopMenuBar extends JMenuBar {
         addMenu.setVisible(true);
         remMenu.setVisible(true);
         mgmtMenu.setVisible(true);
+        viewMenu.setVisible(true);
         feedMenu.setVisible(true);
         themeMenu.setVisible(true);
     }//end setAllVisible()
@@ -2162,5 +2909,6 @@ public class TopMenuBar extends JMenuBar {
         mgmtMenu.setVisible(false);
         feedMenu.setVisible(false);
         themeMenu.setVisible(false);
+        viewMenu.setVisible(false);
     }//end setAllNotVisible()
 }//end TopMenuBar Class

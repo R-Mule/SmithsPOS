@@ -50,6 +50,185 @@ public class Database {
         password = ConfigFileReader.getPassword();
     }
 
+        public static void createSmsSubscriber(String accountName, String phoneNumber) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("INSERT INTO smssubscribers (pid,accountname,phoneNumber) VALUES (NULL,'" + accountName + "', '" + phoneNumber + "')");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+        
+    public static void storeSmsMessage(String accountName, String message, String phoneNumber) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("INSERT INTO smsmsgqueue (pid,phonenumber,message,accountname) VALUES (NULL,'" + phoneNumber + "', '" + message + "','" + accountName + "')");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+
+    public static ArrayList<String> getPhoneNumbersForSmsAccount(String accountName) {
+        ArrayList<String> phoneNumbers = new ArrayList<>();
+        try
+        {
+
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from smssubscribers where accountName = '" + accountName + "';");
+            while (rs.next())
+            {
+                phoneNumbers.add(rs.getString(3));
+            }//end while
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return phoneNumbers;
+    }
+
+    public static ArrayList<String> getAccountNamesForSmsAccountByPhoneNumber(String phoneNumber) {
+        ArrayList<String> accountNames = new ArrayList<>();
+        try
+        {
+
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from smssubscribers where phoneNumber = '" + phoneNumber + "';");
+            while (rs.next())
+            {
+                accountNames.add(rs.getString(2));
+            }//end while
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return accountNames;
+    }
+
+    public static boolean isPhoneAndAccountNameSubscribed(String phoneNumber, String accountName) {
+        boolean foundOne = false;
+        try
+        {
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from smssubscribers where phonenumber = '" + phoneNumber + "' and accountName = '" + accountName + "';");
+            while (rs.next())
+            {
+                System.out.println(rs.getString(2));
+                foundOne = true;
+            }//end while
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return foundOne;
+    }
+
+    //This one may not be needed on this side. 
+    public static boolean isPhoneNumberSubscribed(String phoneNumber) {
+        boolean foundOne = false;
+        try
+        {
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from smssubscribers where phonenumber = '" + phoneNumber + "';");
+            while (rs.next())
+            {
+                System.out.println(rs.getString(2));
+                foundOne = true;
+            }//end while
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return foundOne;
+    }
+
+    public static boolean isAccountNameSubscribedToSms(String accountName) {
+        boolean foundOne = false;
+        try
+        {
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from smssubscribers where accountName = '" + accountName + "';");
+            while (rs.next())
+            {
+                //System.out.println(rs.getString(2));
+                foundOne = true;
+            }//end while
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return foundOne;
+    }
+
+    public static void deleteSmsSubscriberByPhoneNumber(String phoneNumber) {
+        try
+        {
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("delete from smssubscribers where phonenumber = '" + phoneNumber + "';");
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+    }//end 
+
+    public static void deleteSmsSubscriberByAccountName(String accountName) {
+        try
+        {
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("delete from smssubscribers where accountName = '" + accountName + "';");
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+    }//end 
+
     public static boolean updateMutualInventory(String mutID, String upc, String name, double price, double cost, boolean taxable, int category) {//0 return means not found, otherwise returns mutID from database.
         boolean itemFound = false;
         try
@@ -1331,6 +1510,83 @@ public class Database {
 
     }
 
+     public static ArrayList<Customer> getCustomers(String accntName, String lastName, String firstName, String dob) {
+        boolean oneBefore = false;
+        ArrayList<Customer> customers = new ArrayList<>();
+        String statement = "select * from customers where ";
+        if (!accntName.isEmpty())
+        {
+            statement += "uuid = '" + accntName + "'";
+            oneBefore = true;
+        }
+        if (!lastName.isEmpty())
+        {
+            if (oneBefore)
+            {
+                statement += "and lastname = '" + lastName + "'";
+            }
+            else
+            {
+                statement += "lastname = '" + lastName + "'";
+                oneBefore = true;
+            }
+        }
+        if (!firstName.isEmpty())
+        {
+            if (oneBefore)
+            {
+                statement += "and firstname = '" + firstName + "'";
+            }
+            else
+            {
+                statement += "firstname = '" + firstName + "'";
+                oneBefore = true;
+            }
+        }
+        if (!dob.isEmpty())
+        {
+            if (oneBefore)
+            {
+                statement += "and dob = '" + dob + "'";
+            }
+            else
+            {
+                statement += "dob = '" + dob + "'";
+                oneBefore = true;
+            }
+        }
+        int i = 0;
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(statement);
+
+            while (rs.next())
+            {
+                if (!rs.getString(2).contentEquals("DELETED"))
+                {
+                    customers.add(new Customer(rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(2), rs.getString(10), rs.getString(9), rs.getString(6), rs.getString(7), rs.getString(8)));
+                }
+                // System.out.println(rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4)+" "+rs.getString(5).substring(0, 2)+"-"+rs.getString(5).substring(2, 4)+"-"+rs.getString(5).substring(4, 6));
+
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+        if (customers.size() == 0)
+        {
+            return null;
+        }
+        return customers;
+    }
+     
     public static String[] getARList(String accntName, String lastName, String firstName, String dob) {
         boolean oneBefore = false;
         String[] accounts = new String[270];
@@ -1430,6 +1686,22 @@ public class Database {
         }
     }
 
+        public static void removeCustomer(String cid) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("DELETE FROM `customers` where uuid = '" + cid + "';");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+    }
+        
     public static void removeChargeAccount(String accountName) {
         try
         {
@@ -1900,14 +2172,14 @@ public class Database {
     public static ArrayList<TicketLog> getTicketLogList(LocalDateTime startDate, LocalDateTime endDate, String ticketOwnerAccountName) {
         ArrayList<TicketLog> ticketLogs = new ArrayList<>();
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-       
+
         try
         {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from ticketlog where ticketOwnersAccount = '" + ticketOwnerAccountName + "' and modificationTime >= '"+sdf.format(startDate) + "' and modificationTime <= '"+sdf.format(endDate) + "';");
+            ResultSet rs = stmt.executeQuery("select * from ticketlog where ticketOwnersAccount = '" + ticketOwnerAccountName + "' and modificationTime >= '" + sdf.format(startDate) + "' and modificationTime <= '" + sdf.format(endDate) + "';");
 
             while (rs.next())
             {
@@ -1922,7 +2194,7 @@ public class Database {
         }
         return ticketLogs;
     }
-    
+
     public static void insertTicketLog(TicketLog ticketLog) {
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         try

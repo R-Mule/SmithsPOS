@@ -23,6 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -46,6 +47,7 @@ import javax.swing.SwingConstants;
 public class MainFrame extends javax.swing.JFrame {
 
     public MainFrame() {
+        JDialog.setDefaultLookAndFeelDecorated(true);
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         jPanel1 = new JPanel(new BorderLayout());
@@ -502,7 +504,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     //field2.setText(previousDate);
                                     Object[] message =
                                     {
-                                        "It is ok to leave blank any field not provided.",
+                                        "It is ok to leave blank any field not provided.\nAdding a charge account here does not create a charge account for customer.",
                                         "QS/1 Patient Code:", field1,
                                         "Last Name:", field2,
                                         "First Name:", field3,
@@ -525,14 +527,24 @@ public class MainFrame extends javax.swing.JFrame {
                                     //field2.setSelectionStart(0);
                                     //field2.setSelectionEnd(4);
                                     field2.addAncestorListener(new RequestFocusListener());
-                                    int option = JOptionPane.showConfirmDialog(addCustomerFrame, message, "OTC Item Information", JOptionPane.OK_CANCEL_OPTION);
+                                    int option = JOptionPane.showConfirmDialog(addCustomerFrame, message, "Add Customer Menu", JOptionPane.OK_CANCEL_OPTION);
                                     if (option == JOptionPane.OK_OPTION)
                                     {
-                                        //Insert into database.
-                                        Customer tempCustomer = new Customer(field3.getText(), field2.getText(), field4.getText(), field1.getText(), field8.getText(), field7.getText(), field5.getText(), field9.getText(), field6.getText());
-                                        Database.addCustomer(tempCustomer);
-                                        //save ticket with id?
-                                        updateCartScreen();
+                                        if (JOptionPane.showConfirmDialog(null, "QS/1 Patient Code:\n" + field1.getText() + "\n\nLast Name, First Name:\n" + field2.getText() + ", "
+                                                + field3.getText() + "\n\nDOB:\n" + field4.getText() + "\n\nAddress:\n" + field5.getText() + "\n\nCity, State Zip:\n"
+                                                + field9.getText() + ", " + field6.getText() + " " + field7.getText() + "\n\nCharge Account:\n" + field8.getText(),
+                                                "Customer Information",
+                                                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                                        {
+                                            //Insert into database.
+                                            Customer tempCustomer = new Customer(field3.getText(), field2.getText(), field4.getText(), field1.getText(), field8.getText(), field7.getText(), field5.getText(), field9.getText(), field6.getText());
+                                            Database.addCustomer(tempCustomer);
+                                            saveTicket(id);
+                                            JFrame message1 = new JFrame("");
+                                            JOptionPane.showMessageDialog(message1, "Customer added. Ticket saved under: " + id);
+                                            updateCartScreen();
+                                        }
+
                                     }//end if
 
                                 }
@@ -2250,8 +2262,9 @@ public class MainFrame extends javax.swing.JFrame {
                                                     {
                                                         if (curCart.getTotalPrice() == amtReceived)
                                                         {
-                                                            checkout.beginStoreCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), field2.getText(), myself, guiItems, (String) empList2.getSelectedItem());
                                                             displayChangeDue = true;
+                                                            checkout.beginStoreCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), field2.getText(), myself, guiItems, (String) empList2.getSelectedItem());
+
                                                         }
                                                         else
                                                         {
@@ -2267,8 +2280,8 @@ public class MainFrame extends javax.swing.JFrame {
                                                 }
                                                 else
                                                 {
-                                                    checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), field2.getText(), myself, guiItems, (String) empList2.getSelectedItem());
                                                     displayChangeDue = true;
+                                                    checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), field2.getText(), myself, guiItems, (String) empList2.getSelectedItem());
                                                 }
                                                 updateCartScreen();
                                             }//end else
@@ -3615,6 +3628,32 @@ public class MainFrame extends javax.swing.JFrame {
                         empList2.setSelectedIndex(0);
                     }
 
+                    if (Database.isAccountNameSubscribedToSms(id) && curCart.getTotalNumRX() > 0)
+                    {//SMS Text System
+                        int response = JOptionPane.showConfirmDialog(null, "Customer is SMS Subscriber. Send Pickup Ready Message?", "SMS Subscriber Detected",
+                                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+                        if (response == JOptionPane.YES_OPTION)
+                        {
+                            int rxCnt = curCart.getTotalNumRX();
+                            String message = "";
+                            if (rxCnt > 1)
+                            {
+                                message = "This is Smith''s Super-Aid. We want to let you know there are " + rxCnt + " Prescriptons ready for pickup. Reply \"STOP\" to stop receiving these messages.";
+                            }
+                            else
+                            {
+                                message = "This is Smith''s Super-Aid. We want to let you know there is 1 Prescripton ready for pickup. Reply \"STOP\" to stop receiving these messages.";
+                            }
+
+                            ArrayList<String> numbers = Database.getPhoneNumbersForSmsAccount(id);
+                            for (String number : numbers)
+                            {
+                                Database.storeSmsMessage(id, message, number);
+                            }
+                        }
+                    }
+
                     curCart.storeCart(id, false);
                     if (isLoadedTicketAnEmployees)
                     {
@@ -3641,11 +3680,16 @@ public class MainFrame extends javax.swing.JFrame {
 
                     if (curCart.containsItemToBeSplit())
                     {
+                        int splitRxCnt = 0;
                         ArrayList<GuiCartItem> itemsToRemove = new ArrayList<>();
                         for (GuiCartItem item : guiItems)
                         {
                             if (item.item.isSetToSplitSave)
                             {
+                                if (item.item.isRX)
+                                {
+                                    splitRxCnt++;
+                                }
                                 itemsToRemove.add(item);
                                 resizeCartWindow();
                             }
@@ -3658,6 +3702,30 @@ public class MainFrame extends javax.swing.JFrame {
                         {
                             guiItems.remove(toRemove);
                             toRemove.removeAllGUIData();
+                        }
+                        if (Database.isAccountNameSubscribedToSms(id) && splitRxCnt > 0)
+                        {//SMS Text System
+                            int response = JOptionPane.showConfirmDialog(null, "Customer is SMS Subscriber. Send Pickup Ready Message?", "SMS Subscriber Detected",
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+                            if (response == JOptionPane.YES_OPTION)
+                            {
+                                String message = "";
+                                if (splitRxCnt > 1)
+                                {
+                                    message = "This is Smith''s Super-Aid. We want to let you know there are " + splitRxCnt + " Prescriptons ready for pickup. Reply \"STOP\" to stop receiving these messages.";
+                                }
+                                else
+                                {
+                                    message = "This is Smith''s Super-Aid. We want to let you know there is 1 Prescripton ready for pickup. Reply \"STOP\" to stop receiving these messages.";
+                                }
+
+                                ArrayList<String> numbers = Database.getPhoneNumbersForSmsAccount(id);
+                                for (String number : numbers)
+                                {
+                                    Database.storeSmsMessage(id, message, number);
+                                }
+                            }
                         }
                         curCart.storeCart(id, true);
 
@@ -3892,16 +3960,24 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.2.99";
+    String currentVersion = "1.3.0";
     String updateString = ""
             + "* Fixed issue where entering nonexistant account to charge to threw null pointer exception."
             + "\n* Fixed issue where deleted charge accounts showed in list to charge to or make payments to."
             + "\n* Fixed issue where ticket name could be empty string."
             + "\n* Fixed issue where ticket save cancel click resulted in null pointer exception."
+            + "\n* Fixed issue where Change Due was not showing before Rx Signature Required popup on Check Checkout."
             + "\n+ Added new upload trackers for Mutual Upload and AR Account Upload."
             + "\n+ Added new Customer Upload Report with upload tracker."
             + "\n+ Added linked employee tickets. Employees cannot save or open their own tickets."
-            + "\n+ Added new receipt tracking for DME and RX Charges to Daily Drawer AR Reports.";
+            + "\n+ Added new receipt tracking for DME and RX Charges to Daily Drawer AR Reports."
+            + "\n+ Added new SMS Subscriber System for patients to be alerted of Refills Ready."
+            + "\n+ Added new SMS Subscriber Request Refill text system. Linked to Pharmacy Printer."
+            + "\n+ Added text options for Hours and Contact Information for non-SMS Subscribers."
+            + "\n+ Added View Menu to Top Bar to show SMS Subscribers by Account or Phone Number."
+            + "\n+ Added Add Customer to Ticket Save Event and to Top Bar Add Menu."
+            + "\n+ Added Remove Customer to Top Bar Menu."
+            + "\n+ Added color to dialog windows.";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
