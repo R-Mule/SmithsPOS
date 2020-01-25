@@ -2119,7 +2119,7 @@ public class Database {
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("INSERT INTO `customers` (pid, uuid, firstname, lastname, dob, address, city, state, zip, chargeaccount) VALUES (NULL, '" + customer.cid + "','" + customer.firstName + "','" + customer.lastName + "','" + customer.dob + "','" + customer.address + "','" + customer.city + "','" + customer.state + "','" + customer.zipCode + "','" + customer.chargeAccountName + "');");
+            stmt.executeUpdate("INSERT INTO `customers` (pid, uuid, firstname, lastname, dob, address, city, state, zip, chargeaccount) VALUES (NULL, '" + customer.cid.replaceAll("'", "''").replaceAll("\"", "") + "','" + customer.firstName.replaceAll("'", "''").replaceAll("\"", "") + "','" + customer.lastName.replaceAll("'", "''").replaceAll("\"", "") + "','" + customer.dob.replaceAll("'", "''").replaceAll("\"", "") + "','" + customer.address.replaceAll("'", "''").replaceAll("\"", "") + "','" + customer.city.replaceAll("'", "''").replaceAll("\"", "") + "','" + customer.state.replaceAll("'", "''").replaceAll("\"", "") + "','" + customer.zipCode.replaceAll("'", "''").replaceAll("\"", "") + "','" + customer.chargeAccountName.replaceAll("'", "''").replaceAll("\"", "") + "');");
             con.close();
         }
         catch (Exception e)
