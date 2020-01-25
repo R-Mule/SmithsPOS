@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -40,6 +41,8 @@ public class Database {
     private static int addedCntr = 0;
     private static int updatedCntr = 0;
     private static int failedCntr = 0;
+    private static int unchangedCntr = 0;
+    private static int linesProcessed = 0;
 
     private Database() {
     }//end databaseCtor
@@ -50,7 +53,7 @@ public class Database {
         password = ConfigFileReader.getPassword();
     }
 
-        public static void createSmsSubscriber(String accountName, String phoneNumber) {
+    public static void createSmsSubscriber(String accountName, String phoneNumber) {
         try
         {
             Class.forName(driverPath);
@@ -65,7 +68,7 @@ public class Database {
             System.out.println(e);
         }//end catch
     }
-        
+
     public static void storeSmsMessage(String accountName, String message, String phoneNumber) {
         try
         {
@@ -1374,16 +1377,20 @@ public class Database {
         addedCntr = 0;
         updatedCntr = 0;
         failedCntr = 0;
+        unchangedCntr = 0;
+        linesProcessed = 0;
         JFrame frame = new JFrame("Customer Data Upload");
         //frame.setLayout();
         JLabel addedCustomersLabel = new JLabel("Customers Added: 0");
         JLabel updatedCustomersLabel = new JLabel("Customers Updated: 0");
+        JLabel unchangedCustomersLabel = new JLabel("Customers Unchanged: 0");
         JLabel failuresLabel = new JLabel("Failures: (Notify Drew if Any): 0");
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(4, 0));
         JButton acknowledgeButton = new JButton("Ok");
-        frame.setSize(350, 200);
+        frame.setSize(350, 250);
         addedCustomersLabel.setSize(50, 50);
+        unchangedCustomersLabel.setSize(50, 50);
         updatedCustomersLabel.setSize(50, 50);
         failuresLabel.setSize(50, 50);
         panel.setSize(350, 200);
@@ -1391,6 +1398,7 @@ public class Database {
         frame.setLocation(800, 300);
         panel.add(addedCustomersLabel);
         panel.add(updatedCustomersLabel);
+        panel.add(unchangedCustomersLabel);
         panel.add(failuresLabel);
         panel.add(acknowledgeButton);
         panel.setVisible(true);
@@ -1408,33 +1416,43 @@ public class Database {
             @Override
             protected Boolean doInBackground() throws Exception {
                 // Background work
+             HashMap<String, Customer> customerMap = new HashMap<>();
                 try
                 {
-                    BufferedReader in = new BufferedReader(new FileReader(path));
-                    String line;
                     Connection con = DriverManager.getConnection(
                             host, userName, password);
                     Statement stmt = con.createStatement();
+                    
+                    try
+                    {
+
+                        Class.forName(driverPath);
+                        ResultSet rs = stmt.executeQuery("select * from customers;");
+
+                        while (rs.next())
+                        {
+                            customerMap.put(rs.getString(2), new Customer(rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(2), rs.getString(10), rs.getString(9), rs.getString(6), rs.getString(7), rs.getString(8)));
+
+                        }//end while
+                        
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+                    
+                    System.out.println("Map SIZE: "+customerMap.size());
+                    BufferedReader in = new BufferedReader(new FileReader(path));
+                    String line;
                     while ((line = in.readLine()) != null)
                     {
-                        line = line.replaceAll("'", "''");
+                        //line = line.replaceAll("'", "''");
                         String[] tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", 9);
-
                         if (tokens.length < 8)
                         {
                             continue;
                         }
-                        /*
-                token[0] == uuid
-                token[1] == last name
-                token[2] == first name
-                token[3] == dob
-                token[4] == address
-                token[5] == state
-                token[6] == zip code
-                token[7] == charge account if exists.
-                token[8] == city
-                         */
+                        linesProcessed++;
                         String uuid = tokens[0].replaceAll("\"", "");
                         String lastName = tokens[1].replaceAll("\"", "");
                         String firstName = tokens[2].replaceAll("\"", "");
@@ -1444,48 +1462,51 @@ public class Database {
                         String zip = tokens[6].replaceAll("\"", "");
                         String chargeAccount = tokens[7].replaceAll("\"", "");
                         String city = tokens[8].replaceAll("\"", "");
-                        try
-                        {
-                            Class.forName(driverPath);
-                            //Connection con = DriverManager.getConnection(
-                            //        host, userName, password);
-//here sonoo is database name, root is username and password  
-                            //Statement stmt = con.createStatement();
-                            ResultSet rs = stmt.executeQuery("select * from customers where uuid = '" + uuid + "';");
-                            boolean itemFound = false;
-                            while (rs.next())
-                            {
-                                itemFound = true;
-                                Statement stmt2 = con.createStatement();
-                                stmt2.executeUpdate("UPDATE `customers` set state = '" + state + "',firstname='" + firstName + "',lastname='" + lastName + "',dob='" + dob + "',address='" + address + "',city =  '" + city + "', zip = '" + zip + "', chargeaccount = '" + chargeAccount + "' where uuid = '" + uuid + "';");
-                                updatedCntr++;
-                                updatedCustomersLabel.setText("Customers Updated: " + Integer.toString(updatedCntr) + "\n");
+                        
+                        
+                        boolean itemFound = false;
+                        Customer loadedCustomer = new Customer(firstName, lastName, dob, uuid, chargeAccount, zip, address, city, state);
 
-                            }//end while
-                            if (!itemFound)
-                            {
-                                stmt.executeUpdate("INSERT INTO `customers` (pid, uuid, firstname, lastname, dob, address, city, state, zip, chargeaccount) VALUES (NULL, '" + uuid + "','" + firstName + "','" + lastName + "','" + dob + "','" + address + "','" + city + "','" + state + "','" + zip + "','" + chargeAccount + "');");
-                                addedCntr++;
-                                addedCustomersLabel.setText("Customers Added: " + Integer.toString(addedCntr) + "\n");
-                            }
-
-                        }
-                        catch (Exception e)
+                        if (customerMap.containsKey(loadedCustomer.cid) && loadedCustomer.doesCustomerMatchIdentically(customerMap.get(loadedCustomer.cid)))
                         {
-                            failedCntr++;
-                            failuresLabel.setText("Failures: (Notify Drew if Any): " + Integer.toString(failedCntr) + "\n");
-                            System.out.println(e);
+                            itemFound = true;
+                            unchangedCntr++;
+                            unchangedCustomersLabel.setText("Customers Unchanged: " + Integer.toString(unchangedCntr) + "\n");
                         }
+                        else if (customerMap.containsKey(loadedCustomer.cid))
+                        {
+                            itemFound = true;
+                            Statement stmt2 = con.createStatement();
+                            stmt2.executeUpdate("UPDATE `customers` set state = '" + state.replaceAll("'", "''") + "',firstname='" + firstName.replaceAll("'", "''") + "',lastname='" + lastName.replaceAll("'", "''") + "',dob='" + dob.replaceAll("'", "''") + "',address='" + address.replaceAll("'", "''") + "',city =  '" + city.replaceAll("'", "''") + "', zip = '" + zip.replaceAll("'", "''") + "', chargeaccount = '" + chargeAccount.replaceAll("'", "''") + "' where uuid = '" + uuid.replaceAll("'", "''") + "';");
+                            updatedCntr++;
+                            updatedCustomersLabel.setText("Customers Updated: " + Integer.toString(updatedCntr) + "\n");
+                        }
+
+                        if (!itemFound)
+                        {
+                            stmt.executeUpdate("INSERT INTO `customers` (pid, uuid, firstname, lastname, dob, address, city, state, zip, chargeaccount) VALUES (NULL, '" + uuid.replaceAll("'", "''") + "','" + firstName.replaceAll("'", "''") + "','" + lastName.replaceAll("'", "''") + "','" + dob.replaceAll("'", "''") + "','" + address.replaceAll("'", "''") + "','" + city.replaceAll("'", "''") + "','" + state.replaceAll("'", "''") + "','" + zip.replaceAll("'", "''") + "','" + chargeAccount.replaceAll("'", "''") + "');");
+                            addedCntr++;
+                            addedCustomersLabel.setText("Customers Added: " + Integer.toString(addedCntr) + "\n");
+                           // System.out.println("ADDED: " + loadedCustomer.lastName+"," + loadedCustomer.firstName+": "+ loadedCustomer.cid);
+                        }
+                        
                     }//end while next line
+                    
                     con.close();
                 }
                 catch (FileNotFoundException e)
                 {
                     System.out.println("The file could not be found or opened");
+                    failedCntr++;
+                    failuresLabel.setText("Failures: (Notify Drew if Any): " + Integer.toString(failedCntr) + "\n");
+                    System.out.println(e);
                 }
                 catch (IOException e)
                 {
                     System.out.println("Error reading the file");
+                    failedCntr++;
+                    failuresLabel.setText("Failures: (Notify Drew if Any): " + Integer.toString(failedCntr) + "\n");
+                    System.out.println(e);
                 }
                 // Value transmitted to done()
                 return true;
@@ -1500,7 +1521,10 @@ public class Database {
 
             @Override
             protected void done() {
-                System.out.println("DONE!");
+               // System.out.println("Lines Updated: " + updatedCntr);
+                   // System.out.println("Lines Added: " + addedCntr);
+                   // System.out.println("Lines Unchanged: " + unchangedCntr);
+              //  System.out.println("DONE!" + linesProcessed);
                 acknowledgeButton.setVisible(true);
             }
         };
@@ -1510,7 +1534,7 @@ public class Database {
 
     }
 
-     public static ArrayList<Customer> getCustomers(String accntName, String lastName, String firstName, String dob) {
+    public static ArrayList<Customer> getCustomers(String accntName, String lastName, String firstName, String dob) {
         boolean oneBefore = false;
         ArrayList<Customer> customers = new ArrayList<>();
         String statement = "select * from customers where ";
@@ -1586,7 +1610,7 @@ public class Database {
         }
         return customers;
     }
-     
+
     public static String[] getARList(String accntName, String lastName, String firstName, String dob) {
         boolean oneBefore = false;
         String[] accounts = new String[270];
@@ -1686,7 +1710,7 @@ public class Database {
         }
     }
 
-        public static void removeCustomer(String cid) {
+    public static void removeCustomer(String cid) {
         try
         {
             Class.forName(driverPath);
@@ -1701,7 +1725,7 @@ public class Database {
             System.out.println(e);
         }
     }
-        
+
     public static void removeChargeAccount(String accountName) {
         try
         {
