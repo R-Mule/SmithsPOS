@@ -556,7 +556,7 @@ public class TopMenuBar extends JMenuBar {
             if (option == JOptionPane.OK_OPTION)
             {
                 String qs1UUID = field1.getText().toUpperCase();
-                if (!Database.doesQS1UUIDExisit(qs1UUID))
+                if (!Database.doesQS1patientCodeExisit(qs1UUID))
                 {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Invalid QS/1 Patient Code");
@@ -830,7 +830,7 @@ public class TopMenuBar extends JMenuBar {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Error: Charge Account Name already exisits!");
             }
-            else if (Database.doesQS1UUIDExisit(field5.getText().toUpperCase()))
+            else if (Database.doesQS1chargeAccountExisit(field5.getText().toUpperCase()))
             {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Error: QS1 UUID already exisits!");
@@ -1115,7 +1115,7 @@ public class TopMenuBar extends JMenuBar {
                 }//end else
             }//end if
         }
-        else if (option1 == JOptionPane.NO_OPTION)//Remove by Phone Number
+        else if (option1 == JOptionPane.NO_OPTION)//View by Phone Number
         {
             JFrame textInputFrame = new JFrame("");
             JTextField field2 = new JTextField();
@@ -1141,7 +1141,7 @@ public class TopMenuBar extends JMenuBar {
                         accountNames += accountName + " " + customer.lastName + ", " + customer.firstName + " " + customer.dob + "\n";
                     }
                     JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Phone Number: " + field2.getText() + accountNames);
+                    JOptionPane.showMessageDialog(message1, "Phone Number:\n" + field2.getText() +"\n\n"+ accountNames);
                 }//end else
             }//end if
         }
@@ -1168,7 +1168,7 @@ public class TopMenuBar extends JMenuBar {
         else
         {
             id = id.toUpperCase();
-            if (Database.doesQS1UUIDExisit(id))
+            if (Database.doesQS1patientCodeExisit(id))
             {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Customer already exisits.");
@@ -1270,7 +1270,7 @@ public class TopMenuBar extends JMenuBar {
         else
         {
             id = id.toUpperCase();
-            if (!Database.doesQS1UUIDExisit(id))
+            if (!Database.doesQS1patientCodeExisit(id))
             {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Customer does not exisit.");

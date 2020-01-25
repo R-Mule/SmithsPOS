@@ -2152,14 +2152,14 @@ public class Database {
         return false;
     }
 
-    public static boolean doesQS1UUIDExisit(String uuid) {
+    public static boolean doesQS1patientCodeExisit(String uuid) {
         try
         {
             Class.forName(driverPath);
             Connection con = DriverManager.getConnection(
                     host, userName, password);
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from chargeaccounts where uuid = '" + uuid + "'");
+            ResultSet rs = stmt.executeQuery("select * from customers where uuid = '" + uuid + "'");
             while (rs.next())
             {
                 // System.out.println(rs.getString(2));
@@ -2176,6 +2176,30 @@ public class Database {
         return false;
     }
 
+        public static boolean doesQS1chargeAccountExisit(String uuid) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from customers where uuid = '" + uuid + "'");
+            while (rs.next())
+            {
+                // System.out.println(rs.getString(2));
+                return true;//there was atleast one item with this UPC
+
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return false;
+    }
+        
     public static void addChargeAccount(String accountName, String lastName, String firstName, String dob, String uuid) {
 
         try
