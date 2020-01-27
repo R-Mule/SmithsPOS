@@ -731,7 +731,7 @@ public class TopMenuBar extends JMenuBar {
             linked = "Successfully Subscribed:\n";
             for (Customer customer : successfullyAddedCustomersAtPhoneNumbers)
             {
-                linked += customer.chargeAccountName + " to " + successfullyAddedPhoneNumbers.get(index) + "\n";
+                linked += customer.cid + " to " + successfullyAddedPhoneNumbers.get(index) + "\n";
                 index++;
             }
         }
@@ -741,7 +741,7 @@ public class TopMenuBar extends JMenuBar {
             alreadyLinked = "Already Subscribed. Not Added:\n";
             for (Customer customer : alreadyAddedCustomersAtPhoneNumbers)
             {
-                alreadyLinked += customer.chargeAccountName + " to " + alreadyAddedPhoneNumbers.get(index) + "\n";
+                alreadyLinked += customer.cid + " to " + alreadyAddedPhoneNumbers.get(index) + "\n";
                 index++;
             }
             alreadyLinked += "\n";
