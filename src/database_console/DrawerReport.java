@@ -738,7 +738,7 @@ public class DrawerReport implements Serializable {
                     bw.write("Receipts for " + name + " Payments: \n");
                     for (String receipt : receiptNumbersPaidToDMEAccount.get(index))
                     {
-                        System.out.println(receipt);
+                        bw.write(receipt +"\n");
                     }
                     bw.write("******************************\n\n");
                     index++;
