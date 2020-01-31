@@ -1141,7 +1141,7 @@ public class TopMenuBar extends JMenuBar {
                         accountNames += accountName + " " + customer.lastName + ", " + customer.firstName + " " + customer.dob + "\n";
                     }
                     JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Phone Number:\n" + field2.getText() +"\n\n"+ accountNames);
+                    JOptionPane.showMessageDialog(message1, "Phone Number:\n" + field2.getText() + "\n\n" + accountNames);
                 }//end else
             }//end if
         }
@@ -1307,7 +1307,7 @@ public class TopMenuBar extends JMenuBar {
             "QS/1 Patient Code:", field1,
             "Last Name:", field2,
             "First Name:", field3,
-            "DOB: ex: 022411", field4
+            "DOB: ex: 02/01/2011", field4
         };
         Object[] message2 =
         {
@@ -1320,53 +1320,65 @@ public class TopMenuBar extends JMenuBar {
         field5.setText("");
         String selection = "";
         field1.addAncestorListener(new RequestFocusListener());
-        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION)
+        boolean tryAgain = true;
+        while (tryAgain)
         {
-            if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty())
+
+            tryAgain = false;
+            int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Account Information", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION)
             {
-                //do nothing, they clicked OK with everything blank
-            }
-            else
-            {
-                ArrayList<Customer> customers = Database.getCustomers(field1.getText(), field2.getText(), field3.getText(), field4.getText());
-                if (customers != null && !customers.isEmpty())
+                if (field1.getText().isEmpty() && field2.getText().isEmpty() && field3.getText().isEmpty() && field4.getText().isEmpty())
                 {
-                    String[] choices = new String[customers.size()];
-                    int index = 0;
-                    for (Customer customer : customers)
-                    {
-                        choices[index] = customer.cid + " " + customer.lastName + ", " + customer.firstName + " " + customer.dob;
-                        index++;
-                    }
-
-                    selection = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                            "Choose Customer", JOptionPane.QUESTION_MESSAGE, null,
-                            choices, // Array of choices
-                            choices[0]); // Initial choice
-
-                    Customer currentCustomer = null;
-                    for (Customer customer : customers)
-                    {
-                        if (selection.contentEquals(customer.cid + " " + customer.lastName + ", " + customer.firstName + " " + customer.dob))
-                        {
-                            currentCustomer = customer;
-                            break;
-                        }
-                    }
-                    if (currentCustomer != null)
-                    {
-                        JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "QS/1 Patient Code:\n" + currentCustomer.cid + "\n\nLast Name, First Name:\n" + currentCustomer.lastName + ", "
-                                + currentCustomer.firstName + "\n\nDOB:\n" + currentCustomer.dob + "\n\nAddress:\n" + currentCustomer.address + "\n\nCity, State Zip:\n"
-                                + currentCustomer.city + ", " + currentCustomer.state + " " + currentCustomer.zipCode + "\n\nCharge Account:\n" + currentCustomer.chargeAccountName,
-                                "Customer Information", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                    //do nothing, they clicked OK with everything blank
+                }
+                else if (!field4.getText().matches("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]"))
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Invalid DOB. DOB must be in format mm/dd/yyyy. Ex: 02/01/2011","Invalid Date of Birth", JOptionPane.INFORMATION_MESSAGE);
+                    tryAgain = true;
                 }
                 else
-                {//No such customer found
-                    JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "No such account.");
+                {
+                    ArrayList<Customer> customers = Database.getCustomers(field1.getText(), field2.getText(), field3.getText(), field4.getText());
+                    if (customers != null && !customers.isEmpty())
+                    {
+                        String[] choices = new String[customers.size()];
+                        int index = 0;
+                        for (Customer customer : customers)
+                        {
+                            choices[index] = customer.cid + " " + customer.lastName + ", " + customer.firstName + " " + customer.dob;
+                            index++;
+                        }
+
+                        selection = (String) JOptionPane.showInputDialog(null, "Choose now...",
+                                "Choose Customer", JOptionPane.QUESTION_MESSAGE, null,
+                                choices, // Array of choices
+                                choices[0]); // Initial choice
+
+                        Customer currentCustomer = null;
+                        for (Customer customer : customers)
+                        {
+                            if (selection.contentEquals(customer.cid + " " + customer.lastName + ", " + customer.firstName + " " + customer.dob))
+                            {
+                                currentCustomer = customer;
+                                break;
+                            }
+                        }
+                        if (currentCustomer != null)
+                        {
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "QS/1 Patient Code:\n" + currentCustomer.cid + "\n\nLast Name, First Name:\n" + currentCustomer.lastName + ", "
+                                    + currentCustomer.firstName + "\n\nDOB:\n" + currentCustomer.dob + "\n\nAddress:\n" + currentCustomer.address + "\n\nCity, State Zip:\n"
+                                    + currentCustomer.city + ", " + currentCustomer.state + " " + currentCustomer.zipCode + "\n\nCharge Account:\n" + currentCustomer.chargeAccountName,
+                                    "Customer Information", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                    else
+                    {//No such customer found
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "No such account.");
+                    }
                 }
             }
         }
