@@ -1332,7 +1332,7 @@ public class TopMenuBar extends JMenuBar {
                 {
                     //do nothing, they clicked OK with everything blank
                 }
-                else if (!field4.getText().matches("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]"))
+                else if (!field4.getText().trim().isEmpty() && !field4.getText().matches("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]"))
                 {
                     JFrame message1 = new JFrame("");
                     JOptionPane.showMessageDialog(message1, "Invalid DOB. DOB must be in format mm/dd/yyyy. Ex: 02/01/2011","Invalid Date of Birth", JOptionPane.INFORMATION_MESSAGE);
