@@ -337,9 +337,9 @@ public class GuiCartItem {
             public void actionPerformed(ActionEvent event) {
                 if (mainFrame.isLoadedTicketAnEmployees)
                 {
-                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
-                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Add Qty Button Pressed",LocalDateTime.now(),
-                    ConfigFileReader.getRegisterID()));
+                    Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                            mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Add Qty Button Pressed", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
                 }
                 addItemButtonPressed(event);
             }
@@ -349,9 +349,9 @@ public class GuiCartItem {
             public void actionPerformed(ActionEvent event) {
                 if (mainFrame.isLoadedTicketAnEmployees)
                 {
-                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
-                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Edit RX Button Pressed",LocalDateTime.now(),
-                    ConfigFileReader.getRegisterID()));
+                    Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                            mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Edit RX Button Pressed", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
                 }
                 editRXButtonPressed(event);
             }
@@ -361,9 +361,9 @@ public class GuiCartItem {
             public void actionPerformed(ActionEvent event) {
                 if (mainFrame.isLoadedTicketAnEmployees)
                 {
-                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
-                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Sub Qty Button Pressed",LocalDateTime.now(),
-                    ConfigFileReader.getRegisterID()));
+                    Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                            mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Sub Qty Button Pressed", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
                 }
                 removeItemButtonPressed(event);
             }
@@ -373,9 +373,9 @@ public class GuiCartItem {
             public void actionPerformed(ActionEvent event) {
                 if (mainFrame.isLoadedTicketAnEmployees)
                 {
-                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
-                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Add Taxable Button Pressed",LocalDateTime.now(),
-                    ConfigFileReader.getRegisterID()));
+                    Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                            mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Add Taxable Button Pressed", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
                 }
                 notTaxableButtonPressed(event);
             }
@@ -386,9 +386,9 @@ public class GuiCartItem {
             public void actionPerformed(ActionEvent event) {
                 if (mainFrame.isLoadedTicketAnEmployees)
                 {
-                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
-                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Remove Tax Button Pressed",LocalDateTime.now(),
-                    ConfigFileReader.getRegisterID()));
+                    Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                            mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Remove Tax Button Pressed", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
                 }
                 taxableButtonPressed(event);
             }
@@ -398,9 +398,9 @@ public class GuiCartItem {
             public void actionPerformed(ActionEvent event) {
                 if (mainFrame.isLoadedTicketAnEmployees)
                 {
-                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
-                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Make Precharged Button Pressed",LocalDateTime.now(),
-                    ConfigFileReader.getRegisterID()));
+                    Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                            mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Make Precharged Button Pressed", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
                 }
                 setPrechargedFalsePressed(event);
             }
@@ -410,9 +410,9 @@ public class GuiCartItem {
             public void actionPerformed(ActionEvent event) {
                 if (mainFrame.isLoadedTicketAnEmployees)
                 {
-                                        Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + ","+ mainFrame.currentCustomer.firstName,mainFrame.currentCustomer.cid,
-                    mainFrame.activeEmployee.name,mainFrame.activeEmployee.patientCode,item.mutID + ":" + item.itemName,"Make not Precharged Button Pressed",LocalDateTime.now(),
-                    ConfigFileReader.getRegisterID()));
+                    Database.insertTicketLog(new TicketLog(mainFrame.currentCustomer.lastName + "," + mainFrame.currentCustomer.firstName, mainFrame.currentCustomer.cid,
+                            mainFrame.activeEmployee.name, mainFrame.activeEmployee.patientCode, item.mutID + ":" + item.itemName, "Make not Precharged Button Pressed", LocalDateTime.now(),
+                            ConfigFileReader.getRegisterID()));
                 }
                 setPrechargedTruePressed(event);
             }

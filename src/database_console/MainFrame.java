@@ -1172,19 +1172,23 @@ public class MainFrame extends javax.swing.JFrame {
                                     tempItem.setMassDiscount();
                                 }
                                 updateCartScreen();
-                                Database.insertTicketLog(new TicketLog(currentCustomer.lastName + "," + currentCustomer.firstName, currentCustomer.cid,
-                                        activeEmployee.name, activeEmployee.patientCode, "Percentage: " + discPer, "Mass Discount Applied!!!", LocalDateTime.now(),
-                                        ConfigFileReader.getRegisterID()));
-
+                                if (isLoadedTicketAnEmployees)
+                                {
+                                    Database.insertTicketLog(new TicketLog(currentCustomer.lastName + "," + currentCustomer.firstName, currentCustomer.cid,
+                                            activeEmployee.name, activeEmployee.patientCode, "Percentage: " + discPer, "Mass Discount Applied!!!", LocalDateTime.now(),
+                                            ConfigFileReader.getRegisterID()));
+                                }
                             }//end else
                         }//end else
                     }//end if
                 }//end cartIsNotEmpty
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed
-        });//end massDiscountAction
+        }
+        );//end massDiscountAction
 
         massPrechargeButton.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(ActionEvent event) {
                 if (!curCart.isEmpty())
                 {
@@ -1218,9 +1222,12 @@ public class MainFrame extends javax.swing.JFrame {
                             }
                         }
                     }
-                    Database.insertTicketLog(new TicketLog(currentCustomer.lastName + "," + currentCustomer.firstName, currentCustomer.cid,
-                            activeEmployee.name, activeEmployee.patientCode, "NONE", "Mass Precharge Toggled", LocalDateTime.now(),
-                            ConfigFileReader.getRegisterID()));
+                    if (isLoadedTicketAnEmployees)
+                    {
+                        Database.insertTicketLog(new TicketLog(currentCustomer.lastName + "," + currentCustomer.firstName, currentCustomer.cid,
+                                activeEmployee.name, activeEmployee.patientCode, "NONE", "Mass Precharge Toggled", LocalDateTime.now(),
+                                ConfigFileReader.getRegisterID()));
+                    }
                     updateCartScreen();
                 }//end cartIsNotEmpty
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
