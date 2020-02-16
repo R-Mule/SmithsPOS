@@ -1996,17 +1996,30 @@ public class MainFrame extends javax.swing.JFrame {
                                                     amtReceived = round(amtReceived);
                                                     double change = amtReceived - curCart.getTotalPrice();
                                                     change = round(change);
-                                                    changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                                    String goodCheckout = checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), field3.getText(), field5.getText(), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
-                                                    if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                                    boolean isValid = true;
+                                                    if (change > 100)
+                                                    {
+                                                        int option2 = JOptionPane.showConfirmDialog(textInputFrame, "Excessive change due amount detected.\nAmount Due: $" + change + "\nContinue?", "Excessive Change Detected", JOptionPane.OK_CANCEL_OPTION);
+                                                        if (option2 != JOptionPane.OK_OPTION)
+                                                        {
+                                                            isValid = false;
+                                                        }
+                                                    }
+
+                                                    if (isValid)
                                                     {
                                                         changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                                        displayChangeDue = true;
-                                                    }
-                                                    else
-                                                    {
-                                                        JFrame message1 = new JFrame("");
-                                                        JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
+                                                        String goodCheckout = checkout.beginSplitTenderCheckout(curCart, Double.parseDouble(field1.getText()), Double.parseDouble(field7.getText()), Double.parseDouble(field6.getText()), Double.parseDouble(field2.getText()), Double.parseDouble(field4.getText()), field3.getText(), field5.getText(), (String) employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
+                                                        if (goodCheckout.contentEquals("SMITHSAPPROVEDCODE"))
+                                                        {
+                                                            changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                                            displayChangeDue = true;
+                                                        }
+                                                        else
+                                                        {
+                                                            JFrame message1 = new JFrame("");
+                                                            JOptionPane.showMessageDialog(message1, "Card Error:\n" + goodCheckout);
+                                                        }
                                                     }
                                                     updateCartScreen();
                                                 }//end else
@@ -2115,11 +2128,23 @@ public class MainFrame extends javax.swing.JFrame {
 
                                                 double change = amtReceived - curCart.getTotalPrice();
                                                 change = round(change);
-                                                changeDue.setText("Change Due: $" + String.format("%.2f", change));
-                                                displayChangeDue = true;
-                                                checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
-                                                updateCartScreen();
+                                                boolean isValid = true;
+                                                if (change > 100)
+                                                {
+                                                    int option2 = JOptionPane.showConfirmDialog(textInputFrame, "Excessive change due amount detected.\nAmount Due: $" + change + "\nContinue?", "Excessive Change Detected", JOptionPane.OK_CANCEL_OPTION);
+                                                    if (option2 != JOptionPane.OK_OPTION)
+                                                    {
+                                                        isValid = false;
+                                                    }
+                                                }
 
+                                                if (isValid)
+                                                {
+                                                    changeDue.setText("Change Due: $" + String.format("%.2f", change));
+                                                    displayChangeDue = true;
+                                                    checkout.beginCashCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), guiItems, myself, (String) empList2.getSelectedItem());
+                                                }
+                                                updateCartScreen();
                                             }//end else
                                         }//end else
                                     }//end if
@@ -2287,8 +2312,21 @@ public class MainFrame extends javax.swing.JFrame {
                                                 }
                                                 else
                                                 {
-                                                    displayChangeDue = true;
-                                                    checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), field2.getText(), myself, guiItems, (String) empList2.getSelectedItem());
+                                                    boolean isValid = true;
+                                                    if (change > 100)
+                                                    {
+                                                        int option2 = JOptionPane.showConfirmDialog(textInputFrame, "Excessive change due amount detected.\nAmount Due: $" + change + "\nContinue?", "Excessive Change Detected", JOptionPane.OK_CANCEL_OPTION);
+                                                        if (option2 != JOptionPane.OK_OPTION)
+                                                        {
+                                                            isValid = false;
+                                                        }
+                                                    }
+
+                                                    if (isValid)
+                                                    {
+                                                        displayChangeDue = true;
+                                                        checkout.beginCheckCheckout(curCart, amtReceived, employeeSelectionHeader.getText().substring(14), field2.getText(), myself, guiItems, (String) empList2.getSelectedItem());
+                                                    }
                                                 }
                                                 updateCartScreen();
                                             }//end else
@@ -3967,24 +4005,9 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.0";
+    String currentVersion = "1.3.1";
     String updateString = ""
-            + "* Fixed issue where entering nonexistant account to charge to threw null pointer exception."
-            + "\n* Fixed issue where deleted charge accounts showed in list to charge to or make payments to."
-            + "\n* Fixed issue where ticket name could be empty string."
-            + "\n* Fixed issue where ticket save cancel click resulted in null pointer exception."
-            + "\n* Fixed issue where Change Due was not showing before Rx Signature Required popup on Check Checkout."
-            + "\n+ Added new upload trackers for Mutual Upload and AR Account Upload."
-            + "\n+ Added new Customer Upload Report with upload tracker."
-            + "\n+ Added linked employee tickets. Employees cannot save or open their own tickets."
-            + "\n+ Added new receipt tracking for DME and RX Charges to Daily Drawer AR Reports."
-            + "\n+ Added new SMS Subscriber System for patients to be alerted of Refills Ready."
-            + "\n+ Added new SMS Subscriber Request Refill text system. Linked to Pharmacy Printer."
-            + "\n+ Added text options for Hours and Contact Information for non-SMS Subscribers."
-            + "\n+ Added View Menu to Top Bar to show SMS Subscribers by Account or Phone Number."
-            + "\n+ Added Add Customer to Ticket Save Event and to Top Bar Add Menu."
-            + "\n+ Added Remove Customer to Top Bar Menu."
-            + "\n+ Added color to dialog windows.";
+            + "+Added Excessive Change Due detection on Cash, Check, and Split Tender Buttons.";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
