@@ -830,11 +830,6 @@ public class TopMenuBar extends JMenuBar {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Error: Charge Account Name already exisits!");
             }
-            else if (Database.doesQS1chargeAccountExisit(field5.getText().toUpperCase()))
-            {
-                JFrame message1 = new JFrame("");
-                JOptionPane.showMessageDialog(message1, "Error: QS1 UUID already exisits!");
-            }
             else if (field5.getText().isEmpty())
             {
                 JFrame message1 = new JFrame("");
