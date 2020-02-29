@@ -101,7 +101,7 @@ public class MainFrame extends javax.swing.JFrame {
                     isMarchMadness = true;
                     isEaster = true;
                 }
-                else if (day < 21)
+                else if (day < 13)
                 {
                     isEaster = true;
                 }
@@ -141,10 +141,6 @@ public class MainFrame extends javax.swing.JFrame {
                 if (day < 15)
                 {
                     isValentinesDay = true;
-                }
-                if (day == 14)
-                {
-                    isReallyValentinesDay = true;
                 }
             }
             else if (month.contentEquals("06"))
@@ -4041,7 +4037,6 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isThanksgiving = false;
     boolean isChristmas = false;
     boolean isValentinesDay = false;
-    boolean isReallyValentinesDay = false;//used for Hollie <3
     boolean isHolliesBirthday = false;
     boolean isSaintPatricksDay = false;
     boolean isSummerTime = false;
