@@ -4001,9 +4001,9 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.1";
+    String currentVersion = "1.3.2";
     String updateString = ""
-            + "+Added Excessive Change Due detection on Cash, Check, and Split Tender Buttons.";
+            + "+Added data validation to Add Inventory Item Menu.";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");

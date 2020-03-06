@@ -1019,6 +1019,11 @@ public class TopMenuBar extends JMenuBar {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Must enter YES or NO for Is Taxed");
             }
+            else if(field1.getText().isEmpty() || field2.getText().isEmpty() || field3.getText().isEmpty())
+            {
+                JFrame message1 = new JFrame("");
+                JOptionPane.showMessageDialog(message1, "Error: UPC, name, and ID cannot be blank.");
+            }
             else if (Database.doesItemExistByUPC(field3.getText()))
             {
                 JFrame message1 = new JFrame("");
