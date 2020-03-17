@@ -47,7 +47,7 @@ public class TopMenuBar extends JMenuBar {
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
             masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
-            editEmployee, arAuditReport, customerDataUpload, ticketReport, addSmsSub, remSmsSub, viewSmsSub, viewCustomer, addCustomer, remCustomer,
+            editEmployee, arAuditReport, masterRefundAuditReport, customerDataUpload, ticketReport, addSmsSub, remSmsSub, viewSmsSub, viewCustomer, addCustomer, remCustomer,
             christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
     int totalCntr = 0;
@@ -175,6 +175,10 @@ public class TopMenuBar extends JMenuBar {
         ticketReport = new JMenuItem();
         ticketReport.setText("Ticket Report");
         mgmtMenu.add(ticketReport);
+
+        masterRefundAuditReport = new JMenuItem();
+        masterRefundAuditReport.setText("Master Refund Report");
+        mgmtMenu.add(masterRefundAuditReport);
 
         updatePrice = new JMenuItem();
         updatePrice.setText("Update Price");
@@ -404,6 +408,13 @@ public class TopMenuBar extends JMenuBar {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ticketReportActionPerformed(evt);
+            }
+        });
+
+        masterRefundAuditReport.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                masterRefundAuditReportsActionPerformed(evt);
             }
         });
 
@@ -1019,7 +1030,7 @@ public class TopMenuBar extends JMenuBar {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Must enter YES or NO for Is Taxed");
             }
-            else if(field1.getText().isEmpty() || field2.getText().isEmpty() || field3.getText().isEmpty())
+            else if (field1.getText().isEmpty() || field2.getText().isEmpty() || field3.getText().isEmpty())
             {
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Error: UPC, name, and ID cannot be blank.");
@@ -1335,7 +1346,7 @@ public class TopMenuBar extends JMenuBar {
                 else if (!field4.getText().trim().isEmpty() && !field4.getText().matches("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]"))
                 {
                     JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Invalid DOB. DOB must be in format mm/dd/yyyy. Ex: 02/01/2011","Invalid Date of Birth", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(message1, "Invalid DOB. DOB must be in format mm/dd/yyyy. Ex: 02/01/2011", "Invalid Date of Birth", JOptionPane.INFORMATION_MESSAGE);
                     tryAgain = true;
                 }
                 else
@@ -1798,9 +1809,9 @@ public class TopMenuBar extends JMenuBar {
             try
             {
                 //All reports now loaded. Time to do the work and generate the file.
-                rxFW = new FileWriter("C:\\pos\\REPORTS\\RX_AR_AUIDT-" + startDate.format(dateFormat) + "_" + endDate.format(dateFormat) + ".txt");//Hollie's Accounts (RX)
+                rxFW = new FileWriter("C:\\pos\\REPORTS\\RX_AR_AUDIT-" + startDate.format(dateFormat) + "_" + endDate.format(dateFormat) + ".txt");//Hollie's Accounts (RX)
                 rxBW = new BufferedWriter(rxFW);
-                dmeFW = new FileWriter("C:\\pos\\REPORTS\\DME_AR_AUIDT-" + startDate.format(dateFormat) + "_" + endDate.format(dateFormat) + ".txt");
+                dmeFW = new FileWriter("C:\\pos\\REPORTS\\DME_AR_AUDIT-" + startDate.format(dateFormat) + "_" + endDate.format(dateFormat) + ".txt");
                 dmeBW = new BufferedWriter(dmeFW);
             }
             catch (IOException ex)
@@ -2039,6 +2050,125 @@ public class TopMenuBar extends JMenuBar {
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
 
     }//end arReportsActionPerformed
+
+    private void masterRefundAuditReportsActionPerformed(java.awt.event.ActionEvent evt) {
+        DateRangeSelector drs = new DateRangeSelector();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMddyy");
+
+        if (drs.validDates())
+        {
+            LocalDateTime startDate = drs.getStartDate();
+            LocalDateTime endDate = drs.getEndDate();
+            FileWriter rxFW = null;
+            BufferedWriter rxBW = null;
+            FileWriter dmeFW = null;
+            BufferedWriter dmeBW = null;
+            try
+            {
+                //All reports now loaded. Time to do the work and generate the file.
+                rxFW = new FileWriter("C:\\pos\\REPORTS\\MASS_REFUND_AUDIT-" + startDate.format(dateFormat) + "_" + endDate.format(dateFormat) + ".txt");//Hollie's Accounts (RX)
+                rxBW = new BufferedWriter(rxFW);
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            while (startDate.isBefore(endDate) || startDate.isEqual(endDate))
+            {
+                String currentDate = startDate.format(dateFormat);
+                try
+                {
+                    File rxFile, dmeFile;
+                    String path = "";
+
+                    path = ConfigFileReader.getRxReportPath();
+                    rxFile = new File(path + currentDate + "R.posrf");
+                    
+                    path = ConfigFileReader.getDmeReportPath();
+                    dmeFile = new File(path + currentDate + "D.posrf");
+
+                    DrawerReport rxReport = null;
+                    if (rxFile.exists() && !rxFile.isDirectory())
+                    {
+                        // read object from file path + currentDate + "R.posrf"
+                        FileInputStream fis = new FileInputStream(rxFile);
+                        ObjectInputStream ois = new ObjectInputStream(fis);
+                        rxReport = (DrawerReport) ois.readObject();
+                        ois.close();
+                    }
+                    DrawerReport dmeReport = null;
+                    if (dmeFile.exists() && !dmeFile.isDirectory())
+                    {
+                        // read object from file
+                        FileInputStream fis = new FileInputStream(dmeFile);
+                        ObjectInputStream ois = new ObjectInputStream(fis);
+                        dmeReport = (DrawerReport) ois.readObject();
+                        ois.close();
+                    }
+                    boolean found = false;
+                    rxBW.write("************************************\nMaster Refunds for: " + currentDate + "\n");
+                    if (rxReport != null && rxReport.masterRefundDescriptionAndAmt != null)
+                    {
+                        for(String s : rxReport.masterRefundDescriptionAndAmt)
+                        {
+                            rxBW.write(s + "\n");
+                            found = true;
+                        }
+                    }
+
+                    if (dmeReport != null && dmeReport.masterRefundDescriptionAndAmt != null)
+                    {
+                        for(String s : dmeReport.masterRefundDescriptionAndAmt)
+                        {
+                            rxBW.write(s + "\n");
+                            found = true;
+                        }
+                    }
+                    if(!found)
+                        rxBW.write("No Master Refunds for this day. ;)\n");
+                    
+                    rxBW.write("************************************\n\n");
+                }
+                catch (FileNotFoundException e)
+                {
+                    System.out.println("JERE");
+                    e.printStackTrace();
+                }
+                catch (IOException e)
+                {
+                    System.out.println("EERE");
+                    e.printStackTrace();
+                }
+                catch (ClassNotFoundException e)
+                {
+                    e.printStackTrace();
+                    System.out.println("JERsE");
+                }
+
+                startDate = startDate.plusDays(1);
+            }//end while loading reports
+
+            try
+            {
+                if (rxBW != null)
+                {
+                    rxBW.close();
+                }
+
+                if (rxFW != null)
+                {
+                    rxFW.close();
+                }
+            }
+            catch (IOException ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+
+    }//end massRefundReportsActionPerformed
 
     private void drawerReportsActionPerformed(java.awt.event.ActionEvent evt) {
 
@@ -2795,6 +2925,7 @@ public class TopMenuBar extends JMenuBar {
                 remMenu.setVisible(true);
                 mgmtMenu.setVisible(true);
                 addEmployee.setVisible(true);//Only Hollie and I may add or remove employees.
+                masterRefundAuditReport.setVisible(true);
                 remEmployee.setVisible(true);
                 drawerReports.setVisible(true);
                 masterRptRecpt.setVisible(true);
@@ -2824,6 +2955,7 @@ public class TopMenuBar extends JMenuBar {
                 remMenu.setVisible(true);
                 mgmtMenu.setVisible(true);
                 drawerReports.setVisible(false);
+                masterRefundAuditReport.setVisible(false);
                 arAuditReport.setVisible(false);
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(false);
@@ -2852,6 +2984,7 @@ public class TopMenuBar extends JMenuBar {
                 mgmtMenu.setVisible(true);
                 rxDataUpload.setVisible(false);
                 customerDataUpload.setVisible(false);
+                masterRefundAuditReport.setVisible(false);
                 dmeDataUpload.setVisible(false);
                 drawerReports.setVisible(false);
                 arAuditReport.setVisible(false);

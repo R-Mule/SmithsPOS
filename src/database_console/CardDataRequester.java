@@ -86,14 +86,16 @@ public class CardDataRequester {
     public void readXML(String xml) {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = null;
+        Document doc = null;
         try
         {
             db = dbf.newDocumentBuilder();
             InputSource is = new InputSource();
-            is.setCharacterStream(new StringReader(xml));
+            StringReader sr = new StringReader(xml);
+            is.setCharacterStream(sr);
             try
             {
-                Document doc = db.parse(is);
+                doc = db.parse(is);
                 //String message = doc.getDocumentElement().getTextContent();
                 merchantID = "8788290392911";
                 responseCode = doc.getElementsByTagName("AUTH_RESP").item(0).getTextContent();
@@ -171,23 +173,25 @@ public class CardDataRequester {
             {
                 responseText = "CARD Error code: 5. Please report error to manager, then try again.";
                 transTerminate = true;
+                ErrorLogger.writeErrorMsg(e, "Response:+\n\n" + xml +"\n\nDBF:\n\n" + dbf + "\n\nDB:\n\n" + db +"\n\nIS:\n\n" + is + "\n\n" + responseText);
                 // handle SAXException
             }
             // handle IOException
 
         }
-        catch (ParserConfigurationException e1)
+        catch (ParserConfigurationException e)
         {
             responseText = "CARD Error code: 6. Please report error to manager, then try again.";
             transTerminate = true;
+            ErrorLogger.writeErrorMsg(e, "Response:+\n\n" + xml +"\n\nDBF:\n\n" + dbf + "\n\nDB:\n\n" + db + "\n\n" + responseText);
             // handle ParserConfigurationException
         }
-        catch (NullPointerException ex)
+        catch (NullPointerException e)
         {
-
             transTerminate = true;
             responseText = "FAILED TO FIND AUTH RETRY Error code: 7";
             System.out.println("TRANS DECLINED3??");
+            ErrorLogger.writeErrorMsg(e, "Response:+\n\n" + xml +"\n\nDBF:\n\n" + dbf + "\n\nDB:\n\n" + db + "\n\n" +  responseText);
         }
     }
 

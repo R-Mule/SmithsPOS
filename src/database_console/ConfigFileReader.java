@@ -24,6 +24,7 @@ public class ConfigFileReader {
     private static String mailPassword;
     private static String rxReportPath;
     private static String dmeReportPath;
+    private static String errorLogPath;
 
     private ConfigFileReader() //do not instantiate
     {
@@ -100,6 +101,10 @@ public class ConfigFileReader {
                 {
                     dmeReportPath = tokens[1].trim();
                 }
+                else if (tokens[0].contentEquals("Error Log Path"))
+                {
+                    errorLogPath = tokens[1].trim();
+                }
             }//end while
 
         }
@@ -114,6 +119,10 @@ public class ConfigFileReader {
             //System.out.println("Error reading the file");
         }
 
+    }
+
+    public static String getErrorLogPath() {
+        return errorLogPath;
     }
 
     public static String getPharmacyName() {
