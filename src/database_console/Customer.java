@@ -1,5 +1,6 @@
 package database_console;
 
+import java.time.LocalDateTime;
 /**
 
  @author R-Mule
@@ -15,6 +16,8 @@ public class Customer {
     protected String address;
     protected String city;
     protected String state;
+    protected Boolean dobValid;
+    protected LocalDateTime dobDate;
 
     public Customer(String firstName, String lastName, String dob, String cid, String chargeAccountName, String zipCode, String address, String city, String state) {
         this.firstName = firstName;
@@ -26,8 +29,25 @@ public class Customer {
         this.address = address;
         this.city = city;
         this.state = state;
+        validateDOB();
     }
 
+    private void validateDOB()
+    {
+        if(dob.matches("^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\\d\\d$"))
+        {
+            int month = Integer.parseInt(dob.substring(0,2));
+            int day = Integer.parseInt(dob.substring(3,5));
+            int year = Integer.parseInt(dob.substring(6,10));
+            dobDate = LocalDateTime.of(year, month, day, 1,1);
+            dobValid = true;
+        }
+        else
+        {
+            dobValid = false;
+        }
+    }
+    
     public boolean doesCustomerMatchIdentically(Customer customer) {
         if (!this.firstName.contentEquals(customer.firstName))
         {

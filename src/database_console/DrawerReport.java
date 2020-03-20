@@ -37,7 +37,7 @@ public class DrawerReport implements Serializable {
     //Total Refunded Today
     private double totalRefundedCash = 0;//UPDATED
     private double totalRefundedCredit = 0;//UPDATED
-    public ArrayList<String> masterRefundDescriptionAndAmt = new ArrayList<>();
+    private ArrayList<String> masterRefundDescriptionAndAmt = new ArrayList<>();
 
     //lunch counter
     private ArrayList<String> lunchErrorLog = new ArrayList<>();

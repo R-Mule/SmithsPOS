@@ -25,6 +25,7 @@ public class ConfigFileReader {
     private static String rxReportPath;
     private static String dmeReportPath;
     private static String errorLogPath;
+    private static Boolean ageNotificatonEnabled;
 
     private ConfigFileReader() //do not instantiate
     {
@@ -105,6 +106,10 @@ public class ConfigFileReader {
                 {
                     errorLogPath = tokens[1].trim();
                 }
+                else if (tokens[0].contentEquals("Age Notification Enabled"))
+                {
+                    ageNotificatonEnabled = tokens[1].trim().toUpperCase().contains("TRUE");
+                }
             }//end while
 
         }
@@ -175,5 +180,8 @@ public class ConfigFileReader {
 
     public static String getMailPassword() {
         return mailPassword;
+    }
+        public static Boolean isAgeNotificationEnabled() {
+        return ageNotificatonEnabled;
     }
 }

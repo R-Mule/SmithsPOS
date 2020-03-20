@@ -3694,7 +3694,13 @@ public class MainFrame extends javax.swing.JFrame {
                             }
                         }
                     }
-
+                    currentCustomer = Database.getCustomerByCID(id);
+                    if(ConfigFileReader.isAgeNotificationEnabled() && curCart.getTotalNumRX() > 0 && currentCustomer != null && currentCustomer.dobValid && currentCustomer.dobDate.isBefore(LocalDateTime.now().minusYears(70)))
+                    {
+                        JFrame message1 = new JFrame();
+                        JOptionPane.showMessageDialog(message1, "This patient is over 70 years of age. Have they been notified of our free delivery as a result of COVID-19?","Good customer service costs less than bad customer service",JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    
                     curCart.storeCart(id, false);
                     if (isLoadedTicketAnEmployees)
                     {

@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -1040,14 +1041,14 @@ public class CheckoutHandler {
         }
     }
 
-    public void beginMasterRefund(double amount, String description) {
+    public void beginMasterRefund(String employeeName, double amount, String description) {
         DrawerReport dr = null;
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MMddyy");
         String todaysDate = dateFormat.format(date);
         try
         {
-
+            Database.storeMasterRefundLog(employeeName, description, amount, LocalDateTime.now());
             File f = new File(ConfigFileReader.getRegisterReportPath() + todaysDate + ConfigFileReader.getRegisterID() + ".posrf");
             if (f.exists() && !f.isDirectory())
             {

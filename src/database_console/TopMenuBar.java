@@ -1745,7 +1745,7 @@ public class TopMenuBar extends JMenuBar {
             if (mf.validateDouble(field1.getText()) && field2.getText() != null && !field2.getText().isEmpty())
             {
 
-                mf.checkout.beginMasterRefund(Double.parseDouble(field1.getText()), field2.getText());
+                mf.checkout.beginMasterRefund(mf.activeEmployee.name, Double.parseDouble(field1.getText()), field2.getText());
                 JFrame message1 = new JFrame("");
                 JOptionPane.showMessageDialog(message1, "Success! Please give them: $" + field1.getText());
             }
@@ -2059,6 +2059,8 @@ public class TopMenuBar extends JMenuBar {
         {
             LocalDateTime startDate = drs.getStartDate();
             LocalDateTime endDate = drs.getEndDate();
+            endDate = endDate.plusHours(23);
+            endDate = endDate.plusMinutes(59);
             FileWriter rxFW = null;
             BufferedWriter rxBW = null;
             FileWriter dmeFW = null;
@@ -2073,81 +2075,23 @@ public class TopMenuBar extends JMenuBar {
             {
                 Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            while (startDate.isBefore(endDate) || startDate.isEqual(endDate))
+            ArrayList<String> reportData = Database.getMasterRefundListByDateRange(startDate, endDate);
+            try
             {
-                String currentDate = startDate.format(dateFormat);
-                try
+                if (reportData.isEmpty())
                 {
-                    File rxFile, dmeFile;
-                    String path = "";
-
-                    path = ConfigFileReader.getRxReportPath();
-                    rxFile = new File(path + currentDate + "R.posrf");
-                    
-                    path = ConfigFileReader.getDmeReportPath();
-                    dmeFile = new File(path + currentDate + "D.posrf");
-
-                    DrawerReport rxReport = null;
-                    if (rxFile.exists() && !rxFile.isDirectory())
-                    {
-                        // read object from file path + currentDate + "R.posrf"
-                        FileInputStream fis = new FileInputStream(rxFile);
-                        ObjectInputStream ois = new ObjectInputStream(fis);
-                        rxReport = (DrawerReport) ois.readObject();
-                        ois.close();
-                    }
-                    DrawerReport dmeReport = null;
-                    if (dmeFile.exists() && !dmeFile.isDirectory())
-                    {
-                        // read object from file
-                        FileInputStream fis = new FileInputStream(dmeFile);
-                        ObjectInputStream ois = new ObjectInputStream(fis);
-                        dmeReport = (DrawerReport) ois.readObject();
-                        ois.close();
-                    }
-                    boolean found = false;
-                    rxBW.write("************************************\nMaster Refunds for: " + currentDate + "\n");
-                    if (rxReport != null && rxReport.masterRefundDescriptionAndAmt != null)
-                    {
-                        for(String s : rxReport.masterRefundDescriptionAndAmt)
-                        {
-                            rxBW.write(s + "\n");
-                            found = true;
-                        }
-                    }
-
-                    if (dmeReport != null && dmeReport.masterRefundDescriptionAndAmt != null)
-                    {
-                        for(String s : dmeReport.masterRefundDescriptionAndAmt)
-                        {
-                            rxBW.write(s + "\n");
-                            found = true;
-                        }
-                    }
-                    if(!found)
-                        rxBW.write("No Master Refunds for this day. ;)\n");
-                    
-                    rxBW.write("************************************\n\n");
+                    rxBW.write("NO DATA FOUND.");
                 }
-                catch (FileNotFoundException e)
+                for (String data : reportData)
                 {
-                    System.out.println("JERE");
-                    e.printStackTrace();
+                    rxBW.write(data + "\n");
                 }
-                catch (IOException e)
-                {
-                    System.out.println("EERE");
-                    e.printStackTrace();
-                }
-                catch (ClassNotFoundException e)
-                {
-                    e.printStackTrace();
-                    System.out.println("JERsE");
-                }
-
-                startDate = startDate.plusDays(1);
-            }//end while loading reports
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+           
 
             try
             {

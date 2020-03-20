@@ -53,6 +53,46 @@ public class Database {
         password = ConfigFileReader.getPassword();
     }
 
+    public static void storeMasterRefundLog(String employeeName, String description, Double amount, LocalDateTime timestamp) {
+        try
+        {
+            DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("INSERT INTO masterRefundLog (pid,employeeName,description,amount,date) VALUES (NULL,'" + employeeName + "', '" + description + "'," + amount + ",'" + sdf.format(timestamp) + "')");
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }//end catch
+    }
+
+    public static ArrayList<String> getMasterRefundListByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        ArrayList<String> refundData = new ArrayList<>();
+        try
+        {
+            DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from masterRefundLog where date >= '" + sdf.format(startDate) + "' and date <= '" + sdf.format(endDate) + "' order by date;");
+            while (rs.next())
+            {
+                refundData.add("Date: " + rs.getTimestamp(5) + "  Employee:  " + rs.getString(2) + "  Description:  " + rs.getString(3) + "  Amount:  " + rs.getString(4));
+            }//end while
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return refundData;
+    }
+
     public static void createSmsSubscriber(String accountName, String phoneNumber) {
         try
         {
@@ -1416,13 +1456,13 @@ public class Database {
             @Override
             protected Boolean doInBackground() throws Exception {
                 // Background work
-             HashMap<String, Customer> customerMap = new HashMap<>();
+                HashMap<String, Customer> customerMap = new HashMap<>();
                 try
                 {
                     Connection con = DriverManager.getConnection(
                             host, userName, password);
                     Statement stmt = con.createStatement();
-                    
+
                     try
                     {
 
@@ -1434,14 +1474,14 @@ public class Database {
                             customerMap.put(rs.getString(2), new Customer(rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(2), rs.getString(10), rs.getString(9), rs.getString(6), rs.getString(7), rs.getString(8)));
 
                         }//end while
-                        
+
                     }
                     catch (Exception e)
                     {
 
                     }
-                    
-                    System.out.println("Map SIZE: "+customerMap.size());
+
+                    System.out.println("Map SIZE: " + customerMap.size());
                     BufferedReader in = new BufferedReader(new FileReader(path));
                     String line;
                     while ((line = in.readLine()) != null)
@@ -1462,8 +1502,7 @@ public class Database {
                         String zip = tokens[6].replaceAll("\"", "");
                         String chargeAccount = tokens[7].replaceAll("\"", "");
                         String city = tokens[8].replaceAll("\"", "");
-                        
-                        
+
                         boolean itemFound = false;
                         Customer loadedCustomer = new Customer(firstName, lastName, dob, uuid, chargeAccount, zip, address, city, state);
 
@@ -1487,11 +1526,11 @@ public class Database {
                             stmt.executeUpdate("INSERT INTO `customers` (pid, uuid, firstname, lastname, dob, address, city, state, zip, chargeaccount) VALUES (NULL, '" + uuid.replaceAll("'", "''") + "','" + firstName.replaceAll("'", "''") + "','" + lastName.replaceAll("'", "''") + "','" + dob.replaceAll("'", "''") + "','" + address.replaceAll("'", "''") + "','" + city.replaceAll("'", "''") + "','" + state.replaceAll("'", "''") + "','" + zip.replaceAll("'", "''") + "','" + chargeAccount.replaceAll("'", "''") + "');");
                             addedCntr++;
                             addedCustomersLabel.setText("Customers Added: " + Integer.toString(addedCntr) + "\n");
-                           // System.out.println("ADDED: " + loadedCustomer.lastName+"," + loadedCustomer.firstName+": "+ loadedCustomer.cid);
+                            // System.out.println("ADDED: " + loadedCustomer.lastName+"," + loadedCustomer.firstName+": "+ loadedCustomer.cid);
                         }
-                        
+
                     }//end while next line
-                    
+
                     con.close();
                 }
                 catch (FileNotFoundException e)
@@ -1521,10 +1560,10 @@ public class Database {
 
             @Override
             protected void done() {
-               // System.out.println("Lines Updated: " + updatedCntr);
-                   // System.out.println("Lines Added: " + addedCntr);
-                   // System.out.println("Lines Unchanged: " + unchangedCntr);
-              //  System.out.println("DONE!" + linesProcessed);
+                // System.out.println("Lines Updated: " + updatedCntr);
+                // System.out.println("Lines Added: " + addedCntr);
+                // System.out.println("Lines Unchanged: " + unchangedCntr);
+                //  System.out.println("DONE!" + linesProcessed);
                 acknowledgeButton.setVisible(true);
             }
         };
@@ -2176,8 +2215,6 @@ public class Database {
         return false;
     }
 
-
-        
     public static void addChargeAccount(String accountName, String lastName, String firstName, String dob, String uuid) {
 
         try
