@@ -27,7 +27,8 @@ public class Item {
     protected boolean hasTaxBeenRefunded = false;
     protected double employeePrice = itemPrice;
     protected boolean isSetToSplitSave = false;
-
+    protected boolean isDiscountable = true;
+    
     Item(String UPCorID) {
         if (UPCorID.length() == 6)
         {
@@ -64,6 +65,7 @@ public class Item {
         hasBeenRefunded = false;
         hasTaxBeenRefunded = false;
         employeePrice = itemPrice;
+        this.isDiscountable = false;
     }
 
     Item(String mutID, String upc, String name, double price, double cost, boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged) {
@@ -84,6 +86,11 @@ public class Item {
         hasBeenRefunded = false;
         hasTaxBeenRefunded = false;
         employeePrice = itemPrice;
+        if(category != 853 && category != 854 && category != 860 && category != 862)
+            isDiscountable = true;
+        else
+            isDiscountable = false;
+        
         //  setEmployeeDiscount(employeeDiscActive);
 
     }

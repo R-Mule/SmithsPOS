@@ -400,6 +400,11 @@ public class Cart {
     }//end contains RX
 
     void setMassDiscount(double discPer) {
+        for (Item item : items)
+        {
+            if(item.isDiscountable)
+                item.setDiscountPercentage(discPer);
+        }
         updateTotal();
     }
 

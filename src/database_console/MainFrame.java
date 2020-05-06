@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -898,23 +899,49 @@ public class MainFrame extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent event) {
                 JFrame textInputFrame = new JFrame("");
 
-                JTextField field1 = new JTextField();
+                JPasswordField field1 = new JPasswordField();
+                JPasswordField field2 = new JPasswordField();
                 field1.addAncestorListener(new RequestFocusListener());
                 Object[] message =
                 {
                     "Enter Passcode:", field1
                 };
+                
+                Object[] message2 =
+                {
+                    "What do you hear?", field2
+                };
+                
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Employee Login Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION)
                 {
                     if (!field1.getText().isEmpty() && validateInteger(field1.getText()))
                     {
-                        String clerkName = Database.getEmployeeNameByCode(Integer.parseInt(field1.getText()));
+                        int passcode = Integer.parseInt(field1.getText());
+                        if (passcode == 20 || passcode == 8) //Is it the boss? 
+                        {
+                            field2.addAncestorListener(new RequestFocusListener());
+                            option = JOptionPane.showConfirmDialog(textInputFrame, message2, "Verification", JOptionPane.OK_CANCEL_OPTION);
+                            if (option == JOptionPane.OK_OPTION)
+                            {
+                                if(field2.getText().toUpperCase().contentEquals("NOTHING BUT THE RAIN."))
+                                {
+                                   JOptionPane.showMessageDialog(null, "~to your Witcher~!","~Toss a coin~", JOptionPane.INFORMATION_MESSAGE); 
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "I don't believe you belong here.","This can't be good for you..", JOptionPane.INFORMATION_MESSAGE); 
+                                    textField.requestFocusInWindow();
+                                    return;
+                                }
+                            }
+                        }
+                        String clerkName = Database.getEmployeeNameByCode(passcode);
                         if (clerkName != null)
                         {
                             menuBar.setAllVisible();
                             employeeSelectionHeader.setText("Active Clerk: " + clerkName);
-                            activeClerksPasscode = Integer.parseInt(field1.getText());
+                            activeClerksPasscode = passcode;
                             checkForAdminButtonVisible(Integer.parseInt(field1.getText()));
                             holidayLoader.switchToActualHoliday();
                             clerkLogoutButton.setVisible(true);
@@ -924,7 +951,7 @@ public class MainFrame extends javax.swing.JFrame {
                             }
                             if (clerkName.contentEquals("Smith, Hollie") && isWeddingMonth)//wedding month is now our anniversary only
                             {
-                                EasterEgg ee = new EasterEgg("images/weddingphoto.jpg", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
+                                EasterEgg ee = new EasterEgg("images/weddingphoto.JPG", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
                             }
                             ArrayList<Employee> employees = Database.getEmployeesListSortByPID();
                             for (Employee employee : employees)
@@ -3695,12 +3722,12 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                     }
                     currentCustomer = Database.getCustomerByCID(id);
-                    if(ConfigFileReader.isAgeNotificationEnabled() && curCart.getTotalNumRX() > 0 && currentCustomer != null && currentCustomer.dobValid && currentCustomer.dobDate.isBefore(LocalDateTime.now().minusYears(70)))
+                    if (ConfigFileReader.isAgeNotificationEnabled() && curCart.getTotalNumRX() > 0 && currentCustomer != null && currentCustomer.dobValid && currentCustomer.dobDate.isBefore(LocalDateTime.now().minusYears(70)))
                     {
                         JFrame message1 = new JFrame();
-                        JOptionPane.showMessageDialog(message1, "This patient is over 70 years of age. Have they been notified of our free delivery as a result of COVID-19?","Good customer service costs less than bad customer service",JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(message1, "This patient is over 70 years of age. Have they been notified of our free delivery as a result of COVID-19?", "Good customer service costs less than bad customer service", JOptionPane.INFORMATION_MESSAGE);
                     }
-                    
+
                     curCart.storeCart(id, false);
                     if (isLoadedTicketAnEmployees)
                     {
@@ -3813,24 +3840,20 @@ public class MainFrame extends javax.swing.JFrame {
                 //if it does, send error message!
                 JFrame message2 = new JFrame("");
                 //JOptionPane.showMessageDialog(message2, "There are already items in ticket for customer. Would you like me to load those?");
-                if (!id.toUpperCase().contentEquals("WONDERLAND") && !id.toUpperCase().contentEquals("STRANGER") && !id.toUpperCase().contentEquals("HOW ABOUT A MAGIC TRICK?") && !id.toUpperCase().contentEquals("WET BANDITS") && !id.toUpperCase().contentEquals("WINGARDIUM LEVIOSA") && !id.toUpperCase().contentEquals("MICHAEL MYERS"))
+                if (JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING",
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
                 {
-                    if (JOptionPane.showConfirmDialog(null, "There are already items in ticket for customer. Would you like me to load those?", "WARNING",
-                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
-                    {
-                        loadTicketWithId(id);
-                        loadedTicketID = id;
-                        resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
-                        resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
-                        resaveTicket.setVisible(true);
-                        updateCartScreen();
-                    }
-                    else
-                    {
-                        // no option
-                    }
+                    loadTicketWithId(id);
+                    loadedTicketID = id;
+                    resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
+                    resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
+                    resaveTicket.setVisible(true);
+                    updateCartScreen();
                 }
-
+                else
+                {
+                    // no option
+                }
             }
             else
             {//end else already items in tickets
@@ -4007,12 +4030,11 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.3";
+    String currentVersion = "1.3.5";
     String updateString = ""
-            + "+Added new Master Refund Audit Report.\n"
-            + "+Added Error logging for Card POST Response.\n"
-            + "\"Let us step into the night and pursue that flighty temptress, adventure.\"\n"
-            + "                  ~Albus Dumbledore";
+            + "+Added password controlled inputs to login.\n"
+            + "\"If opportunity doesn’t knock, build a door.\"\n"
+            + "                  ~Milton Berle";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
