@@ -906,70 +906,91 @@ public class MainFrame extends javax.swing.JFrame {
                 {
                     "Enter Passcode:", field1
                 };
-                
+
                 Object[] message2 =
                 {
                     "What do you hear?", field2
                 };
-                
+
                 int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Employee Login Menu", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION)
                 {
-                    if (!field1.getText().isEmpty() && validateInteger(field1.getText()))
+                    char[] field1Value = field1.getPassword();
+                    if (field1Value.length > 0)
                     {
-                        int passcode = Integer.parseInt(field1.getText());
-                        if (passcode == 20 || passcode == 8) //Is it the boss? 
+                        String tempCode = new String(field1Value);
+                        if (validateInteger(tempCode))
                         {
-                            field2.addAncestorListener(new RequestFocusListener());
-                            option = JOptionPane.showConfirmDialog(textInputFrame, message2, "Verification", JOptionPane.OK_CANCEL_OPTION);
-                            if (option == JOptionPane.OK_OPTION)
+                            int passcode = Integer.parseInt(tempCode);
+                            if (passcode == 20 || passcode == 8) //Is it the boss? 
                             {
-                                if(field2.getText().toUpperCase().contentEquals("NOTHING BUT THE RAIN."))
+                                field2.addAncestorListener(new RequestFocusListener());
+                                int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Verification", JOptionPane.OK_CANCEL_OPTION);
+                                if (option2 == JOptionPane.OK_OPTION)
                                 {
-                                   JOptionPane.showMessageDialog(null, "~to your Witcher~!","~Toss a coin~", JOptionPane.INFORMATION_MESSAGE); 
+                                    char[] field2Value = field2.getPassword();
+                                    if (field2Value.length > 0)
+                                    {
+                                        String tempCode2 = new String(field2Value);
+                                        if (tempCode2.toUpperCase().contentEquals("NOTHING BUT THE REIGN."))
+                                        {
+                                            JOptionPane.showMessageDialog(null, "~to your Witcher~!", "~Toss a coin~", JOptionPane.INFORMATION_MESSAGE);
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "I don't believe you belong here.", "This can't be good for you..", JOptionPane.INFORMATION_MESSAGE);
+                                            textField.requestFocusInWindow();
+                                            return;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        JOptionPane.showMessageDialog(null, "I don't believe you belong here.", "This can't be good for you..", JOptionPane.INFORMATION_MESSAGE);
+                                        textField.requestFocusInWindow();
+                                        return;
+                                    }
                                 }
                                 else
                                 {
-                                    JOptionPane.showMessageDialog(null, "I don't believe you belong here.","This can't be good for you..", JOptionPane.INFORMATION_MESSAGE); 
                                     textField.requestFocusInWindow();
                                     return;
                                 }
                             }
-                        }
-                        String clerkName = Database.getEmployeeNameByCode(passcode);
-                        if (clerkName != null)
-                        {
-                            menuBar.setAllVisible();
-                            employeeSelectionHeader.setText("Active Clerk: " + clerkName);
-                            activeClerksPasscode = passcode;
-                            checkForAdminButtonVisible(Integer.parseInt(field1.getText()));
-                            holidayLoader.switchToActualHoliday();
-                            clerkLogoutButton.setVisible(true);
-                            if (clerkName.contentEquals("Smith, Hollie") && isHolliesBirthday)//It is Hollie's Birthday!
+                            String clerkName = Database.getEmployeeNameByCode(passcode);
+                            if (clerkName != null)
                             {
-                                EasterEgg ee = new EasterEgg("images/birthday.gif", "sounds/birthday.wav", "", "Happy Birthday Love!");
-                            }
-                            if (clerkName.contentEquals("Smith, Hollie") && isWeddingMonth)//wedding month is now our anniversary only
-                            {
-                                EasterEgg ee = new EasterEgg("images/weddingphoto.JPG", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
-                            }
-                            ArrayList<Employee> employees = Database.getEmployeesListSortByPID();
-                            for (Employee employee : employees)
-                            {
-                                if (employee.passcode == activeClerksPasscode)
+                                menuBar.setAllVisible();
+                                employeeSelectionHeader.setText("Active Clerk: " + clerkName);
+                                activeClerksPasscode = passcode;
+                                
+                                checkForAdminButtonVisible(passcode);
+                                holidayLoader.switchToActualHoliday();
+                                clerkLogoutButton.setVisible(true);
+                                if (clerkName.contentEquals("Smith, Hollie") && isHolliesBirthday)//It is Hollie's Birthday!
                                 {
-                                    activeEmployee = employee;
+                                    EasterEgg ee = new EasterEgg("images/birthday.gif", "sounds/birthday.wav", "", "Happy Birthday Love!");
                                 }
-                            }
-                            if (!activeEmployee.acknowledgedUpdateVersion.contentEquals(currentVersion))
-                            {
-                                //JFrame message1 = new JFrame("Welcome to Update " + currentVersion+"!");
-                                JOptionPane.showMessageDialog(null, "Version " + currentVersion + " provided the following:\n" + updateString, "Welcome to Update " + currentVersion + "!", JOptionPane.INFORMATION_MESSAGE);
-                                Database.updateEmployeeUpdateAckByPasscode(activeEmployee.passcode, currentVersion);
+                                if (clerkName.contentEquals("Smith, Hollie") && isWeddingMonth)//wedding month is now our anniversary only
+                                {
+                                    EasterEgg ee = new EasterEgg("images/weddingphoto.JPG", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
+                                }
+                                ArrayList<Employee> employees = Database.getEmployeesListSortByPID();
+                                for (Employee employee : employees)
+                                {
+                                    if (employee.passcode == activeClerksPasscode)
+                                    {
+                                        activeEmployee = employee;
+                                    }
+                                }
+                                if (!activeEmployee.acknowledgedUpdateVersion.contentEquals(currentVersion))
+                                {
+                                    //JFrame message1 = new JFrame("Welcome to Update " + currentVersion+"!");
+                                    JOptionPane.showMessageDialog(null, "Version " + currentVersion + " provided the following:\n" + updateString, "Welcome to Update " + currentVersion + "!", JOptionPane.INFORMATION_MESSAGE);
+                                    Database.updateEmployeeUpdateAckByPasscode(activeEmployee.passcode, currentVersion);
+                                }
                             }
                         }
                     }
-
                 }
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
