@@ -71,7 +71,7 @@ public class CardDataRequester {
                 buf.append(cbuf, 0, num);
             }
             String result = buf.toString();
-            System.err.println("\nResponse from server after POST:\n" + result);
+            //System.err.println("\nResponse from server after POST:\n" + result);
             readXML(result);
             hasReceivedData = true;//ITS OVER! YA!
         }

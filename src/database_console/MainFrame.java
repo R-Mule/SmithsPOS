@@ -448,7 +448,7 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                         else
                         {
-                            id = id.toUpperCase();
+                            id = id.toUpperCase().trim();
                             Customer customer = Database.getCustomerByCID(id);
                             if (activeEmployee.patientCode.toUpperCase().contentEquals(id) && activeEmployee.permissionLevel < 4)
                             {
@@ -468,7 +468,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         "Save Ticket Menu", JOptionPane.YES_NO_OPTION);
                                 if (input == JOptionPane.OK_OPTION)
                                 {
-                                    saveTicket(id);
+                                    saveTicket(customer.cid);
                                 }
                                 else
                                 {
@@ -536,9 +536,9 @@ public class MainFrame extends javax.swing.JFrame {
                                             //Insert into database.
                                             Customer tempCustomer = new Customer(field3.getText(), field2.getText(), field4.getText(), field1.getText(), field8.getText(), field7.getText(), field5.getText(), field9.getText(), field6.getText());
                                             Database.addCustomer(tempCustomer);
-                                            saveTicket(id);
+                                            saveTicket(tempCustomer.cid);
                                             JFrame message1 = new JFrame("");
-                                            JOptionPane.showMessageDialog(message1, "Customer added. Ticket saved under: " + id);
+                                            JOptionPane.showMessageDialog(message1, "Customer added. Ticket saved under: " + tempCustomer.cid);
                                             updateCartScreen();
                                         }
 
@@ -3491,7 +3491,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void loadTicketWithId(String id) {
-        id = id.toUpperCase();
+        id = id.toUpperCase().trim();
         //if it does, lets load it!
         curCart.loadCart(id);
         int i = 15;
@@ -4051,11 +4051,11 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.5";
+    String currentVersion = "1.3.6";
     String updateString = ""
-            + "+Added password controlled inputs to login.\n"
-            + "\"If opportunity doesn’t knock, build a door.\"\n"
-            + "                  ~Milton Berle";
+            + "*Attempted to fix an issue where a space could make it into a ticket save accidentally.\n"
+            + "\" You will face many defeats in life, but never let yourself be defeated.\"\n"
+            + "                  ~Maya Angelou";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
