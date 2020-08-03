@@ -92,6 +92,8 @@ public class CardDataRequester {
             db = dbf.newDocumentBuilder();
             InputSource is = new InputSource();
             StringReader sr = new StringReader(xml);
+            //System.out.println("XML:");
+            //System.out.println(xml);
             is.setCharacterStream(sr);
             try
             {
@@ -99,7 +101,7 @@ public class CardDataRequester {
                 //String message = doc.getDocumentElement().getTextContent();
                 merchantID = "8788290392911";
                 responseCode = doc.getElementsByTagName("AUTH_RESP").item(0).getTextContent();
-                if (!responseCode.contentEquals("S0"))
+                if (responseCode.contentEquals("00"))
                 {
                     cardType = doc.getElementsByTagName("AUTH_CARD_TYPE").item(0).getTextContent();
                     switch (cardType)
@@ -123,6 +125,7 @@ public class CardDataRequester {
                             cardType = "SPECIAL";
                             break;
                     }
+                    
                     approvalCodeHandler ach = new approvalCodeHandler(cardType, responseCode);
                     responseText = ach.getResponseText();
                     if (ach.isApproved())
@@ -164,7 +167,7 @@ public class CardDataRequester {
                 }
                 else
                 {
-                    responseText = "CARD Error code: 4. Most likely a timeout issue.\n (Card was not swiped or inserted soon enough after button was pressed)";
+                    responseText = "CARD Error code: 4. Most likely a timeout issue. \nAuthorization Response Code: " + responseCode + "\n (Card was not swiped or inserted soon enough after button was pressed)";
                     transTerminate = true;
                     System.out.println("TRANS DECLINED2??");
                 }

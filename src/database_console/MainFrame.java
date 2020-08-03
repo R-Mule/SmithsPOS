@@ -4051,11 +4051,11 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.6";
+    String currentVersion = "1.3.7";
     String updateString = ""
-            + "*Attempted to fix an issue where a space could make it into a ticket save accidentally.\n"
-            + "\" You will face many defeats in life, but never let yourself be defeated.\"\n"
-            + "                  ~Maya Angelou";
+            + "*Fixed an issue where card failing to be authorized could throw an internal error.\n"
+            + "\" “This is the way.”\"\n"
+            + "                  ~The Mandalorian";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
