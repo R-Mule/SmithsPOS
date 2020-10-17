@@ -1381,6 +1381,7 @@ public class Database {
                             break;
                         }
                     }//end while next line
+                    in.close();
                 }
                 catch (FileNotFoundException e)
                 {
@@ -1532,6 +1533,7 @@ public class Database {
                     }//end while next line
 
                     con.close();
+                    in.close();
                 }
                 catch (FileNotFoundException e)
                 {
@@ -1548,6 +1550,7 @@ public class Database {
                     System.out.println(e);
                 }
                 // Value transmitted to done()
+                
                 return true;
             }
 
