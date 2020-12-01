@@ -767,6 +767,7 @@ public class Database {
             {
 //System.out.println(rs.getInt(1)+"  "+rs.getInt(2)+"  "+rs.getString(3)+"  "+rs.getString(4)+"  "+rs.getDouble(5));  
 ///if(rs.getString(3).contentEquals(myItem.itemUPC)){ THIS DOES NOT WORK!
+                myItem.uniqueId = rs.getInt(1);
                 myItem.mutID = rs.getString(2);
                 myItem.itemPrice = rs.getDouble(5);
                 myItem.itemCost = rs.getDouble(6);
@@ -805,6 +806,7 @@ public class Database {
                     }
                     myItem.itemUPC = leadingZeros + myItem.itemUPC;
                 }
+                myItem.uniqueId = rs.getInt(1);
                 myItem.itemPrice = rs.getDouble(5);
                 myItem.itemCost = rs.getDouble(6);
                 myItem.itemName = rs.getString(4);
@@ -988,7 +990,7 @@ public class Database {
                 if (rs.getString(2).contentEquals(id))
                 {
                     //System.out.println("HERE!");
-                    loadedItems.add(new Item(rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getDouble(7), rs.getBoolean(8), rs.getInt(9), rs.getInt(10), rs.getString(11), rs.getString(12), rs.getInt(13), rs.getBoolean(14), rs.getDouble(15), rs.getBoolean(16)));
+                    loadedItems.add(new Item(rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getDouble(7), rs.getBoolean(8), rs.getInt(9), rs.getInt(10), rs.getString(11), rs.getString(12), rs.getInt(13), rs.getBoolean(14), rs.getDouble(15), rs.getBoolean(16), -1));
                 }//end if
 
             }//end while
@@ -2114,6 +2116,30 @@ public class Database {
         return false;
     }
 
+        public static boolean doesItemExistByUPCButNotPID(String upc, int pid) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from inventory where upc = '" + upc + "' and pid != " + pid);
+            while (rs.next())
+            {
+                // System.out.println(rs.getString(2));
+                return true;//there was atleast one item with this UPC
+
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return false;
+    }
+        
     public static boolean doesItemExistByID(String mutID) {
         try
         {
@@ -2138,6 +2164,30 @@ public class Database {
         return false;
     }
 
+        public static boolean doesItemExistByIDButNotPID(String mutID, int pid) {
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from inventory where mutID = '" + mutID + "' and pid != " + pid);
+            while (rs.next())
+            {
+                // System.out.println(rs.getString(2));
+                return true;//there was atleast one item with this UPC
+
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return false;
+    }
+        
     public static void addItem(String mutID, String upc, String name, double price, double cost, boolean taxed, int category) {
         try
         {

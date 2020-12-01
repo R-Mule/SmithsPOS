@@ -59,6 +59,9 @@ public class MainFrame extends javax.swing.JFrame {
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jPanel1.setVisible(true);
+        cryptIcon = new ImageIcon(getClass().getResource("images/Crypt.png"));
+        cryptLabel = new JLabel(cryptIcon, JLabel.CENTER);
+        cryptLabel.setBounds(310, 50, 500, 500);
         helpSP.setAutoscrolls(true);
         helpSP.setBounds(100, 100, 1120, 700);
         //OLD DREW
@@ -621,12 +624,21 @@ public class MainFrame extends javax.swing.JFrame {
                                         choices[0]); // Initial choice
                                 if (id != null)
                                 {
-                                    loadTicketWithId(id);
-                                    loadedTicketID = id;
-                                    resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
-                                    resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
-                                    resaveTicket.setVisible(true);
-                                    updateCartScreen();
+                                    if (activeEmployee.patientCode.toUpperCase().contentEquals(id) && activeEmployee.permissionLevel < 4)
+                                    {
+                                        JFrame message1 = new JFrame("");
+                                        JOptionPane.showMessageDialog(message1, "You cannot open your own ticket.");
+                                    }
+                                    else
+                                    {
+                                        loadTicketWithId(id);
+                                        loadedTicketID = id;
+                                        resaveTicketText = "Resave\nTicket As\n" + loadedTicketID;
+                                        resaveTicket.setText("<html>" + resaveTicketText.replaceAll("\\n", "<br>") + "</html>");
+                                        resaveTicket.setVisible(true);
+                                        updateCartScreen();
+                                    }
+
                                 } //end if
                             }//end if
                         }//end else
@@ -962,7 +974,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 menuBar.setAllVisible();
                                 employeeSelectionHeader.setText("Active Clerk: " + clerkName);
                                 activeClerksPasscode = passcode;
-                                
+
                                 checkForAdminButtonVisible(passcode);
                                 holidayLoader.switchToActualHoliday();
                                 clerkLogoutButton.setVisible(true);
@@ -974,6 +986,20 @@ public class MainFrame extends javax.swing.JFrame {
                                 {
                                     EasterEgg ee = new EasterEgg("images/weddingphoto.JPG", "sounds/weddingthankyou.wav", "", "Happy Anniversay Babe!");
                                 }
+                                if (clerkName.contentEquals("Smith, Andrew"))
+                                {
+                                    //cryptLabel.setVisible(true);
+                                    //repaint(10)
+
+                                    jPanel1.add(cryptLabel);
+                                }
+                                else
+                                {
+                                    // cryptLabel.setVisible(false);
+                                    // repaint(10);
+                                    jPanel1.remove(cryptLabel);
+                                }
+
                                 ArrayList<Employee> employees = Database.getEmployeesListSortByPID();
                                 for (Employee employee : employees)
                                 {
@@ -989,6 +1015,10 @@ public class MainFrame extends javax.swing.JFrame {
                                     Database.updateEmployeeUpdateAckByPasscode(activeEmployee.passcode, currentVersion);
                                 }
                             }
+                            else
+                            {
+                                jPanel1.remove(cryptLabel);
+                            }
                         }
                     }
                 }
@@ -1002,6 +1032,7 @@ public class MainFrame extends javax.swing.JFrame {
                 menuBar.setAllNotVisible();
                 clerkLogoutButton.setVisible(false);
                 activeClerksPasscode = -1;
+                jPanel1.remove(cryptLabel);
                 checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
@@ -1510,7 +1541,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     System.out.println(tempID);
                                     String upc = 'T' + tempID;
 
-                                    Item tempItem = new Item(tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false);
+                                    Item tempItem = new Item(tempID, upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field3.getText()), Double.parseDouble(field2.getText()), true, 852, 0, "", "", 1, false, 0, false, -1);
                                     curCart.addItem(tempItem);
                                     guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                     displayChangeDue = false;
@@ -1560,7 +1591,7 @@ public class MainFrame extends javax.swing.JFrame {
                             tempID = dateFormat.format(date);
                             System.out.println(tempID);
                             String upc = 'U' + tempID;
-                            Item tempItem = new Item(tempID, upc, "UPS Package", Double.parseDouble(field3.getText()), Double.parseDouble(field3.getText()), false, 860, 0, "", "", 1, false, 0, false);
+                            Item tempItem = new Item(tempID, upc, "UPS Package", Double.parseDouble(field3.getText()), Double.parseDouble(field3.getText()), false, 860, 0, "", "", 1, false, 0, false, -1);
                             curCart.addItem(tempItem);
                             guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                             displayChangeDue = false;
@@ -1686,7 +1717,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     tempID = dateFormat.format(date);
                                     System.out.println(tempID);
                                     String upc = "DMER" + tempID;
-                                    Item tempItem = new Item(tempID, upc, selectedItem.itemName + " Rental Down Payment", selectedItem.nonCustomerRate, selectedItem.nonCustomerRate, isTaxed, 862, 0, "", "", 1, false, 0, false);
+                                    Item tempItem = new Item(tempID, upc, selectedItem.itemName + " Rental Down Payment", selectedItem.nonCustomerRate, selectedItem.nonCustomerRate, isTaxed, 862, 0, "", "", 1, false, 0, false, -1);
                                     curCart.addItem(tempItem);
                                     guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                     displayChangeDue = false;
@@ -1748,7 +1779,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         System.out.println(tempID);
                                         String upc = "DMER" + tempID;
 
-                                        Item tempItem = new Item(tempID, upc, selectedItem.itemName + " Rent " + qtyRequested + " " + unit, itemPrice, itemPrice, isTaxed, 862, 0, "", "", 1, false, 0, false);
+                                        Item tempItem = new Item(tempID, upc, selectedItem.itemName + " Rent " + qtyRequested + " " + unit, itemPrice, itemPrice, isTaxed, 862, 0, "", "", 1, false, 0, false, -1);
                                         curCart.addItem(tempItem);
                                         guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                         displayChangeDue = false;
@@ -2679,7 +2710,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             String upc = "A" + tempID;
                                             if (!curCart.containsAP(accountName))
                                             {
-                                                Item tempItem = new Item(tempID, upc, accountName, price, price, false, 853, 0, "", "", 1, false, 0, false);
+                                                Item tempItem = new Item(tempID, upc, accountName, price, price, false, 853, 0, "", "", 1, false, 0, false, -1);
                                                 curCart.addItem(tempItem);
                                                 guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                                 displayChangeDue = false;
@@ -2787,7 +2818,7 @@ public class MainFrame extends javax.swing.JFrame {
                                             //boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity,boolean isRX)
                                             if (!curCart.containsAP(accountName))
                                             {
-                                                Item tempItem = new Item(tempID, upc, accountName.substring(0, accountName.indexOf("Current Bal") - 1), price, price, false, 854, 0, "", "", 1, false, 0, false);
+                                                Item tempItem = new Item(tempID, upc, accountName.substring(0, accountName.indexOf("Current Bal") - 1), price, price, false, 854, 0, "", "", 1, false, 0, false, -1);
                                                 curCart.addItem(tempItem);
                                                 guiItems.add(new GuiCartItem(tempItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
                                                 displayChangeDue = false;
@@ -3173,7 +3204,7 @@ public class MainFrame extends javax.swing.JFrame {
             loadTicket.setVisible(false);
             refundButton.setVisible(false);
             noSaleButton.setVisible(false);
-            lookupReceiptByRXButton.setVisible(false);
+            //lookupReceiptByRXButton.setVisible(false); re-enabled 11-30-2020
             beginSplitTicketButton.setVisible(false);
             chargeButton.setVisible(false);
             activateDisplayButton.setVisible(false);
@@ -4051,11 +4082,13 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.8";
+    String currentVersion = "1.3.9";
     String updateString = ""
-            + "*Fixed an issue where a file was not being closed after import.\n"
-            + "\"Character consists of what you do on the third and fourth tries.\"\n"
-            + "                  ~James A. Michener";
+            + "*Fixed an issue where employee could open a ticket from the dropdown list of tickets if it was their own.\n"
+            + "+Added Edit Item for Elevated Users.\n"
+            + "+Updated Add New Item for Elevated Users to be more restrictive.\n"
+            + "\"You now face godlike judgement, may it extend eternally.\"\n"
+            + "                  ~Clovis Bray I A.I.";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
@@ -4095,6 +4128,8 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
     Employee activeEmployee;
+    JLabel cryptLabel;
+    ImageIcon cryptIcon;
     Customer currentCustomer;
     HolidayLoader holidayLoader;
     String pharmacyName = "";

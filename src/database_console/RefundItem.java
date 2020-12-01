@@ -15,7 +15,7 @@ public class RefundItem extends Item {
     protected int quantityBeingRefunded = 0;
 
     RefundItem(String receiptNum, String mutID, String upc, String name, double amtPaidBeforeTax, boolean wasTaxed, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged, boolean hasBeenRefunded, boolean hasTaxBeenRefunded) {
-        super(mutID, upc, name, amtPaidBeforeTax, amtPaidBeforeTax, wasTaxed, category, rxNumber, insurance, filldate, quantity, isRX, percentageDisc, isPreCharged);
+        super(mutID, upc, name, amtPaidBeforeTax, amtPaidBeforeTax, wasTaxed, category, rxNumber, insurance, filldate, quantity, isRX, percentageDisc, isPreCharged, -1);
         this.hasBeenRefunded = hasBeenRefunded;
         this.hasTaxBeenRefunded = hasTaxBeenRefunded;
         this.startItemPrice = amtPaidBeforeTax;

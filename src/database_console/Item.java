@@ -29,6 +29,8 @@ public class Item {
     protected boolean isSetToSplitSave = false;
     protected boolean isDiscountable = true;
     
+    protected int uniqueId;
+    
     Item(String UPCorID) {
         if (UPCorID.length() == 6)
         {
@@ -68,7 +70,7 @@ public class Item {
         this.isDiscountable = false;
     }
 
-    Item(String mutID, String upc, String name, double price, double cost, boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged) {
+    Item(String mutID, String upc, String name, double price, double cost, boolean taxable, int category, int rxNumber, String insurance, String filldate, int quantity, boolean isRX, double percentageDisc, boolean isPreCharged, int uniqueId) {
         this.quantity = quantity;
         this.itemName = name;
         this.itemPrice = price;
@@ -91,6 +93,7 @@ public class Item {
         else
             isDiscountable = false;
         
+        this.uniqueId = uniqueId;
         //  setEmployeeDiscount(employeeDiscActive);
 
     }

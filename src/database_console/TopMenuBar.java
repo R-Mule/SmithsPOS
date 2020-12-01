@@ -45,7 +45,7 @@ public class TopMenuBar extends JMenuBar {
     //Class Variables
     JMenu addMenu, remMenu, mgmtMenu, viewMenu, feedMenu, themeMenu;
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
-            addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload,
+            addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload, editItem,
             masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
             editEmployee, arAuditReport, masterRefundAuditReport, customerDataUpload, ticketReport, addSmsSub, remSmsSub, viewSmsSub, viewCustomer, addCustomer, remCustomer,
             christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
@@ -54,9 +54,13 @@ public class TopMenuBar extends JMenuBar {
     int totalFound = 0;
     int totalAdded = 0;
 
+    AddEditInventoryItemDialog addEditInventoryItemDialog;
+
     //ctor
     public TopMenuBar(MainFrame mf) {
         this.mf = mf;
+
+        addEditInventoryItemDialog = new AddEditInventoryItemDialog(this.mf);
         addMenu = new JMenu("Add");
         addMenu.setMnemonic(KeyEvent.VK_A);
         addMenu.setVisible(false);
@@ -144,6 +148,11 @@ public class TopMenuBar extends JMenuBar {
         remInventoryItem.setText("Inventory Item");
         remMenu.add(remInventoryItem);//This adds Inventory Item Selection to Rem Menu Choices
 //Management menu items
+
+        editItem = new JMenuItem();
+        editItem.setText("Edit Inventory Item");
+        mgmtMenu.add(editItem);//This adds Edit Item to Management Menu Choices.
+
         dmeDataUpload = new JMenuItem();
         dmeDataUpload.setText("DME Data Upload");
         mgmtMenu.add(dmeDataUpload);//This adds DME Data Upload to Management Menu Choices
@@ -357,6 +366,14 @@ public class TopMenuBar extends JMenuBar {
             }
         });
 //Management menu action listeners
+
+        editItem.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editItemActionPerformed(evt);
+            }
+        });
+
         dmeDataUpload.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -999,84 +1016,7 @@ public class TopMenuBar extends JMenuBar {
     }//end addEmployeeActionPerformed
 
     private void addInventoryItemActionPerformed(java.awt.event.ActionEvent evt) {
-
-        JFrame textInputFrame = new JFrame("");
-        JTextField field1 = new JTextField();
-        JTextField field2 = new JTextField();
-        JTextField field3 = new JTextField();
-        JTextField field4 = new JTextField();
-        JTextField field5 = new JTextField();
-        JTextField field6 = new JTextField();
-        JTextField field7 = new JTextField();
-        Object[] message =
-        {
-            "Name: ", field1, "ID: ", field2, "UPC: ", field3, "Cost: $", field4, "Price: $", field5, "Category: ", field6, "Is Taxed: ", field7
-        };
-        field7.setText("Yes");
-        field7.setSelectionStart(0);
-        field7.setSelectionEnd(4);
-
-        field1.addAncestorListener(new RequestFocusListener());
-        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Add Item Menu", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION)
-        {
-            if (!mf.validateDouble(field4.getText()) || !mf.validateDouble(field5.getText()) || !mf.validateInteger(field6.getText()))
-            {
-                JFrame message1 = new JFrame("");
-                JOptionPane.showMessageDialog(message1, "Invalid price, cost, or category.");
-            }
-            else if (!field7.getText().toUpperCase().contentEquals("YES") && !field7.getText().toUpperCase().contentEquals("NO"))
-            {
-                JFrame message1 = new JFrame("");
-                JOptionPane.showMessageDialog(message1, "Must enter YES or NO for Is Taxed");
-            }
-            else if (field1.getText().isEmpty() || field2.getText().isEmpty() || field3.getText().isEmpty())
-            {
-                JFrame message1 = new JFrame("");
-                JOptionPane.showMessageDialog(message1, "Error: UPC, name, and ID cannot be blank.");
-            }
-            else if (Database.doesItemExistByUPC(field3.getText()))
-            {
-                JFrame message1 = new JFrame("");
-                JOptionPane.showMessageDialog(message1, "Error: Same UPC exists for item already.");
-            }
-            else if (Database.doesItemExistByID(field2.getText()))
-            {
-                JFrame message1 = new JFrame("");
-                JOptionPane.showMessageDialog(message1, "Error: Same mutual ID exists for item already.");
-            }
-            else
-            {
-
-                Object[] message2 =
-                {
-                    "Are you sure?\nName: " + field1.getText().replaceAll("'", " "), "ID: " + field2.getText().replaceAll("'", " "), "UPC: " + field3.getText().replaceAll("'", " "), "Cost: $ " + field4.getText(), "Price: $ " + field5.getText(), "Category: " + field6.getText(), "Is Taxed:  " + field7.getText()
-                };
-
-                int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Add Item Menu", JOptionPane.OK_CANCEL_OPTION);
-                if (option2 == JOptionPane.OK_OPTION)
-                {
-                    boolean taxed = false;
-                    if (field7.getText().toUpperCase().contentEquals("YES"))
-                    {
-                        taxed = true;
-                    }
-                    String upc = field3.getText();
-                    if (upc.length() > 11)
-                    {
-                        upc = upc.replaceAll("'", "");
-                        upc = upc.substring(0, 11);
-                    }
-                    Database.addItem(field2.getText().replaceAll("'", ""), upc, field1.getText().replaceAll("'", " "), Double.parseDouble(field5.getText()), Double.parseDouble(field4.getText()), taxed, Integer.parseInt(field6.getText()));
-                    JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Success!");
-                }
-                //FIELD1 CONTAINS DESCRIPTION
-                //FIELD2 AMOUNT
-                mf.displayChangeDue = false;
-                mf.updateCartScreen();
-            }//end else
-        }//end if  
+        addEditInventoryItemDialog.openAddInventoryItemDialog();
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
     }//end addInventoryItemActionPerformed
 
@@ -2091,7 +2031,6 @@ public class TopMenuBar extends JMenuBar {
             {
                 Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
             }
-           
 
             try
             {
@@ -2858,6 +2797,47 @@ public class TopMenuBar extends JMenuBar {
         mf.holidayLoader.makeSummerTimeActiveHoliday();
     }
 
+    private void editItemActionPerformed(java.awt.event.ActionEvent evt) {
+
+        String upcOrId = JOptionPane.showInputDialog("Enter Mutual ID or UPC to edit:");
+        if (upcOrId == null || upcOrId.isEmpty())
+        {
+            return;
+        }
+
+        if (upcOrId.length() > 11)
+        {
+            upcOrId = upcOrId.substring(0, 11);
+        }
+        upcOrId = upcOrId.toUpperCase();
+        Item myItem = new Item(upcOrId);
+
+        if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty())
+        {
+            boolean found = false;
+            for (UserCreatedCodes code : UserCreatedCodes.values())
+            {
+                if (code.getValue() == myItem.category)
+                {
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                mf.showErrorMessage("Cannot edit this item. It is not user created.");
+                return;
+            }
+
+            addEditInventoryItemDialog.openEditInventoryItemDialog(myItem);
+        }
+        else
+        {
+            mf.showErrorMessage("Item does not exist.");
+        }
+
+    }
+
     //Other action events go here.
     public void updateVisible(int permission) { //this will eventually handle responsible menu items to show or not show.
 
@@ -2887,6 +2867,7 @@ public class TopMenuBar extends JMenuBar {
                 remInsurance.setVisible(true);
                 remInventoryItem.setVisible(true);
                 addInventoryItem.setVisible(true);
+                editItem.setVisible(true);
                 viewMenu.setVisible(true);
                 addSmsSub.setVisible(true);
                 remCustomer.setVisible(true);
@@ -2915,6 +2896,7 @@ public class TopMenuBar extends JMenuBar {
                 remInsurance.setVisible(true);
                 remInventoryItem.setVisible(true);
                 addInventoryItem.setVisible(true);
+                editItem.setVisible(true);
                 viewMenu.setVisible(true);
                 addSmsSub.setVisible(true);
                 remCustomer.setVisible(true);
@@ -2942,6 +2924,7 @@ public class TopMenuBar extends JMenuBar {
                 remInsurance.setVisible(true);
                 remInventoryItem.setVisible(true);
                 addInventoryItem.setVisible(true);
+                editItem.setVisible(true);
                 viewMenu.setVisible(true);
                 addSmsSub.setVisible(true);
                 remCustomer.setVisible(true);
@@ -2960,6 +2943,7 @@ public class TopMenuBar extends JMenuBar {
                 remInsurance.setVisible(false);
                 remInventoryItem.setVisible(false);
                 addInventoryItem.setVisible(false);
+                editItem.setVisible(false);
                 addEmployee.setVisible(false);
                 remEmployee.setVisible(false);
                 mgmtMenu.setVisible(false);
