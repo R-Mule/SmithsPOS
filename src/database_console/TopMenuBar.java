@@ -47,7 +47,7 @@ public class TopMenuBar extends JMenuBar {
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload, editItem,
             masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
-            editEmployee, arAuditReport, masterRefundAuditReport, customerDataUpload, ticketReport, addSmsSub, remSmsSub, viewSmsSub, viewCustomer, addCustomer, remCustomer,
+            editEmployee, arAuditReport, masterRefundAuditReport, rxPickupReport, customerDataUpload, ticketReport, addSmsSub, remSmsSub, viewSmsSub, viewCustomer, addCustomer, remCustomer,
             christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
     int totalCntr = 0;
@@ -189,6 +189,10 @@ public class TopMenuBar extends JMenuBar {
         masterRefundAuditReport.setText("Master Refund Report");
         mgmtMenu.add(masterRefundAuditReport);
 
+        rxPickupReport = new JMenuItem();
+        rxPickupReport.setText("RX Pickup Report");
+        mgmtMenu.add(rxPickupReport);
+
         updatePrice = new JMenuItem();
         updatePrice.setText("Update Price");
         mgmtMenu.add(updatePrice);//This adds Update Price to Management Menu Choices
@@ -250,7 +254,10 @@ public class TopMenuBar extends JMenuBar {
         this.add(remMenu);
         this.add(viewMenu);
         this.add(mgmtMenu);
-        this.add(themeMenu);
+        if (!mf.isHolliesLastDay)
+        {
+            this.add(themeMenu);
+        }
         this.add(feedMenu);
 
         viewCustomer.addActionListener(new java.awt.event.ActionListener() {
@@ -432,6 +439,13 @@ public class TopMenuBar extends JMenuBar {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 masterRefundAuditReportsActionPerformed(evt);
+            }
+        });
+
+        rxPickupReport.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rxPickupReportActionPerformed(evt);
             }
         });
 
@@ -2003,8 +2017,6 @@ public class TopMenuBar extends JMenuBar {
             endDate = endDate.plusMinutes(59);
             FileWriter rxFW = null;
             BufferedWriter rxBW = null;
-            FileWriter dmeFW = null;
-            BufferedWriter dmeBW = null;
             try
             {
                 //All reports now loaded. Time to do the work and generate the file.
@@ -2052,6 +2064,66 @@ public class TopMenuBar extends JMenuBar {
         mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
 
     }//end massRefundReportsActionPerformed
+
+    private void rxPickupReportActionPerformed(java.awt.event.ActionEvent evt) {
+        DateRangeSelector drs = new DateRangeSelector();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMddyy");
+
+        if (drs.validDates())
+        {
+            LocalDateTime startDate = drs.getStartDate();
+            LocalDateTime endDate = drs.getEndDate();
+            //endDate = endDate.plusHours(23);
+            //endDate = endDate.plusMinutes(59);
+            FileWriter rxFW = null;
+            BufferedWriter rxBW = null;
+            try
+            {
+                //Time to do the work and generate the file.
+                rxFW = new FileWriter("C:\\pos\\REPORTS\\RX_PICKUP_REPORT-" + startDate.format(dateFormat) + "_" + endDate.format(dateFormat) + ".txt");
+                rxBW = new BufferedWriter(rxFW);
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ArrayList<String> reportData = Database.getRxPickupListByDateRange(startDate, endDate);
+            try
+            {
+                if (reportData.isEmpty())
+                {
+                    rxBW.write("NO DATA FOUND.");
+                }
+                for (String data : reportData)
+                {
+                    rxBW.write(data + "\n");
+                }
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(TopMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            try
+            {
+                if (rxBW != null)
+                {
+                    rxBW.close();
+                }
+
+                if (rxFW != null)
+                {
+                    rxFW.close();
+                }
+            }
+            catch (IOException ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+
+    }//end rxPickupReportActionPerformed
 
     private void drawerReportsActionPerformed(java.awt.event.ActionEvent evt) {
 
@@ -2850,6 +2922,7 @@ public class TopMenuBar extends JMenuBar {
                 mgmtMenu.setVisible(true);
                 addEmployee.setVisible(true);//Only Hollie and I may add or remove employees.
                 masterRefundAuditReport.setVisible(true);
+                rxPickupReport.setVisible(true);
                 remEmployee.setVisible(true);
                 drawerReports.setVisible(true);
                 masterRptRecpt.setVisible(true);
@@ -2881,6 +2954,7 @@ public class TopMenuBar extends JMenuBar {
                 mgmtMenu.setVisible(true);
                 drawerReports.setVisible(false);
                 masterRefundAuditReport.setVisible(false);
+                rxPickupReport.setVisible(true);
                 arAuditReport.setVisible(false);
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(false);
@@ -2911,6 +2985,7 @@ public class TopMenuBar extends JMenuBar {
                 rxDataUpload.setVisible(false);
                 customerDataUpload.setVisible(false);
                 masterRefundAuditReport.setVisible(false);
+                rxPickupReport.setVisible(true);
                 dmeDataUpload.setVisible(false);
                 drawerReports.setVisible(false);
                 arAuditReport.setVisible(false);
@@ -2933,6 +3008,7 @@ public class TopMenuBar extends JMenuBar {
             case 1:
                 //remMenu.setVisible(true);
                 addMenu.setVisible(true);
+                rxPickupReport.setVisible(false);
                 // addMenu.setVisible(false);
                 //remMenu.setVisible(true);
                 addRxAccount.setVisible(false);

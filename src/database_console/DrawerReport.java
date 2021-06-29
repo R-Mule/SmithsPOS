@@ -13,8 +13,8 @@ import java.util.ArrayList;
 public class DrawerReport implements Serializable {
 
     private static final long serialVersionUID = 7526472295622776149L;
-    private static final String HOLLIEFILENAME = "C:\\pos\\REPORTS\\HollieAccnt";
-    private static final String DEBBIEFILENAME = "C:\\pos\\REPORTS\\DebbieAccnt";
+    private static final String HOLLIEFILENAME = "C:\\pos\\REPORTS\\RX_Account";
+    private static final String DEBBIEFILENAME = "C:\\pos\\REPORTS\\DME_Account";
     private static final String REPORTFILENAME = "C:\\pos\\REPORTS\\DailyReport";
     BufferedWriter bw = null;
     FileWriter fw = null;

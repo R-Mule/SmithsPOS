@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -123,6 +124,30 @@ public class HolidayLoader {
                 removeActiveHoliday();
                 break;
         }
+    }
+
+    public void makeHolliesLastDay() {
+        JButton lastDay = new JButton("One Last Time.");
+        lastDay.setLocation(800, 25);
+        lastDay.setSize(300, 25);
+        lastDay.setBackground(new Color(134, 248, 255));
+        lastDay.setVisible(true);
+
+        JLabel goodbyeMessage = new JLabel("You have worked incredibly hard. We are so very proud of you Hollie! Love,  Andrew, Kieryn, Anduin, Giles, Mayne, Jawa, and Muffin <3!!!!");
+        goodbyeMessage.setSize(800, 300);
+        goodbyeMessage.setLocation(10, -115);
+        goodbyeMessage.setVisible(true);
+        mf.add(goodbyeMessage);
+        mf.add(lastDay);
+        deactivateQuotes();
+        mf.getContentPane().setBackground(new Color(203, 203, 203));
+        
+        lastDay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                EasterEgg ee = new EasterEgg("images/lastDay.gif", "sounds/weddingthankyou.wav", "", "Chapter 2 Here We Come!");
+                mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }
+        });
     }
 
     public void makeChristmasActiveHoliday() {

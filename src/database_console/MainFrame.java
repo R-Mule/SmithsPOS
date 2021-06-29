@@ -75,14 +75,20 @@ public class MainFrame extends javax.swing.JFrame {
         pharmacyName = ConfigFileReader.getPharmacyName();
         if (pharmacyName.contentEquals(superaid))
         {//This only allows Holiday events for Super-Aid Pharmacy
-            DateFormat dateFormat1 = new SimpleDateFormat("MMdd");//ddyyhhmmss");
+            DateFormat dateFormat1 = new SimpleDateFormat("MMddyyyy");//ddyyhhmmss");
             Date date1 = new Date();
             String month;
             month = dateFormat1.format(date1);
             String dayTemp = month.substring(2);
             month = month.substring(0, 2);
-            int day = Integer.parseInt(dayTemp);
-            if (month.contentEquals("03"))
+            int day = Integer.parseInt(dayTemp.substring(0, 2));
+            int year = Integer.parseInt(dayTemp.substring(2,6));
+            if(month.contentEquals("06") && day == 11 && year  == 2021)
+            {
+                System.out.println("It's Hollie's Last Day!");
+                isHolliesLastDay = true;
+            }
+            else if (month.contentEquals("03"))
             {//its march
                 isMarchMadness = true;
                 if (day >= 1 && day < 18)
@@ -750,7 +756,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         holidayLoader = new HolidayLoader(this);
 
-        if (isMarchMadness)
+        if(isHolliesLastDay)
+        {
+            holidayLoader.makeHolliesLastDay();
+        }
+        else if (isMarchMadness)
         {
             holidayLoader.showMarchMaddness();
         }
@@ -800,7 +810,7 @@ public class MainFrame extends javax.swing.JFrame {
             holidayLoader.makeSaintPatricksDayActiveHoliday();
         }
 
-        if (isWeddingMonth)
+        else if (isWeddingMonth)
         {
             holidayLoader.assignActualHoliday(Holidays.WEDDINGMONTH);
             holidayLoader.makeWeddingMonthActiveHoliday();
@@ -976,7 +986,8 @@ public class MainFrame extends javax.swing.JFrame {
                                 activeClerksPasscode = passcode;
 
                                 checkForAdminButtonVisible(passcode);
-                                holidayLoader.switchToActualHoliday();
+                                if(!isHolliesLastDay)
+                                    holidayLoader.switchToActualHoliday();
                                 clerkLogoutButton.setVisible(true);
                                 if (clerkName.contentEquals("Smith, Hollie") && isHolliesBirthday)//It is Hollie's Birthday!
                                 {
@@ -1027,7 +1038,9 @@ public class MainFrame extends javax.swing.JFrame {
         });
         clerkLogoutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                holidayLoader.switchToActualHoliday();
+                if(!isHolliesLastDay)
+                    holidayLoader.switchToActualHoliday();
+                
                 employeeSelectionHeader.setText("Active Clerk: NONE");
                 menuBar.setAllNotVisible();
                 clerkLogoutButton.setVisible(false);
@@ -1044,7 +1057,7 @@ public class MainFrame extends javax.swing.JFrame {
                 if (!display.successfulStart())
                 {
                     JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "The Pole Display could not be successfully started! Error: Smith_2 \nContact Hollie.");
+                    JOptionPane.showMessageDialog(message1, "The Pole Display could not be successfully started! Error: Smith_2 \nContact Store Manager.");
                 }
                 LocalDateTime dateTime = LocalDateTime.now();
                 if (dateTime.getYear() == 2019 && dateTime.getDayOfMonth() == 1 && dateTime.getMonthValue() == 8)
@@ -3067,7 +3080,7 @@ public class MainFrame extends javax.swing.JFrame {
                                                 if (accountName != null && Database.checkFrozenAccount(accountName.substring(0, accountName.indexOf(" "))))
                                                 {
                                                     JFrame message1 = new JFrame("");
-                                                    JOptionPane.showMessageDialog(message1, "This account has been FROZEN. Please speak to Hollie. Customer CANNOT charge!");
+                                                    JOptionPane.showMessageDialog(message1, "This account has been FROZEN. Please speak to Store's Manager. Customer CANNOT charge!");
                                                 }
                                                 else if (accountName != null)
                                                 {
@@ -4082,13 +4095,12 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.9";
+    String currentVersion = "1.3.11";
     String updateString = ""
-            + "*Fixed an issue where employee could open a ticket from the dropdown list of tickets if it was their own.\n"
-            + "+Added Edit Item for Elevated Users.\n"
-            + "+Updated Add New Item for Elevated Users to be more restrictive.\n"
-            + "\"You now face godlike judgement, may it extend eternally.\"\n"
-            + "                  ~Clovis Bray I A.I.";
+            + "+Added Support for a new Manager.\n"
+            + "+Refactored Report Names to be more User Friendly.\n"
+            + "\"Life before Death, Strength before Weakness, Journey before Destination.\"\n"
+            + "                  ~The Ideal of Radiance~";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
@@ -4127,6 +4139,7 @@ public class MainFrame extends javax.swing.JFrame {
     boolean isSummerTime = false;
     boolean isWeddingMonth = false;
     boolean quotesActive = true;
+    boolean isHolliesLastDay = false;
     Employee activeEmployee;
     JLabel cryptLabel;
     ImageIcon cryptIcon;

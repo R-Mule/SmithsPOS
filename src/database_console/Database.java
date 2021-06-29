@@ -93,6 +93,38 @@ public class Database {
         return refundData;
     }
 
+        public static ArrayList<String> getRxPickupListByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        ArrayList<String> refundData = new ArrayList<>();
+        DateTimeFormatter mmddyy = DateTimeFormatter.ofPattern("MMddyy");
+        String query = "select * from receipts where isRx = 1 and (receiptNum like '" + startDate.format(mmddyy) + "%'";
+        while(!startDate.isEqual(endDate))
+        {
+            startDate = startDate.plusDays(1);
+            query+= " or receiptNum like '" + startDate.format(mmddyy) +"%'";
+        }
+        query +=") order by rxNumber;";
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next())
+            {
+                String tempString = rs.getString(2);
+                String date = tempString.substring(0, 2) + "/" + tempString.substring(2,4) + "/" + tempString.substring(4,6);
+                refundData.add("Date: " + date + "  Rx Number:  " + rs.getString(9));
+            }//end while
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return refundData;
+    }
+        
     public static void createSmsSubscriber(String accountName, String phoneNumber) {
         try
         {
