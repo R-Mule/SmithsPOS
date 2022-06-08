@@ -26,7 +26,7 @@ public class ConfigFileReader {
     private static String dmeReportPath;
     private static String errorLogPath;
     private static Boolean ageNotificatonEnabled;
-
+    
     private ConfigFileReader() //do not instantiate
     {
 
@@ -109,7 +109,7 @@ public class ConfigFileReader {
                 else if (tokens[0].contentEquals("Age Notification Enabled"))
                 {
                     ageNotificatonEnabled = tokens[1].trim().toUpperCase().contains("TRUE");
-                }
+                }                
             }//end while
 
         }

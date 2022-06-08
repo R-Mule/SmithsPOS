@@ -1901,7 +1901,7 @@ public class Database {
     }
 
     public static String[] getEmployeesFromDatabase() {
-        String[] employees = new String[20];
+        String[] employees = new String[80];
         int cntr = 0;
         try
         {
@@ -1913,7 +1913,6 @@ public class Database {
 
             while (rs.next())
             {
-
                 employees[cntr] = rs.getString(2);
                 cntr++;
             }//end while

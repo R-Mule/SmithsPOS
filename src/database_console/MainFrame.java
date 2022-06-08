@@ -82,10 +82,10 @@ public class MainFrame extends javax.swing.JFrame {
             String dayTemp = month.substring(2);
             month = month.substring(0, 2);
             int day = Integer.parseInt(dayTemp.substring(0, 2));
-            int year = Integer.parseInt(dayTemp.substring(2,6));
-            if(month.contentEquals("06") && day == 11 && year  == 2021)
+            int year = Integer.parseInt(dayTemp.substring(2, 6));
+            if (month.contentEquals("07") && day == 11 && year == 2021)
             {
-                System.out.println("It's Hollie's Last Day!");
+                System.out.println("It's Haley's Last Day!");
                 isHolliesLastDay = true;
             }
             else if (month.contentEquals("03"))
@@ -756,7 +756,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         holidayLoader = new HolidayLoader(this);
 
-        if(isHolliesLastDay)
+        if (isHolliesLastDay)
         {
             holidayLoader.makeHolliesLastDay();
         }
@@ -837,7 +837,7 @@ public class MainFrame extends javax.swing.JFrame {
         creditButton.setLocation(1500, 700);
         creditButton.setSize(100, 100);
         creditButton.setBackground(new Color(255, 90, 170));
-        //This creates the debitButton 
+        //This creates the debitButton
         debitButton.setLocation(1600, 700);
         debitButton.setSize(100, 100);
         debitButton.setBackground(new Color(150, 150, 150));
@@ -894,7 +894,7 @@ public class MainFrame extends javax.swing.JFrame {
         massSplitTicketButton.setVisible(false);
         this.add(massSplitTicketButton);
 
-        //This creates the activateDisplayButton 
+        //This creates the activateDisplayButton
         activateDisplayButton.setLocation(500, 890);
         activateDisplayButton.setSize(150, 40);
         activateDisplayButton.setBackground(new Color(50, 255, 255));
@@ -944,7 +944,7 @@ public class MainFrame extends javax.swing.JFrame {
                         if (validateInteger(tempCode))
                         {
                             int passcode = Integer.parseInt(tempCode);
-                            if (passcode == 20 || passcode == 8) //Is it the boss? 
+                            if (passcode == 20 || passcode == 8) //Is it the boss?
                             {
                                 field2.addAncestorListener(new RequestFocusListener());
                                 int option2 = JOptionPane.showConfirmDialog(textInputFrame, message2, "Verification", JOptionPane.OK_CANCEL_OPTION);
@@ -986,8 +986,10 @@ public class MainFrame extends javax.swing.JFrame {
                                 activeClerksPasscode = passcode;
 
                                 checkForAdminButtonVisible(passcode);
-                                if(!isHolliesLastDay)
+                                if (!isHolliesLastDay)
+                                {
                                     holidayLoader.switchToActualHoliday();
+                                }
                                 clerkLogoutButton.setVisible(true);
                                 if (clerkName.contentEquals("Smith, Hollie") && isHolliesBirthday)//It is Hollie's Birthday!
                                 {
@@ -1038,9 +1040,11 @@ public class MainFrame extends javax.swing.JFrame {
         });
         clerkLogoutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if(!isHolliesLastDay)
+                if (!isHolliesLastDay)
+                {
                     holidayLoader.switchToActualHoliday();
-                
+                }
+
                 employeeSelectionHeader.setText("Active Clerk: NONE");
                 menuBar.setAllNotVisible();
                 clerkLogoutButton.setVisible(false);
@@ -1087,47 +1091,76 @@ public class MainFrame extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
                 {
-                    Item myItem = new Item("NEWSPAPER");
 
-                    if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty())
-                    {//then we have a real item!
-                        curCart.addItem(myItem);
-                        boolean exisits = false;
-                        int index = 0;
-                        int loc = 0;
-                        for (GuiCartItem item : guiItems)
-                        {
-
-                            if (item.getUPC().contentEquals(myItem.getUPC()))
-                            {
-                                exisits = true;
-                                loc = index;
-                            }
-                            index++;
-                        }
-                        if (exisits)
-                        {
-                            guiItems.get(loc).updateQuantityLabelAmount();
-                        }
-                        else
-                        {
-                            guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
-                        }
-
-                        displayChangeDue = false;
-                        updateCartScreen();
+                    //Old...used when papers were the same prices. New papers share same category as this one to keep accounting OK.
+                    //Item myItem = new Item("NEWSPAPER");
+                    //Pick which paper you want
+                    Object stringArray[] =
+                    {
+                        "Virginian Leader", "Monroe Watchman"
+                    };
+                    JFrame optionFrame = new JFrame("");
+                    String paperChoice = "";
+                    int option1 = JOptionPane.showOptionDialog(optionFrame, "Which paper is the customer purchasing?", "Paper Selection Menu",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, stringArray,
+                            stringArray[0]);
+                    if (option1 == JOptionPane.CLOSED_OPTION || option1 == JOptionPane.CANCEL_OPTION)
+                    {
+                        textField.requestFocusInWindow();
+                        return;
                     }
-                }
-                else
-                {
-                    JFrame message1 = new JFrame("");
-                    JOptionPane.showMessageDialog(message1, "Select an employee first!");
-                }
-                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-            }//end actionPerformed
-        });
+                    else if (option1 == JOptionPane.YES_OPTION)//Leader
+                    {                      
+                        paperChoice = "VIRLEADER";
+                    }
+                    else if(option1 == JOptionPane.NO_OPTION)//Watchman
+                    {
+                        paperChoice = "WATCHMAN";
+                    }
+                    
+                        Item myItem = new Item(paperChoice);
+                        if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty())
+                        {//then we have a real item!
+                            curCart.addItem(myItem);
+                            boolean exisits = false;
+                            int index = 0;
+                            int loc = 0;
+                            for (GuiCartItem item : guiItems)
+                            {
+                                if (item.getUPC().contentEquals(myItem.getUPC()))
+                                {
+                                    exisits = true;
+                                    loc = index;
+                                }
+                                index++;
+                            }
+                            if (exisits)
+                            {
+                                guiItems.get(loc).updateQuantityLabelAmount();
+                            }
+                            else
+                            {
+                                guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                            }
 
-        refundButton.addActionListener(new java.awt.event.ActionListener() {
+                            displayChangeDue = false;
+                            updateCartScreen();
+                        }
+                    }
+                    else
+                    {
+                        JFrame message1 = new JFrame("");
+                        JOptionPane.showMessageDialog(message1, "Select an employee first!");
+                    }
+                    textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+                }//end actionPerformed
+            }
+
+            );
+
+            refundButton.addActionListener ( new java.awt.event.ActionListener() {
+            
+
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
                 {
@@ -2419,7 +2452,7 @@ public class MainFrame extends javax.swing.JFrame {
                                                 updateCartScreen();
                                             }//end else
                                         }//end else
-                                    }//end if  
+                                    }//end if
                                 }//end check for negative balance
                             }//end check for LUNCH
                         }//end if isNotEmpty
@@ -3001,7 +3034,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 }//end else
                             }//end else not 0 or less
                         }//end else
-                    }//end if  
+                    }//end if
 
                 }
                 else
@@ -4095,10 +4128,9 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.11";
+    String currentVersion = "1.3.13";
     String updateString = ""
-            + "+Added Support for a new Manager.\n"
-            + "+Refactored Report Names to be more User Friendly.\n"
+            + "+Added support for Watchman and Leader being seperately priced papers.\n"
             + "\"Life before Death, Strength before Weakness, Journey before Destination.\"\n"
             + "                  ~The Ideal of Radiance~";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
