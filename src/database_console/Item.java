@@ -28,6 +28,7 @@ public class Item {
     protected double employeePrice = itemPrice;
     protected boolean isSetToSplitSave = false;
     protected boolean isDiscountable = true;
+    protected String pickupDate = "";//This is used for Rx History 
     
     protected int uniqueId;
     

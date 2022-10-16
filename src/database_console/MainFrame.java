@@ -34,12 +34,15 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 /**
 
@@ -83,9 +86,9 @@ public class MainFrame extends javax.swing.JFrame {
             month = month.substring(0, 2);
             int day = Integer.parseInt(dayTemp.substring(0, 2));
             int year = Integer.parseInt(dayTemp.substring(2, 6));
-            if (month.contentEquals("07") && day == 11 && year == 2021)
+            if (month.contentEquals("08") && day == 30 && year == 2022)
             {
-                System.out.println("It's Haley's Last Day!");
+                System.out.println("It's Bev's Last Day!");
                 isHolliesLastDay = true;
             }
             else if (month.contentEquals("03"))
@@ -664,7 +667,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         lookupReceiptByRXButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                //System.out.println("HELLO");
                 JFrame textInputFrame = new JFrame("");
                 JTextField field1 = new JTextField();
 
@@ -725,6 +727,101 @@ public class MainFrame extends javax.swing.JFrame {
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }//end actionPerformed loadTicket
         });//end lookupReceipt action
+
+        rxHistoryButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                JFrame textInputFrame = new JFrame("");
+                JTextField field1 = new JTextField();
+
+                Object[] message =
+                {
+                    "Enter RX Number to find history:", field1
+                };
+                field1.setText("");
+                field1.addAncestorListener(new RequestFocusListener());
+
+                int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter RX Number", JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.OK_OPTION)
+                {
+                    String id = field1.getText();
+
+                    if (id != null && !id.isEmpty() && validateInteger(id))
+                    {
+                        int rxNumber = Integer.parseInt(id);
+                        ArrayList<Item> items = Database.getRxReceiptHistoryFromRxNumber(rxNumber);
+                        if (items != null && items.size() > 0)
+                        {
+                            //TODO Add in the table here.
+                            JFrame tableFrame = new JFrame("");
+                            DefaultTableModel model = new DefaultTableModel();
+                            JTable table = new JTable(model);
+
+                            DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+                            rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+
+                            model.addColumn("Rx Number");
+                            model.addColumn("Cash Price");
+                            model.addColumn("Fill Date");
+                            model.addColumn("Pickup Date");
+                            model.addColumn("Insurance");
+                            model.addColumn("Was Pre-Charged");
+                            table.getColumnModel().getColumn(0).setMinWidth(100);
+                            table.getColumnModel().getColumn(0).setWidth(100);
+                            table.getColumnModel().getColumn(0).setPreferredWidth(100);
+                            table.getColumnModel().getColumn(1).setMinWidth(100);
+                            table.getColumnModel().getColumn(1).setWidth(100);
+                            table.getColumnModel().getColumn(1).setPreferredWidth(100);
+                            table.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+                            table.getColumnModel().getColumn(2).setWidth(100);
+                            table.getColumnModel().getColumn(2).setPreferredWidth(100);
+                            table.getColumnModel().getColumn(3).setMinWidth(100);
+                            table.getColumnModel().getColumn(3).setWidth(100);
+                            table.getColumnModel().getColumn(3).setPreferredWidth(100);
+                            table.getColumnModel().getColumn(4).setMinWidth(200);
+                            table.getColumnModel().getColumn(4).setWidth(200);
+                            table.getColumnModel().getColumn(4).setPreferredWidth(200);
+                            table.getColumnModel().getColumn(5).setMinWidth(100);
+                            table.getColumnModel().getColumn(5).setWidth(100);
+                            table.getColumnModel().getColumn(5).setPreferredWidth(100);
+
+                            model.addRow(new Object[]
+                            {
+                                "RX Number", "Cash Price", "Fill Date", "Pickup Date", "Insurance", "Was Precharged",
+                            });
+
+                            for (Item item : items)
+                            {
+                                String tempFillDate = item.fillDate.substring(0, 2) + "-" + item.fillDate.substring(2, 4) + "-" + item.fillDate.substring(4, 6);
+                                String tempPickupDate = item.pickupDate.substring(0, 2) + "-" + item.pickupDate.substring(2, 4) + "-" + item.pickupDate.substring(4, 6);
+                                model.addRow(new Object[]
+                                {
+                                    item.rxNumber, String.format("$%.2f",item.itemPrice), tempFillDate, tempPickupDate, item.insurance, item.isPreCharged ? "Yes" : "No"
+                                });
+                            }
+
+                            table.setEnabled(false);
+
+                            table.setColumnSelectionAllowed(false);
+                            table.setCellSelectionEnabled(false);
+                            table.getTableHeader().setReorderingAllowed(false);
+                            Object[] tableDisplay =
+                            {
+                                table
+                            };
+                             Object[] options = {"OK"};
+                            int option1 = JOptionPane.showOptionDialog(tableFrame, tableDisplay, "RX History",JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE ,null,options,options[0]);
+                        }
+                        else
+                        {
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "No data for that RX Number.");
+                        }
+                    }
+
+                }
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }//end actionPerformed 
+        });//end rxHistory action
 
         createTicket.setVisible(true);
         loadTicket.setVisible(true);
@@ -868,6 +965,11 @@ public class MainFrame extends javax.swing.JFrame {
         paidOutButton.setLocation(1600, 400);
         paidOutButton.setSize(100, 100);
         paidOutButton.setBackground(new Color(88, 199, 255));
+
+        rxHistoryButton.setLocation(1600, 400);
+        rxHistoryButton.setSize(100, 100);
+        rxHistoryButton.setBackground(new Color(88, 199, 255));
+
         //this creates the SPlit Tender Button
         splitTenderButton.setLocation(1700, 700);
         splitTenderButton.setSize(100, 100);
@@ -1110,56 +1212,54 @@ public class MainFrame extends javax.swing.JFrame {
                         return;
                     }
                     else if (option1 == JOptionPane.YES_OPTION)//Leader
-                    {                      
+                    {
                         paperChoice = "VIRLEADER";
                     }
-                    else if(option1 == JOptionPane.NO_OPTION)//Watchman
+                    else if (option1 == JOptionPane.NO_OPTION)//Watchman
                     {
                         paperChoice = "WATCHMAN";
                     }
-                    
-                        Item myItem = new Item(paperChoice);
-                        if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty())
-                        {//then we have a real item!
-                            curCart.addItem(myItem);
-                            boolean exisits = false;
-                            int index = 0;
-                            int loc = 0;
-                            for (GuiCartItem item : guiItems)
-                            {
-                                if (item.getUPC().contentEquals(myItem.getUPC()))
-                                {
-                                    exisits = true;
-                                    loc = index;
-                                }
-                                index++;
-                            }
-                            if (exisits)
-                            {
-                                guiItems.get(loc).updateQuantityLabelAmount();
-                            }
-                            else
-                            {
-                                guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
-                            }
 
-                            displayChangeDue = false;
-                            updateCartScreen();
+                    Item myItem = new Item(paperChoice);
+                    if (!myItem.getID().isEmpty() && !myItem.getUPC().isEmpty())
+                    {//then we have a real item!
+                        curCart.addItem(myItem);
+                        boolean exisits = false;
+                        int index = 0;
+                        int loc = 0;
+                        for (GuiCartItem item : guiItems)
+                        {
+                            if (item.getUPC().contentEquals(myItem.getUPC()))
+                            {
+                                exisits = true;
+                                loc = index;
+                            }
+                            index++;
                         }
-                    }
-                    else
-                    {
-                        JFrame message1 = new JFrame("");
-                        JOptionPane.showMessageDialog(message1, "Select an employee first!");
-                    }
-                    textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
-                }//end actionPerformed
-            }
+                        if (exisits)
+                        {
+                            guiItems.get(loc).updateQuantityLabelAmount();
+                        }
+                        else
+                        {
+                            guiItems.add(new GuiCartItem(myItem, curCart.getItems().size() * 15, jPanel1, curCart, myself));
+                        }
 
-            );
+                        displayChangeDue = false;
+                        updateCartScreen();
+                    }
+                }
+                else
+                {
+                    JFrame message1 = new JFrame("");
+                    JOptionPane.showMessageDialog(message1, "Select an employee first!");
+                }
+                textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+            }//end actionPerformed
+        }
+        );
 
-            refundButton.addActionListener ( new java.awt.event.ActionListener() {
-            
+        refundButton.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
                 if (!employeeSelectionHeader.getText().contains("NONE"))
@@ -3216,8 +3316,10 @@ public class MainFrame extends javax.swing.JFrame {
         this.add(refundButton);
         noSaleButton.setVisible(true);
         this.add(noSaleButton);
-        upsButton.setVisible(true);
+        upsButton.setVisible(false);//No longer provide UPS Services. 10-4-22
         this.add(upsButton);
+        this.add(rxHistoryButton);
+        rxHistoryButton.setVisible(false);
 
         // //KEYBINDINGS
         rxButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "Page Up");
@@ -3256,6 +3358,33 @@ public class MainFrame extends javax.swing.JFrame {
             activateDisplayButton.setVisible(false);
             createTicket.setVisible(false);
 
+        }
+        else if (ConfigFileReader.getRegisterID().contentEquals("Y"))//Hidden mode RX Lookup Only.
+        {
+            rxButton.setVisible(false);
+            otcButton.setVisible(false);
+            upsButton.setVisible(false);
+            cashButton.setVisible(false);
+            checkButton.setVisible(false);
+            creditButton.setVisible(false);
+            debitButton.setVisible(false);
+            splitTenderButton.setVisible(false);
+            paidOutButton.setVisible(false);
+            reprintReceiptButton.setVisible(false);
+            paperButton.setVisible(false);
+            loadTicket.setVisible(true);
+            refundButton.setVisible(false);
+            noSaleButton.setVisible(false);
+            //lookupReceiptByRXButton.setVisible(false); re-enabled 11-30-2020
+            beginSplitTicketButton.setVisible(false);
+            chargeButton.setVisible(false);
+            activateDisplayButton.setVisible(false);
+            createTicket.setVisible(true);
+            voidButton.setVisible(false);
+            dmeRentalButton.setVisible(false);
+            dmePaymentButton.setVisible(false);
+            arPaymentButton.setVisible(false);
+            rxHistoryButton.setVisible(true);
         }
     }//end JFrame
 
@@ -3642,7 +3771,7 @@ public class MainFrame extends javax.swing.JFrame {
         paperButton.setVisible(true);
         creditButton.setVisible(true);
         debitButton.setVisible(true);
-        upsButton.setVisible(true);
+        upsButton.setVisible(false);//No longer provide UPS Services. 10-4-22
         massPrechargeButton.setVisible(true);
         beginSplitTicketButton.setVisible(true);
 
@@ -3723,7 +3852,7 @@ public class MainFrame extends javax.swing.JFrame {
         paperButton.setVisible(true);
         creditButton.setVisible(true);
         debitButton.setVisible(true);
-        upsButton.setVisible(true);
+        upsButton.setVisible(false);//No longer provide UPS Services. 10-4-22
         massPrechargeButton.setVisible(true);
         cashButton.setVisible(true);
         creditButton.setVisible(true);
@@ -4103,6 +4232,7 @@ public class MainFrame extends javax.swing.JFrame {
     JButton otcButton = new JButton("OTC");
     ImageIcon upsimg = new ImageIcon(getClass().getResource("images/ups.png"));
     int activeClerksPasscode = 0;
+    JButton rxHistoryButton = new JButton("RX History");
     JButton upsButton = new JButton(upsimg);
     JButton dmeRentalButton = new JButton("DME Rental");
     JButton paperButton = new JButton("Paper");
@@ -4128,9 +4258,11 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.13";
+    String currentVersion = "1.3.15";
     String updateString = ""
-            + "+Added support for Watchman and Leader being seperately priced papers.\n"
+            + "+Added Open Ticket to Tech PoS Client\n"
+            + "+Added Save Ticket to Tech PoS Client\n"
+            + "+Added RX History lookup to Tech PoS Client\n"
             + "\"Life before Death, Strength before Weakness, Journey before Destination.\"\n"
             + "                  ~The Ideal of Radiance~";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);

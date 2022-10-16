@@ -150,14 +150,14 @@ public class HolidayLoader {
             }
         });*/
         
-        //Haleys
-        JButton lastDay = new JButton("11 Years.");
+        //Bevs
+        JButton lastDay = new JButton("30 Years <3");
         lastDay.setLocation(800, 25);
         lastDay.setSize(300, 25);
         lastDay.setBackground(new Color(134, 248, 255));
         lastDay.setVisible(true);
 
-        JLabel goodbyeMessage = new JLabel("Congratulations Haley on 11 great years! Best of wishes on a bright future! Love, Your Family!");
+        JLabel goodbyeMessage = new JLabel("Congratulations Bev on 30 great years! Enjoy a well earned retirement! Love, Your Work Family!");
         goodbyeMessage.setSize(800, 300);
         goodbyeMessage.setLocation(10, -115);
         goodbyeMessage.setVisible(true);
@@ -168,7 +168,7 @@ public class HolidayLoader {
         
         lastDay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                EasterEgg ee = new EasterEgg("images/lastDay2.gif", "sounds/onmyway.wav", "", "Thank you for the memories!");
+                EasterEgg ee = new EasterEgg("images/lastDay3.gif", "sounds/moonlight.wav", "", "Thank you for the memories!");
                 mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
         });

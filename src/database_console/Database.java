@@ -93,16 +93,16 @@ public class Database {
         return refundData;
     }
 
-        public static ArrayList<String> getRxPickupListByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+    public static ArrayList<String> getRxPickupListByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         ArrayList<String> refundData = new ArrayList<>();
         DateTimeFormatter mmddyy = DateTimeFormatter.ofPattern("MMddyy");
         String query = "select * from receipts where isRx = 1 and (receiptNum like '" + startDate.format(mmddyy) + "%'";
-        while(!startDate.isEqual(endDate))
+        while (!startDate.isEqual(endDate))
         {
             startDate = startDate.plusDays(1);
-            query+= " or receiptNum like '" + startDate.format(mmddyy) +"%'";
+            query += " or receiptNum like '" + startDate.format(mmddyy) + "%'";
         }
-        query +=") order by rxNumber;";
+        query += ") order by rxNumber;";
         try
         {
             Class.forName(driverPath);
@@ -113,7 +113,7 @@ public class Database {
             while (rs.next())
             {
                 String tempString = rs.getString(2);
-                String date = tempString.substring(0, 2) + "/" + tempString.substring(2,4) + "/" + tempString.substring(4,6);
+                String date = tempString.substring(0, 2) + "/" + tempString.substring(2, 4) + "/" + tempString.substring(4, 6);
                 refundData.add("Date: " + date + "  Rx Number:  " + rs.getString(9));
             }//end while
             con.close();
@@ -124,7 +124,7 @@ public class Database {
         }
         return refundData;
     }
-        
+
     public static void createSmsSubscriber(String accountName, String phoneNumber) {
         try
         {
@@ -1584,7 +1584,7 @@ public class Database {
                     System.out.println(e);
                 }
                 // Value transmitted to done()
-                
+
                 return true;
             }
 
@@ -2095,6 +2095,39 @@ public class Database {
         return rxs;
     }
 
+    public static ArrayList<Item> getRxReceiptHistoryFromRxNumber(int rxNumber) {
+        ArrayList<Item> loadedItems = new ArrayList<>();
+        try
+        {
+            Class.forName(driverPath);
+            Connection con = DriverManager.getConnection(
+                    host, userName, password);
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from receipts where rxNumber = '" + rxNumber + "' order by pid desc");
+
+            while (rs.next())
+            {
+                // System.out.println(rs.getString(2));
+                if (rs.getInt(9) == rxNumber)
+                {
+                    Item item = new Item(rs.getInt(9), rs.getString(11),rs.getString(10),rs.getDouble(6),rs.getBoolean(15));
+                    item.pickupDate = rs.getString(2).substring(0, 6);
+                    loadedItems.add(item);
+                    //loadedItems.add(new RefundItem(this, rs.getString(3), rs.getString(4), rs.getString(5), rs.getDouble(6), rs.getDouble(7), rs.getBoolean(8), rs.getInt(9), rs.getInt(10), rs.getString(11), rs.getString(12), rs.getInt(13), rs.getBoolean(14), rs.getDouble(15), rs.getBoolean(16),rs.getBoolean(17),rs.getBoolean(18)));
+                }//end if
+
+            }//end while
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+
+        return loadedItems;
+    }
+
     public static void updateReceipt(RefundCart curCart, String receiptNum) {
         for (RefundItem item : curCart.getRefundItems())
         {
@@ -2147,7 +2180,7 @@ public class Database {
         return false;
     }
 
-        public static boolean doesItemExistByUPCButNotPID(String upc, int pid) {
+    public static boolean doesItemExistByUPCButNotPID(String upc, int pid) {
         try
         {
             Class.forName(driverPath);
@@ -2170,7 +2203,7 @@ public class Database {
         }
         return false;
     }
-        
+
     public static boolean doesItemExistByID(String mutID) {
         try
         {
@@ -2195,7 +2228,7 @@ public class Database {
         return false;
     }
 
-        public static boolean doesItemExistByIDButNotPID(String mutID, int pid) {
+    public static boolean doesItemExistByIDButNotPID(String mutID, int pid) {
         try
         {
             Class.forName(driverPath);
@@ -2218,7 +2251,7 @@ public class Database {
         }
         return false;
     }
-        
+
     public static void addItem(String mutID, String upc, String name, double price, double cost, boolean taxed, int category) {
         try
         {
