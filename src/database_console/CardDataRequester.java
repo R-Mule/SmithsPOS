@@ -128,6 +128,7 @@ public class CardDataRequester {
                     
                     approvalCodeHandler ach = new approvalCodeHandler(cardType, responseCode);
                     responseText = ach.getResponseText();
+                    //ErrorLogger.writeErrorMsg("Response:+\n\n" + xml +"\n\nDBF:\n\n" + dbf + "\n\nDB:\n\n" + db + "\n\n" + responseText); //DIAGNOSTIC!!!! This logs the response to an error file. Cut on when needing diag.
                     if (ach.isApproved())
                     {//this checks to make sure the trans is approved before we parse stuff that doesn't exisit.
                         authAmt = doc.getElementsByTagName("AUTH_AMOUNT").item(0).getTextContent();
@@ -138,7 +139,7 @@ public class CardDataRequester {
                             //gets here
                             approvalCode = doc.getElementsByTagName("AUTH_CODE").item(0).getTextContent();
                             last4ofCard = doc.getElementsByTagName("AUTH_MASKED_ACCOUNT_NBR").item(0).getTextContent();
-                            last4ofCard = last4ofCard.substring(last4ofCard.lastIndexOf('X'));
+                            last4ofCard = last4ofCard.substring(last4ofCard.lastIndexOf('*'));
                             //gets here too
                             cardEntryMethod = doc.getElementsByTagName("CARD_ENT_METH").item(0).getTextContent();
                             if (cardEntryMethod.contentEquals("G"))
@@ -156,6 +157,7 @@ public class CardDataRequester {
                             responseText = "CARD Error code: 2. Please report error to manager, then try again.";
                             transTerminate = true;
                             System.out.println("MUST BE AN ERROR!!");
+                            ErrorLogger.writeErrorMsg("Response:+\n\n" + xml +"\n\nDBF:\n\n" + dbf + "\n\nDB:\n\n" + db + "\n\n" + responseText);
                         }
                     }
                     else
@@ -163,6 +165,7 @@ public class CardDataRequester {
                         responseText = "CARD Error code: 3. Transcation Declined.";
                         transTerminate = true;
                         System.out.println("TRANS DECLINED1??");
+                        ErrorLogger.writeErrorMsg("Response:+\n\n" + xml +"\n\nDBF:\n\n" + dbf + "\n\nDB:\n\n" + db + "\n\n" + responseText);
                     }
                 }
                 else
@@ -170,6 +173,7 @@ public class CardDataRequester {
                     responseText = "CARD Error code: 4. Most likely a timeout issue. \nAuthorization Response Code: " + responseCode + "\n (Card was not swiped or inserted soon enough after button was pressed)";
                     transTerminate = true;
                     System.out.println("TRANS DECLINED2??");
+                    ErrorLogger.writeErrorMsg("Response:+\n\n" + xml +"\n\nDBF:\n\n" + dbf + "\n\nDB:\n\n" + db + "\n\n" + responseText);
                 }
             }
             catch (SAXException | IOException e)

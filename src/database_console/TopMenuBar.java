@@ -47,7 +47,7 @@ public class TopMenuBar extends JMenuBar {
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload, editItem,
             masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
-            editEmployee, arAuditReport, masterRefundAuditReport, rxPickupReport, customerDataUpload, ticketReport, addSmsSub, remSmsSub, viewSmsSub, viewCustomer, addCustomer, remCustomer,
+            editEmployee, arAuditReport, masterRefundAuditReport, rxPickupReport, dispensationReport, customerDataUpload, ticketReport, addSmsSub, remSmsSub, viewSmsSub, viewCustomer, addCustomer, remCustomer,
             christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
     int totalCntr = 0;
@@ -188,10 +188,14 @@ public class TopMenuBar extends JMenuBar {
         masterRefundAuditReport = new JMenuItem();
         masterRefundAuditReport.setText("Master Refund Report");
         mgmtMenu.add(masterRefundAuditReport);
+        //Replaced by the Dispensation Report
+        //rxPickupReport = new JMenuItem();
+        //rxPickupReport.setText("RX Pickup Report");
+        //mgmtMenu.add(rxPickupReport);
 
-        rxPickupReport = new JMenuItem();
-        rxPickupReport.setText("RX Pickup Report");
-        mgmtMenu.add(rxPickupReport);
+        dispensationReport = new JMenuItem();
+        dispensationReport.setText("Dispensation Report");
+        mgmtMenu.add(dispensationReport);
 
         updatePrice = new JMenuItem();
         updatePrice.setText("Update Price");
@@ -442,10 +446,16 @@ public class TopMenuBar extends JMenuBar {
             }
         });
 
-        rxPickupReport.addActionListener(new java.awt.event.ActionListener() {
+        /*rxPickupReport.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rxPickupReportActionPerformed(evt);
+            }
+        });*/
+        dispensationReport.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dispensationReportActionPerformed(evt);
             }
         });
 
@@ -2125,6 +2135,34 @@ public class TopMenuBar extends JMenuBar {
 
     }//end rxPickupReportActionPerformed
 
+    private void dispensationReportActionPerformed(java.awt.event.ActionEvent evt) {
+        DateRangeSelector drs = new DateRangeSelector();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMddyy");
+        DateTimeFormatter dateFormatFull = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        if (drs.validDates())
+        {
+            LocalDateTime startDate = drs.getStartDate();
+            LocalDateTime endDate = drs.getEndDate();
+
+            ArrayList<String> reportData = Database.getRxPickupListByDateRange(startDate, endDate);
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV File", "csv");
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileFilter(filter);
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.name")));
+            int result = fileChooser.showOpenDialog(mf);
+            if (result == JFileChooser.APPROVE_OPTION)
+            {
+                File selectedFile = fileChooser.getSelectedFile();
+
+                DispensationReportGenerator drg = new DispensationReportGenerator(reportData); //Passes our data to the report.
+                drg.loadAndSaveQs1ReportData(selectedFile.getAbsolutePath(), "C:\\pos\\REPORTS\\DISPENSATION_REPORT-" + startDate.format(dateFormat) + "_" + endDate.format(dateFormat) + ".docx", startDate.format(dateFormatFull), endDate.format(dateFormatFull));//Passes the file path of the Qs1 Data to the report and the save to path.
+
+            }
+        }
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+
+    }//end dispensationReportActionPerformed
+
     private void drawerReportsActionPerformed(java.awt.event.ActionEvent evt) {
 
         JFrame textInputFrame = new JFrame("");
@@ -2922,7 +2960,8 @@ public class TopMenuBar extends JMenuBar {
                 mgmtMenu.setVisible(true);
                 addEmployee.setVisible(true);//Only Hollie and I may add or remove employees.
                 masterRefundAuditReport.setVisible(true);
-                rxPickupReport.setVisible(true);
+                //rxPickupReport.setVisible(true);
+                dispensationReport.setVisible(true);
                 remEmployee.setVisible(true);
                 drawerReports.setVisible(true);
                 masterRptRecpt.setVisible(true);
@@ -2954,7 +2993,8 @@ public class TopMenuBar extends JMenuBar {
                 mgmtMenu.setVisible(true);
                 drawerReports.setVisible(false);
                 masterRefundAuditReport.setVisible(false);
-                rxPickupReport.setVisible(true);
+                //rxPickupReport.setVisible(true);
+                dispensationReport.setVisible(true);
                 arAuditReport.setVisible(false);
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(false);
@@ -2985,7 +3025,8 @@ public class TopMenuBar extends JMenuBar {
                 rxDataUpload.setVisible(false);
                 customerDataUpload.setVisible(false);
                 masterRefundAuditReport.setVisible(false);
-                rxPickupReport.setVisible(true);
+                //rxPickupReport.setVisible(true);
+                dispensationReport.setVisible(true);
                 dmeDataUpload.setVisible(false);
                 drawerReports.setVisible(false);
                 arAuditReport.setVisible(false);
@@ -3008,7 +3049,8 @@ public class TopMenuBar extends JMenuBar {
             case 1:
                 //remMenu.setVisible(true);
                 addMenu.setVisible(true);
-                rxPickupReport.setVisible(false);
+                //rxPickupReport.setVisible(false);
+                dispensationReport.setVisible(false);
                 // addMenu.setVisible(false);
                 //remMenu.setVisible(true);
                 addRxAccount.setVisible(false);

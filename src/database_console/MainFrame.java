@@ -4258,11 +4258,11 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.15";
+    String currentVersion = "1.3.17";
     String updateString = ""
-            + "+Added Open Ticket to Tech PoS Client\n"
-            + "+Added Save Ticket to Tech PoS Client\n"
-            + "+Added RX History lookup to Tech PoS Client\n"
+            + "+Added Dispensation Report\n"
+            + "+Added Additional Diagnostics to Credit/Debit Card Processing\n"
+            + "-Removed Rx Pickup Report (replaced by new report)\n"
             + "\"Life before Death, Strength before Weakness, Journey before Destination.\"\n"
             + "                  ~The Ideal of Radiance~";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
