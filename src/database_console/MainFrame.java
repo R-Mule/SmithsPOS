@@ -618,7 +618,7 @@ public class MainFrame extends javax.swing.JFrame {
                             resaveTicket.setVisible(true);
                             updateCartScreen();
                         }
-                        else
+                        else if(activeEmployee.permissionLevel > 1)
                         {//Load All Tickets into selectable GUI
                             //Sorry no such ticket found
                             String[] choices = Database.getAllTicketsNames();
@@ -650,7 +650,11 @@ public class MainFrame extends javax.swing.JFrame {
 
                                 } //end if
                             }//end if
-                        }//end else
+                        }else //Permission not allowed for them to search all tickets.
+                        {
+                            JFrame message1 = new JFrame("");
+                            JOptionPane.showMessageDialog(message1, "Couldn't find that ticket.");
+                        }
 
                     }
 
@@ -3359,10 +3363,10 @@ public class MainFrame extends javax.swing.JFrame {
             createTicket.setVisible(false);
 
         }
-        else if (ConfigFileReader.getRegisterID().contentEquals("Y"))//Hidden mode RX Lookup Only.
+        else if (ConfigFileReader.getRegisterID().contentEquals("Y"))//Hidden mode RX Lookup/Ticket loader Only.
         {
-            rxButton.setVisible(false);
-            otcButton.setVisible(false);
+            //rxButton.setVisible(false); //re-enabled 12-23-2022
+            otcButton.setVisible(true);
             upsButton.setVisible(false);
             cashButton.setVisible(false);
             checkButton.setVisible(false);
@@ -3371,7 +3375,7 @@ public class MainFrame extends javax.swing.JFrame {
             splitTenderButton.setVisible(false);
             paidOutButton.setVisible(false);
             reprintReceiptButton.setVisible(false);
-            paperButton.setVisible(false);
+            paperButton.setVisible(true);
             loadTicket.setVisible(true);
             refundButton.setVisible(false);
             noSaleButton.setVisible(false);
@@ -4258,11 +4262,9 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.17";
+    String currentVersion = "1.3.20";
     String updateString = ""
-            + "+Added Dispensation Report\n"
-            + "+Added Additional Diagnostics to Credit/Debit Card Processing\n"
-            + "-Removed Rx Pickup Report (replaced by new report)\n"
+            + "+Added OTC and Paper buttons to loader and lookup POS Clients.\n"
             + "\"Life before Death, Strength before Weakness, Journey before Destination.\"\n"
             + "                  ~The Ideal of Radiance~";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
