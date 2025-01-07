@@ -21,8 +21,8 @@ public class DrawerReport implements Serializable {
     final private double TAXRATE = 0.053;
     CategoryFinder catFind = new CategoryFinder();
 
-    private ArrayList<String> employeeNames = new ArrayList<String>();//UPDATED
-    private ArrayList<Integer> employeeTransactions = new ArrayList<Integer>();//UPDATED
+    protected ArrayList<String> employeeNames = new ArrayList<String>();//UPDATED
+    protected ArrayList<Integer> employeeTransactions = new ArrayList<Integer>();//UPDATED
 
     //TOTAL AMOUNTS OF $ IN DRAWERS
     protected double totalCoinsAmt = 0;//UPDATED
@@ -35,29 +35,29 @@ public class DrawerReport implements Serializable {
     protected double lunchChargedAmt = 0;
 
     //Total Refunded Today
-    private double totalRefundedCash = 0;//UPDATED
-    private double totalRefundedCredit = 0;//UPDATED
-    private ArrayList<String> masterRefundDescriptionAndAmt = new ArrayList<>();
+    protected double totalRefundedCash = 0;//UPDATED
+    protected double totalRefundedCredit = 0;//UPDATED
+    protected ArrayList<String> masterRefundDescriptionAndAmt = new ArrayList<>();
 
     //lunch counter
-    private ArrayList<String> lunchErrorLog = new ArrayList<>();
+    protected ArrayList<String> lunchErrorLog = new ArrayList<>();
     protected double lunchTotalAmt = 0;
-    private double lunchTotalCash = 0;
-    private double lunchTotalCredit = 0;
-    private double lunchTotalDebit = 0;
-    private double lunchTotalCheck = 0;
-    private ArrayList<String> employeesWhoPaidForItems = new ArrayList<>();
-    private ArrayList<ArrayList<String>> itemsEmployeesBought = new ArrayList<>();
-    private ArrayList<Double> amtEmployeePaidForAllItems = new ArrayList<>();
+    protected double lunchTotalCash = 0;
+    protected double lunchTotalCredit = 0;
+    protected double lunchTotalDebit = 0;
+    protected double lunchTotalCheck = 0;
+    protected ArrayList<String> employeesWhoPaidForItems = new ArrayList<>();
+    protected ArrayList<ArrayList<String>> itemsEmployeesBought = new ArrayList<>();
+    protected ArrayList<Double> amtEmployeePaidForAllItems = new ArrayList<>();
 
     //Total American Greetings Cards Sold
-    private double totalAmericanGreetings = 0;
+    protected double totalAmericanGreetings = 0;
 
     //Total Tax Charged Today
-    private double totalTaxCharged = 0;//UPDATED
+    protected double totalTaxCharged = 0;//UPDATED
 
     //MANUAL CHARGES
-    private double totalChargesRXAmt = 0;//UPDATED
+    protected double totalChargesRXAmt = 0;//UPDATED
 
     protected ArrayList<String> accountNameCharged = new ArrayList<String>();//UPDATED
     protected ArrayList<Double> amountChargedToAccount = new ArrayList<Double>();//UPDATED
@@ -65,28 +65,28 @@ public class DrawerReport implements Serializable {
     protected ArrayList<ArrayList<String>> receiptNumbersChargedToAccount = new ArrayList<ArrayList<String>>();
 
     //PAID OUTS
-    private ArrayList<String> descriptionsPO = new ArrayList<String>();//UPDATED
-    private ArrayList<Double> amountsPO = new ArrayList<Double>();//UPDATED
+    protected ArrayList<String> descriptionsPO = new ArrayList<String>();//UPDATED
+    protected ArrayList<Double> amountsPO = new ArrayList<Double>();//UPDATED
 
     //ACCOUNT PAYMENT TOTALS
-    private double totalARPayments = 0;//UPDATED
+    protected double totalARPayments = 0;//UPDATED
     protected ArrayList<String> ARAccountName = new ArrayList<String>();//UPDATED
     protected ArrayList<Double> amountPaidToARAccount = new ArrayList<Double>();//UPDATED
     protected ArrayList<ArrayList<String>> receiptNumbersPaidToAccount = new ArrayList<ArrayList<String>>();
 
-    private double totalDMEPayments = 0;//UPDATED
+    protected double totalDMEPayments = 0;//UPDATED
     protected ArrayList<String> DMEAccountName = new ArrayList<String>();//UPDATED
     protected ArrayList<Double> amountPaidToDMEAccount = new ArrayList<Double>();//UPDATED
     protected ArrayList<ArrayList<String>> receiptNumbersPaidToDMEAccount = new ArrayList<ArrayList<String>>();
 
     //ITEM CATEGORIES
-    private double otcTaxedTotal = 0;//updated
-    private double otcNonTaxedTotal = 0;//UPDATED
-    private double dmeWithTax = 0;//UPDATED
-    private double dmeWithoutTax = 0;//UPDATED
-    private double totalRXCoppay = 0;//UPDATED
-    private double totalPaperSales = 0;//UPDATED
-    private double totalUPSSales = 0;//UPDATED
+    protected double otcTaxedTotal = 0;//updated
+    protected double otcNonTaxedTotal = 0;//UPDATED
+    protected double dmeWithTax = 0;//UPDATED
+    protected double dmeWithoutTax = 0;//UPDATED
+    protected double totalRXCoppay = 0;//UPDATED
+    protected double totalPaperSales = 0;//UPDATED
+    protected double totalUPSSales = 0;//UPDATED
 
     DrawerReport(Cart curCart, String clerkName, String[] paymentType, double[] paymentAmt, String employeeCheckoutName, boolean isPayCheckReceipt, String receiptNumber) {
         //FIRST TIME REPORT IS MADE. DEFAULT VALUE TIME!
@@ -122,7 +122,12 @@ public class DrawerReport implements Serializable {
             totalCoinsAmt = round(totalCoinsAmt * -1);
         }
     }
-
+    
+    //To be used to combine multiple Drawer Reports (Master Drawer Report uses this)
+    DrawerReport(){
+        
+    }
+    
     public void masterRefund(double amount, String description) {
         masterRefundDescriptionAndAmt.add(description + "@" + amount);
         totalRefundedCash += amount;
@@ -781,6 +786,271 @@ public class DrawerReport implements Serializable {
         try
         {
             fw = new FileWriter(REPORTFILENAME + date + ".txt");//Report for Hollie
+            bw = new BufferedWriter(fw);
+            bw.write(totalCoinsAmt + "\n");
+            bw.write(totalCashAmt + "\n");
+            bw.write(totalChecksAmt + "\n");
+            bw.write(totalCreditAmt + "\n");
+            bw.write(totalDebitAmt + "\n");
+
+            bw.write(totalRefundedCash + "\n");
+            bw.write(totalRefundedCredit + "\n");
+
+            bw.write(totalTaxCharged + "\n");
+
+            bw.write(totalChargesRXAmt + "\n");
+
+            double total = 0;
+            for (double amt : amountsPO)
+            {
+                total += amt;
+            }
+            total = round(total);
+            bw.write(total + "\n");//TOTAL PAID OUTS!
+
+            bw.write(totalARPayments + "\n");
+            bw.write(totalDMEPayments + "\n");
+
+            bw.write(otcTaxedTotal + "\n");
+            bw.write(otcNonTaxedTotal + "\n");
+            bw.write(dmeWithTax + "\n");
+            bw.write(dmeWithoutTax + "\n");
+            bw.write(totalRXCoppay + "\n");
+            bw.write(totalPaperSales + "\n");
+            bw.write(totalAmericanGreetings + "\n");
+            bw.write(totalUPSSales + "\n");
+            bw.write(totalPayCheckPayments + "\n");
+            bw.write(lunchChargedAmt + "\n");
+
+            if (!masterRefundDescriptionAndAmt.isEmpty())
+            {
+                bw.write("\nMaster Refunds: \n");
+                for (String s : masterRefundDescriptionAndAmt)
+                {
+                    bw.write(s + "\n");
+                }
+            }
+
+            bw.write("\nEMPLOYEE TRANSACTIONS:\n");
+            int index = 0;
+            for (String name : employeeNames)
+            {
+                bw.write(name + "  " + employeeTransactions.get(index) + "\n");
+                index++;
+            }
+
+            bw.write("\nPAID OUTS:\n");
+            index = 0;
+            for (String s : descriptionsPO)
+            {
+                bw.write(s + "  " + amountsPO.get(index) + "\n");
+                index++;
+            }
+
+            bw.write("\n EMPLOYEE TRANSACTION DATA:\n");
+            bw.write("Lunch Total Collected: $" + lunchTotalAmt + "\n");
+            bw.write("Lunch Check Total Collected: $" + lunchTotalCheck + "\n");
+            bw.write("Lunch Cash Total Collected: $" + lunchTotalCash + "\n");
+            bw.write("Lunch Credit Total Collected: $" + lunchTotalCredit + "\n\n");
+
+            index = 0;
+            for (String s : employeesWhoPaidForItems)
+            {
+                bw.write("Employee Name: " + s + "\n");
+                bw.write("Total Paid: " + amtEmployeePaidForAllItems.get(index) + "\n");
+                ArrayList<String> temp = itemsEmployeesBought.get(index);
+                for (String item : temp)
+                {
+                    bw.write(item + "\n");
+                }
+                bw.write("\n");
+                index++;
+            }
+
+            if (!lunchErrorLog.isEmpty())
+            {
+                for (String error : lunchErrorLog)
+                {
+                    bw.write(error + "\n");
+                }
+                bw.write("\n");
+            }
+
+        }
+        catch (IOException e)
+        {
+
+            e.printStackTrace();
+
+        }
+        finally
+        {
+
+            try
+            {
+
+                if (bw != null)
+                {
+                    bw.close();
+                }
+
+                if (fw != null)
+                {
+                    fw.close();
+                }
+
+            }
+            catch (IOException ex)
+            {
+
+                ex.printStackTrace();
+
+            }
+
+        }
+
+    }
+    
+    public void generateMasterReport(String date) {
+        try
+        {
+            if (!accountNameCharged.isEmpty() || !ARAccountName.isEmpty())
+            {
+                fw = new FileWriter(HOLLIEFILENAME + date + "Master.txt");//Hollie's Accounts (RX)
+                bw = new BufferedWriter(fw);
+                bw.write("Charges: \n");
+
+                int index = 0;
+                for (String s : accountNameCharged)
+                {
+                    bw.write("******************************\n");
+                    bw.write("Account Name: " + s + "\n");
+                    bw.write("Total Charged: " + amountChargedToAccount.get(index) + "\n");
+                    ArrayList<String> temp = itemsChargedToAccount.get(index);
+                    for (String item : temp)
+                    {
+                        bw.write(item + "\n");
+                    }
+
+                    bw.write("\nReceipts for " + s + " Charges\n");
+                    for (String receipt : receiptNumbersChargedToAccount.get(index))
+                    {
+                        bw.write(receipt + "\n");
+                    }
+                    bw.write("******************************\n\n");
+                    index++;
+                }
+
+                if (!ARAccountName.isEmpty())
+                {
+                    bw.write("\n Account Payments: \n");
+                    index = 0;
+                    for (String name : ARAccountName)
+                    {
+                        bw.write("******************************\n");
+                        bw.write(name + " " + amountPaidToARAccount.get(index) + "\n\n");
+                        bw.write("Receipts for " + name + " Payments:\n");
+                        for (String receiptNumber : receiptNumbersPaidToAccount.get(index))
+                        {
+                            bw.write(receiptNumber + "\n");
+                        }
+                        bw.write("******************************\n\n");
+                        index++;
+                    }
+                }
+            }
+        }
+        catch (IOException e)
+        {
+
+            e.printStackTrace();
+
+        }
+        finally
+        {
+
+            try
+            {
+
+                if (bw != null)
+                {
+                    bw.close();
+                }
+
+                if (fw != null)
+                {
+                    fw.close();
+                }
+
+            }
+            catch (IOException ex)
+            {
+
+                ex.printStackTrace();
+
+            }
+
+        }
+
+        try
+        {
+            if (!DMEAccountName.isEmpty())
+            {
+                fw = new FileWriter(DEBBIEFILENAME + date + "Master.txt");//Debbie's Accounts (RX)
+                bw = new BufferedWriter(fw);
+                int index = 0;
+                bw.write("Account Payments: \n");
+                
+                for (String name : DMEAccountName)
+                {
+                    bw.write("******************************\n");
+                    bw.write(name + " " + amountPaidToDMEAccount.get(index) + "\n");
+                    bw.write("Receipts for " + name + " Payments: \n");
+                    for (String receipt : receiptNumbersPaidToDMEAccount.get(index))
+                    {
+                        bw.write(receipt +"\n");
+                    }
+                    bw.write("******************************\n\n");
+                    index++;
+                }
+            }
+
+        }
+        catch (IOException e)
+        {
+
+            e.printStackTrace();
+
+        }
+        finally
+        {
+
+            try
+            {
+
+                if (bw != null)
+                {
+                    bw.close();
+                }
+
+                if (fw != null)
+                {
+                    fw.close();
+                }
+
+            }
+            catch (IOException ex)
+            {
+
+                ex.printStackTrace();
+
+            }
+
+        }
+
+        try
+        {
+            fw = new FileWriter(REPORTFILENAME + date + "Master.txt");//Report for Hollie
             bw = new BufferedWriter(fw);
             bw.write(totalCoinsAmt + "\n");
             bw.write(totalCashAmt + "\n");

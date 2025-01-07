@@ -93,8 +93,8 @@ public class EasterEgg {
                 DataLine.Info info = new DataLine.Info(Clip.class, format);
 
                 this.audioClipSaved = (Clip) AudioSystem.getLine(info);
-                audioClipSaved.open(audioStream);
-                audioClipSaved.start();
+                this.audioClipSaved.open(audioStream);
+                this.audioClipSaved.start();
                 // audioClip.stop();
 
             }

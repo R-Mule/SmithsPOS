@@ -46,7 +46,7 @@ public class TopMenuBar extends JMenuBar {
     JMenu addMenu, remMenu, mgmtMenu, viewMenu, feedMenu, themeMenu;
     JMenuItem addDmeAccount, remDmeAccount, addRxAccount, remRxAccount, addInsurance, remInsurance,
             addEmployee, remEmployee, addInventoryItem, remInventoryItem, dmeDataUpload, rxDataUpload, editItem,
-            masterRefund, masterRptRecpt, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
+            masterRefund, masterRptRecpt, masterDrawerReport, drawerReports, updatePrice, bugReport, featureRequest, mutualFileUpload, ncaaReportUpload,
             editEmployee, arAuditReport, masterRefundAuditReport, rxPickupReport, dispensationReport, customerDataUpload, ticketReport, addSmsSub, remSmsSub, viewSmsSub, viewCustomer, addCustomer, remCustomer,
             christmasTheme, thanksgivingTheme, fourthTheme, saintPatsTheme, easterTheme, summerTimeTheme, halloweenTheme, valentinesTheme; //bugReport and featureRequest - Hollie's suggestions
     MainFrame mf;
@@ -176,7 +176,11 @@ public class TopMenuBar extends JMenuBar {
         drawerReports = new JMenuItem();
         drawerReports.setText("Drawer Reports");
         mgmtMenu.add(drawerReports);//This adds Drawer Reports to Management Menu Choices
-
+        
+        masterDrawerReport = new JMenuItem();
+        masterDrawerReport.setText("Master Drawer Report");
+        mgmtMenu.add(masterDrawerReport);//This adds Master Drawer Reports to Management Menu Choices
+        
         arAuditReport = new JMenuItem();
         arAuditReport.setText("AR Audit Reports");
         mgmtMenu.add(arAuditReport);
@@ -425,6 +429,13 @@ public class TopMenuBar extends JMenuBar {
             }
         });
 
+        masterDrawerReport.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                masterDrawerReportActionPerformed(evt);
+            }
+        });
+                
         arAuditReport.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2236,6 +2247,288 @@ public class TopMenuBar extends JMenuBar {
 
     }//end DrawerReportsActionPerformed
 
+    
+    private void masterDrawerReportActionPerformed(java.awt.event.ActionEvent evt) {
+
+        JFrame textInputFrame = new JFrame("");
+        JTextField field1 = new JTextField();
+        field1.addAncestorListener(new RequestFocusListener());
+        Object[] message =
+        {
+            "Master Report Date: EX. 012017", field1
+        };
+        int option = JOptionPane.showConfirmDialog(textInputFrame, message, "Enter Report Name", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION)
+        {
+            try
+            {
+                ArrayList <DrawerReport> reports = new ArrayList<> ();
+                //Load Files for all Drawers and keep track of any that are not found so we can let the user know when finished.
+                boolean rxExists = false;
+                boolean dmeExists = false;
+                boolean cardOnlyExists = false;
+
+                String date = field1.getText().toUpperCase();
+                String rxPath = ConfigFileReader.getRxReportPath() + date + "R.posrf";
+                String dmePath = ConfigFileReader.getDmeReportPath() + date + "D.posrf";
+                String cardOnlyPath = ConfigFileReader.getCardOnlyReportPath() + date + "C.posrf";
+                
+                DrawerReport drRx = null;
+                DrawerReport drDme = null;
+                DrawerReport drCardOnly = null;
+                DrawerReport masterReport = new DrawerReport();
+                
+                File rXDrawerFile = new File(rxPath);
+                File dMEDrawerFile = new File(dmePath);
+                File cardOnlyDrawerFile = new File(cardOnlyPath);
+
+                if (rXDrawerFile.exists() && !rXDrawerFile.isDirectory())
+                {
+                    // read object from file
+                    FileInputStream fisRx = new FileInputStream(rxPath);
+                    ObjectInputStream oisRx = new ObjectInputStream(fisRx);
+                    drRx = (DrawerReport) oisRx.readObject();
+                    drRx.generateReport(date + "R"); //This makes the classic Report File for this drawer, just as well do it while we are at it.
+                    oisRx.close();
+                    rxExists = true;
+                    reports.add(drRx);
+                }
+                
+                if (dMEDrawerFile.exists() && !dMEDrawerFile.isDirectory())
+                {
+                    // read object from file
+                    FileInputStream fisDme = new FileInputStream(dmePath);
+                    ObjectInputStream oisDme = new ObjectInputStream(fisDme);
+                    drDme = (DrawerReport) oisDme.readObject();
+                    drDme.generateReport(date + "D"); //This makes the classic Report File for this drawer, just as well do it while we are at it.
+                    oisDme.close();
+                    dmeExists = true;
+                    reports.add(drDme);
+                }
+                
+                if (cardOnlyDrawerFile.exists() && !cardOnlyDrawerFile.isDirectory())
+                {
+                    // read object from file
+                    FileInputStream fisCardOnly = new FileInputStream(cardOnlyPath);
+                    ObjectInputStream oisCardOnly = new ObjectInputStream(fisCardOnly);
+                    drCardOnly = (DrawerReport) oisCardOnly.readObject();
+                    drCardOnly.generateReport(date + "C"); //This makes the classic Report File for this drawer, just as well do it while we are at it.
+                    oisCardOnly.close();
+                    cardOnlyExists = true;
+                    reports.add(drCardOnly);
+                }
+                
+                
+                //At this point, All Drawer Reports are loaded and ready to go. Now to merge their information into one new Master Report.
+                for(DrawerReport report : reports)
+                {
+                    //AR Information Merge Begin
+                    
+                    int index = 0;
+                    for(String accName : report.accountNameCharged)
+                    {
+                        if(masterReport.accountNameCharged.contains(accName))
+                        {
+                            int tempIndex = masterReport.accountNameCharged.indexOf(accName);
+                            double tempAmount = masterReport.amountChargedToAccount.get(tempIndex);
+                            masterReport.amountChargedToAccount.set(tempIndex, tempAmount + report.amountChargedToAccount.get(index));
+                            for(String tempItem : report.itemsChargedToAccount.get(index))
+                            {
+                                masterReport.itemsChargedToAccount.get(tempIndex).add(tempItem);
+                            }
+                            for(String tempReceiptNumber : report.receiptNumbersChargedToAccount.get(index))
+                            {
+                                masterReport.receiptNumbersChargedToAccount.get(tempIndex).add(tempReceiptNumber);
+                            }
+                        }
+                        else
+                        {
+                            masterReport.accountNameCharged.add(accName);
+                            masterReport.amountChargedToAccount.add(report.amountChargedToAccount.get(index));
+                            masterReport.itemsChargedToAccount.add(report.itemsChargedToAccount.get(index));
+                            masterReport.receiptNumbersChargedToAccount.add(report.receiptNumbersChargedToAccount.get(index));
+                        }
+                        
+                        index++;
+                    }
+                    
+                    index = 0;
+                    for (String name : report.ARAccountName)
+                    {
+                        if(masterReport.ARAccountName.contains(name))
+                        {
+                            int tempIndex = masterReport.ARAccountName.indexOf(name);
+                            double tempAmount = masterReport.amountPaidToARAccount.get(tempIndex);
+                            masterReport.amountPaidToARAccount.set(tempIndex, tempAmount + report.amountPaidToARAccount.get(index));
+                            for(String receiptNum : report.receiptNumbersPaidToAccount.get(index))
+                            {
+                                masterReport.receiptNumbersPaidToAccount.get(tempIndex).add(receiptNum);
+                            }
+                        }
+                        else
+                        {
+                           masterReport.ARAccountName.add(name);
+                           masterReport.amountPaidToARAccount.add(report.amountPaidToARAccount.get(index));
+                           masterReport.receiptNumbersPaidToAccount.add(report.receiptNumbersPaidToAccount.get(index));
+                        }
+                        
+                        index++;
+                    }
+
+                    //DME AR Information Merge Begin
+                    index = 0;
+                    for (String name : report.DMEAccountName)
+                    {
+                        if(masterReport.DMEAccountName.contains(name))
+                        {
+                            int tempIndex = masterReport.DMEAccountName.indexOf(name);
+                            double tempAmount = masterReport.amountPaidToDMEAccount.get(tempIndex);
+                            masterReport.amountPaidToDMEAccount.set(tempIndex, tempAmount + report.amountPaidToDMEAccount.get(index));
+                            for(String receiptNum : report.receiptNumbersPaidToDMEAccount.get(index))
+                            {
+                                masterReport.receiptNumbersPaidToDMEAccount.get(tempIndex).add(receiptNum);
+                            }
+                        }
+                        else
+                        {
+                            masterReport.DMEAccountName.add(name);
+                            masterReport.amountPaidToDMEAccount.add(report.amountPaidToDMEAccount.get(index));
+                            masterReport.receiptNumbersPaidToDMEAccount.add(report.receiptNumbersPaidToDMEAccount.get(index));
+                        }
+                        
+                        index++;
+                    }
+                    
+                    //Drawer Report Merge Begins
+                    masterReport.totalCoinsAmt += report.totalCoinsAmt;
+                    masterReport.totalCashAmt += report.totalCashAmt;
+                    masterReport.totalChecksAmt += report.totalChecksAmt;
+                    masterReport.totalCreditAmt += report.totalCreditAmt;
+                    masterReport.totalDebitAmt += report.totalDebitAmt;
+                    masterReport.totalRefundedCash += report.totalRefundedCash;
+                    masterReport.totalRefundedCredit += report.totalRefundedCredit;
+                    masterReport.totalTaxCharged += report.totalTaxCharged;
+                    masterReport.totalChargesRXAmt += report.totalChargesRXAmt;
+                    
+                    for (double amt : report.amountsPO)
+                    {
+                        masterReport.amountsPO.add(amt);
+                    }   
+                    
+                    masterReport.totalARPayments += report.totalARPayments;
+                    masterReport.totalDMEPayments += report.totalDMEPayments;
+                    masterReport.otcTaxedTotal += report.otcTaxedTotal;
+                    masterReport.otcNonTaxedTotal += report.otcNonTaxedTotal;
+                    masterReport.dmeWithTax += report.dmeWithTax;
+                    masterReport.dmeWithoutTax += report.dmeWithoutTax;
+                    masterReport.totalRXCoppay += report.totalRXCoppay;
+                    masterReport.totalPaperSales += report.totalPaperSales;
+                    masterReport.totalAmericanGreetings += report.totalAmericanGreetings;
+                    masterReport.totalUPSSales += report.totalUPSSales;
+                    masterReport.totalPayCheckPayments += report.totalPayCheckPayments;
+                    masterReport.lunchChargedAmt += report.lunchChargedAmt;
+                    
+                    for (String s : report.masterRefundDescriptionAndAmt)
+                    {
+                        masterReport.masterRefundDescriptionAndAmt.add(s);
+                    }
+                    
+                    index = 0; //This merges all employee transactions and if the employee name is already there it handles adding their transaction counts across multiple files/registers.
+                    for (String name : report.employeeNames)
+                    {
+                        if(masterReport.employeeNames.contains(name))
+                        {
+                            int tempIndex = masterReport.employeeNames.indexOf(name);
+                            int tempValue = masterReport.employeeTransactions.get(tempIndex);
+                            masterReport.employeeTransactions.set(tempIndex, tempValue + report.employeeTransactions.get(index));
+                        }
+                        else
+                        {
+                            masterReport.employeeNames.add(name);
+                            masterReport.employeeTransactions.add(report.employeeTransactions.get(index));
+                        }
+                        
+                        index++;
+                    }
+                    
+                    index = 0;
+                    for (String s : report.descriptionsPO)
+                    {
+                        masterReport.descriptionsPO.add(s);
+                        masterReport.amountsPO.add(report.amountsPO.get(index));
+                        index++;
+                    }
+                    
+                    masterReport.lunchTotalAmt += report.lunchTotalAmt;
+                    masterReport.lunchTotalCheck += report.lunchTotalCheck;
+                    masterReport.lunchTotalCash += report.lunchTotalCash;
+                    masterReport.lunchTotalCredit += report.lunchTotalCredit;
+                    
+                    index = 0;
+                    for (String s : report.employeesWhoPaidForItems)
+                    {
+                        if(masterReport.employeesWhoPaidForItems.contains(s))
+                        {
+                            int tempIndex = masterReport.employeesWhoPaidForItems.indexOf(s);
+                            double tempValue = masterReport.amtEmployeePaidForAllItems.get(tempIndex);
+                            masterReport.amtEmployeePaidForAllItems.set(tempIndex, tempValue + report.amtEmployeePaidForAllItems.get(index));
+                            for(String tempItem : report.itemsEmployeesBought.get(index))
+                            {
+                                masterReport.itemsEmployeesBought.get(tempIndex).add(tempItem);
+                            }
+                        }
+                        else
+                        {
+                            masterReport.employeesWhoPaidForItems.add(s);
+                            masterReport.amtEmployeePaidForAllItems.add(report.amtEmployeePaidForAllItems.get(index));
+                            masterReport.itemsEmployeesBought.add(report.itemsEmployeesBought.get(index));
+                        }
+                        
+                        index++;
+                    }
+
+                    for (String error : report.lunchErrorLog)
+                    {
+                        masterReport.lunchErrorLog.add(error);
+                    }
+                    
+                }
+                
+                //All Reports Merged into Master, Now Make that file!
+                if(masterReport != null)
+                {
+                    masterReport.generateMasterReport(date);
+                }
+                
+                
+                //Time to let them know what files we found and which files we did not.
+                
+                JFrame resultsMessage = new JFrame("");
+                JOptionPane.showMessageDialog(resultsMessage, "Rx Found: " + rxExists + "\nDME Found: " + dmeExists + "\nCard Only Found: " + cardOnlyExists);
+                
+            }
+            catch (FileNotFoundException e)
+            {
+                System.out.println("NO FILE FOUND!");
+                e.printStackTrace();
+            }
+            catch (IOException e)
+            {
+                System.out.println("READ WRITE EX");
+                mf.showErrorMessage("Could not open drawer data, incompatible file?!");
+                e.printStackTrace();
+            }
+            catch (ClassNotFoundException e)
+            {
+                e.printStackTrace();
+                System.out.println("JERsE");
+            }
+
+        }
+        mf.textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
+
+    }//end masterDrawerReportsActionPerformed
+    
     private void updatePriceActionPerformed(java.awt.event.ActionEvent evt) {
 
         JFrame textInputFrame = new JFrame("");
@@ -2964,6 +3257,7 @@ public class TopMenuBar extends JMenuBar {
                 dispensationReport.setVisible(true);
                 remEmployee.setVisible(true);
                 drawerReports.setVisible(true);
+                masterDrawerReport.setVisible(true);
                 masterRptRecpt.setVisible(true);
                 rxDataUpload.setVisible(true);
                 customerDataUpload.setVisible(true);
@@ -2992,6 +3286,7 @@ public class TopMenuBar extends JMenuBar {
                 remMenu.setVisible(true);
                 mgmtMenu.setVisible(true);
                 drawerReports.setVisible(false);
+                masterDrawerReport.setVisible(false);
                 masterRefundAuditReport.setVisible(false);
                 //rxPickupReport.setVisible(true);
                 dispensationReport.setVisible(true);
@@ -3029,6 +3324,7 @@ public class TopMenuBar extends JMenuBar {
                 dispensationReport.setVisible(true);
                 dmeDataUpload.setVisible(false);
                 drawerReports.setVisible(false);
+                masterDrawerReport.setVisible(false);
                 arAuditReport.setVisible(false);
                 editEmployee.setVisible(false);
                 ticketReport.setVisible(false);

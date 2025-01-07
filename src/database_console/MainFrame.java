@@ -65,6 +65,9 @@ public class MainFrame extends javax.swing.JFrame {
         cryptIcon = new ImageIcon(getClass().getResource("images/Crypt.png"));
         cryptLabel = new JLabel(cryptIcon, JLabel.CENTER);
         cryptLabel.setBounds(310, 50, 500, 500);
+        gokuIcon = new ImageIcon(getClass().getResource("images/Goku.gif"));
+        gokuLabel = new JLabel(gokuIcon, JLabel.CENTER);
+        gokuLabel.setBounds(310, 50, 149, 149);
         helpSP.setAutoscrolls(true);
         helpSP.setBounds(100, 100, 1120, 700);
         //OLD DREW
@@ -1111,12 +1114,16 @@ public class MainFrame extends javax.swing.JFrame {
                                     //repaint(10)
 
                                     jPanel1.add(cryptLabel);
+                                    jPanel1.add(gokuLabel);
+                                    goku.playAudio("sounds/Cha-La Head-Cha-La.wav");
                                 }
                                 else
                                 {
                                     // cryptLabel.setVisible(false);
                                     // repaint(10);
                                     jPanel1.remove(cryptLabel);
+                                    jPanel1.remove(gokuLabel);
+                                    goku.stopAudio();
                                 }
 
                                 ArrayList<Employee> employees = Database.getEmployeesListSortByPID();
@@ -1137,6 +1144,8 @@ public class MainFrame extends javax.swing.JFrame {
                             else
                             {
                                 jPanel1.remove(cryptLabel);
+                                jPanel1.remove(gokuLabel);
+                                goku.stopAudio();
                             }
                         }
                     }
@@ -1156,6 +1165,8 @@ public class MainFrame extends javax.swing.JFrame {
                 clerkLogoutButton.setVisible(false);
                 activeClerksPasscode = -1;
                 jPanel1.remove(cryptLabel);
+                jPanel1.remove(gokuLabel);
+                goku.stopAudio();
                 checkForAdminButtonVisible(-1);//We send -1 because no clerk is logged in now.
                 textField.requestFocusInWindow();//this keeps focus on the UPC BAR READER
             }
@@ -3390,6 +3401,16 @@ public class MainFrame extends javax.swing.JFrame {
             arPaymentButton.setVisible(false);
             rxHistoryButton.setVisible(true);
         }
+        else if(ConfigFileReader.getRegisterID().contentEquals("C")) //Card Only Mode - No CASH Option
+        {
+            cashButton.setVisible(false);
+            checkButton.setVisible(false);
+            splitTenderButton.setVisible(false);
+            paidOutButton.setVisible(false);
+            refundButton.setVisible(false);
+            noSaleButton.setVisible(false);
+            beginSplitTicketButton.setVisible(false);
+        }
     }//end JFrame
 
     public void removeGuiCartItem(GuiCartItem item) {
@@ -4262,11 +4283,12 @@ public class MainFrame extends javax.swing.JFrame {
     JButton employeeDiscountFalseButton = new JButton("");
     String ar = "Accounts\nReceivable\nPayment";
     String dme = "DME\nAccount\nPayment";
-    String currentVersion = "1.3.20";
+    String currentVersion = "1.3.21";
     String updateString = ""
-            + "+Added OTC and Paper buttons to loader and lookup POS Clients.\n"
+            + "+Added Master Drawer Report.\n"
+            + "+Added Support for a Card Only Register.\n"
             + "\"Life before Death, Strength before Weakness, Journey before Destination.\"\n"
-            + "                  ~The Ideal of Radiance~";
+            + "                  ~The Ideal of Radiance~ ~Cha-La Head-Cha-La~";
     JLabel employeeSelectionHeader = new JLabel("Active Clerk: NONE", SwingConstants.LEFT);
     JLabel versionHeader = new JLabel("Version " + currentVersion, SwingConstants.LEFT);
     JButton dmePaymentButton = new JButton("<html>" + dme.replaceAll("\\n", "<br>") + "</html>");
@@ -4309,6 +4331,9 @@ public class MainFrame extends javax.swing.JFrame {
     Employee activeEmployee;
     JLabel cryptLabel;
     ImageIcon cryptIcon;
+    JLabel gokuLabel;
+    ImageIcon gokuIcon;
+    EasterEgg goku = new EasterEgg();
     Customer currentCustomer;
     HolidayLoader holidayLoader;
     String pharmacyName = "";

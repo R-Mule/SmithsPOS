@@ -24,6 +24,7 @@ public class ConfigFileReader {
     private static String mailPassword;
     private static String rxReportPath;
     private static String dmeReportPath;
+    private static String cardOnlyReportPath;
     private static String errorLogPath;
     private static Boolean ageNotificatonEnabled;
     
@@ -102,6 +103,10 @@ public class ConfigFileReader {
                 {
                     dmeReportPath = tokens[1].trim();
                 }
+                else if (tokens[0].contentEquals("Card Only Report Path"))
+                {
+                    cardOnlyReportPath = tokens[1].trim();
+                }
                 else if (tokens[0].contentEquals("Error Log Path"))
                 {
                     errorLogPath = tokens[1].trim();
@@ -149,7 +154,11 @@ public class ConfigFileReader {
     public static String getDmeReportPath() {
         return dmeReportPath;
     }
-
+    
+    public static String getCardOnlyReportPath() {
+        return cardOnlyReportPath;
+    }
+    
     public static String getRxReportPath() {
         return rxReportPath;
     }
