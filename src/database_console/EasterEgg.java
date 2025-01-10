@@ -107,8 +107,8 @@ public class EasterEgg {
         public void stopAudio() {
         if (ConfigFileReader.getPharmacyName().contentEquals("Smiths Super Aid"))
         {
-
-                 this.audioClipSaved.stop();
+                if(this.audioClipSaved != null)
+                    this.audioClipSaved.stop();
 
 
         }

@@ -65,7 +65,7 @@ public class MainFrame extends javax.swing.JFrame {
         cryptIcon = new ImageIcon(getClass().getResource("images/Crypt.png"));
         cryptLabel = new JLabel(cryptIcon, JLabel.CENTER);
         cryptLabel.setBounds(310, 50, 500, 500);
-        gokuIcon = new ImageIcon(getClass().getResource("images/Goku.gif"));
+        gokuIcon = new ImageIcon(getClass().getResource("images/goku.gif"));
         gokuLabel = new JLabel(gokuIcon, JLabel.CENTER);
         gokuLabel.setBounds(310, 50, 149, 149);
         helpSP.setAutoscrolls(true);
